@@ -19,4 +19,6 @@ func main() {
 		fmt.Println(to)
 		fmt.Println()
 	}
+
+	fmt.Println(colors.Srgb(r, g, b))
 }

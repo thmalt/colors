@@ -333,12 +333,16 @@ func genRootPkgColorStringify(ctx *Context, w *writer.GoWriter) {
 				w.LineWriteln(`b.WriteString("%")`)
 			}
 		}
+
+		w.Begin("if normalizeFloat(c.alpha) != 1")
 		w.LineWriteln(`b.WriteString(" / ")`)
 
 		w.LineWrite("b.WriteString(")
 		w.Write(FloatFormatPrecFuncName, "(")
 		w.Write("c.alpha, ", AlphaPrecision)
 		w.Writeln("))")
+
+		w.End()
 
 		w.LineWriteln(`b.WriteString(")")`)
 
