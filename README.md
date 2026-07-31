@@ -1,3 +1,16 @@
+# colors
+
+Modern Go library for color space conversions and CSS color serialization.
+
+### Installation
+
+```go
+import "github.com/thmalt/colors"
+```
+
+### Example
+
+```go
 package main
 
 import (
@@ -21,3 +34,5 @@ func main() {
 
 	fmt.Println(colors.Srgb(r, g, b))
 }
+
+```
