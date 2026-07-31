@@ -1,0 +1,153 @@
+package model
+
+import (
+	"encoding/json"
+	"math"
+	"strings"
+)
+
+type Space struct {
+	Name        string    `json:"name"`
+	Base        string    `json:"base,omitempty"`
+	DisplayName string    `json:"displayName"`
+	CssName     string    `json:"cssName"`
+	Aliases     []string  `json:"aliases,omitempty"`
+	WhitePoint  string    `json:"whitePoint"`
+	Channels    []Channel `json:"channels"`
+
+	UseColorFunction bool `json:"useColorFunction"`
+	Disable          bool `json:"disable,omitempty"`
+}
+
+type Channel struct {
+	Name        string `json:"name"`
+	Ident       string `json:"ident"`
+	Symbol      string `json:"symbol"`
+	DisplayName string `json:"displayName"`
+
+	Min      float64 `json:"min"`
+	Max      float64 `json:"max"`
+	Circular bool    `json:"circular,omitempty"`
+
+	Unit      UnitKind `json:"unit,omitempty"`
+	Precision int      `json:"precision"`
+}
+
+type UnitKind uint8
+
+const (
+	UnitNumber UnitKind = iota
+	UnitPercent
+
+	UnitDegree
+	UnitRadian
+	UnitGradian
+	UnitTurn
+)
+
+func (c Channel) MinDegree() float64 {
+	return AngleToDegree(c.Min, c.Unit)
+}
+
+func (c Channel) MaxDegree() float64 {
+	return AngleToDegree(c.Max, c.Unit)
+}
+
+func (u UnitKind) GoString() string {
+	switch u {
+	case UnitNumber:
+		return "UnitNumber"
+	case UnitPercent:
+		return "UnitPercent"
+	case UnitDegree:
+		return "UnitDegree"
+	case UnitRadian:
+		return "UnitRadian"
+	case UnitGradian:
+		return "UnitGradian"
+	case UnitTurn:
+		return "UnitTurn"
+	default:
+		return ""
+	}
+}
+
+func (u UnitKind) MarshalJSON() ([]byte, error) {
+	var s string
+	switch u {
+	case UnitPercent:
+		s = "%"
+	case UnitDegree:
+		s = "deg"
+	case UnitRadian:
+		s = "rad"
+	case UnitGradian:
+		s = "grad"
+	case UnitTurn:
+		s = "turn"
+	default:
+		s = ""
+	}
+
+	return json.Marshal(s)
+}
+
+func (u *UnitKind) UnmarshalJSON(data []byte) error {
+	var rawStr string
+	if err := json.Unmarshal(data, &rawStr); err != nil {
+		return err
+	}
+
+	switch strings.ToLower(rawStr) {
+	case "0":
+		*u = UnitNumber
+	case "1", "%":
+		*u = UnitPercent
+	case "2", "deg":
+		*u = UnitDegree
+	case "3", "rad":
+		*u = UnitRadian
+	case "4", "grad":
+		*u = UnitGradian
+	case "5", "turn":
+		*u = UnitTurn
+	default:
+		*u = UnitNumber
+	}
+
+	return nil
+}
+
+func AngleToDegree(value float64, unit UnitKind) float64 {
+	switch unit {
+	case UnitTurn:
+		return value * 360
+	case UnitRadian:
+		return value * (180 / math.Pi)
+	case UnitGradian:
+		return value * 0.9
+	}
+	return value
+}
+
+func (s Space) ChannelCount() int {
+	return len(s.Channels)
+}
+
+func (s Space) ChannelSymbols() []string {
+	slice := make([]string, 0, s.ChannelCount())
+	for _, c := range s.Channels {
+		slice = append(slice, c.Symbol)
+	}
+
+	return slice
+}
+
+func (s Space) ChannelIdent() []string {
+	slice := make([]string, 0, s.ChannelCount())
+	for _, c := range s.Channels {
+		slice = append(slice, c.Ident)
+	}
+
+	return slice
+}
