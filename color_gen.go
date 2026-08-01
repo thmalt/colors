@@ -55,7 +55,7 @@ func (c Color) AppendChannels(dst []float64) []float64 {
 	return append(dst, ch[:info.ChannelCount()]...)
 }
 
-// LinearSrgb returns the color components in the Linear sRGB color space.
+// LinearSrgb returns the color components in the [space.LinearSrgb] color space.
 func (c Color) LinearSrgb() (r, g, b float64) {
 	if c.space == space.LinearSrgb {
 		return c.c1, c.c2, c.c3
@@ -103,7 +103,7 @@ func (c Color) LinearSrgb() (r, g, b float64) {
 	}
 }
 
-// Srgb returns the color components in the sRGB color space.
+// Srgb returns the color components in the [space.Srgb] color space.
 func (c Color) Srgb() (r, g, b float64) {
 	if c.space == space.Srgb {
 		return c.c1, c.c2, c.c3
@@ -151,7 +151,7 @@ func (c Color) Srgb() (r, g, b float64) {
 	}
 }
 
-// LinearA98 returns the color components in the Linear Adobe® 98 RGB color space.
+// LinearA98 returns the color components in the [space.LinearA98] color space.
 func (c Color) LinearA98() (r, g, b float64) {
 	if c.space == space.LinearA98 {
 		return c.c1, c.c2, c.c3
@@ -199,7 +199,7 @@ func (c Color) LinearA98() (r, g, b float64) {
 	}
 }
 
-// A98 returns the color components in the Adobe® 98 RGB color space.
+// A98 returns the color components in the [space.A98] color space.
 func (c Color) A98() (r, g, b float64) {
 	if c.space == space.A98 {
 		return c.c1, c.c2, c.c3
@@ -247,7 +247,7 @@ func (c Color) A98() (r, g, b float64) {
 	}
 }
 
-// LinearDisplayP3 returns the color components in the Linear Display P3 color space.
+// LinearDisplayP3 returns the color components in the [space.LinearDisplayP3] color space.
 func (c Color) LinearDisplayP3() (r, g, b float64) {
 	if c.space == space.LinearDisplayP3 {
 		return c.c1, c.c2, c.c3
@@ -295,7 +295,7 @@ func (c Color) LinearDisplayP3() (r, g, b float64) {
 	}
 }
 
-// DisplayP3 returns the color components in the Display P3 color space.
+// DisplayP3 returns the color components in the [space.DisplayP3] color space.
 func (c Color) DisplayP3() (r, g, b float64) {
 	if c.space == space.DisplayP3 {
 		return c.c1, c.c2, c.c3
@@ -343,7 +343,7 @@ func (c Color) DisplayP3() (r, g, b float64) {
 	}
 }
 
-// LinearProPhoto returns the color components in the Linear ProPhoto color space.
+// LinearProPhoto returns the color components in the [space.LinearProPhoto] color space.
 func (c Color) LinearProPhoto() (r, g, b float64) {
 	if c.space == space.LinearProPhoto {
 		return c.c1, c.c2, c.c3
@@ -391,7 +391,7 @@ func (c Color) LinearProPhoto() (r, g, b float64) {
 	}
 }
 
-// ProPhoto returns the color components in the ProPhoto color space.
+// ProPhoto returns the color components in the [space.ProPhoto] color space.
 func (c Color) ProPhoto() (r, g, b float64) {
 	if c.space == space.ProPhoto {
 		return c.c1, c.c2, c.c3
@@ -439,7 +439,7 @@ func (c Color) ProPhoto() (r, g, b float64) {
 	}
 }
 
-// LinearRec2020 returns the color components in the Linear Rec. 2020 color space.
+// LinearRec2020 returns the color components in the [space.LinearRec2020] color space.
 func (c Color) LinearRec2020() (r, g, b float64) {
 	if c.space == space.LinearRec2020 {
 		return c.c1, c.c2, c.c3
@@ -487,7 +487,7 @@ func (c Color) LinearRec2020() (r, g, b float64) {
 	}
 }
 
-// Rec2020 returns the color components in the Rec. 2020 color space.
+// Rec2020 returns the color components in the [space.Rec2020] color space.
 func (c Color) Rec2020() (r, g, b float64) {
 	if c.space == space.Rec2020 {
 		return c.c1, c.c2, c.c3
@@ -535,7 +535,7 @@ func (c Color) Rec2020() (r, g, b float64) {
 	}
 }
 
-// Hsl returns the color components in the HSL color space.
+// Hsl returns the color components in the [space.Hsl] color space.
 func (c Color) Hsl() (h, s, l float64) {
 	if c.space == space.Hsl {
 		return c.c1, c.c2, c.c3
@@ -583,7 +583,7 @@ func (c Color) Hsl() (h, s, l float64) {
 	}
 }
 
-// Hsv returns the color components in the HSV color space.
+// Hsv returns the color components in the [space.Hsv] color space.
 func (c Color) Hsv() (h, s, v float64) {
 	if c.space == space.Hsv {
 		return c.c1, c.c2, c.c3
@@ -631,7 +631,7 @@ func (c Color) Hsv() (h, s, v float64) {
 	}
 }
 
-// Hwb returns the color components in the HWB color space.
+// Hwb returns the color components in the [space.Hwb] color space.
 func (c Color) Hwb() (h, w, b float64) {
 	if c.space == space.Hwb {
 		return c.c1, c.c2, c.c3
@@ -679,7 +679,7 @@ func (c Color) Hwb() (h, w, b float64) {
 	}
 }
 
-// XyzD65 returns the color components in the CIE XYZ D65 color space.
+// XyzD65 returns the color components in the [space.XyzD65] color space.
 func (c Color) XyzD65() (x, y, z float64) {
 	if c.space == space.XyzD65 {
 		return c.c1, c.c2, c.c3
@@ -727,7 +727,7 @@ func (c Color) XyzD65() (x, y, z float64) {
 	}
 }
 
-// XyzD50 returns the color components in the CIE XYZ D50 color space.
+// XyzD50 returns the color components in the [space.XyzD50] color space.
 func (c Color) XyzD50() (x, y, z float64) {
 	if c.space == space.XyzD50 {
 		return c.c1, c.c2, c.c3
@@ -775,7 +775,7 @@ func (c Color) XyzD50() (x, y, z float64) {
 	}
 }
 
-// Lab returns the color components in the CIE Lab color space.
+// Lab returns the color components in the [space.Lab] color space.
 func (c Color) Lab() (l, a, b float64) {
 	if c.space == space.Lab {
 		return c.c1, c.c2, c.c3
@@ -823,7 +823,7 @@ func (c Color) Lab() (l, a, b float64) {
 	}
 }
 
-// Lch returns the color components in the CIE Lch color space.
+// Lch returns the color components in the [space.Lch] color space.
 func (c Color) Lch() (light, chroma, hue float64) {
 	if c.space == space.Lch {
 		return c.c1, c.c2, c.c3
@@ -871,7 +871,7 @@ func (c Color) Lch() (light, chroma, hue float64) {
 	}
 }
 
-// Oklab returns the color components in the Oklab color space.
+// Oklab returns the color components in the [space.Oklab] color space.
 func (c Color) Oklab() (l, a, b float64) {
 	if c.space == space.Oklab {
 		return c.c1, c.c2, c.c3
@@ -919,7 +919,7 @@ func (c Color) Oklab() (l, a, b float64) {
 	}
 }
 
-// Oklch returns the color components in the Oklch color space.
+// Oklch returns the color components in the [space.Oklch] color space.
 func (c Color) Oklch() (light, chroma, hue float64) {
 	if c.space == space.Oklch {
 		return c.c1, c.c2, c.c3

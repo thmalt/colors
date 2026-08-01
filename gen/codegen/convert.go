@@ -145,14 +145,14 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 	}
 
 	funcName := FuncName(from.Name, to.Name)
-	w.LineComment("Conversion path (", len(path), " steps):")
-	w.LineComment("")
-	w.LineComment("\t", from.DisplayName)
+	w.LineCommentln("Conversion path (", len(path), " steps):")
+	w.LineCommentln()
+	w.LineCommentln("\t", from.DisplayName)
 	for _, node := range path {
-		w.LineComment("\t-> ", node.To.DisplayName)
+		w.LineCommentln("\t-> ", node.To.DisplayName)
 	}
 
-	// w.LineComment(stringifyPath(path))
+	// w.LineCommentln(stringifyPath(path))
 	w.Func(funcName)
 	w.FuncParams(varJoinWithType(params...))
 	w.FuncResults(retString)

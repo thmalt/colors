@@ -62,7 +62,3 @@ func clamp(x, lo, hi float64) float64 {
 func clamp01(x float64) float64 {
 	return clamp(x, 0, 1)
 }
-
-func clamp255(x float64) float64 {
-	return clamp(x, 0, 255)
-}

@@ -62,24 +62,31 @@ func genSpacePkgType(ctx *Context, w *writer.GoWriter) {
 			w.LineWritef("Symbol: %q,\n", c.Symbol)
 			w.LineWritef("DisplayName: %q,\n", c.DisplayName)
 
+			unit := c.Unit
 			switch c.Unit {
 			case model.UnitRadian, model.UnitGradian, model.UnitTurn:
-				w.LineWritef("Min: %v,\n", model.AngleToDegree(c.Min, c.Unit))
-				w.LineWritef("Max: %v,\n", model.AngleToDegree(c.Max, c.Unit))
-				if c.Circular {
-					w.LineWritef("Circular: %v,\n", c.Circular)
-				}
-				w.LineWritef("Unit: %s,\n", model.UnitDegree.GoString())
+				w.LineWritef("Min: %g,\n", model.AngleToDegree(c.Min, c.Unit))
+				w.LineWritef("Max: %g,\n", model.AngleToDegree(c.Max, c.Unit))
+				unit = model.UnitDegree
 			default:
-				w.LineWritef("Min: %v,\n", c.Min)
-				w.LineWritef("Max: %v,\n", c.Max)
-				if c.Circular {
-					w.LineWritef("Circular: %v,\n", c.Circular)
-				}
-				if c.Unit != model.UnitNumber {
-					w.LineWritef("Unit: %s,\n", c.Unit.GoString())
-				}
+				w.LineWritef("Min: %g,\n", c.Min)
+				w.LineWritef("Max: %g,\n", c.Max)
+
 			}
+
+			if c.Circular {
+				w.LineWritef("Circular: %t,\n", c.Circular)
+			}
+
+			if c.Unrestricted {
+				w.LineWritef("Unrestricted: %t,\n", c.Unrestricted)
+			}
+
+			if c.Unit != model.UnitNumber {
+				w.LineWritef("Unit: %s,\n", unit.GoString())
+			}
+
+			w.LineWritef("Precision: %d,\n", c.Precision)
 
 			w.End(',')
 		}

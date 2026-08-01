@@ -7,96 +7,172 @@ import (
 )
 
 // LinearSrgb returns a [Color] from Linear sRGB components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
 func LinearSrgb(r, g, b float64) Color {
 	return Color{space: space.LinearSrgb, c1: r, c2: g, c3: b, alpha: 1}
 }
 
 // Srgb returns a [Color] from sRGB components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
 func Srgb(r, g, b float64) Color {
 	return Color{space: space.Srgb, c1: r, c2: g, c3: b, alpha: 1}
 }
 
-// LinearA98 returns a [Color] from Linear Adobe® 98 RGB components.
+// LinearA98 returns a [Color] from Linear Adobe RGB (1998) components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
 func LinearA98(r, g, b float64) Color {
 	return Color{space: space.LinearA98, c1: r, c2: g, c3: b, alpha: 1}
 }
 
-// A98 returns a [Color] from Adobe® 98 RGB components.
+// A98 returns a [Color] from Adobe RGB (1998) components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
 func A98(r, g, b float64) Color {
 	return Color{space: space.A98, c1: r, c2: g, c3: b, alpha: 1}
 }
 
 // LinearDisplayP3 returns a [Color] from Linear Display P3 components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
 func LinearDisplayP3(r, g, b float64) Color {
 	return Color{space: space.LinearDisplayP3, c1: r, c2: g, c3: b, alpha: 1}
 }
 
 // DisplayP3 returns a [Color] from Display P3 components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
 func DisplayP3(r, g, b float64) Color {
 	return Color{space: space.DisplayP3, c1: r, c2: g, c3: b, alpha: 1}
 }
 
 // LinearProPhoto returns a [Color] from Linear ProPhoto components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
 func LinearProPhoto(r, g, b float64) Color {
 	return Color{space: space.LinearProPhoto, c1: r, c2: g, c3: b, alpha: 1}
 }
 
 // ProPhoto returns a [Color] from ProPhoto components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
 func ProPhoto(r, g, b float64) Color {
 	return Color{space: space.ProPhoto, c1: r, c2: g, c3: b, alpha: 1}
 }
 
 // LinearRec2020 returns a [Color] from Linear Rec. 2020 components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
 func LinearRec2020(r, g, b float64) Color {
 	return Color{space: space.LinearRec2020, c1: r, c2: g, c3: b, alpha: 1}
 }
 
 // Rec2020 returns a [Color] from Rec. 2020 components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
 func Rec2020(r, g, b float64) Color {
 	return Color{space: space.Rec2020, c1: r, c2: g, c3: b, alpha: 1}
 }
 
 // Hsl returns a [Color] from HSL components.
+//
+//	h: [0, 360)
+//	s: [0, 1]
+//	l: [0, 1]
 func Hsl(h, s, l float64) Color {
 	return Color{space: space.Hsl, c1: h, c2: s, c3: l, alpha: 1}
 }
 
 // Hsv returns a [Color] from HSV components.
+//
+//	h: [0, 360)
+//	s: [0, 1]
+//	v: [0, 1]
 func Hsv(h, s, v float64) Color {
 	return Color{space: space.Hsv, c1: h, c2: s, c3: v, alpha: 1}
 }
 
 // Hwb returns a [Color] from HWB components.
+//
+//	h: [0, 360)
+//	w: [0, 1]
+//	b: [0, 1]
 func Hwb(h, w, b float64) Color {
 	return Color{space: space.Hwb, c1: h, c2: w, c3: b, alpha: 1}
 }
 
 // XyzD65 returns a [Color] from CIE XYZ D65 components.
+//
+//	x: [0, 1]
+//	y: [0, 1]
+//	z: [0, 1]
 func XyzD65(x, y, z float64) Color {
 	return Color{space: space.XyzD65, c1: x, c2: y, c3: z, alpha: 1}
 }
 
 // XyzD50 returns a [Color] from CIE XYZ D50 components.
+//
+//	x: [0, 1]
+//	y: [0, 1]
+//	z: [0, 1]
 func XyzD50(x, y, z float64) Color {
 	return Color{space: space.XyzD50, c1: x, c2: y, c3: z, alpha: 1}
 }
 
 // Lab returns a [Color] from CIE Lab components.
+//
+//	l: [0, 100]
+//	a: [-125, 125] (typical)
+//	b: [-125, 125] (typical)
 func Lab(l, a, b float64) Color {
 	return Color{space: space.Lab, c1: l, c2: a, c3: b, alpha: 1}
 }
 
-// Lch returns a [Color] from CIE Lch components.
+// Lch returns a [Color] from CIE LCh components.
+//
+//	l: [0, 100]
+//	c: [0, 150] (typical)
+//	h: [0, 360)
 func Lch(l, c, h float64) Color {
 	return Color{space: space.Lch, c1: l, c2: c, c3: h, alpha: 1}
 }
 
 // Oklab returns a [Color] from Oklab components.
+//
+//	l: [0, 1]
+//	a: [-0.4, 0.4] (typical)
+//	b: [-0.4, 0.4] (typical)
 func Oklab(l, a, b float64) Color {
 	return Color{space: space.Oklab, c1: l, c2: a, c3: b, alpha: 1}
 }
 
 // Oklch returns a [Color] from Oklch components.
+//
+//	l: [0, 1]
+//	c: [0, 0.4] (typical)
+//	h: [0, 360)
 func Oklch(l, c, h float64) Color {
 	return Color{space: space.Oklch, c1: l, c2: c, c3: h, alpha: 1}
 }

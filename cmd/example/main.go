@@ -13,11 +13,15 @@ func main() {
 
 	c := colors.Srgb(r, g, b)
 	c = c.WithAlpha(0.999)
-	for i := range space.Oklch {
+	for i := range space.Oklch + 1 {
 		to := c.MustTo(i)
 		fmt.Println(to)
 		fmt.Println()
 	}
 
 	fmt.Println(colors.Srgb(r, g, b))
+
+	fmt.Println(c.Rgb())
+	fmt.Println(c.Alpha())
+
 }

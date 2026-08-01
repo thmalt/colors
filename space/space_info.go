@@ -1,5 +1,7 @@
 package space
 
+import "iter"
+
 type SpaceInfo struct {
 	name        string
 	displayName string
@@ -15,8 +17,9 @@ type Channel struct {
 	Symbol      string
 	DisplayName string
 
-	Min, Max float64
-	Circular bool
+	Min, Max     float64
+	Circular     bool
+	Unrestricted bool
 
 	Unit      UnitKind
 	Precision int
@@ -46,10 +49,20 @@ func (s *SpaceInfo) CssName() string        { return s.cssName }
 func (s *SpaceInfo) WhitePoint() [3]float64 { return s.whitePoint }
 func (s *SpaceInfo) ChannelCount() int      { return len(s.channels) }
 
-func (s *SpaceInfo) Channel(index int) Channel {
+func (s *SpaceInfo) Channel(index int) (Channel, bool) {
 	if index < 0 || index >= s.ChannelCount() {
-		panic("invalid channel")
+		return Channel{}, false
 	}
 
-	return s.channels[index]
+	return s.channels[index], true
+}
+
+func (s *SpaceInfo) Channels() iter.Seq[Channel] {
+	return func(yield func(Channel) bool) {
+		for i := 0; i < len(s.channels); i++ {
+			if !yield(s.channels[i]) {
+				return
+			}
+		}
+	}
 }

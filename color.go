@@ -11,23 +11,28 @@ var (
 	ErrUnknownSpace = errors.New("unknown space")
 )
 
-// Implement [image/color.Color] interface
+// RGBA implements the [image/color.Color] interface
 func (c Color) RGBA() (r, g, b, a uint32) {
 	red, green, blue := c.Srgb()
 
-	alpha := c.alpha
+	red = clamp01(red)
+	green = clamp01(green)
+	blue = clamp01(blue)
+	alpha := clamp01(c.alpha)
 
-	a = uint32(alpha*65535 + 0.5)
+	const max = 65535.0
 
-	r = uint32(red*65535*alpha + 0.5)
-	g = uint32(green*65535*alpha + 0.5)
-	b = uint32(blue*65535*alpha + 0.5)
+	r = uint32(red*alpha*max + 0.5)
+	g = uint32(green*alpha*max + 0.5)
+	b = uint32(blue*alpha*max + 0.5)
+	a = uint32(alpha*max + 0.5)
 
 	return
 }
 
+// WithAlpha returns a copy of [Color] with the specified alpha value.
 func (c Color) WithAlpha(alpha float64) Color {
-	c.alpha = clamp01(alpha)
+	c.alpha = alpha
 	return c
 }
 
@@ -48,6 +53,17 @@ func (c Color) ChannelCount() (int, error) {
 	return info.ChannelCount(), nil
 }
 
+// Rgb returns the color components in the RGB color space.
+// Components are in the range [0, 255].
+func (c Color) Rgb() (r, g, b float64) {
+	return convert.SrgbToRgb(c.Srgb())
+}
+
+// Rgb returns a [Color] from 8-bit RGB components in [0, 255].
+//
+//	r: [0, 255]
+//	g: [0, 255]
+//	b: [0, 255]
 func Rgb(r, g, b float64) Color {
 	return Srgb(convert.RgbToSrgb(r, g, b))
 }

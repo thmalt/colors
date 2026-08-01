@@ -56,7 +56,7 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 
 	w.Begin("type Color struct")
 	w.LineWriteln("space ", ctx.SpacePkg.Join("Space"))
-	w.LineComment("channels")
+	w.LineCommentln("channels")
 	for i := range maxChannel {
 		if i > 0 {
 			w.Write(", ")
@@ -69,7 +69,7 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 
 	w.Writeln()
 
-	w.LineComment("Get channel in current [space.Space]")
+	w.LineCommentln("Get channel in current [space.Space]")
 	w.Method("c Color", "Channel")
 	w.FuncParams("index int")
 	w.FuncResults(FloatType, ",", "bool")
@@ -154,14 +154,14 @@ func genRootPkgColorMethods(ctx *Context, w *writer.GoWriter) {
 		state.Reset()
 		state.Reserve("c")
 
-		w.LineComment(space.Name, " returns the color components in the ", space.DisplayName, " color space.")
-		w.Method("c Color", space.Name)
-
 		names := space.ChannelSymbols()
 		hasAny := state.ContainsAny(names...)
 		if hasAny {
 			names, hasAny = state.ReserveNames(space.ChannelIdent())
 		}
+
+		w.LineCommentln(space.Name, " returns the color components in the [", ctx.SpacePkg.Join(space.Name), "] color space.")
+		w.Method("c Color", space.Name)
 		w.FuncResults(varJoinWithType(names...))
 		w.FuncBody()
 
@@ -275,7 +275,28 @@ func genRootPkgColorConstructors(ctx *Context, w *writer.GoWriter) {
 	var b strings.Builder
 
 	for _, space := range ctx.Spaces {
-		w.LineComment(space.Name, " returns a [Color] from ", space.DisplayName, " components.")
+		w.LineCommentln(space.Name, " returns a [Color] from ", space.DisplayName, " components.")
+		w.LineCommentln()
+		for _, c := range space.Channels {
+			w.LineComment('\t')
+			w.Write(c.Symbol)
+			w.Write(": [")
+			w.Write(formatNormalizedFloat(c.Min))
+			w.Write(", ")
+			w.Write(formatNormalizedFloat(c.Max))
+
+			if c.Circular {
+				w.Write(')')
+			} else {
+				w.Write(']')
+			}
+
+			if c.Unrestricted {
+				w.Write(" (typical)")
+			}
+
+			w.Writeln()
+		}
 		w.Func(space.Name)
 		params := space.ChannelSymbols()
 		w.FuncParams(strings.Join(params, ", "), " ", FloatType)

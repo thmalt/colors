@@ -36,7 +36,7 @@ var (
 		{
 			Name:        "LinearA98",
 			Base:        "XyzD65",
-			DisplayName: "Linear Adobe® 98 RGB",
+			DisplayName: "Linear Adobe RGB (1998)",
 			CssName:     "a98-rgb-linear",
 			WhitePoint:  "D65",
 			Channels: []model.Channel{
@@ -50,7 +50,7 @@ var (
 		{
 			Name:        "A98",
 			Base:        "LinearA98",
-			DisplayName: "Adobe® 98 RGB",
+			DisplayName: "Adobe RGB (1998)",
 			CssName:     "a98-rgb",
 			WhitePoint:  "D65",
 			Channels: []model.Channel{
@@ -216,19 +216,19 @@ var (
 			WhitePoint:  "D50",
 			Channels: []model.Channel{
 				{Ident: "light", Symbol: "l", DisplayName: "Lightness", Min: 0, Max: 100, Precision: 4},
-				{Ident: "a", Symbol: "a", DisplayName: "Green-Red", Min: -125, Max: 125, Precision: 4},
-				{Ident: "b", Symbol: "b", DisplayName: "Blue-Yellow", Min: -125, Max: 125, Precision: 4},
+				{Ident: "a", Symbol: "a", DisplayName: "Green-Red", Min: -125, Max: 125, Unrestricted: true, Precision: 4},
+				{Ident: "b", Symbol: "b", DisplayName: "Blue-Yellow", Min: -125, Max: 125, Unrestricted: true, Precision: 4},
 			},
 		},
 		{
 			Name:        "Lch",
 			Base:        "Lab",
-			DisplayName: "CIE Lch",
+			DisplayName: "CIE LCh",
 			CssName:     "lch",
 			WhitePoint:  "D50",
 			Channels: []model.Channel{
 				{Ident: "light", Symbol: "l", DisplayName: "Lightness", Min: 0, Max: 100, Precision: 4},
-				{Ident: "chroma", Symbol: "c", DisplayName: "Chroma", Min: 0, Max: 150, Precision: 4},
+				{Ident: "chroma", Symbol: "c", DisplayName: "Chroma", Min: 0, Max: 150, Unrestricted: true, Precision: 4},
 				{Ident: "hue", Symbol: "h", DisplayName: "Hue", Min: 0, Max: 360, Circular: true, Unit: model.UnitDegree, Precision: 4},
 			},
 		},
@@ -240,8 +240,8 @@ var (
 			WhitePoint:  "D65",
 			Channels: []model.Channel{
 				{Ident: "light", Symbol: "l", DisplayName: "Lightness", Min: 0, Max: 1, Precision: 6},
-				{Ident: "a", Symbol: "a", DisplayName: "Green-Red", Min: -0.4, Max: 0.4, Precision: 6},
-				{Ident: "b", Symbol: "b", DisplayName: "Blue-Yellow", Min: -0.4, Max: 0.4, Precision: 6},
+				{Ident: "a", Symbol: "a", DisplayName: "Green-Red", Min: -0.4, Max: 0.4, Unrestricted: true, Precision: 6},
+				{Ident: "b", Symbol: "b", DisplayName: "Blue-Yellow", Min: -0.4, Max: 0.4, Unrestricted: true, Precision: 6},
 			},
 		},
 		{
@@ -251,8 +251,8 @@ var (
 			CssName:     "oklch",
 			WhitePoint:  "D65",
 			Channels: []model.Channel{
-				{Ident: "light", Symbol: "l", DisplayName: "Lightness", Min: 0, Max: 100, Precision: 6},
-				{Ident: "chroma", Symbol: "c", DisplayName: "Chroma", Min: 0, Max: 0.4, Precision: 6},
+				{Ident: "light", Symbol: "l", DisplayName: "Lightness", Min: 0, Max: 1, Precision: 6},
+				{Ident: "chroma", Symbol: "c", DisplayName: "Chroma", Min: 0, Max: 0.4, Unrestricted: true, Precision: 6},
 				{Ident: "hue", Symbol: "h", DisplayName: "Hue", Min: 0, Max: 360, Circular: true, Unit: model.UnitDegree, Precision: 4},
 			},
 		},

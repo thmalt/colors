@@ -25,9 +25,10 @@ type Channel struct {
 	Symbol      string `json:"symbol"`
 	DisplayName string `json:"displayName"`
 
-	Min      float64 `json:"min"`
-	Max      float64 `json:"max"`
-	Circular bool    `json:"circular,omitempty"`
+	Min          float64 `json:"min"`
+	Max          float64 `json:"max"`
+	Circular     bool    `json:"circular,omitempty"`
+	Unrestricted bool    `json:"unrestricted,omitempty"`
 
 	Unit      UnitKind `json:"unit,omitempty"`
 	Precision int      `json:"precision"`

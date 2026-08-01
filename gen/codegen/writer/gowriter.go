@@ -477,6 +477,30 @@ func (w *GoWriter) Return(a ...any) {
 
 func (w *GoWriter) Comment(a ...any) {
 	s := fmt.Sprint(a...)
+	w.comment(s)
+}
+
+func (w *GoWriter) Commentf(format string, a ...any) {
+	s := fmt.Sprintf(format, a...)
+	w.comment(s)
+}
+
+func (w *GoWriter) LineCommentf(format string, a ...any) {
+	s := fmt.Sprintf(format, a...)
+	w.lineComment(s)
+}
+
+func (w *GoWriter) LineComment(a ...any) {
+	s := buildString(a...)
+	w.lineComment(s)
+}
+
+func (w *GoWriter) LineCommentln(a ...any) {
+	s := buildString(a...)
+	w.lineComment(s)
+	w.Writeln()
+}
+func (w *GoWriter) comment(s string) {
 	if strings.ContainsAny(s, "\r\n") {
 		if strings.Contains(s, "*/") {
 			s = strings.ReplaceAll(s, "*/", "*\\/")
@@ -486,16 +510,38 @@ func (w *GoWriter) Comment(a ...any) {
 	w.Write("/* ", s, " */")
 }
 
-func (w *GoWriter) LineComment(a ...any) {
-	s := fmt.Sprint(a...)
+func (w *GoWriter) lineComment(s string) {
 	if strings.ContainsAny(s, "\r\n") {
 		if strings.Contains(s, "*/") {
 			s = strings.ReplaceAll(s, "*/", "*\\/")
 		}
 		w.LineWriteln("/*")
 		w.Write(s)
-		w.LineWriteln("*/")
+		w.LineWrite("*/")
 	} else {
-		w.LineWriteln("// ", s)
+		w.LineWrite("//")
+		if !strings.HasPrefix(s, "\t") {
+			w.Write(' ')
+		}
+		w.Write(s)
 	}
+}
+
+func buildString(a ...any) string {
+	var w strings.Builder
+	for _, arg := range a {
+		switch v := arg.(type) {
+		case string:
+			w.WriteString(v)
+		case byte:
+			w.WriteByte(v)
+		case rune:
+			w.WriteRune(v)
+		case []byte:
+			w.Write(v)
+		default:
+			fmt.Fprint(&w, v)
+		}
+	}
+	return w.String()
 }
