@@ -63,7 +63,7 @@ func (c Color) LinearSrgb() (r, g, b float64) {
 
 	switch c.space {
 	case space.Srgb:
-		return convert.SrgbToLinear(c.c1, c.c2, c.c3)
+		return convert.SrgbToLinearSrgb(c.c1, c.c2, c.c3)
 	case space.LinearA98:
 		return convert.LinearA98ToLinearSrgb(c.c1, c.c2, c.c3)
 	case space.A98:
@@ -111,7 +111,7 @@ func (c Color) Srgb() (r, g, b float64) {
 
 	switch c.space {
 	case space.LinearSrgb:
-		return convert.LinearToSrgb(c.c1, c.c2, c.c3)
+		return convert.LinearSrgbToSrgb(c.c1, c.c2, c.c3)
 	case space.LinearA98:
 		return convert.LinearA98ToSrgb(c.c1, c.c2, c.c3)
 	case space.A98:
@@ -163,7 +163,7 @@ func (c Color) LinearA98() (r, g, b float64) {
 	case space.Srgb:
 		return convert.SrgbToLinearA98(c.c1, c.c2, c.c3)
 	case space.A98:
-		return convert.A98ToLinear(c.c1, c.c2, c.c3)
+		return convert.A98ToLinearA98(c.c1, c.c2, c.c3)
 	case space.LinearDisplayP3:
 		return convert.LinearDisplayP3ToLinearA98(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
@@ -211,7 +211,7 @@ func (c Color) A98() (r, g, b float64) {
 	case space.Srgb:
 		return convert.SrgbToA98(c.c1, c.c2, c.c3)
 	case space.LinearA98:
-		return convert.LinearToA98(c.c1, c.c2, c.c3)
+		return convert.LinearA98ToA98(c.c1, c.c2, c.c3)
 	case space.LinearDisplayP3:
 		return convert.LinearDisplayP3ToA98(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
@@ -263,7 +263,7 @@ func (c Color) LinearDisplayP3() (r, g, b float64) {
 	case space.A98:
 		return convert.A98ToLinearDisplayP3(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
-		return convert.DisplayP3ToLinear(c.c1, c.c2, c.c3)
+		return convert.DisplayP3ToLinearDisplayP3(c.c1, c.c2, c.c3)
 	case space.LinearProPhoto:
 		return convert.LinearProPhotoToLinearDisplayP3(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
@@ -311,7 +311,7 @@ func (c Color) DisplayP3() (r, g, b float64) {
 	case space.A98:
 		return convert.A98ToDisplayP3(c.c1, c.c2, c.c3)
 	case space.LinearDisplayP3:
-		return convert.LinearToDisplayP3(c.c1, c.c2, c.c3)
+		return convert.LinearDisplayP3ToDisplayP3(c.c1, c.c2, c.c3)
 	case space.LinearProPhoto:
 		return convert.LinearProPhotoToDisplayP3(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
@@ -363,7 +363,7 @@ func (c Color) LinearProPhoto() (r, g, b float64) {
 	case space.DisplayP3:
 		return convert.DisplayP3ToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
-		return convert.ProPhotoToLinear(c.c1, c.c2, c.c3)
+		return convert.ProPhotoToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.Rec2020:
@@ -411,7 +411,7 @@ func (c Color) ProPhoto() (r, g, b float64) {
 	case space.DisplayP3:
 		return convert.DisplayP3ToProPhoto(c.c1, c.c2, c.c3)
 	case space.LinearProPhoto:
-		return convert.LinearToProPhoto(c.c1, c.c2, c.c3)
+		return convert.LinearProPhotoToProPhoto(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToProPhoto(c.c1, c.c2, c.c3)
 	case space.Rec2020:
@@ -463,7 +463,7 @@ func (c Color) LinearRec2020() (r, g, b float64) {
 	case space.ProPhoto:
 		return convert.ProPhotoToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.Rec2020:
-		return convert.Rec2020ToLinear(c.c1, c.c2, c.c3)
+		return convert.Rec2020ToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.Hsl:
 		return convert.HslToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.Hsv:
@@ -511,7 +511,7 @@ func (c Color) Rec2020() (r, g, b float64) {
 	case space.ProPhoto:
 		return convert.ProPhotoToRec2020(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
-		return convert.LinearToRec2020(c.c1, c.c2, c.c3)
+		return convert.LinearRec2020ToRec2020(c.c1, c.c2, c.c3)
 	case space.Hsl:
 		return convert.HslToRec2020(c.c1, c.c2, c.c3)
 	case space.Hsv:

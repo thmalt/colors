@@ -70,17 +70,23 @@ func Rgb(r, g, b float64) Color {
 }
 
 func (c Color) Hex() string {
-	r, g, b := c.Rgb()
-	alpha := byte(math.Round(c.alpha * 255.0))
+	const max = 255
+
+	r, g, b := c.Srgb()
+
+	red := byte(math.Round(clamp01(r) * max))
+	green := byte(math.Round(clamp01(g) * max))
+	blue := byte(math.Round(clamp01(b) * max))
+	alpha := byte(math.Round(clamp01(c.alpha) * max))
 
 	var out []byte = make([]byte, 9)
 	out[0] = '#'
 
-	encodeHexByte(out[1:], byte(math.Round(r)))
-	encodeHexByte(out[3:], byte(math.Round(g)))
-	encodeHexByte(out[5:], byte(math.Round(b)))
+	encodeHexByte(out[1:], red)
+	encodeHexByte(out[3:], green)
+	encodeHexByte(out[5:], blue)
 
-	if alpha == math.MaxUint8 {
+	if alpha == max {
 		return string(out[:7])
 	}
 

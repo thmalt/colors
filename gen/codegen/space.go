@@ -1,6 +1,7 @@
 package codegen
 
 import (
+	"fmt"
 	"path/filepath"
 
 	"github.com/thmalt/colors/gen/codegen/model"
@@ -12,6 +13,12 @@ func GenerateSpacePkg(ctx *Context) {
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
 
+	fmt.Println()
+
+	// generate file ctx.SpacePkg.Name + _gen.go
+	fileName := ctx.SpacePkg.Name + "_gen.go"
+	fmt.Println("Generate file", fileName)
+
 	w.Import(
 		"strconv",
 		ctx.ConvertPkg.Path,
@@ -20,7 +27,7 @@ func GenerateSpacePkg(ctx *Context) {
 	genSpacePkgType(ctx, w)
 
 	w.WriteGoFile(
-		filepath.Join(pkgPath, ctx.SpacePkg.Name+"_gen.go"),
+		filepath.Join(pkgPath, fileName),
 		ctx.SpacePkg.Name,
 	)
 }

@@ -35,5 +35,6 @@ func main() {
 	fmt.Println()
 
 	fmt.Println("hex:", c.Hex())
-	fmt.Println("hex with alpha:", c.WithAlpha(0.998).Hex())
+	// hex with alpha if alpha != 1
+	fmt.Println("hex:", c.WithAlpha(0.998).Hex())
 }

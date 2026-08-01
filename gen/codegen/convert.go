@@ -18,6 +18,8 @@ func GenerateConvertPkg(ctx *Context) {
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
 
+	fmt.Println()
+
 	if ctx.SplitFile {
 		for i, space := range ctx.Spaces {
 			if space == nil {
@@ -28,7 +30,13 @@ func GenerateConvertPkg(ctx *Context) {
 				continue
 			}
 
-			fileName := toSnakeCase(space.Name) + "_gen.go"
+			var fileName string
+			if space.SnakeName != "" {
+
+				fileName = toSnakeCase(space.SnakeName) + "_gen.go"
+			} else {
+				fileName = toSnakeCase(space.Name) + "_gen.go"
+			}
 
 			fmt.Println("Generate file", fileName)
 
@@ -39,14 +47,19 @@ func GenerateConvertPkg(ctx *Context) {
 			)
 		}
 	} else {
+		fileName := ctx.ConvertPkg.Name + "_gen.go"
+		fmt.Println("Generate file", fileName)
+
 		// all conversion in one file
 		genConvertPkgConversion(ctx, w)
 
 		w.WriteGoFile(
-			filepath.Join(pkgPath, ctx.ConvertPkg.Name+"_gen.go"),
+			filepath.Join(pkgPath, fileName),
 			ctx.ConvertPkg.Name,
 		)
 	}
+	fileName := "whitepoint_gen.go"
+	fmt.Println("Generate file", fileName)
 
 	if genConvertPkgWhitePoint(ctx, w) {
 		w.WriteGoFile(
@@ -192,17 +205,18 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 	inputVars := paramsVars
 
 	firstOp := true
-	hasReturn := false
+	returned := false
 	last := len(ops) - 1
 
 	for idx, op := range ops {
 		isLastOp := idx == last
+
 		switch op.Type {
 		case OpCall:
 			firstOp = false
 			if isLastOp {
 				wop.Return(op.Pair.FuncName(), "(", strings.Join(inputVars, ", "), ")")
-				hasReturn = true
+				returned = true
 			} else {
 				_, to := ctx.ResolveSpacePair(op.Pair)
 				outputVars := to.ChannelSymbols()
@@ -239,9 +253,11 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 				wop.Writeln()
 			}
 			firstOp = false
+
 			for _, v := range inputVars {
 				wop.NewlineWrite(v, " *= ", v, " * ", v)
 			}
+
 			wop.Writeln()
 		case OpMatrix:
 			if !firstOp {
@@ -295,15 +311,14 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 				}
 			}
 			inputVars = outputVars
-			if idx != 0 {
-				wop.NewlineWriteln()
-			}
+
+			wop.NewlineWriteln()
 		}
 	}
 
 	w.Write(wop.Bytes())
 
-	if !hasReturn {
+	if !returned {
 		if returnResult {
 			w.Return(strings.Join(inputVars, ", "))
 		} else {
@@ -344,9 +359,11 @@ func expandOps(ctx *Context, op Op) []Op {
 		if fn == nil {
 			panic("expandOps notfound " + op.Pair.FuncName())
 		}
+
 		if len(fn.Ops) == 0 {
 			return []Op{op}
 		}
+
 		for _, op := range fn.Ops {
 			out = append(out, expandOps(ctx, op)...)
 		}
@@ -359,8 +376,6 @@ func expandOps(ctx *Context, op Op) []Op {
 
 func combineOps(ops []Op) (out []Op, changed bool) {
 	out = make([]Op, 0, len(ops))
-
-	var ()
 
 	var (
 		mat      [9]float64

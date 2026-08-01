@@ -2,7 +2,6 @@ package codegen
 
 import (
 	"strconv"
-	"strings"
 )
 
 type ConvertFunc struct {
@@ -54,14 +53,6 @@ func (p Pair) FuncName() string {
 	return FuncName(string(p.From), string(p.To))
 }
 
-// LinearTo // to = ""
 func FuncName(from, to string) string {
-	if strings.TrimPrefix(from, "Linear") == to {
-		return "LinearTo" + to
-	}
-	if strings.TrimPrefix(to, "Linear") == from {
-		return from + "ToLinear"
-	}
-
 	return from + "To" + to
 }

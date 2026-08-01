@@ -2,22 +2,18 @@ package convert
 
 import "math"
 
-// Transfer function:
-//
-//	Linear ProPhoto
-func ProPhotoToLinear(r, g, b float64) (float64, float64, float64) {
-	return proPhotoToLinear(r), proPhotoToLinear(g), proPhotoToLinear(b)
+// Applies the inverse of the ProPhoto transfer function.
+func ProPhotoToLinearProPhoto(r, g, b float64) (float64, float64, float64) {
+	return proPhotoToLinearProPhoto(r), proPhotoToLinearProPhoto(g), proPhotoToLinearProPhoto(b)
 }
 
-// Transfer function:
-//
-//	ProPhoto
-func LinearToProPhoto(r, g, b float64) (float64, float64, float64) {
-	return linearToProPhoto(r), linearToProPhoto(g), linearToProPhoto(b)
+// Applies the ProPhoto transfer function.
+func LinearProPhotoToProPhoto(r, g, b float64) (float64, float64, float64) {
+	return linearProPhotoToProPhoto(r), linearProPhotoToProPhoto(g), linearProPhotoToProPhoto(b)
 }
 
-// Gamma -> Linear
-func proPhotoToLinear(x float64) float64 {
+// decode
+func proPhotoToLinearProPhoto(x float64) float64 {
 	neg := x < 0
 	if neg {
 		x = -x
@@ -36,8 +32,8 @@ func proPhotoToLinear(x float64) float64 {
 	return x
 }
 
-// Linear -> Gamma
-func linearToProPhoto(x float64) float64 {
+// encode
+func linearProPhotoToProPhoto(x float64) float64 {
 	neg := x < 0
 	if neg {
 		x = -x

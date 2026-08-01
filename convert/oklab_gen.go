@@ -44,7 +44,7 @@ func OklabToSrgb(l, a, b float64) (float64, float64, float64) {
 	f5 := -1.2684379732850315*f1 + 2.609757349287688*f2 - 0.34131937600265716*f3
 	f6 := -0.004196076138675441*f1 - 0.7034186179359361*f2 + 1.707614694074611*f3
 
-	return LinearToSrgb(f4, f5, f6)
+	return LinearSrgbToSrgb(f4, f5, f6)
 }
 
 // Conversion path (2 steps):
@@ -87,7 +87,7 @@ func OklabToA98(l, a, b float64) (float64, float64, float64) {
 	f5 := -1.2684379732850315*f1 + 2.6097573492876887*f2 - 0.34131937600265716*f3
 	f6 := -0.05623473593749364*f1 - 0.5670418395669063*f2 + 1.6232765755044003*f3
 
-	return LinearToA98(f4, f5, f6)
+	return LinearA98ToA98(f4, f5, f6)
 }
 
 // Conversion path (2 steps):
@@ -130,7 +130,7 @@ func OklabToDisplayP3(l, a, b float64) (float64, float64, float64) {
 	f5 := -1.0910090184377974*f1 + 2.413331710306921*f2 - 0.3223226918691247*f3
 	f6 := -0.026010801938570242*f1 - 0.5080413317041669*f2 + 1.5340521336427366*f3
 
-	return LinearToDisplayP3(f4, f5, f6)
+	return LinearDisplayP3ToDisplayP3(f4, f5, f6)
 }
 
 // Conversion path (3 steps):
@@ -175,7 +175,7 @@ func OklabToProPhoto(l, a, b float64) (float64, float64, float64) {
 	f5 := -0.7070393782244613*f1 + 1.9343467087966837*f2 - 0.22730733057222313*f3
 	f6 := -0.08407882206239631*f1 - 0.3575406052114133*f2 + 1.4416194272738094*f3
 
-	return LinearToProPhoto(f4, f5, f6)
+	return LinearProPhotoToProPhoto(f4, f5, f6)
 }
 
 // Conversion path (2 steps):
@@ -218,7 +218,7 @@ func OklabToRec2020(l, a, b float64) (float64, float64, float64) {
 	f5 := -0.8847358357577675*f1 + 2.1632309383612007*f2 - 0.2784951026034336*f3
 	f6 := -0.048573746400444075*f1 - 0.454503149714096*f2 + 1.5030768961145398*f3
 
-	return LinearToRec2020(f4, f5, f6)
+	return LinearRec2020ToRec2020(f4, f5, f6)
 }
 
 // Conversion path (4 steps):
@@ -241,7 +241,7 @@ func OklabToHsl(l, a, b float64) (float64, float64, float64) {
 	f5 := -1.2684379732850315*f1 + 2.609757349287688*f2 - 0.34131937600265716*f3
 	f6 := -0.004196076138675441*f1 - 0.7034186179359361*f2 + 1.707614694074611*f3
 
-	r, g, b := LinearToSrgb(f4, f5, f6)
+	r, g, b := LinearSrgbToSrgb(f4, f5, f6)
 	return SrgbToHsl(r, g, b)
 }
 
@@ -265,7 +265,7 @@ func OklabToHsv(l, a, b float64) (h, s, v float64) {
 	f5 := -1.2684379732850315*f1 + 2.609757349287688*f2 - 0.34131937600265716*f3
 	f6 := -0.004196076138675441*f1 - 0.7034186179359361*f2 + 1.707614694074611*f3
 
-	r, g, b := LinearToSrgb(f4, f5, f6)
+	r, g, b := LinearSrgbToSrgb(f4, f5, f6)
 	return SrgbToHsv(r, g, b)
 }
 
@@ -289,7 +289,7 @@ func OklabToHwb(l, a, b float64) (float64, float64, float64) {
 	f5 := -1.2684379732850315*f1 + 2.609757349287688*f2 - 0.34131937600265716*f3
 	f6 := -0.004196076138675441*f1 - 0.7034186179359361*f2 + 1.707614694074611*f3
 
-	r, g, b := LinearToSrgb(f4, f5, f6)
+	r, g, b := LinearSrgbToSrgb(f4, f5, f6)
 	return SrgbToHwb(r, g, b)
 }
 

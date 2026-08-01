@@ -163,14 +163,7 @@ func (ctx *Context) ConvertFuncByPair(pair Pair) *ConvertFunc {
 }
 
 func (ctx *Context) ResolveSpacePairName(from, to string) (*model.Space, *model.Space) {
-	switch {
-	case from == "Linear":
-		return ctx.SpaceByName("Linear" + to), ctx.SpaceByName(to)
-	case to == "Linear":
-		return ctx.SpaceByName(from), ctx.SpaceByName("Linear" + from)
-	default:
-		return ctx.SpaceByName(from), ctx.SpaceByName(to)
-	}
+	return ctx.SpaceByName(from), ctx.SpaceByName(to)
 }
 
 func (ctx *Context) ResolveSpacePair(pair Pair) (from, to *model.Space) {

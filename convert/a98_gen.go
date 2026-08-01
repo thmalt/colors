@@ -13,7 +13,7 @@ import (
 //	-> CIE XYZ D65
 //	-> Linear sRGB
 func A98ToLinearSrgb(r, g, b float64) (float64, float64, float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
 	f2 := g
@@ -30,13 +30,13 @@ func A98ToLinearSrgb(r, g, b float64) (float64, float64, float64) {
 //	-> Linear sRGB
 //	-> sRGB
 func A98ToSrgb(r, g, b float64) (float64, float64, float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
 	f2 := g
 	f3 := -0.04292898929447317*g + 1.0429289892944729*b
 
-	return LinearToSrgb(f1, f2, f3)
+	return LinearSrgbToSrgb(f1, f2, f3)
 }
 
 // Conversion path (3 steps):
@@ -46,7 +46,7 @@ func A98ToSrgb(r, g, b float64) (float64, float64, float64) {
 //	-> CIE XYZ D65
 //	-> Linear Display P3
 func A98ToLinearDisplayP3(r, g, b float64) (float64, float64, float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 1.1500944181410182*r - 0.15009441814101843*g
 	f2 := 0.04641729862941835*r + 0.9535827013705814*g
@@ -63,13 +63,13 @@ func A98ToLinearDisplayP3(r, g, b float64) (float64, float64, float64) {
 //	-> Linear Display P3
 //	-> Display P3
 func A98ToDisplayP3(r, g, b float64) (float64, float64, float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 1.1500944181410182*r - 0.15009441814101843*g
 	f2 := 0.04641729862941835*r + 0.9535827013705814*g
 	f3 := 0.02388759479083905*r + 0.02650477632633015*g + 0.9496076288828302*b
 
-	return LinearToDisplayP3(f1, f2, f3)
+	return LinearDisplayP3ToDisplayP3(f1, f2, f3)
 }
 
 // Conversion path (4 steps):
@@ -80,7 +80,7 @@ func A98ToDisplayP3(r, g, b float64) (float64, float64, float64) {
 //	-> CIE XYZ D50
 //	-> Linear ProPhoto
 func A98ToLinearProPhoto(r, g, b float64) (float64, float64, float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 0.7401222958626068*r + 0.1132767134019435*g + 0.14660099073544958*b
 	f2 := 0.13755097150470885*r + 0.8330699029207365*g + 0.029379125574554684*b
@@ -98,13 +98,13 @@ func A98ToLinearProPhoto(r, g, b float64) (float64, float64, float64) {
 //	-> Linear ProPhoto
 //	-> ProPhoto
 func A98ToProPhoto(r, g, b float64) (float64, float64, float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 0.7401222958626068*r + 0.1132767134019435*g + 0.14660099073544958*b
 	f2 := 0.13755097150470885*r + 0.8330699029207365*g + 0.029379125574554684*b
 	f3 := 0.023597729908717637*r + 0.07378347703906664*g + 0.9026187930522156*b
 
-	return LinearToProPhoto(f1, f2, f3)
+	return LinearProPhotoToProPhoto(f1, f2, f3)
 }
 
 // Conversion path (3 steps):
@@ -114,7 +114,7 @@ func A98ToProPhoto(r, g, b float64) (float64, float64, float64) {
 //	-> CIE XYZ D65
 //	-> Linear Rec. 2020
 func A98ToLinearRec2020(r, g, b float64) (float64, float64, float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 0.8773338416636568*r + 0.07749370651571999*g + 0.04517245182062312*b
 	f2 := 0.09662259146620364*r + 0.8915273202441808*g + 0.011850088289615656*b
@@ -131,13 +131,13 @@ func A98ToLinearRec2020(r, g, b float64) (float64, float64, float64) {
 //	-> Linear Rec. 2020
 //	-> Rec. 2020
 func A98ToRec2020(r, g, b float64) (float64, float64, float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 0.8773338416636568*r + 0.07749370651571999*g + 0.04517245182062312*b
 	f2 := 0.09662259146620364*r + 0.8915273202441808*g + 0.011850088289615656*b
 	f3 := 0.02292106270284832*r + 0.04303668501067944*g + 0.934042252286472*b
 
-	return LinearToRec2020(f1, f2, f3)
+	return LinearRec2020ToRec2020(f1, f2, f3)
 }
 
 // Conversion path (5 steps):
@@ -149,13 +149,13 @@ func A98ToRec2020(r, g, b float64) (float64, float64, float64) {
 //	-> sRGB
 //	-> HSL
 func A98ToHsl(r, g, b float64) (h, s, l float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
 	f2 := g
 	f3 := -0.04292898929447317*g + 1.0429289892944729*b
 
-	r, g, b = LinearToSrgb(f1, f2, f3)
+	r, g, b = LinearSrgbToSrgb(f1, f2, f3)
 	return SrgbToHsl(r, g, b)
 }
 
@@ -168,13 +168,13 @@ func A98ToHsl(r, g, b float64) (h, s, l float64) {
 //	-> sRGB
 //	-> HSV
 func A98ToHsv(r, g, b float64) (h, s, v float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
 	f2 := g
 	f3 := -0.04292898929447317*g + 1.0429289892944729*b
 
-	r, g, b = LinearToSrgb(f1, f2, f3)
+	r, g, b = LinearSrgbToSrgb(f1, f2, f3)
 	return SrgbToHsv(r, g, b)
 }
 
@@ -187,13 +187,13 @@ func A98ToHsv(r, g, b float64) (h, s, v float64) {
 //	-> sRGB
 //	-> HWB
 func A98ToHwb(r, g, b float64) (float64, float64, float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
 	f2 := g
 	f3 := -0.04292898929447317*g + 1.0429289892944729*b
 
-	r, g, b = LinearToSrgb(f1, f2, f3)
+	r, g, b = LinearSrgbToSrgb(f1, f2, f3)
 	return SrgbToHwb(r, g, b)
 }
 
@@ -203,7 +203,7 @@ func A98ToHwb(r, g, b float64) (float64, float64, float64) {
 //	-> Linear Adobe RGB (1998)
 //	-> CIE XYZ D65
 func A98ToXyzD65(r, g, b float64) (x, y, z float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	x = 0.5766690429101305*r + 0.1855582379065463*g + 0.18822864623499466*b
 	y = 0.29734497525053605*r + 0.6273635662554661*g + 0.07529145849399786*b
@@ -219,7 +219,7 @@ func A98ToXyzD65(r, g, b float64) (x, y, z float64) {
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 func A98ToXyzD50(r, g, b float64) (x, y, z float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	x = 0.6097750418861813*r + 0.2053000026192941*g + 0.1492206319240922*b
 	y = 0.3111246122046415*r + 0.6256532308346856*g + 0.06322215696067285*b
@@ -236,7 +236,7 @@ func A98ToXyzD50(r, g, b float64) (x, y, z float64) {
 //	-> CIE XYZ D50
 //	-> CIE Lab
 func A98ToLab(r, g, b float64) (float64, float64, float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 0.6097750418861813*r + 0.2053000026192941*g + 0.1492206319240922*b
 	f2 := 0.3111246122046415*r + 0.6256532308346856*g + 0.06322215696067285*b
@@ -254,7 +254,7 @@ func A98ToLab(r, g, b float64) (float64, float64, float64) {
 //	-> CIE Lab
 //	-> CIE LCh
 func A98ToLch(r, g, b float64) (l, c, h float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 0.6097750418861813*r + 0.2053000026192941*g + 0.1492206319240922*b
 	f2 := 0.3111246122046415*r + 0.6256532308346856*g + 0.06322215696067285*b
@@ -271,7 +271,7 @@ func A98ToLch(r, g, b float64) (l, c, h float64) {
 //	-> CIE XYZ D65
 //	-> Oklab
 func A98ToOklab(r, g, b float64) (float64, float64, float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 0.5764322596183938*r + 0.3699132226198797*g + 0.05365451776172633*b
 	f2 := 0.29631647054222454*r + 0.5916761332521887*g + 0.11200739620558688*b
@@ -296,7 +296,7 @@ func A98ToOklab(r, g, b float64) (float64, float64, float64) {
 //	-> Oklab
 //	-> Oklch
 func A98ToOklch(r, g, b float64) (l, c, h float64) {
-	r, g, b = A98ToLinear(r, g, b)
+	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 0.5764322596183938*r + 0.3699132226198797*g + 0.05365451776172633*b
 	f2 := 0.29631647054222454*r + 0.5916761332521887*g + 0.11200739620558688*b

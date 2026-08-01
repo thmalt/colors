@@ -102,6 +102,7 @@ var (
 			},
 			UseColorFunction: true,
 			// Disable: true,
+			SnakeName: "linear_prophoto",
 		},
 		{
 			Name:        "ProPhoto",
@@ -116,6 +117,8 @@ var (
 			},
 			UseColorFunction: true,
 			// Disable: true,
+
+			SnakeName: "prophoto",
 		},
 		{
 			Name:        "LinearRec2020",
@@ -273,16 +276,16 @@ var (
 
 	ConvertFuncs = [...]ConvertFunc{
 		// standard transfer converter
-		{Pair: Pair{"Srgb", "Linear"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Linear", "Srgb"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"A98", "Linear"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Linear", "A98"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"DisplayP3", "Linear"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Linear", "DisplayP3"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"ProPhoto", "Linear"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Linear", "ProPhoto"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Rec2020", "Linear"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Linear", "Rec2020"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"Srgb", "LinearSrgb"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"LinearSrgb", "Srgb"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"A98", "LinearA98"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"LinearA98", "A98"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"DisplayP3", "LinearDisplayP3"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"LinearDisplayP3", "DisplayP3"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"ProPhoto", "LinearProPhoto"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"LinearProPhoto", "ProPhoto"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"Rec2020", "LinearRec2020"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"LinearRec2020", "Rec2020"}, Cost: 1, Implemented: true},
 		// standard converter
 		{Pair: Pair{"Srgb", "Hsl"}, Cost: 1, Implemented: true},
 		{Pair: Pair{"Hsl", "Srgb"}, Cost: 1, Implemented: true},

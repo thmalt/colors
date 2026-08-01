@@ -15,39 +15,51 @@ func GenerateRootPkg(ctx *Context) {
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
 
+	fmt.Println()
+
 	// generate file color_gen.go
+	fileName := "color_gen.go"
+	fmt.Println("Generate file", fileName)
 
 	w.Import(
 		ctx.ConvertPkg.Path,
 		ctx.SpacePkg.Path,
 	)
+
 	genRootPkgColorType(ctx, w)
 	genRootPkgColorMethods(ctx, w)
 	genRootPkgColorConversionMethods(ctx, w)
 	w.WriteGoFile(
-		filepath.Join(pkgPath, "color_gen.go"),
+		filepath.Join(pkgPath, fileName),
 		ctx.RootPkg.Name,
 	)
 
 	// generate file color_constructors_gen.go
 
+	fileName = "color_constructors_gen.go"
+	fmt.Println("Generate file", fileName)
+
 	w.Import(ctx.SpacePkg.Path)
+
 	genRootPkgColorConstructors(ctx, w)
 	w.WriteGoFile(
-		filepath.Join(pkgPath, "color_constructors_gen.go"),
+		filepath.Join(pkgPath, fileName),
 		ctx.RootPkg.Name,
 	)
 
 	// generate file color_stringify_gen.go
+	fileName = "color_stringify_gen.go"
+	fmt.Println("Generate file", fileName)
 
 	w.Import(
 		"fmt",
 		"strings",
 		ctx.SpacePkg.Path,
 	)
+
 	genRootPkgColorStringify(ctx, w)
 	w.WriteGoFile(
-		filepath.Join(pkgPath, "color_stringify_gen.go"),
+		filepath.Join(pkgPath, fileName),
 		ctx.RootPkg.Name,
 	)
 }
@@ -283,6 +295,7 @@ func genRootPkgColorConstructors(ctx *Context, w *writer.GoWriter) {
 	for _, space := range ctx.Spaces {
 		w.LineCommentln(space.Name, " returns a [Color] from ", space.DisplayName, " components.")
 		w.LineCommentln()
+
 		for _, c := range space.Channels {
 			w.LineComment('\t')
 			w.Write(c.Symbol)
@@ -303,6 +316,7 @@ func genRootPkgColorConstructors(ctx *Context, w *writer.GoWriter) {
 
 			w.Writeln()
 		}
+
 		w.Func(space.Name)
 		params := space.ChannelSymbols()
 		w.FuncParams(strings.Join(params, ", "), " ", FloatType)

@@ -2,76 +2,57 @@ package convert
 
 import "math"
 
-// Transfer function:
-//
-//	Linear Rec.2020
-func Rec2020ToLinear(r, g, b float64) (float64, float64, float64) {
-	return rec2020ToLinear(r), rec2020ToLinear(g), rec2020ToLinear(b)
+// Applies the inverse of the Rec. 2020 transfer function.
+func Rec2020ToLinearRec2020(r, g, b float64) (float64, float64, float64) {
+	return rec2020ToLinearRec2020(r), rec2020ToLinearRec2020(g), rec2020ToLinearRec2020(b)
 }
 
-// Transfer function:
-//
-//	Rec. 2020
-func LinearToRec2020(r, g, b float64) (float64, float64, float64) {
-	return linearToRec2020(r), linearToRec2020(g), linearToRec2020(b)
+// Applies the Rec. 2020 transfer function.
+func LinearRec2020ToRec2020(r, g, b float64) (float64, float64, float64) {
+	return linearRec2020ToRec2020(r), linearRec2020ToRec2020(g), linearRec2020ToRec2020(b)
 }
 
-// Gamma -> Linear
-func rec2020ToLinear(x float64) float64 {
-	if x < 0 {
-		return -math.Pow(-x, 2.4)
+const (
+	rec2020Alpha = 1.09929682680944
+	rec2020Beta  = 0.018053968510807
+)
+
+// decode
+func rec2020ToLinearRec2020(x float64) float64 {
+	neg := x < 0
+	if neg {
+		x -= x
 	}
 
-	return math.Pow(x, 2.4)
+	if x < 4.5*rec2020Beta {
+		x = x / 4.5
+	} else {
+		x = math.Pow((x+rec2020Alpha-1.0)/rec2020Alpha, 1.0/0.45)
+	}
+
+	if neg {
+		return -x
+	}
+
+	return x
 }
 
-// Linear -> Gamma
-func linearToRec2020(x float64) float64 {
-	if x < 0 {
-		return -math.Pow(-x, 1/2.4)
+// encode
+func linearRec2020ToRec2020(x float64) float64 {
+	neg := x < 0
+	if neg {
+		x -= x
 	}
 
-	return math.Pow(x, 1/2.4)
-}
-
-// Gamma -> Linear
-func rec2020ToLinear_(x float64) float64 {
-	const (
-		alpha = 1.09929682680944
-		beta  = 0.018053968510807
-	)
-
-	if x < 0 {
-		x = -x
-		if x < beta*4.5 {
-			return -x / 4.5
-		}
-		return -math.Pow((x+alpha-1)/alpha, 2.4)
+	if x < rec2020Beta {
+		x = 4.5 * x
+	} else {
+		x = rec2020Alpha*math.Pow(x, 0.45) - (rec2020Alpha - 1.0)
 	}
 
-	if x < beta*4.5 {
-		return x / 4.5
-	}
-	return math.Pow((x+alpha-1)/alpha, 2.4)
-}
-
-// Linear -> Gamma
-func linearToRec2020_(x float64) float64 {
-	const (
-		alpha = 1.09929682680944
-		beta  = 0.018053968510807
-	)
-
-	if x < 0 {
-		x = -x
-		if x > beta {
-			return -alpha*math.Pow(x, 1/2.4) - (alpha - 1)
-		}
-		return -4.5 * x
+	if neg {
+		return -x
 	}
 
-	if x > beta {
-		return alpha*math.Pow(x, 1/2.4) - (alpha - 1)
-	}
-	return 4.5 * x
+	return x
 }

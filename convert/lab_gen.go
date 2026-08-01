@@ -36,7 +36,7 @@ func LabToSrgb(l, a, b float64) (float64, float64, float64) {
 	f2 := -0.9787954765557776*x + 1.916254377395988*y + 0.03344287339036697*z
 	f3 := 0.07195539255794736*x - 0.2289767598151819*y + 1.4053860351131178*z
 
-	return LinearToSrgb(f1, f2, f3)
+	return LinearSrgbToSrgb(f1, f2, f3)
 }
 
 // Conversion path (3 steps):
@@ -69,7 +69,7 @@ func LabToA98(l, a, b float64) (float64, float64, float64) {
 	f2 := -0.9787954765557776*x + 1.9162543773959881*y + 0.03344287339036699*z
 	f3 := 0.02870443944957115*x - 0.14067486633170695*y + 1.3489141814137942*z
 
-	return LinearToA98(f1, f2, f3)
+	return LinearA98ToA98(f1, f2, f3)
 }
 
 // Conversion path (3 steps):
@@ -102,7 +102,7 @@ func LabToDisplayP3(l, a, b float64) (float64, float64, float64) {
 	f2 := -0.8422700161454687*x + 1.7989580161067076*y + 0.016045624770904755*z
 	f3 := 0.04819381686413314*x - 0.09738519815446052*y + 1.2736713693321269*z
 
-	return LinearToDisplayP3(f1, f2, f3)
+	return LinearDisplayP3ToDisplayP3(f1, f2, f3)
 }
 
 // Conversion path (2 steps):
@@ -133,7 +133,7 @@ func LabToProPhoto(l, a, b float64) (float64, float64, float64) {
 	f2 := -0.5446224939028346*x + 1.5082327413132781*y + 0.020536032391479723*z
 	f3 := 1.2119675456389454 * z
 
-	return LinearToProPhoto(f1, f2, f3)
+	return LinearProPhotoToProPhoto(f1, f2, f3)
 }
 
 // Conversion path (3 steps):
@@ -166,7 +166,7 @@ func LabToRec2020(l, a, b float64) (float64, float64, float64) {
 	f2 := -0.6826641074173821*x + 1.6477146127444076*y + 0.01281708338512088*z
 	f3 := 0.02966887665275662*x - 0.06292589642970013*y + 1.2535578201865771*z
 
-	return LinearToRec2020(f1, f2, f3)
+	return LinearRec2020ToRec2020(f1, f2, f3)
 }
 
 // Conversion path (5 steps):
@@ -184,7 +184,7 @@ func LabToHsl(l, a, b float64) (float64, float64, float64) {
 	f2 := -0.9787954765557776*x + 1.916254377395988*y + 0.03344287339036697*z
 	f3 := 0.07195539255794736*x - 0.2289767598151819*y + 1.4053860351131178*z
 
-	r, g, b := LinearToSrgb(f1, f2, f3)
+	r, g, b := LinearSrgbToSrgb(f1, f2, f3)
 	return SrgbToHsl(r, g, b)
 }
 
@@ -203,7 +203,7 @@ func LabToHsv(l, a, b float64) (h, s, v float64) {
 	f2 := -0.9787954765557776*x + 1.916254377395988*y + 0.03344287339036697*z
 	f3 := 0.07195539255794736*x - 0.2289767598151819*y + 1.4053860351131178*z
 
-	r, g, b := LinearToSrgb(f1, f2, f3)
+	r, g, b := LinearSrgbToSrgb(f1, f2, f3)
 	return SrgbToHsv(r, g, b)
 }
 
@@ -222,7 +222,7 @@ func LabToHwb(l, a, b float64) (float64, float64, float64) {
 	f2 := -0.9787954765557776*x + 1.916254377395988*y + 0.03344287339036697*z
 	f3 := 0.07195539255794736*x - 0.2289767598151819*y + 1.4053860351131178*z
 
-	r, g, b := LinearToSrgb(f1, f2, f3)
+	r, g, b := LinearSrgbToSrgb(f1, f2, f3)
 	return SrgbToHwb(r, g, b)
 }
 

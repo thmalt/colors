@@ -17,6 +17,10 @@ type Space struct {
 
 	UseColorFunction bool `json:"useColorFunction"`
 	Disable          bool `json:"disable,omitempty"`
+
+	// for generator
+
+	SnakeName string `json:"snakeName,omitempty"`
 }
 
 type Channel struct {
