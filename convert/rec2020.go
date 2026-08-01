@@ -3,12 +3,14 @@ package convert
 import "math"
 
 // Transfer function:
+//
 //	Linear Rec.2020
 func Rec2020ToLinear(r, g, b float64) (float64, float64, float64) {
 	return rec2020ToLinear(r), rec2020ToLinear(g), rec2020ToLinear(b)
 }
 
 // Transfer function:
+//
 //	Rec. 2020
 func LinearToRec2020(r, g, b float64) (float64, float64, float64) {
 	return linearToRec2020(r), linearToRec2020(g), linearToRec2020(b)

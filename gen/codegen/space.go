@@ -31,21 +31,24 @@ func genSpacePkgType(ctx *Context, w *writer.GoWriter) {
 	w.Writeln()
 
 	w.BeginGroup("const")
-	lastSpace := ""
+
 	for i, space := range ctx.Spaces {
 		if i == 0 {
 			w.LineWriteln(space.Name, " Space = iota")
 			continue
 		}
 		w.LineWriteln(space.Name)
-		lastSpace = space.Name
 	}
+
+	w.Writeln()
+	w.LineCommentln("Available space count")
+	w.LineWriteln("SpaceCount")
 	w.End()
 
 	w.Writeln()
 
 	w.BeginGroup("var")
-	w.Begin("infos = [...]SpaceInfo")
+	w.Begin("spaceInfos = [...]SpaceInfo")
 	for _, space := range ctx.Spaces {
 		w.Begin()
 
@@ -104,28 +107,16 @@ func genSpacePkgType(ctx *Context, w *writer.GoWriter) {
 
 	w.Writeln()
 
-	w.Method("s Space", "Info")
-	w.FuncParams()
-	w.FuncResults("*SpaceInfo")
-	w.FuncBody()
-	w.If("s > ", lastSpace)
-	w.Return("nil")
-	w.End()
-	w.Return("&infos[s]")
-	w.End()
-
-	w.Writeln()
-
 	w.Method("s Space", "String")
 	w.FuncResults("string")
 	w.FuncBody()
 	w.Switch("s")
 	for _, space := range ctx.Spaces {
 		w.Case(space.Name)
-		w.Return("\"", space.Name, "\"")
+		w.Return('"', space.Name, '"')
 	}
 	w.Default()
-	w.Return("strconv.FormatUint(uint64(s), 10)")
+	w.Return(`"Space(" + strconv.FormatUint(uint64(s), 10) + ")"`)
 	w.End()
 	w.End()
 }

@@ -2,7 +2,6 @@ package codegen
 
 import (
 	"math"
-	"slices"
 
 	"github.com/thmalt/colors/gen/codegen/model"
 )
@@ -118,7 +117,11 @@ func (g *Graph) findPath(from, to *model.Space) []*Node {
 		space = node.From
 	}
 
-	slices.Reverse(path)
+	// slices.Reverse(path)
+
+	for i, j := 0, len(path)-1; i < j; i, j = i+1, j-1 {
+		path[i], path[j] = path[j], path[i] // Idiomatic Go swap
+	}
 
 	return path
 }

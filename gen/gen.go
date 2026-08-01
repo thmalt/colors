@@ -11,6 +11,7 @@ import (
 
 func main() {
 	var ctx codegen.Context
+	ctx.SplitFile = true
 
 	ctx.SetModuleByType(ctx)
 	ctx.Directory = findRoot("./")
@@ -27,7 +28,7 @@ func main() {
 	ctx.AddSpaces(codegen.Spaces[:])
 	ctx.AddConvertFunc(codegen.ConvertFuncs[:]...)
 	ctx.AddWhitePoint(codegen.WhitePoints[:]...)
-	ctx.BuildGraph()
+	ctx.Build()
 
 	codegen.GenerateConvertPkg(&ctx)
 	codegen.GenerateRootPkg(&ctx)

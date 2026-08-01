@@ -13,7 +13,8 @@ const (
 
 	AlphaPrecision = 3
 
-	FloatFormatPrecFuncName = "formatNormalizedFloatPrec"
+	FloatFormatNormalizedPrecFuncName = "formatNormalizedFloatPrec"
+	FloatFormatPrecFuncName           = "formatFloatPrec"
 )
 
 func smallestUintType(n int) int {
@@ -49,10 +50,10 @@ func ModuleAndPathByType(a any) (module string, path string) {
 	}
 
 	pkgPath := t.PkgPath()
-	for _, d := range info.Deps {
-		if strings.HasPrefix(pkgPath, d.Path) {
+	for _, m := range info.Deps {
+		if strings.HasPrefix(pkgPath, m.Path) {
 			fmt.Println()
-			module = d.Path
+			module = m.Path
 		}
 	}
 

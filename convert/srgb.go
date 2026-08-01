@@ -3,12 +3,14 @@ package convert
 import "math"
 
 // Transfer function:
+//
 //	Linear sRGB
 func SrgbToLinear(r, g, b float64) (float64, float64, float64) {
 	return srgbToLinear(r), srgbToLinear(g), srgbToLinear(b)
 }
 
 // Transfer function:
+//
 //	sRGB
 func LinearToSrgb(r, g, b float64) (float64, float64, float64) {
 	return linearToSrgb(r), linearToSrgb(g), linearToSrgb(b)

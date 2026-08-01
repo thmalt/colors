@@ -1,6 +1,7 @@
 package codegen
 
 import (
+	"fmt"
 	"log"
 	"math"
 	"path/filepath"
@@ -17,16 +18,37 @@ func GenerateConvertPkg(ctx *Context) {
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
 
-	w.Import("math")
+	if ctx.SplitFile {
+		for i, space := range ctx.Spaces {
+			if space == nil {
+				log.Printf("space at index %d is nil\n", i)
+			}
 
-	genConvertPkgConversion(ctx, w)
+			if space.Disable {
+				continue
+			}
 
-	w.WriteGoFile(
-		filepath.Join(pkgPath, ctx.ConvertPkg.Name+"_gen.go"),
-		ctx.ConvertPkg.Name,
-	)
+			fileName := toSnakeCase(space.Name) + "_gen.go"
 
-	if convertGenWhitePoint(ctx, w) {
+			fmt.Println("Generate file", fileName)
+
+			genConvertPkgConversionBySpace(ctx, w, space)
+			w.WriteGoFile(
+				filepath.Join(pkgPath, fileName),
+				ctx.ConvertPkg.Name,
+			)
+		}
+	} else {
+		// all conversion in one file
+		genConvertPkgConversion(ctx, w)
+
+		w.WriteGoFile(
+			filepath.Join(pkgPath, ctx.ConvertPkg.Name+"_gen.go"),
+			ctx.ConvertPkg.Name,
+		)
+	}
+
+	if genConvertPkgWhitePoint(ctx, w) {
 		w.WriteGoFile(
 			filepath.Join(pkgPath, "whitepoint_gen.go"),
 			ctx.ConvertPkg.Name,
@@ -35,26 +57,7 @@ func GenerateConvertPkg(ctx *Context) {
 }
 
 func genConvertPkgConversion(ctx *Context, w *writer.GoWriter) {
-
-	impls := map[Pair]struct{}{}
-
-	for _, fn := range ctx.Funcs {
-		if fn.Implemented {
-			from, to := ctx.ResolveSpacePair(fn.Pair)
-			if from == nil || to == nil {
-				if from == nil {
-					log.Printf("space of %s not found\n", fn.Pair.From)
-				}
-
-				if to == nil {
-					log.Printf("space of %s not found\n", fn.Pair.To)
-				}
-
-				continue
-			}
-			impls[Pair{from.Name, to.Name}] = struct{}{}
-		}
-	}
+	w.Import("math")
 
 	for i, from := range ctx.Spaces {
 		if from == nil {
@@ -69,7 +72,7 @@ func genConvertPkgConversion(ctx *Context, w *writer.GoWriter) {
 		for j := i + 1; j < len(ctx.Spaces); j++ {
 			to := ctx.Spaces[j]
 			if to == nil {
-				log.Printf("space at index %d is nil\n", i)
+				log.Printf("space at index %d is nil\n", j)
 				continue
 			}
 
@@ -77,18 +80,41 @@ func genConvertPkgConversion(ctx *Context, w *writer.GoWriter) {
 				continue
 			}
 
-			if _, ok := impls[Pair{from.Name, to.Name}]; ok {
-				continue
+			if _, ok := ctx.impls[Pair{from.Name, to.Name}]; !ok {
+				processPair(ctx, w, from, to)
 			}
 
-			processPair(ctx, w, from, to)
-			processPair(ctx, w, to, from)
+			if _, ok := ctx.impls[Pair{to.Name, from.Name}]; !ok {
+				processPair(ctx, w, to, from)
+			}
 		}
 	}
-
 }
 
-func convertGenWhitePoint(ctx *Context, w *writer.GoWriter) bool {
+func genConvertPkgConversionBySpace(ctx *Context, w *writer.GoWriter, space *model.Space) {
+	for i, to := range ctx.Spaces {
+		if to == nil {
+			log.Printf("space at index %d is nil\n", i)
+			continue
+		}
+
+		if space == to {
+			continue
+		}
+
+		if to.Disable {
+			continue
+		}
+
+		if _, ok := ctx.impls[Pair{space.Name, to.Name}]; ok {
+			continue
+		}
+
+		processPair(ctx, w, space, to)
+	}
+}
+
+func genConvertPkgWhitePoint(ctx *Context, w *writer.GoWriter) bool {
 	if len(ctx.WhitePoints) == 0 {
 		return false
 	}
@@ -121,27 +147,29 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 		return
 	}
 
+	ctx.impls[Pair{from.Name, to.Name}] = struct{}{}
+
 	ops := buildOps(ctx, path)
 	newOps, changed := combineOps(ops)
 	if changed {
 		ops = newOps
 	}
 
-	params := from.ChannelSymbols()
-	results := to.ChannelSymbols()
+	paramsVars := from.ChannelSymbols()
+	resultsVars := to.ChannelSymbols()
 
-	var state VarState
-	state.Reserve(params...)
+	var scope VariableScope
+	scope.ReserveAll(paramsVars...)
 
 	var retString string
 
-	// variable conflict of params and results
-	conflict := state.ContainsAny(results...)
-	if conflict {
-		retString = valueTypeRepeat(len(results))
+	// variable returnResult of params and results
+	returnResult := scope.ContainsAny(resultsVars...)
+	if returnResult {
+		retString = valueTypeRepeat(len(resultsVars))
 	} else {
-		state.Reserve(results...)
-		retString = varJoinWithType(results...)
+		scope.ReserveAll(resultsVars...)
+		retString = varJoinWithType(resultsVars...)
 	}
 
 	funcName := FuncName(from.Name, to.Name)
@@ -154,18 +182,18 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 
 	// w.LineCommentln(stringifyPath(path))
 	w.Func(funcName)
-	w.FuncParams(varJoinWithType(params...))
+	w.FuncParams(varJoinWithType(paramsVars...))
 	w.FuncResults(retString)
 	w.FuncBody()
 
+	imported := false
+
 	wop := w.NewTemp()
-	prevVars := params
+	inputVars := paramsVars
 
 	firstOp := true
 	hasReturn := false
 	last := len(ops) - 1
-
-	tempVar := []string{"f", "f", "f"}
 
 	for idx, op := range ops {
 		isLastOp := idx == last
@@ -173,25 +201,36 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 		case OpCall:
 			firstOp = false
 			if isLastOp {
-				wop.Return(op.Pair.FuncName(), "(", strings.Join(prevVars, ", "), ")")
+				wop.Return(op.Pair.FuncName(), "(", strings.Join(inputVars, ", "), ")")
 				hasReturn = true
 			} else {
 				_, to := ctx.ResolveSpacePair(op.Pair)
-				nextVars := to.ChannelSymbols()
-				assign := " := "
-				if state.ContainsAll(nextVars...) {
-					assign = " = "
+				outputVars := to.ChannelSymbols()
+
+				wop.LineWrite(strings.Join(outputVars, ", "))
+				if scope.ContainsAll(outputVars...) {
+					wop.Write(" = ")
+				} else {
+					wop.Write(" := ")
 				}
-				state.Reserve(nextVars...)
-				wop.LineWriteln(strings.Join(nextVars, ", ")+assign, op.Pair.FuncName(), "(", strings.Join(prevVars, ", "), ")")
-				prevVars = nextVars
+				wop.Write(op.Pair.FuncName(), "(")
+				wop.Write(strings.Join(inputVars, ", "))
+				wop.Writeln(")")
+
+				scope.ReserveAll(outputVars...)
+				inputVars = outputVars
 			}
 		case OpCbrt:
 			if !firstOp {
 				wop.Writeln()
 			}
 			firstOp = false
-			for _, v := range prevVars {
+			for _, v := range inputVars {
+				if !imported {
+					w.Import("math")
+					imported = true
+				}
+
 				wop.NewlineWrite(v, " = math.Cbrt(", v, ")")
 			}
 			wop.Writeln()
@@ -200,7 +239,7 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 				wop.Writeln()
 			}
 			firstOp = false
-			for _, v := range prevVars {
+			for _, v := range inputVars {
 				wop.NewlineWrite(v, " *= ", v, " * ", v)
 			}
 			wop.Writeln()
@@ -210,35 +249,38 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 			}
 
 			firstOp = false
-			next := state.ReserveNumberAddNames(tempVar...)
-			decl := true
+			outputVars := scope.ReserveUniqueN("f", len(inputVars))
+			isNewVar := true
 			if isLastOp {
-				if !ContainsAny(prevVars, results) && state.ContainsAll(results...) {
-					next = results
-					decl = false
+				if !ContainsAny(inputVars, resultsVars) && scope.ContainsAll(resultsVars...) {
+					outputVars = resultsVars
+					isNewVar = false
 				} else {
-					results = next
-					conflict = true
+					resultsVars = outputVars
+					returnResult = true
 				}
 			}
-			l := len(prevVars)
-			for i := range prevVars {
-				if decl {
-					wop.LineWrite(next[i], " := ")
+
+			l := len(inputVars)
+			for i := range inputVars {
+				if isNewVar {
+					wop.LineWrite(outputVars[i], " := ")
 				} else {
-					wop.LineWrite(next[i], " = ")
+					wop.LineWrite(outputVars[i], " = ")
 				}
 
 				first := true
-				for j, v := range prevVars {
+				for j, v := range inputVars {
 					f := normalizeFloat(op.Matrix[i*l+j])
-					if f == 0 {
 
-					} else if math.Signbit(f) {
+					switch {
+					case f == 0:
+					case math.Signbit(f):
 						wop.Write('-')
 						f = -f
-					} else if !first {
+					case !first:
 						wop.Write('+')
+
 					}
 
 					switch f {
@@ -252,7 +294,7 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 					}
 				}
 			}
-			prevVars = next
+			inputVars = outputVars
 			if idx != 0 {
 				wop.NewlineWriteln()
 			}
@@ -262,8 +304,8 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 	w.Write(wop.Bytes())
 
 	if !hasReturn {
-		if conflict {
-			w.Return(strings.Join(prevVars, ", "))
+		if returnResult {
+			w.Return(strings.Join(inputVars, ", "))
 		} else {
 			w.Return()
 		}

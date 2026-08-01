@@ -3,12 +3,14 @@ package convert
 import "math"
 
 // Transfer function:
+//
 //	Linear ProPhoto
 func ProPhotoToLinear(r, g, b float64) (float64, float64, float64) {
 	return proPhotoToLinear(r), proPhotoToLinear(g), proPhotoToLinear(b)
 }
 
 // Transfer function:
+//
 //	ProPhoto
 func LinearToProPhoto(r, g, b float64) (float64, float64, float64) {
 	return linearToProPhoto(r), linearToProPhoto(g), linearToProPhoto(b)

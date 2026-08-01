@@ -3,12 +3,14 @@ package convert
 import "math"
 
 // Transfer function:
+//
 //	Linear Adobe® 98 RGB
 func A98ToLinear(r, g, b float64) (float64, float64, float64) {
 	return adobeRgbToLinear(r), adobeRgbToLinear(g), adobeRgbToLinear(b)
 }
 
 // Transfer function:
+//
 //	Adobe® 98 RGB
 func LinearToA98(r, g, b float64) (float64, float64, float64) {
 	return linearToAdobeRgb(r), linearToAdobeRgb(g), linearToAdobeRgb(b)

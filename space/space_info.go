@@ -1,7 +1,5 @@
 package space
 
-import "iter"
-
 type SpaceInfo struct {
 	name        string
 	displayName string
@@ -57,12 +55,6 @@ func (s *SpaceInfo) Channel(index int) (Channel, bool) {
 	return s.channels[index], true
 }
 
-func (s *SpaceInfo) Channels() iter.Seq[Channel] {
-	return func(yield func(Channel) bool) {
-		for i := 0; i < len(s.channels); i++ {
-			if !yield(s.channels[i]) {
-				return
-			}
-		}
-	}
+func (s *SpaceInfo) Channels() []Channel {
+	return append([]Channel{}, s.channels...)
 }

@@ -30,10 +30,13 @@ const (
 	Lch
 	Oklab
 	Oklch
+
+	// Available space count
+	SpaceCount
 )
 
 var (
-	infos = [...]SpaceInfo{
+	spaceInfos = [...]SpaceInfo{
 		{
 			name:        "LinearSrgb",
 			displayName: "Linear sRGB",
@@ -680,13 +683,6 @@ var (
 	}
 )
 
-func (s Space) Info() *SpaceInfo {
-	if s > Oklch {
-		return nil
-	}
-	return &infos[s]
-}
-
 func (s Space) String() string {
 	switch s {
 	case LinearSrgb:
@@ -728,6 +724,6 @@ func (s Space) String() string {
 	case Oklch:
 		return "Oklch"
 	default:
-		return strconv.FormatUint(uint64(s), 10)
+		return "Space(" + strconv.FormatUint(uint64(s), 10) + ")"
 	}
 }

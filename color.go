@@ -2,6 +2,7 @@ package colors
 
 import (
 	"errors"
+	"math"
 
 	"github.com/thmalt/colors/convert"
 	"github.com/thmalt/colors/space"
@@ -66,4 +67,24 @@ func (c Color) Rgb() (r, g, b float64) {
 //	b: [0, 255]
 func Rgb(r, g, b float64) Color {
 	return Srgb(convert.RgbToSrgb(r, g, b))
+}
+
+func (c Color) Hex() string {
+	r, g, b := c.Rgb()
+	alpha := byte(math.Round(c.alpha * 255.0))
+
+	var out []byte = make([]byte, 9)
+	out[0] = '#'
+
+	encodeHexByte(out[1:], byte(math.Round(r)))
+	encodeHexByte(out[3:], byte(math.Round(g)))
+	encodeHexByte(out[5:], byte(math.Round(b)))
+
+	if alpha == math.MaxUint8 {
+		return string(out[:7])
+	}
+
+	encodeHexByte(out[7:], alpha)
+
+	return string(out[:])
 }

@@ -6,22 +6,22 @@ import (
 	"strings"
 )
 
-func normalizeFloat(v float64) float64 {
+func normalizeFloat(x float64) float64 {
 	const eps = 1e-15
 
-	if math.Abs(v) < eps {
+	if math.Abs(x) < eps {
 		return 0
 	}
 
-	if math.Abs(v-1) < eps {
+	if math.Abs(x-1) < eps {
 		return 1
 	}
 
-	if math.Abs(v+1) < eps {
+	if math.Abs(x+1) < eps {
 		return -1
 	}
 
-	return v
+	return x
 }
 
 func formatFloatPrec(x float64, precision int) string {

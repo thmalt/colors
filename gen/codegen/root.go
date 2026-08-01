@@ -15,19 +15,21 @@ func GenerateRootPkg(ctx *Context) {
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
 
+	// generate file color_gen.go
+
 	w.Import(
 		ctx.ConvertPkg.Path,
 		ctx.SpacePkg.Path,
 	)
-
 	genRootPkgColorType(ctx, w)
 	genRootPkgColorMethods(ctx, w)
 	genRootPkgColorConversionMethods(ctx, w)
-
 	w.WriteGoFile(
 		filepath.Join(pkgPath, "color_gen.go"),
 		ctx.RootPkg.Name,
 	)
+
+	// generate file color_constructors_gen.go
 
 	w.Import(ctx.SpacePkg.Path)
 	genRootPkgColorConstructors(ctx, w)
@@ -35,6 +37,8 @@ func GenerateRootPkg(ctx *Context) {
 		filepath.Join(pkgPath, "color_constructors_gen.go"),
 		ctx.RootPkg.Name,
 	)
+
+	// generate file color_stringify_gen.go
 
 	w.Import(
 		"fmt",
@@ -49,20 +53,22 @@ func GenerateRootPkg(ctx *Context) {
 }
 
 func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
-	maxChannel := 0
+	maxChannelCnt := 0
 	for _, space := range ctx.Spaces {
-		maxChannel = max(maxChannel, space.ChannelCount())
+		maxChannelCnt = max(maxChannelCnt, space.ChannelCount())
 	}
 
 	w.Begin("type Color struct")
 	w.LineWriteln("space ", ctx.SpacePkg.Join("Space"))
 	w.LineCommentln("channels")
-	for i := range maxChannel {
+
+	for i := range maxChannelCnt {
 		if i > 0 {
 			w.Write(", ")
 		}
 		w.Writef("c%d", i+1)
 	}
+
 	w.Writeln(" ", FloatType)
 	w.LineWrite("alpha ", FloatType)
 	w.End()
@@ -76,10 +82,12 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 	w.FuncBody()
 
 	w.Switch("index")
-	for i := range maxChannel {
-		w.Case(i)
-		w.Return("c.c", i+1, ", true")
+
+	for i := maxChannelCnt; i > 0; i-- {
+		w.Case(i - 1)
+		w.Return("c.c", i, ", true")
 	}
+
 	w.End()
 	w.LineWritef("return 0, false") // panic(%q)", "Color.Channel unreachable
 
@@ -90,7 +98,7 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 	var b strings.Builder
 	var cases []string
 
-	for i := 0; i < maxChannel; i++ {
+	for i := range maxChannelCnt {
 		if i > 0 {
 			b.WriteString(", ")
 		}
@@ -111,7 +119,7 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 	w.Writeln()
 
 	w.Switch("info.ChannelCount()")
-	for i := maxChannel; i > 0; i-- {
+	for i := maxChannelCnt; i > 0; i-- {
 		w.Case(i)
 		w.Return("[]", FloatType, "{", cases[i-1], "}")
 	}
@@ -144,20 +152,20 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 }
 
 func genRootPkgColorMethods(ctx *Context, w *writer.GoWriter) {
-	var state VarState
+	var scope VariableScope
 	var convertPkg = ctx.ConvertPkg
 	var spacePkg = ctx.SpacePkg
 	var b strings.Builder
 	for _, space := range ctx.Spaces {
 		b.Reset()
 
-		state.Reset()
-		state.Reserve("c")
+		scope.Reset()
+		scope.Reserve("c")
 
 		names := space.ChannelSymbols()
-		hasAny := state.ContainsAny(names...)
-		if hasAny {
-			names, hasAny = state.ReserveNames(space.ChannelIdent())
+
+		if scope.ContainsAny(names...) {
+			names = scope.ReserveUniqueAll(space.ChannelIdent()...)
 		}
 
 		w.LineCommentln(space.Name, " returns the color components in the [", ctx.SpacePkg.Join(space.Name), "] color space.")
@@ -231,18 +239,16 @@ func genRootPkgColorConversionMethods(ctx *Context, w *writer.GoWriter) {
 	w.End()
 
 	w.Writeln()
-	var state VarState
+	var scope VariableScope
 
 	w.Switch("dst")
 	var b strings.Builder
 	for _, space := range ctx.Spaces {
-		state.Reset()
-		state.Reserve("c")
+		scope.Reset()
+		scope.Reserve("c")
 
 		w.Case(spacePkg.Join(space.Name))
-		names := space.ChannelSymbols()
-		names, hasAny := state.ReserveNames(names)
-		_ = hasAny
+		names := scope.ReserveUniqueAll(space.ChannelSymbols()...)
 		w.LineWriteln(strings.Join(names, ", "), " := ", "c.", space.Name, "()")
 
 		b.Reset()
@@ -341,13 +347,16 @@ func genRootPkgColorStringify(ctx *Context, w *writer.GoWriter) {
 			}
 
 			w.LineWrite("b.WriteString(")
-			w.Write(FloatFormatPrecFuncName, "(")
+			w.Write(FloatFormatNormalizedPrecFuncName, "(")
 			percent := c.Unit == model.UnitPercent
+			w.Write("c.c", i+1)
+
 			if percent {
-				w.Write("c.c", i+1, " * 100, ", c.Precision)
-			} else {
-				w.Write("c.c", i+1, ", ", c.Precision)
+				w.Write(" * 100")
 			}
+
+			w.Write(", ", c.Precision)
+
 			w.Writeln("))")
 
 			if percent {
@@ -355,15 +364,17 @@ func genRootPkgColorStringify(ctx *Context, w *writer.GoWriter) {
 			}
 		}
 
-		w.Begin("if normalizeFloat(c.alpha) != 1")
-		w.LineWriteln(`b.WriteString(" / ")`)
+		w.Writeln()
 
+		w.If("alpha := normalizeFloat(c.alpha); alpha != 1")
+		w.LineWriteln(`b.WriteString(" / ")`)
 		w.LineWrite("b.WriteString(")
 		w.Write(FloatFormatPrecFuncName, "(")
-		w.Write("c.alpha, ", AlphaPrecision)
+		w.Write("alpha, ", AlphaPrecision)
 		w.Writeln("))")
-
 		w.End()
+
+		w.Writeln()
 
 		w.LineWriteln(`b.WriteString(")")`)
 

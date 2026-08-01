@@ -17,12 +17,12 @@ type Color struct {
 // Get channel in current [space.Space]
 func (c Color) Channel(index int) (float64, bool) {
 	switch index {
-	case 0:
-		return c.c1, true
-	case 1:
-		return c.c2, true
 	case 2:
 		return c.c3, true
+	case 1:
+		return c.c2, true
+	case 0:
+		return c.c1, true
 	}
 	return 0, false
 }
@@ -1022,14 +1022,14 @@ func (c Color) To(dst space.Space) (Color, error) {
 		l, a, b := c.Lab()
 		return Color{space: space.Lab, c1: l, c2: a, c3: b, alpha: c.alpha}, nil
 	case space.Lch:
-		l, c2, h := c.Lch()
-		return Color{space: space.Lch, c1: l, c2: c2, c3: h, alpha: c.alpha}, nil
+		l, c1, h := c.Lch()
+		return Color{space: space.Lch, c1: l, c2: c1, c3: h, alpha: c.alpha}, nil
 	case space.Oklab:
 		l, a, b := c.Oklab()
 		return Color{space: space.Oklab, c1: l, c2: a, c3: b, alpha: c.alpha}, nil
 	case space.Oklch:
-		l, c2, h := c.Oklch()
-		return Color{space: space.Oklch, c1: l, c2: c2, c3: h, alpha: c.alpha}, nil
+		l, c1, h := c.Oklch()
+		return Color{space: space.Oklch, c1: l, c2: c1, c3: h, alpha: c.alpha}, nil
 	default:
 		return Color{}, ErrUnknownSpace
 	}

@@ -3,6 +3,7 @@ package codegen
 import (
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/thmalt/colors/gen/codegen/model"
 )
@@ -31,6 +32,9 @@ type Context struct {
 	SpacePkg   Pkg
 
 	Path string
+
+	impls     map[Pair]struct{}
+	SplitFile bool
 }
 
 func (ctx *Context) SetModuleByType(a any) {
@@ -91,7 +95,7 @@ func (ctx *Context) AddConvertFunc(funcs ...ConvertFunc) error {
 
 	for _, fn := range funcs {
 		if fn.Pair.From == fn.Pair.To {
-			return errors.New("conversion: \"from\" and \"to\" must be different")
+			return errors.New(`conversion: "from" and "to" must be different`)
 		}
 
 		if ctx.ConvertFuncByPair(fn.Pair) != nil {
@@ -104,7 +108,27 @@ func (ctx *Context) AddConvertFunc(funcs ...ConvertFunc) error {
 	return nil
 }
 
-func (ctx *Context) BuildGraph() error {
+func (ctx *Context) Build() error {
+	ctx.impls = make(map[Pair]struct{})
+
+	for _, fn := range ctx.Funcs {
+		if fn.Implemented {
+			from, to := ctx.ResolveSpacePair(fn.Pair)
+			if from == nil || to == nil {
+				if from == nil {
+					log.Printf("space of %s not found\n", fn.Pair.From)
+				}
+
+				if to == nil {
+					log.Printf("space of %s not found\n", fn.Pair.To)
+				}
+
+				continue
+			}
+			ctx.impls[Pair{from.Name, to.Name}] = struct{}{}
+		}
+	}
+
 	return ctx.Graph.Build(ctx, ctx.Funcs)
 }
 
@@ -129,9 +153,9 @@ func (ctx *Context) WhitePointByName(name string) *model.WhitePoint {
 }
 
 func (ctx *Context) ConvertFuncByPair(pair Pair) *ConvertFunc {
-	for _, conv := range ctx.Funcs {
-		if conv.Pair == pair {
-			return &conv
+	for _, fn := range ctx.Funcs {
+		if fn.Pair == pair {
+			return &fn
 		}
 	}
 
