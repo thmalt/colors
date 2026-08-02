@@ -33,7 +33,7 @@ func smallestUintType(n int) int {
 }
 
 func valueTypeRepeat(n int) string {
-	return strings.Repeat(FloatType+", ", n-1) + " " + FloatType
+	return strings.Repeat(FloatType+", ", n-1) + FloatType
 }
 
 func varJoinWithType(vars ...string) string {

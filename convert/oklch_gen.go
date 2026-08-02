@@ -9,7 +9,6 @@ package convert
 //	-> CIE XYZ D65
 func OklchToXyzD65(l, c, h float64) (x, y, z float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -33,7 +32,6 @@ func OklchToXyzD65(l, c, h float64) (x, y, z float64) {
 //	-> CIE XYZ D50
 func OklchToXyzD50(l, c, h float64) (x, y, z float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -57,7 +55,6 @@ func OklchToXyzD50(l, c, h float64) (x, y, z float64) {
 //	-> Linear sRGB
 func OklchToLinearSrgb(l, c, h float64) (r, g, b float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -82,7 +79,6 @@ func OklchToLinearSrgb(l, c, h float64) (r, g, b float64) {
 //	-> sRGB
 func OklchToSrgb(l, c, h float64) (r, g, b float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -106,7 +102,6 @@ func OklchToSrgb(l, c, h float64) (r, g, b float64) {
 //	-> Linear Display P3
 func OklchToLinearDisplayP3(l, c, h float64) (r, g, b float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -131,7 +126,6 @@ func OklchToLinearDisplayP3(l, c, h float64) (r, g, b float64) {
 //	-> Display P3
 func OklchToDisplayP3(l, c, h float64) (r, g, b float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -155,7 +149,6 @@ func OklchToDisplayP3(l, c, h float64) (r, g, b float64) {
 //	-> Linear Adobe RGB (1998)
 func OklchToLinearA98(l, c, h float64) (r, g, b float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -180,7 +173,6 @@ func OklchToLinearA98(l, c, h float64) (r, g, b float64) {
 //	-> Adobe RGB (1998)
 func OklchToA98(l, c, h float64) (r, g, b float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -205,7 +197,6 @@ func OklchToA98(l, c, h float64) (r, g, b float64) {
 //	-> Linear ProPhoto
 func OklchToLinearProPhoto(l, c, h float64) (r, g, b float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -231,7 +222,6 @@ func OklchToLinearProPhoto(l, c, h float64) (r, g, b float64) {
 //	-> ProPhoto
 func OklchToProPhoto(l, c, h float64) (r, g, b float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -255,7 +245,6 @@ func OklchToProPhoto(l, c, h float64) (r, g, b float64) {
 //	-> Linear Rec. 2020
 func OklchToLinearRec2020(l, c, h float64) (r, g, b float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -280,7 +269,6 @@ func OklchToLinearRec2020(l, c, h float64) (r, g, b float64) {
 //	-> Rec. 2020
 func OklchToRec2020(l, c, h float64) (r, g, b float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -306,7 +294,6 @@ func OklchToRec2020(l, c, h float64) (r, g, b float64) {
 //	-> HSL
 func OklchToHsl(l, c, h float64) (float64, float64, float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -333,7 +320,6 @@ func OklchToHsl(l, c, h float64) (float64, float64, float64) {
 //	-> HSV
 func OklchToHsv(l, c, h float64) (float64, float64, float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -360,7 +346,6 @@ func OklchToHsv(l, c, h float64) (float64, float64, float64) {
 //	-> HWB
 func OklchToHwb(l, c, h float64) (float64, float64, float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -386,7 +371,6 @@ func OklchToHwb(l, c, h float64) (float64, float64, float64) {
 //	-> CIE Lab
 func OklchToLab(l, c, h float64) (float64, float64, float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
@@ -412,7 +396,6 @@ func OklchToLab(l, c, h float64) (float64, float64, float64) {
 //	-> CIE LCh
 func OklchToLch(l, c, h float64) (float64, float64, float64) {
 	l, a, b := LchToLab(l, c, h)
-
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
 	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b

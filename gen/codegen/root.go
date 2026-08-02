@@ -72,6 +72,8 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 	w.LineWriteln("space ", ctx.SpacePkg.Join("Space"))
 	w.LineCommentln("channels")
 
+	w.LineWrite()
+
 	for i := range maxChannelCnt {
 		if i > 0 {
 			w.Write(", ")
@@ -88,10 +90,10 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 	w.LineCommentln("Get channel in current [space.Space]")
 	w.Method("c Color", "Channel")
 	w.FuncParams("index int")
-	w.FuncResults(FloatType, ",", "bool")
+	w.FuncResults(FloatType, ", ", "bool")
 	w.FuncBody()
 
-	w.Switch("index")
+	w.Switch("index ")
 
 	for i := maxChannelCnt; i > 0; i-- {
 		w.Case(i - 1)
@@ -197,7 +199,7 @@ func genRootPkgColorMethods(ctx *Context, w *writer.GoWriter) {
 
 		wsw := w.NewTemp()
 
-		wsw.Switch("c.space")
+		wsw.Switch("c.space ")
 		var args strings.Builder
 		var foundPath = false
 		for _, src := range ctx.BuildSpaces {
@@ -282,7 +284,7 @@ func genRootPkgColorConversionMethods(ctx *Context, w *writer.GoWriter) {
 	w.FuncParams("dst ", spacePkg.Join("Space"))
 	w.FuncResults("Color")
 	w.FuncBody()
-	w.LineWriteln("to, _ :=c.To(dst)")
+	w.LineWriteln("to, _ := c.To(dst)")
 	w.Return("to")
 	w.End()
 }

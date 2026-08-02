@@ -5,15 +5,19 @@ import (
 )
 
 const (
-	labDelta   = 6.0 / 29.0
+	labDelta   = 6.0 / 29
 	labDelta2  = labDelta * labDelta
 	labDelta3  = labDelta2 * labDelta
-	labInv3D2  = 1.0 / (3.0 * labDelta2) // 841 / 108
-	lab4Over29 = 4.0 / 29.0
+	labInv3D2  = 1.0 / (3.0 * labDelta2)
+	lab4Over29 = 4.0 / 29
+
+	labInv116 = 1.0 / 116
+	labInv500 = 1.0 / 500
+	labInv200 = 1.0 / 200
 )
 
 func LabToLch(l, a, b float64) (float64, float64, float64) {
-	h := math.Atan2(b, a) * (180. / math.Pi)
+	h := math.Atan2(b, a) * (180.0 / math.Pi)
 	if h < 0 {
 		h += 360
 	}
@@ -24,7 +28,7 @@ func LabToLch(l, a, b float64) (float64, float64, float64) {
 }
 
 func LchToLab(l, c, h float64) (float64, float64, float64) {
-	rad := h * (math.Pi / 180.)
+	rad := h * (math.Pi / 180.0)
 	a := c * math.Cos(rad)
 	b := c * math.Sin(rad)
 
@@ -46,45 +50,21 @@ func labInvF(t float64) float64 {
 }
 
 func LabToXyzD50(l, a, b float64) (x, y, z float64) {
-	fy := (l + 16) / 116
-	fx := fy + a/500
-	fz := fy - b/200
+	fy := (l + 16) * labInv116
+	fx := fy + a*labInv500
+	fz := fy - b*labInv200
 
-	x = D50[0] * labInvF(fx)
-	y = D50[1] * labInvF(fy)
-	z = D50[2] * labInvF(fz)
+	x = d50X * labInvF(fx)
+	y = d50Y * labInvF(fy)
+	z = d50Z * labInvF(fz)
 
 	return
 }
 
 func XyzD50ToLab(x, y, z float64) (l, a, b float64) {
-	fx := labF(x / D50[0])
-	fy := labF(y / D50[1])
-	fz := labF(z / D50[2])
-
-	l = 116*fy - 16
-	a = 500 * (fx - fy)
-	b = 200 * (fy - fz)
-
-	return
-}
-
-func LabToXyz(l, a, b float64, white [3]float64) (x, y, z float64) {
-	fy := (l + 16) / 116
-	fx := fy + a/500
-	fz := fy - b/200
-
-	x = white[0] * labInvF(fx)
-	y = white[1] * labInvF(fy)
-	z = white[2] * labInvF(fz)
-
-	return
-}
-
-func XyzToLab(x, y, z float64, white [3]float64) (l, a, b float64) {
-	fx := labF(x / white[0])
-	fy := labF(y / white[1])
-	fz := labF(z / white[2])
+	fx := labF(x * invD50X)
+	fy := labF(y * invD50Y)
+	fz := labF(z * invD50Z)
 
 	l = 116*fy - 16
 	a = 500 * (fx - fy)

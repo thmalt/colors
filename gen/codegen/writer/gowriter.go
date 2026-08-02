@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"runtime/debug"
+	"slices"
 	"strings"
 )
 
@@ -69,13 +70,17 @@ func NewGoWriter() *GoWriter {
 
 func WriteGo(w io.Writer, pkg, tags string, b []byte) (int, error) {
 	var src []byte
+
 	if tags != "" {
 		src = append(src, tagLines(tags)...)
 		src = append(src, '\n')
 	}
+
 	src = append(src, fmt.Sprintf("package %s\n", pkg)...)
 	src = append(src, b...)
+
 	formatted, err := format.Source(src)
+
 	if err != nil {
 		n, _ := w.Write(src)
 		return n, err
@@ -148,6 +153,7 @@ func (w *GoWriter) WriteGo(out io.Writer, pkg, tags string) (int, error) {
 	stdlib, others := splitImports(w.imports)
 
 	if len(stdlib) > 0 || len(others) > 0 {
+		buf.WriteByte('\n')
 		buf.WriteString("import (\n")
 
 		writePkgs(stdlib)
@@ -351,7 +357,9 @@ func (w *GoWriter) Import(pkgs ...string) {
 			pkg = filepath.ToSlash(filepath.Join(w.module, pkg))
 		}
 
-		w.imports = append(w.imports, pkg)
+		if !slices.Contains(w.imports, pkg) {
+			w.imports = append(w.imports, pkg)
+		}
 	}
 }
 
@@ -384,7 +392,7 @@ func (w *GoWriter) End(a ...any) {
 	w.Out()
 
 	w.popBlock()
-
+	w.LineWrite()
 	switch v := w.popBracket(); v {
 	case bracketBlock:
 		w.Write('}')
@@ -401,7 +409,7 @@ func (w *GoWriter) End(a ...any) {
 func (w *GoWriter) Method(receiver, name string) {
 	w.pushBlock(blockFuncName)
 
-	w.LineWrite("func ", "(", receiver, ")", name)
+	w.LineWrite("func ", "(", receiver, ") ", name)
 }
 
 func (w *GoWriter) Func(name string) {
@@ -437,6 +445,7 @@ func (w *GoWriter) FuncResults(results ...any) {
 		return
 	}
 
+	w.Write(' ')
 	if strings.ContainsAny(s, " ,") {
 		w.Write('(')
 		w.Write(s)
@@ -458,6 +467,7 @@ func (w *GoWriter) FuncBody() {
 		w.popBlock()
 	}
 
+	w.Write(' ')
 	w.begin('{')
 }
 
@@ -466,6 +476,7 @@ func (w *GoWriter) If(a ...any) {
 
 	w.LineWrite("if ")
 	w.Write(a...)
+	w.Write(' ')
 	w.begin('{')
 }
 

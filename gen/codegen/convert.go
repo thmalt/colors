@@ -130,23 +130,26 @@ func genConvertPkgWhitePoint(ctx *Context, w *writer.GoWriter) bool {
 		return false
 	}
 
-	w.BeginGroup("var")
 	for _, whitepoint := range ctx.WhitePoints {
+		w.BeginGroup("const ")
+
 		xyz := data.ChromaToXyz(whitepoint.X, whitepoint.Y)
-		w.LineWriteln(
-			whitepoint.Name,
-			" = [3]",
-			FloatType,
-			"{",
-			formatNormalizedFloat(xyz[0]),
-			", ",
-			formatNormalizedFloat(xyz[1]),
-			", ",
-			formatNormalizedFloat(xyz[2]),
-			"}",
-		)
+		name := whitepoint.Name
+		privateName := toLowerCaseFirstWord(name)
+
+		w.LineWriteln(privateName, "X = ", formatNormalizedFloat(xyz[0]))
+		w.LineWriteln(privateName, "Y = ", formatNormalizedFloat(xyz[1]))
+		w.LineWriteln(privateName, "Z = ", formatNormalizedFloat(xyz[2]))
+
+		w.Writeln()
+
+		w.LineWriteln("inv", name, "X = 1 / ", privateName, "X")
+		w.LineWriteln("inv", name, "Y = 1 / ", privateName, "Y")
+		w.LineWriteln("inv", name, "Z = 1 / ", privateName, "Z")
+		w.End()
+
+		w.Writeln()
 	}
-	w.End()
 
 	return true
 }
@@ -202,7 +205,6 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 	wop := w.NewTemp()
 	inputVars := paramsVars
 
-	firstOp := true
 	returned := false
 	last := len(ops) - 1
 
@@ -211,7 +213,6 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 
 		switch op.Type {
 		case OpCall:
-			firstOp = false
 			if isLastOp {
 				wop.Return(op.Pair.FuncName(), "(", strings.Join(inputVars, ", "), ")")
 				returned = true
@@ -233,36 +234,23 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 				inputVars = outputVars
 			}
 		case OpCbrt:
-			if !firstOp {
-				wop.Writeln()
-			}
-			firstOp = false
 			for _, v := range inputVars {
 				if !imported {
 					w.Import("math")
 					imported = true
 				}
 
-				wop.NewlineWrite(v, " = math.Cbrt(", v, ")")
+				wop.LineWrite(v, " = math.Cbrt(", v, ")")
 			}
-			wop.Writeln()
+
+			wop.NewlineWriteln()
 		case OpCube:
-			if !firstOp {
-				wop.Writeln()
-			}
-			firstOp = false
-
 			for _, v := range inputVars {
-				wop.NewlineWrite(v, " *= ", v, " * ", v)
+				wop.LineWrite(v, " *= ", v, " * ", v)
 			}
 
-			wop.Writeln()
+			wop.NewlineWriteln()
 		case OpMatrix:
-			if !firstOp {
-				wop.Writeln()
-			}
-
-			firstOp = false
 			outputVars := scope.ReserveUniqueN("f", len(inputVars))
 			isNewVar := true
 			if isLastOp {
@@ -290,10 +278,14 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 					switch {
 					case f == 0:
 					case math.Signbit(f):
-						wop.Write('-')
+						if first {
+							wop.Write('-')
+						} else {
+							wop.Write(" - ")
+						}
 						f = -f
 					case !first:
-						wop.Write('+')
+						wop.Write(" + ")
 
 					}
 

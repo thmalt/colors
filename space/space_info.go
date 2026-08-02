@@ -1,6 +1,17 @@
 package space
 
-type SpaceInfo struct {
+type SpaceInfo interface {
+	Name() string
+	DisplayName() string
+	CssName() string
+	WhitePoint() WhitePoint
+	ChannelCount() int
+
+	Channel(index int) (Channel, bool)
+	Channels() []Channel
+}
+
+type spaceInfo struct {
 	name        string
 	displayName string
 	cssName     string
@@ -31,8 +42,8 @@ const (
 	UnitDegree
 )
 
-func NewSpaceInfo(name, displayName, cssName string, whitePoint WhitePoint, channels []Channel) *SpaceInfo {
-	return &SpaceInfo{
+func NewSpaceInfo(name, displayName, cssName string, whitePoint WhitePoint, channels []Channel) *spaceInfo {
+	return &spaceInfo{
 		name:        name,
 		displayName: displayName,
 		cssName:     cssName,
@@ -41,13 +52,13 @@ func NewSpaceInfo(name, displayName, cssName string, whitePoint WhitePoint, chan
 	}
 }
 
-func (s *SpaceInfo) Name() string           { return s.name }
-func (s *SpaceInfo) DisplayName() string    { return s.displayName }
-func (s *SpaceInfo) CssName() string        { return s.cssName }
-func (s *SpaceInfo) WhitePoint() WhitePoint { return s.whitePoint }
-func (s *SpaceInfo) ChannelCount() int      { return len(s.channels) }
+func (s *spaceInfo) Name() string           { return s.name }
+func (s *spaceInfo) DisplayName() string    { return s.displayName }
+func (s *spaceInfo) CssName() string        { return s.cssName }
+func (s *spaceInfo) WhitePoint() WhitePoint { return s.whitePoint }
+func (s *spaceInfo) ChannelCount() int      { return len(s.channels) }
 
-func (s *SpaceInfo) Channel(index int) (Channel, bool) {
+func (s *spaceInfo) Channel(index int) (Channel, bool) {
 	if index < 0 || index >= s.ChannelCount() {
 		return Channel{}, false
 	}
@@ -55,6 +66,6 @@ func (s *SpaceInfo) Channel(index int) (Channel, bool) {
 	return s.channels[index], true
 }
 
-func (s *SpaceInfo) Channels() []Channel {
+func (s *spaceInfo) Channels() []Channel {
 	return append([]Channel{}, s.channels...)
 }

@@ -29,7 +29,7 @@ func main() {
 		return
 	}
 
-	fmt.Println("Space name:", inf.DisplayName())
+	fmt.Println("Space display name:", inf.DisplayName())
 
 	fmt.Println()
 
