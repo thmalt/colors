@@ -6,6 +6,31 @@ import (
 	"math"
 )
 
+// Conversion path (1 steps):
+//
+//	Linear Rec. 2020
+//	-> CIE XYZ D65
+func LinearRec2020ToXyzD65(r, g, b float64) (x, y, z float64) {
+	x = 0.6369580483012911*r + 0.14461690358620835*g + 0.16888097516417208*b
+	y = 0.262700212011267*r + 0.6779980715188709*g + 0.05930171646986195*b
+	z = 0.028072693049087435*g + 1.0609850577107909*b
+
+	return
+}
+
+// Conversion path (2 steps):
+//
+//	Linear Rec. 2020
+//	-> CIE XYZ D65
+//	-> CIE XYZ D50
+func LinearRec2020ToXyzD50(r, g, b float64) (x, y, z float64) {
+	x = 0.6735154631882759*r + 0.16569726370390456*g + 0.12508294953738702*b
+	y = 0.27905900514112053*r + 0.6753180057491096*g + 0.04562298910976964*b
+	z = -0.001932427134004343*r + 0.029977826792829176*g + 0.7970592028516353*b
+
+	return
+}
+
 // Conversion path (2 steps):
 //
 //	Linear Rec. 2020
@@ -37,33 +62,6 @@ func LinearRec2020ToSrgb(r, g, b float64) (float64, float64, float64) {
 //
 //	Linear Rec. 2020
 //	-> CIE XYZ D65
-//	-> Linear Adobe RGB (1998)
-func LinearRec2020ToLinearA98(r, g, b float64) (float64, float64, float64) {
-	f1 := 1.1519783947159163*r - 0.09750305530240852*g - 0.05447533941350763*b
-	f2 := -0.12455047452159049*r + 1.13289989712596*g - 0.008349422604369452*b
-	f3 := -0.022530382781055815*r - 0.049806507428388914*g + 1.072336890209445*b
-
-	return f1, f2, f3
-}
-
-// Conversion path (3 steps):
-//
-//	Linear Rec. 2020
-//	-> CIE XYZ D65
-//	-> Linear Adobe RGB (1998)
-//	-> Adobe RGB (1998)
-func LinearRec2020ToA98(r, g, b float64) (float64, float64, float64) {
-	f1 := 1.1519783947159163*r - 0.09750305530240852*g - 0.05447533941350763*b
-	f2 := -0.12455047452159049*r + 1.13289989712596*g - 0.008349422604369452*b
-	f3 := -0.022530382781055815*r - 0.049806507428388914*g + 1.072336890209445*b
-
-	return LinearA98ToA98(f1, f2, f3)
-}
-
-// Conversion path (2 steps):
-//
-//	Linear Rec. 2020
-//	-> CIE XYZ D65
 //	-> Linear Display P3
 func LinearRec2020ToLinearDisplayP3(r, g, b float64) (float64, float64, float64) {
 	f1 := 1.3435782525843316*r - 0.2821796705261357*g - 0.061398582058196184*b
@@ -85,6 +83,33 @@ func LinearRec2020ToDisplayP3(r, g, b float64) (float64, float64, float64) {
 	f3 := 0.0028217872617010515*r - 0.019598494524494175*g + 1.0167767072627927*b
 
 	return LinearDisplayP3ToDisplayP3(f1, f2, f3)
+}
+
+// Conversion path (2 steps):
+//
+//	Linear Rec. 2020
+//	-> CIE XYZ D65
+//	-> Linear Adobe RGB (1998)
+func LinearRec2020ToLinearA98(r, g, b float64) (float64, float64, float64) {
+	f1 := 1.1519783947159163*r - 0.09750305530240852*g - 0.05447533941350763*b
+	f2 := -0.12455047452159049*r + 1.13289989712596*g - 0.008349422604369452*b
+	f3 := -0.022530382781055815*r - 0.049806507428388914*g + 1.072336890209445*b
+
+	return f1, f2, f3
+}
+
+// Conversion path (3 steps):
+//
+//	Linear Rec. 2020
+//	-> CIE XYZ D65
+//	-> Linear Adobe RGB (1998)
+//	-> Adobe RGB (1998)
+func LinearRec2020ToA98(r, g, b float64) (float64, float64, float64) {
+	f1 := 1.1519783947159163*r - 0.09750305530240852*g - 0.05447533941350763*b
+	f2 := -0.12455047452159049*r + 1.13289989712596*g - 0.008349422604369452*b
+	f3 := -0.022530382781055815*r - 0.049806507428388914*g + 1.072336890209445*b
+
+	return LinearA98ToA98(f1, f2, f3)
 }
 
 // Conversion path (3 steps):
@@ -162,31 +187,6 @@ func LinearRec2020ToHwb(r, g, b float64) (float64, float64, float64) {
 
 	r, g, b = LinearSrgbToSrgb(f1, f2, f3)
 	return SrgbToHwb(r, g, b)
-}
-
-// Conversion path (1 steps):
-//
-//	Linear Rec. 2020
-//	-> CIE XYZ D65
-func LinearRec2020ToXyzD65(r, g, b float64) (x, y, z float64) {
-	x = 0.6369580483012911*r + 0.14461690358620835*g + 0.16888097516417208*b
-	y = 0.262700212011267*r + 0.6779980715188709*g + 0.05930171646986195*b
-	z = 0.028072693049087435*g + 1.0609850577107909*b
-
-	return
-}
-
-// Conversion path (2 steps):
-//
-//	Linear Rec. 2020
-//	-> CIE XYZ D65
-//	-> CIE XYZ D50
-func LinearRec2020ToXyzD50(r, g, b float64) (x, y, z float64) {
-	x = 0.6735154631882759*r + 0.16569726370390456*g + 0.12508294953738702*b
-	y = 0.27905900514112053*r + 0.6753180057491096*g + 0.04562298910976964*b
-	z = -0.001932427134004343*r + 0.029977826792829176*g + 0.7970592028516353*b
-
-	return
 }
 
 // Conversion path (3 steps):

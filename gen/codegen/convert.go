@@ -18,10 +18,8 @@ func GenerateConvertPkg(ctx *Context) {
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
 
-	fmt.Println()
-
 	if ctx.SplitFile {
-		for i, space := range ctx.Spaces {
+		for i, space := range ctx.BuildSpaces {
 			if space == nil {
 				log.Printf("space at index %d is nil\n", i)
 			}
@@ -38,7 +36,7 @@ func GenerateConvertPkg(ctx *Context) {
 				fileName = toSnakeCase(space.Name) + "_gen.go"
 			}
 
-			fmt.Println("Generate file", fileName)
+			fmt.Println("  Generate file", fileName)
 
 			genConvertPkgConversionBySpace(ctx, w, space)
 			w.WriteGoFile(
@@ -48,7 +46,7 @@ func GenerateConvertPkg(ctx *Context) {
 		}
 	} else {
 		fileName := ctx.ConvertPkg.Name + "_gen.go"
-		fmt.Println("Generate file", fileName)
+		fmt.Println("  Generate file", fileName)
 
 		// all conversion in one file
 		genConvertPkgConversion(ctx, w)
@@ -59,7 +57,7 @@ func GenerateConvertPkg(ctx *Context) {
 		)
 	}
 	fileName := "whitepoint_gen.go"
-	fmt.Println("Generate file", fileName)
+	fmt.Println("  Generate file", fileName)
 
 	if genConvertPkgWhitePoint(ctx, w) {
 		w.WriteGoFile(
@@ -72,7 +70,7 @@ func GenerateConvertPkg(ctx *Context) {
 func genConvertPkgConversion(ctx *Context, w *writer.GoWriter) {
 	w.Import("math")
 
-	for i, from := range ctx.Spaces {
+	for i, from := range ctx.BuildSpaces {
 		if from == nil {
 			log.Printf("space at index %d is nil\n", i)
 			continue
@@ -82,8 +80,8 @@ func genConvertPkgConversion(ctx *Context, w *writer.GoWriter) {
 			continue
 		}
 
-		for j := i + 1; j < len(ctx.Spaces); j++ {
-			to := ctx.Spaces[j]
+		for j := i + 1; j < len(ctx.BuildSpaces); j++ {
+			to := ctx.BuildSpaces[j]
 			if to == nil {
 				log.Printf("space at index %d is nil\n", j)
 				continue
@@ -105,7 +103,7 @@ func genConvertPkgConversion(ctx *Context, w *writer.GoWriter) {
 }
 
 func genConvertPkgConversionBySpace(ctx *Context, w *writer.GoWriter, space *model.Space) {
-	for i, to := range ctx.Spaces {
+	for i, to := range ctx.BuildSpaces {
 		if to == nil {
 			log.Printf("space at index %d is nil\n", i)
 			continue

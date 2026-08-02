@@ -6,31 +6,29 @@ import (
 	"math"
 )
 
+// Conversion path (1 steps):
+//
+//	Linear sRGB
+//	-> CIE XYZ D65
+func LinearSrgbToXyzD65(r, g, b float64) (x, y, z float64) {
+	x = 0.4123907992659593*r + 0.357584339383878*g + 0.1804807884018343*b
+	y = 0.21263900587151024*r + 0.715168678767756*g + 0.07219231536073371*b
+	z = 0.01933081871559182*r + 0.11919477979462598*g + 0.9505321522496607*b
+
+	return
+}
+
 // Conversion path (2 steps):
 //
 //	Linear sRGB
 //	-> CIE XYZ D65
-//	-> Linear Adobe RGB (1998)
-func LinearSrgbToLinearA98(r, g, b float64) (float64, float64, float64) {
-	f1 := 0.7151256068556247*r + 0.28487439314437574*g
-	f2 := g
-	f3 := 0.04116194845011842*g + 0.9588380515498821*b
+//	-> CIE XYZ D50
+func LinearSrgbToXyzD50(r, g, b float64) (x, y, z float64) {
+	x = 0.43606574687426913*r + 0.3851515095901597*g + 0.14307841996513865*b
+	y = 0.22249317711056507*r + 0.7168870130944824*g + 0.06061980979495235*b
+	z = 0.013923921463169377*r + 0.09708132423141015*g + 0.7140993568158808*b
 
-	return f1, f2, f3
-}
-
-// Conversion path (3 steps):
-//
-//	Linear sRGB
-//	-> CIE XYZ D65
-//	-> Linear Adobe RGB (1998)
-//	-> Adobe RGB (1998)
-func LinearSrgbToA98(r, g, b float64) (float64, float64, float64) {
-	f1 := 0.7151256068556247*r + 0.28487439314437574*g
-	f2 := g
-	f3 := 0.04116194845011842*g + 0.9588380515498821*b
-
-	return LinearA98ToA98(f1, f2, f3)
+	return
 }
 
 // Conversion path (2 steps):
@@ -58,6 +56,33 @@ func LinearSrgbToDisplayP3(r, g, b float64) (float64, float64, float64) {
 	f3 := 0.017082630721120033*r + 0.07239744066396339*g + 0.9105199286149164*b
 
 	return LinearDisplayP3ToDisplayP3(f1, f2, f3)
+}
+
+// Conversion path (2 steps):
+//
+//	Linear sRGB
+//	-> CIE XYZ D65
+//	-> Linear Adobe RGB (1998)
+func LinearSrgbToLinearA98(r, g, b float64) (float64, float64, float64) {
+	f1 := 0.7151256068556247*r + 0.28487439314437574*g
+	f2 := g
+	f3 := 0.04116194845011842*g + 0.9588380515498821*b
+
+	return f1, f2, f3
+}
+
+// Conversion path (3 steps):
+//
+//	Linear sRGB
+//	-> CIE XYZ D65
+//	-> Linear Adobe RGB (1998)
+//	-> Adobe RGB (1998)
+func LinearSrgbToA98(r, g, b float64) (float64, float64, float64) {
+	f1 := 0.7151256068556247*r + 0.28487439314437574*g
+	f2 := g
+	f3 := 0.04116194845011842*g + 0.9588380515498821*b
+
+	return LinearA98ToA98(f1, f2, f3)
 }
 
 // Conversion path (3 steps):
@@ -144,31 +169,6 @@ func LinearSrgbToHsv(r, g, b float64) (h, s, v float64) {
 func LinearSrgbToHwb(r, g, b float64) (float64, float64, float64) {
 	r, g, b = LinearSrgbToSrgb(r, g, b)
 	return SrgbToHwb(r, g, b)
-}
-
-// Conversion path (1 steps):
-//
-//	Linear sRGB
-//	-> CIE XYZ D65
-func LinearSrgbToXyzD65(r, g, b float64) (x, y, z float64) {
-	x = 0.4123907992659593*r + 0.357584339383878*g + 0.1804807884018343*b
-	y = 0.21263900587151024*r + 0.715168678767756*g + 0.07219231536073371*b
-	z = 0.01933081871559182*r + 0.11919477979462598*g + 0.9505321522496607*b
-
-	return
-}
-
-// Conversion path (2 steps):
-//
-//	Linear sRGB
-//	-> CIE XYZ D65
-//	-> CIE XYZ D50
-func LinearSrgbToXyzD50(r, g, b float64) (x, y, z float64) {
-	x = 0.43606574687426913*r + 0.3851515095901597*g + 0.14307841996513865*b
-	y = 0.22249317711056507*r + 0.7168870130944824*g + 0.06061980979495235*b
-	z = 0.013923921463169377*r + 0.09708132423141015*g + 0.7140993568158808*b
-
-	return
 }
 
 // Conversion path (3 steps):

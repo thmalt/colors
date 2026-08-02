@@ -4,7 +4,7 @@ type SpaceInfo struct {
 	name        string
 	displayName string
 	cssName     string
-	whitePoint  [3]float64
+	whitePoint  WhitePoint
 	channels    []Channel
 
 	useColorFunction bool
@@ -31,7 +31,7 @@ const (
 	UnitDegree
 )
 
-func NewSpaceInfo(name, displayName, cssName string, whitePoint [3]float64, channels []Channel) *SpaceInfo {
+func NewSpaceInfo(name, displayName, cssName string, whitePoint WhitePoint, channels []Channel) *SpaceInfo {
 	return &SpaceInfo{
 		name:        name,
 		displayName: displayName,
@@ -44,7 +44,7 @@ func NewSpaceInfo(name, displayName, cssName string, whitePoint [3]float64, chan
 func (s *SpaceInfo) Name() string           { return s.name }
 func (s *SpaceInfo) DisplayName() string    { return s.displayName }
 func (s *SpaceInfo) CssName() string        { return s.cssName }
-func (s *SpaceInfo) WhitePoint() [3]float64 { return s.whitePoint }
+func (s *SpaceInfo) WhitePoint() WhitePoint { return s.whitePoint }
 func (s *SpaceInfo) ChannelCount() int      { return len(s.channels) }
 
 func (s *SpaceInfo) Channel(index int) (Channel, bool) {

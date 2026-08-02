@@ -15,11 +15,9 @@ func GenerateRootPkg(ctx *Context) {
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
 
-	fmt.Println()
-
 	// generate file color_gen.go
 	fileName := "color_gen.go"
-	fmt.Println("Generate file", fileName)
+	fmt.Println("  Generate file", fileName)
 
 	w.Import(
 		ctx.ConvertPkg.Path,
@@ -37,7 +35,7 @@ func GenerateRootPkg(ctx *Context) {
 	// generate file color_constructors_gen.go
 
 	fileName = "color_constructors_gen.go"
-	fmt.Println("Generate file", fileName)
+	fmt.Println("  Generate file", fileName)
 
 	w.Import(ctx.SpacePkg.Path)
 
@@ -49,7 +47,7 @@ func GenerateRootPkg(ctx *Context) {
 
 	// generate file color_stringify_gen.go
 	fileName = "color_stringify_gen.go"
-	fmt.Println("Generate file", fileName)
+	fmt.Println("  Generate file", fileName)
 
 	w.Import(
 		"fmt",
@@ -66,7 +64,7 @@ func GenerateRootPkg(ctx *Context) {
 
 func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 	maxChannelCnt := 0
-	for _, space := range ctx.Spaces {
+	for _, space := range ctx.BuildSpaces {
 		maxChannelCnt = max(maxChannelCnt, space.ChannelCount())
 	}
 
@@ -168,7 +166,7 @@ func genRootPkgColorMethods(ctx *Context, w *writer.GoWriter) {
 	var convertPkg = ctx.ConvertPkg
 	var spacePkg = ctx.SpacePkg
 	var b strings.Builder
-	for _, space := range ctx.Spaces {
+	for _, space := range ctx.BuildSpaces {
 		b.Reset()
 
 		scope.Reset()
@@ -202,7 +200,7 @@ func genRootPkgColorMethods(ctx *Context, w *writer.GoWriter) {
 		wsw.Switch("c.space")
 		var args strings.Builder
 		var foundPath = false
-		for _, src := range ctx.Spaces {
+		for _, src := range ctx.BuildSpaces {
 			args.Reset()
 			if space == src {
 				continue
@@ -255,7 +253,7 @@ func genRootPkgColorConversionMethods(ctx *Context, w *writer.GoWriter) {
 
 	w.Switch("dst")
 	var b strings.Builder
-	for _, space := range ctx.Spaces {
+	for _, space := range ctx.BuildSpaces {
 		scope.Reset()
 		scope.Reserve("c")
 
@@ -292,7 +290,7 @@ func genRootPkgColorConversionMethods(ctx *Context, w *writer.GoWriter) {
 func genRootPkgColorConstructors(ctx *Context, w *writer.GoWriter) {
 	var b strings.Builder
 
-	for _, space := range ctx.Spaces {
+	for _, space := range ctx.BuildSpaces {
 		w.LineCommentln(space.Name, " returns a [Color] from ", space.DisplayName, " components.")
 		w.LineCommentln()
 
@@ -347,7 +345,7 @@ func genRootPkgColorStringify(ctx *Context, w *writer.GoWriter) {
 
 	w.Switch("c.space")
 
-	for _, space := range ctx.Spaces {
+	for _, space := range ctx.BuildSpaces {
 		w.Case(ctx.SpacePkg.Join(space.Name))
 		if space.UseColorFunction {
 			w.LineWriteln(`b.WriteString("color(`, space.CssName, ` ")`)
@@ -369,12 +367,23 @@ func genRootPkgColorStringify(ctx *Context, w *writer.GoWriter) {
 				w.Write(" * 100")
 			}
 
-			w.Write(", ", c.Precision)
+			w.Write(", ")
+
+			prec := c.Precision
+			if prec == 0 {
+				prec = DefaultPrecision
+			}
+
+			if percent {
+				prec = max(0, prec-2)
+			}
+
+			w.Write(prec)
 
 			w.Writeln("))")
 
 			if percent {
-				w.LineWriteln(`b.WriteString("%")`)
+				w.LineWriteln("b.WriteByte('%')")
 			}
 		}
 
@@ -397,6 +406,8 @@ func genRootPkgColorStringify(ctx *Context, w *writer.GoWriter) {
 	w.Default()
 	w.Return(`fmt.Sprintf("Color(<invalid space: %d>)", c.space)`)
 	w.End()
+
+	w.Writeln()
 
 	w.Return("b.String()")
 

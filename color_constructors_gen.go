@@ -6,6 +6,24 @@ import (
 	"github.com/thmalt/colors/space"
 )
 
+// XyzD65 returns a [Color] from CIE XYZ D65 components.
+//
+//	x: [0, 1]
+//	y: [0, 1]
+//	z: [0, 1]
+func XyzD65(x, y, z float64) Color {
+	return Color{space: space.XyzD65, c1: x, c2: y, c3: z, alpha: 1}
+}
+
+// XyzD50 returns a [Color] from CIE XYZ D50 components.
+//
+//	x: [0, 1]
+//	y: [0, 1]
+//	z: [0, 1]
+func XyzD50(x, y, z float64) Color {
+	return Color{space: space.XyzD50, c1: x, c2: y, c3: z, alpha: 1}
+}
+
 // LinearSrgb returns a [Color] from Linear sRGB components.
 //
 //	r: [0, 1]
@@ -24,24 +42,6 @@ func Srgb(r, g, b float64) Color {
 	return Color{space: space.Srgb, c1: r, c2: g, c3: b, alpha: 1}
 }
 
-// LinearA98 returns a [Color] from Linear Adobe RGB (1998) components.
-//
-//	r: [0, 1]
-//	g: [0, 1]
-//	b: [0, 1]
-func LinearA98(r, g, b float64) Color {
-	return Color{space: space.LinearA98, c1: r, c2: g, c3: b, alpha: 1}
-}
-
-// A98 returns a [Color] from Adobe RGB (1998) components.
-//
-//	r: [0, 1]
-//	g: [0, 1]
-//	b: [0, 1]
-func A98(r, g, b float64) Color {
-	return Color{space: space.A98, c1: r, c2: g, c3: b, alpha: 1}
-}
-
 // LinearDisplayP3 returns a [Color] from Linear Display P3 components.
 //
 //	r: [0, 1]
@@ -58,6 +58,24 @@ func LinearDisplayP3(r, g, b float64) Color {
 //	b: [0, 1]
 func DisplayP3(r, g, b float64) Color {
 	return Color{space: space.DisplayP3, c1: r, c2: g, c3: b, alpha: 1}
+}
+
+// LinearA98 returns a [Color] from Linear Adobe RGB (1998) components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
+func LinearA98(r, g, b float64) Color {
+	return Color{space: space.LinearA98, c1: r, c2: g, c3: b, alpha: 1}
+}
+
+// A98 returns a [Color] from Adobe RGB (1998) components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
+func A98(r, g, b float64) Color {
+	return Color{space: space.A98, c1: r, c2: g, c3: b, alpha: 1}
 }
 
 // LinearProPhoto returns a [Color] from Linear ProPhoto components.
@@ -121,24 +139,6 @@ func Hsv(h, s, v float64) Color {
 //	b: [0, 1]
 func Hwb(h, w, b float64) Color {
 	return Color{space: space.Hwb, c1: h, c2: w, c3: b, alpha: 1}
-}
-
-// XyzD65 returns a [Color] from CIE XYZ D65 components.
-//
-//	x: [0, 1]
-//	y: [0, 1]
-//	z: [0, 1]
-func XyzD65(x, y, z float64) Color {
-	return Color{space: space.XyzD65, c1: x, c2: y, c3: z, alpha: 1}
-}
-
-// XyzD50 returns a [Color] from CIE XYZ D50 components.
-//
-//	x: [0, 1]
-//	y: [0, 1]
-//	z: [0, 1]
-func XyzD50(x, y, z float64) Color {
-	return Color{space: space.XyzD50, c1: x, c2: y, c3: z, alpha: 1}
 }
 
 // Lab returns a [Color] from CIE Lab components.

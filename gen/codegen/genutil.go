@@ -15,6 +15,8 @@ const (
 
 	FloatFormatNormalizedPrecFuncName = "formatNormalizedFloatPrec"
 	FloatFormatPrecFuncName           = "formatFloatPrec"
+
+	DefaultPrecision = 6
 )
 
 func smallestUintType(n int) int {

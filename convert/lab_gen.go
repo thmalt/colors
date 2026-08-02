@@ -6,6 +6,21 @@ import (
 	"math"
 )
 
+// Conversion path (2 steps):
+//
+//	CIE Lab
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+func LabToXyzD65(l, a, b float64) (x, y, z float64) {
+	x, y, z = LabToXyzD50(l, a, b)
+
+	f1 := 0.955473421488075*x - 0.023098454948764637*y + 0.06325924320057065*z
+	f2 := -0.028369709333863714*x + 1.009995398081304*y + 0.021041441191917323*z
+	f3 := 0.012314014864481988*x - 0.020507649298898947*y + 1.330365926242124*z
+
+	return f1, f2, f3
+}
+
 // Conversion path (3 steps):
 //
 //	CIE Lab
@@ -44,39 +59,6 @@ func LabToSrgb(l, a, b float64) (float64, float64, float64) {
 //	CIE Lab
 //	-> CIE XYZ D50
 //	-> CIE XYZ D65
-//	-> Linear Adobe RGB (1998)
-func LabToLinearA98(l, a, b float64) (float64, float64, float64) {
-	x, y, z := LabToXyzD50(l, a, b)
-
-	f1 := 1.9624670363768812*x - 0.6107423404815076*y - 0.34135809808271556*z
-	f2 := -0.9787954765557776*x + 1.9162543773959881*y + 0.03344287339036699*z
-	f3 := 0.02870443944957115*x - 0.14067486633170695*y + 1.3489141814137942*z
-
-	return f1, f2, f3
-}
-
-// Conversion path (4 steps):
-//
-//	CIE Lab
-//	-> CIE XYZ D50
-//	-> CIE XYZ D65
-//	-> Linear Adobe RGB (1998)
-//	-> Adobe RGB (1998)
-func LabToA98(l, a, b float64) (float64, float64, float64) {
-	x, y, z := LabToXyzD50(l, a, b)
-
-	f1 := 1.9624670363768812*x - 0.6107423404815076*y - 0.34135809808271556*z
-	f2 := -0.9787954765557776*x + 1.9162543773959881*y + 0.03344287339036699*z
-	f3 := 0.02870443944957115*x - 0.14067486633170695*y + 1.3489141814137942*z
-
-	return LinearA98ToA98(f1, f2, f3)
-}
-
-// Conversion path (3 steps):
-//
-//	CIE Lab
-//	-> CIE XYZ D50
-//	-> CIE XYZ D65
 //	-> Linear Display P3
 func LabToLinearDisplayP3(l, a, b float64) (float64, float64, float64) {
 	x, y, z := LabToXyzD50(l, a, b)
@@ -103,6 +85,39 @@ func LabToDisplayP3(l, a, b float64) (float64, float64, float64) {
 	f3 := 0.04819381686413314*x - 0.09738519815446052*y + 1.2736713693321269*z
 
 	return LinearDisplayP3ToDisplayP3(f1, f2, f3)
+}
+
+// Conversion path (3 steps):
+//
+//	CIE Lab
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Linear Adobe RGB (1998)
+func LabToLinearA98(l, a, b float64) (float64, float64, float64) {
+	x, y, z := LabToXyzD50(l, a, b)
+
+	f1 := 1.9624670363768812*x - 0.6107423404815076*y - 0.34135809808271556*z
+	f2 := -0.9787954765557776*x + 1.9162543773959881*y + 0.03344287339036699*z
+	f3 := 0.02870443944957115*x - 0.14067486633170695*y + 1.3489141814137942*z
+
+	return f1, f2, f3
+}
+
+// Conversion path (4 steps):
+//
+//	CIE Lab
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Linear Adobe RGB (1998)
+//	-> Adobe RGB (1998)
+func LabToA98(l, a, b float64) (float64, float64, float64) {
+	x, y, z := LabToXyzD50(l, a, b)
+
+	f1 := 1.9624670363768812*x - 0.6107423404815076*y - 0.34135809808271556*z
+	f2 := -0.9787954765557776*x + 1.9162543773959881*y + 0.03344287339036699*z
+	f3 := 0.02870443944957115*x - 0.14067486633170695*y + 1.3489141814137942*z
+
+	return LinearA98ToA98(f1, f2, f3)
 }
 
 // Conversion path (2 steps):
@@ -224,21 +239,6 @@ func LabToHwb(l, a, b float64) (float64, float64, float64) {
 
 	r, g, b := LinearSrgbToSrgb(f1, f2, f3)
 	return SrgbToHwb(r, g, b)
-}
-
-// Conversion path (2 steps):
-//
-//	CIE Lab
-//	-> CIE XYZ D50
-//	-> CIE XYZ D65
-func LabToXyzD65(l, a, b float64) (x, y, z float64) {
-	x, y, z = LabToXyzD50(l, a, b)
-
-	f1 := 0.955473421488075*x - 0.023098454948764637*y + 0.06325924320057065*z
-	f2 := -0.028369709333863714*x + 1.009995398081304*y + 0.021041441191917323*z
-	f3 := 0.012314014864481988*x - 0.020507649298898947*y + 1.330365926242124*z
-
-	return f1, f2, f3
 }
 
 // Conversion path (3 steps):

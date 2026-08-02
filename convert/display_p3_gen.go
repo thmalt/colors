@@ -6,6 +6,37 @@ import (
 	"math"
 )
 
+// Conversion path (2 steps):
+//
+//	Display P3
+//	-> Linear Display P3
+//	-> CIE XYZ D65
+func DisplayP3ToXyzD65(r, g, b float64) (x, y, z float64) {
+	r, g, b = DisplayP3ToLinearDisplayP3(r, g, b)
+
+	x = 0.4865709486482162*r + 0.265667693169093*g + 0.19821728523436252*b
+	y = 0.2289745640697488*r + 0.6917385218365062*g + 0.07928691409374501*b
+	z = 0.045113381858902624*g + 1.043944368900976*b
+
+	return
+}
+
+// Conversion path (3 steps):
+//
+//	Display P3
+//	-> Linear Display P3
+//	-> CIE XYZ D65
+//	-> CIE XYZ D50
+func DisplayP3ToXyzD50(r, g, b float64) (x, y, z float64) {
+	r, g, b = DisplayP3ToLinearDisplayP3(r, g, b)
+
+	x = 0.5151464429681158*r + 0.29200998206385786*g + 0.15713925139759397*b
+	y = 0.2412003221252552*r + 0.6922225411313817*g + 0.06657713674336295*b
+	z = -0.0010501391471401667*r + 0.04187827018907464*g + 0.7842764714685259*b
+
+	return
+}
+
 // Conversion path (3 steps):
 //
 //	Display P3
@@ -195,37 +226,6 @@ func DisplayP3ToHwb(r, g, b float64) (float64, float64, float64) {
 
 	r, g, b = LinearSrgbToSrgb(f1, f2, f3)
 	return SrgbToHwb(r, g, b)
-}
-
-// Conversion path (2 steps):
-//
-//	Display P3
-//	-> Linear Display P3
-//	-> CIE XYZ D65
-func DisplayP3ToXyzD65(r, g, b float64) (x, y, z float64) {
-	r, g, b = DisplayP3ToLinearDisplayP3(r, g, b)
-
-	x = 0.4865709486482162*r + 0.265667693169093*g + 0.19821728523436252*b
-	y = 0.2289745640697488*r + 0.6917385218365062*g + 0.07928691409374501*b
-	z = 0.045113381858902624*g + 1.043944368900976*b
-
-	return
-}
-
-// Conversion path (3 steps):
-//
-//	Display P3
-//	-> Linear Display P3
-//	-> CIE XYZ D65
-//	-> CIE XYZ D50
-func DisplayP3ToXyzD50(r, g, b float64) (x, y, z float64) {
-	r, g, b = DisplayP3ToLinearDisplayP3(r, g, b)
-
-	x = 0.5151464429681158*r + 0.29200998206385786*g + 0.15713925139759397*b
-	y = 0.2412003221252552*r + 0.6922225411313817*g + 0.06657713674336295*b
-	z = -0.0010501391471401667*r + 0.04187827018907464*g + 0.7842764714685259*b
-
-	return
 }
 
 // Conversion path (4 steps):

@@ -6,6 +6,33 @@ import (
 	"math"
 )
 
+// Conversion path (3 steps):
+//
+//	CIE LCh
+//	-> CIE Lab
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+func LchToXyzD65(l, c, h float64) (x, y, z float64) {
+	l, a, b := LchToLab(l, c, h)
+	x, y, z = LabToXyzD50(l, a, b)
+
+	f1 := 0.955473421488075*x - 0.023098454948764637*y + 0.06325924320057065*z
+	f2 := -0.028369709333863714*x + 1.009995398081304*y + 0.021041441191917323*z
+	f3 := 0.012314014864481988*x - 0.020507649298898947*y + 1.330365926242124*z
+
+	return f1, f2, f3
+}
+
+// Conversion path (2 steps):
+//
+//	CIE LCh
+//	-> CIE Lab
+//	-> CIE XYZ D50
+func LchToXyzD50(l, c, h float64) (x, y, z float64) {
+	l, a, b := LchToLab(l, c, h)
+	return LabToXyzD50(l, a, b)
+}
+
 // Conversion path (4 steps):
 //
 //	CIE LCh
@@ -49,43 +76,6 @@ func LchToSrgb(l, c, h float64) (r, g, b float64) {
 //	-> CIE Lab
 //	-> CIE XYZ D50
 //	-> CIE XYZ D65
-//	-> Linear Adobe RGB (1998)
-func LchToLinearA98(l, c, h float64) (r, g, b float64) {
-	l, a, b := LchToLab(l, c, h)
-	x, y, z := LabToXyzD50(l, a, b)
-
-	r = 1.9624670363768812*x - 0.6107423404815076*y - 0.34135809808271556*z
-	g = -0.9787954765557776*x + 1.9162543773959881*y + 0.03344287339036699*z
-	b = 0.02870443944957115*x - 0.14067486633170695*y + 1.3489141814137942*z
-
-	return
-}
-
-// Conversion path (5 steps):
-//
-//	CIE LCh
-//	-> CIE Lab
-//	-> CIE XYZ D50
-//	-> CIE XYZ D65
-//	-> Linear Adobe RGB (1998)
-//	-> Adobe RGB (1998)
-func LchToA98(l, c, h float64) (r, g, b float64) {
-	l, a, b := LchToLab(l, c, h)
-	x, y, z := LabToXyzD50(l, a, b)
-
-	f1 := 1.9624670363768812*x - 0.6107423404815076*y - 0.34135809808271556*z
-	f2 := -0.9787954765557776*x + 1.9162543773959881*y + 0.03344287339036699*z
-	f3 := 0.02870443944957115*x - 0.14067486633170695*y + 1.3489141814137942*z
-
-	return LinearA98ToA98(f1, f2, f3)
-}
-
-// Conversion path (4 steps):
-//
-//	CIE LCh
-//	-> CIE Lab
-//	-> CIE XYZ D50
-//	-> CIE XYZ D65
 //	-> Linear Display P3
 func LchToLinearDisplayP3(l, c, h float64) (r, g, b float64) {
 	l, a, b := LchToLab(l, c, h)
@@ -115,6 +105,43 @@ func LchToDisplayP3(l, c, h float64) (r, g, b float64) {
 	f3 := 0.04819381686413314*x - 0.09738519815446052*y + 1.2736713693321269*z
 
 	return LinearDisplayP3ToDisplayP3(f1, f2, f3)
+}
+
+// Conversion path (4 steps):
+//
+//	CIE LCh
+//	-> CIE Lab
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Linear Adobe RGB (1998)
+func LchToLinearA98(l, c, h float64) (r, g, b float64) {
+	l, a, b := LchToLab(l, c, h)
+	x, y, z := LabToXyzD50(l, a, b)
+
+	r = 1.9624670363768812*x - 0.6107423404815076*y - 0.34135809808271556*z
+	g = -0.9787954765557776*x + 1.9162543773959881*y + 0.03344287339036699*z
+	b = 0.02870443944957115*x - 0.14067486633170695*y + 1.3489141814137942*z
+
+	return
+}
+
+// Conversion path (5 steps):
+//
+//	CIE LCh
+//	-> CIE Lab
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Linear Adobe RGB (1998)
+//	-> Adobe RGB (1998)
+func LchToA98(l, c, h float64) (r, g, b float64) {
+	l, a, b := LchToLab(l, c, h)
+	x, y, z := LabToXyzD50(l, a, b)
+
+	f1 := 1.9624670363768812*x - 0.6107423404815076*y - 0.34135809808271556*z
+	f2 := -0.9787954765557776*x + 1.9162543773959881*y + 0.03344287339036699*z
+	f3 := 0.02870443944957115*x - 0.14067486633170695*y + 1.3489141814137942*z
+
+	return LinearA98ToA98(f1, f2, f3)
 }
 
 // Conversion path (3 steps):
@@ -250,33 +277,6 @@ func LchToHwb(l, c, h float64) (float64, float64, float64) {
 
 	r, g, b := LinearSrgbToSrgb(f1, f2, f3)
 	return SrgbToHwb(r, g, b)
-}
-
-// Conversion path (3 steps):
-//
-//	CIE LCh
-//	-> CIE Lab
-//	-> CIE XYZ D50
-//	-> CIE XYZ D65
-func LchToXyzD65(l, c, h float64) (x, y, z float64) {
-	l, a, b := LchToLab(l, c, h)
-	x, y, z = LabToXyzD50(l, a, b)
-
-	f1 := 0.955473421488075*x - 0.023098454948764637*y + 0.06325924320057065*z
-	f2 := -0.028369709333863714*x + 1.009995398081304*y + 0.021041441191917323*z
-	f3 := 0.012314014864481988*x - 0.020507649298898947*y + 1.330365926242124*z
-
-	return f1, f2, f3
-}
-
-// Conversion path (2 steps):
-//
-//	CIE LCh
-//	-> CIE Lab
-//	-> CIE XYZ D50
-func LchToXyzD50(l, c, h float64) (x, y, z float64) {
-	l, a, b := LchToLab(l, c, h)
-	return LabToXyzD50(l, a, b)
 }
 
 // Conversion path (4 steps):

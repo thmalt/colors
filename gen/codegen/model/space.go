@@ -8,6 +8,7 @@ import (
 
 type Space struct {
 	Name        string    `json:"name"`
+	Family      string    `json:"Family,omitempty"`
 	Base        string    `json:"base,omitempty"`
 	DisplayName string    `json:"displayName"`
 	CssName     string    `json:"cssName"`
@@ -19,7 +20,6 @@ type Space struct {
 	Disable          bool `json:"disable,omitempty"`
 
 	// for generator
-
 	SnakeName string `json:"snakeName,omitempty"`
 }
 
@@ -35,7 +35,7 @@ type Channel struct {
 	Unrestricted bool    `json:"unrestricted,omitempty"`
 
 	Unit      UnitKind `json:"unit,omitempty"`
-	Precision int      `json:"precision"`
+	Precision int      `json:"precision,omitempty"`
 }
 
 type UnitKind uint8

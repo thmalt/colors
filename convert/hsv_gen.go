@@ -6,14 +6,21 @@ import (
 	"math"
 )
 
-// Conversion path (2 steps):
+// Conversion path (3 steps):
 //
 //	HSV
 //	-> sRGB
 //	-> Linear sRGB
-func HsvToLinearSrgb(h, s, v float64) (r, g, b float64) {
-	r, g, b = HsvToSrgb(h, s, v)
-	return SrgbToLinearSrgb(r, g, b)
+//	-> CIE XYZ D65
+func HsvToXyzD65(h, s, v float64) (x, y, z float64) {
+	r, g, b := HsvToSrgb(h, s, v)
+	r, g, b = SrgbToLinearSrgb(r, g, b)
+
+	x = 0.4123907992659593*r + 0.357584339383878*g + 0.1804807884018343*b
+	y = 0.21263900587151024*r + 0.715168678767756*g + 0.07219231536073371*b
+	z = 0.01933081871559182*r + 0.11919477979462598*g + 0.9505321522496607*b
+
+	return
 }
 
 // Conversion path (4 steps):
@@ -22,35 +29,26 @@ func HsvToLinearSrgb(h, s, v float64) (r, g, b float64) {
 //	-> sRGB
 //	-> Linear sRGB
 //	-> CIE XYZ D65
-//	-> Linear Adobe RGB (1998)
-func HsvToLinearA98(h, s, v float64) (r, g, b float64) {
-	r, g, b = HsvToSrgb(h, s, v)
+//	-> CIE XYZ D50
+func HsvToXyzD50(h, s, v float64) (x, y, z float64) {
+	r, g, b := HsvToSrgb(h, s, v)
 	r, g, b = SrgbToLinearSrgb(r, g, b)
 
-	f1 := 0.7151256068556247*r + 0.28487439314437574*g
-	f2 := g
-	f3 := 0.04116194845011842*g + 0.9588380515498821*b
+	x = 0.43606574687426913*r + 0.3851515095901597*g + 0.14307841996513865*b
+	y = 0.22249317711056507*r + 0.7168870130944824*g + 0.06061980979495235*b
+	z = 0.013923921463169377*r + 0.09708132423141015*g + 0.7140993568158808*b
 
-	return f1, f2, f3
+	return
 }
 
-// Conversion path (5 steps):
+// Conversion path (2 steps):
 //
 //	HSV
 //	-> sRGB
 //	-> Linear sRGB
-//	-> CIE XYZ D65
-//	-> Linear Adobe RGB (1998)
-//	-> Adobe RGB (1998)
-func HsvToA98(h, s, v float64) (r, g, b float64) {
+func HsvToLinearSrgb(h, s, v float64) (r, g, b float64) {
 	r, g, b = HsvToSrgb(h, s, v)
-	r, g, b = SrgbToLinearSrgb(r, g, b)
-
-	f1 := 0.7151256068556247*r + 0.28487439314437574*g
-	f2 := g
-	f3 := 0.04116194845011842*g + 0.9588380515498821*b
-
-	return LinearA98ToA98(f1, f2, f3)
+	return SrgbToLinearSrgb(r, g, b)
 }
 
 // Conversion path (4 steps):
@@ -88,6 +86,43 @@ func HsvToDisplayP3(h, s, v float64) (r, g, b float64) {
 	f3 := 0.017082630721120033*r + 0.07239744066396339*g + 0.9105199286149164*b
 
 	return LinearDisplayP3ToDisplayP3(f1, f2, f3)
+}
+
+// Conversion path (4 steps):
+//
+//	HSV
+//	-> sRGB
+//	-> Linear sRGB
+//	-> CIE XYZ D65
+//	-> Linear Adobe RGB (1998)
+func HsvToLinearA98(h, s, v float64) (r, g, b float64) {
+	r, g, b = HsvToSrgb(h, s, v)
+	r, g, b = SrgbToLinearSrgb(r, g, b)
+
+	f1 := 0.7151256068556247*r + 0.28487439314437574*g
+	f2 := g
+	f3 := 0.04116194845011842*g + 0.9588380515498821*b
+
+	return f1, f2, f3
+}
+
+// Conversion path (5 steps):
+//
+//	HSV
+//	-> sRGB
+//	-> Linear sRGB
+//	-> CIE XYZ D65
+//	-> Linear Adobe RGB (1998)
+//	-> Adobe RGB (1998)
+func HsvToA98(h, s, v float64) (r, g, b float64) {
+	r, g, b = HsvToSrgb(h, s, v)
+	r, g, b = SrgbToLinearSrgb(r, g, b)
+
+	f1 := 0.7151256068556247*r + 0.28487439314437574*g
+	f2 := g
+	f3 := 0.04116194845011842*g + 0.9588380515498821*b
+
+	return LinearA98ToA98(f1, f2, f3)
 }
 
 // Conversion path (5 steps):
@@ -184,41 +219,6 @@ func HsvToHsl(h, s, v float64) (float64, float64, float64) {
 func HsvToHwb(h, s, v float64) (float64, float64, float64) {
 	r, g, b := HsvToSrgb(h, s, v)
 	return SrgbToHwb(r, g, b)
-}
-
-// Conversion path (3 steps):
-//
-//	HSV
-//	-> sRGB
-//	-> Linear sRGB
-//	-> CIE XYZ D65
-func HsvToXyzD65(h, s, v float64) (x, y, z float64) {
-	r, g, b := HsvToSrgb(h, s, v)
-	r, g, b = SrgbToLinearSrgb(r, g, b)
-
-	x = 0.4123907992659593*r + 0.357584339383878*g + 0.1804807884018343*b
-	y = 0.21263900587151024*r + 0.715168678767756*g + 0.07219231536073371*b
-	z = 0.01933081871559182*r + 0.11919477979462598*g + 0.9505321522496607*b
-
-	return
-}
-
-// Conversion path (4 steps):
-//
-//	HSV
-//	-> sRGB
-//	-> Linear sRGB
-//	-> CIE XYZ D65
-//	-> CIE XYZ D50
-func HsvToXyzD50(h, s, v float64) (x, y, z float64) {
-	r, g, b := HsvToSrgb(h, s, v)
-	r, g, b = SrgbToLinearSrgb(r, g, b)
-
-	x = 0.43606574687426913*r + 0.3851515095901597*g + 0.14307841996513865*b
-	y = 0.22249317711056507*r + 0.7168870130944824*g + 0.06061980979495235*b
-	z = 0.013923921463169377*r + 0.09708132423141015*g + 0.7140993568158808*b
-
-	return
 }
 
 // Conversion path (5 steps):

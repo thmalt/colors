@@ -2,7 +2,7 @@
 
 Modern Go library for color space conversions and CSS color serialization.
 
-### Installation
+### Usage
 
 ```go
 import "github.com/thmalt/colors"
@@ -17,19 +17,10 @@ import (
 	"fmt"
 
 	"github.com/thmalt/colors"
-	"github.com/thmalt/colors/space"
 )
 
 func main() {
-	c := colors.Rgb(50, 60, 70)
-
-	// loop through available color spaces.
-	for s := range space.SpaceCount {
-		to := c.MustTo(s).WithAlpha(0.995)
-
-		fmt.Println(to)
-		fmt.Println()
-	}
+	c := colors.Rgb(50, 60, 70).WithAlpha(0.995)
 
 	// color space info
 	inf := c.Space().Info()
@@ -38,17 +29,38 @@ func main() {
 		return
 	}
 
-	fmt.Println("space name:", inf.DisplayName())
+	fmt.Println("Space name:", inf.DisplayName())
+
+	fmt.Println()
+
+	// get whitepoint info.
+	whitePoint := inf.WhitePoint()
+	fmt.Println("WhitePoint")
+	fmt.Println("  Name:", whitePoint.Name)
+	fmt.Println("  Z:", whitePoint.X)
+	fmt.Println("  Y:", whitePoint.Y)
+	fmt.Println("  Z:", whitePoint.Z)
+
+	fmt.Println()
 
 	// get channel info.
+	fmt.Println("Channels:", inf.ChannelCount())
 	for i, ch := range inf.Channels() {
-		fmt.Println("channel:", i, "name:", ch.Name, "min:", ch.Min, "max:", ch.Max)
+
+		fmt.Println(
+			" ",
+			"Channel:", i,
+			"Name:", ch.Name,
+			"Min:", ch.Min,
+			"Max:", ch.Max,
+			"Unrestricted:", ch.Unrestricted,
+		)
 	}
 
 	fmt.Println()
 
-	fmt.Println("hex:", c.Hex())
+	fmt.Println("hex:", c.WithAlpha(1).Hex())
 	// hex with alpha if alpha != 1
-	fmt.Println("hex:", c.WithAlpha(0.998).Hex())
+	fmt.Println("hex:", c.WithAlpha(0.995).Hex())
 }
 ```

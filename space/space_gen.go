@@ -4,19 +4,19 @@ package space
 
 import (
 	"strconv"
-
-	"github.com/thmalt/colors/convert"
 )
 
 type Space uint8
 
 const (
-	LinearSrgb Space = iota
+	XyzD65 Space = iota
+	XyzD50
+	LinearSrgb
 	Srgb
-	LinearA98
-	A98
 	LinearDisplayP3
 	DisplayP3
+	LinearA98
+	A98
 	LinearProPhoto
 	ProPhoto
 	LinearRec2020
@@ -24,8 +24,6 @@ const (
 	Hsl
 	Hsv
 	Hwb
-	XyzD65
-	XyzD50
 	Lab
 	Lch
 	Oklab
@@ -38,452 +36,13 @@ const (
 var (
 	spaceInfos = [...]SpaceInfo{
 		{
-			name:        "LinearSrgb",
-			displayName: "Linear sRGB",
-			cssName:     "srgb-linear",
-			whitePoint:  convert.D65,
-			channels: []Channel{
-				{
-					Name:        "red",
-					Symbol:      "r",
-					DisplayName: "Red",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "green",
-					Symbol:      "g",
-					DisplayName: "Green",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "blue",
-					Symbol:      "b",
-					DisplayName: "Blue",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-			},
-			useColorFunction: true,
-		},
-		{
-			name:        "Srgb",
-			displayName: "sRGB",
-			cssName:     "srgb",
-			whitePoint:  convert.D65,
-			channels: []Channel{
-				{
-					Name:        "red",
-					Symbol:      "r",
-					DisplayName: "Red",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "green",
-					Symbol:      "g",
-					DisplayName: "Green",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "blue",
-					Symbol:      "b",
-					DisplayName: "Blue",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-			},
-			useColorFunction: true,
-		},
-		{
-			name:        "LinearA98",
-			displayName: "Linear Adobe RGB (1998)",
-			cssName:     "a98-rgb-linear",
-			whitePoint:  convert.D65,
-			channels: []Channel{
-				{
-					Name:        "red",
-					Symbol:      "r",
-					DisplayName: "Red",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "green",
-					Symbol:      "g",
-					DisplayName: "Green",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "blue",
-					Symbol:      "b",
-					DisplayName: "Blue",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-			},
-			useColorFunction: true,
-		},
-		{
-			name:        "A98",
-			displayName: "Adobe RGB (1998)",
-			cssName:     "a98-rgb",
-			whitePoint:  convert.D65,
-			channels: []Channel{
-				{
-					Name:        "red",
-					Symbol:      "r",
-					DisplayName: "Red",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "green",
-					Symbol:      "g",
-					DisplayName: "Green",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "blue",
-					Symbol:      "b",
-					DisplayName: "Blue",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-			},
-			useColorFunction: true,
-		},
-		{
-			name:        "LinearDisplayP3",
-			displayName: "Linear Display P3",
-			cssName:     "display-p3-linear",
-			whitePoint:  convert.D65,
-			channels: []Channel{
-				{
-					Name:        "red",
-					Symbol:      "r",
-					DisplayName: "Red",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "green",
-					Symbol:      "g",
-					DisplayName: "Green",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "blue",
-					Symbol:      "b",
-					DisplayName: "Blue",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-			},
-			useColorFunction: true,
-		},
-		{
-			name:        "DisplayP3",
-			displayName: "Display P3",
-			cssName:     "display-p3",
-			whitePoint:  convert.D65,
-			channels: []Channel{
-				{
-					Name:        "red",
-					Symbol:      "r",
-					DisplayName: "Red",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "green",
-					Symbol:      "g",
-					DisplayName: "Green",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "blue",
-					Symbol:      "b",
-					DisplayName: "Blue",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-			},
-			useColorFunction: true,
-		},
-		{
-			name:        "LinearProPhoto",
-			displayName: "Linear ProPhoto",
-			cssName:     "prophoto-rgb-linear",
-			whitePoint:  convert.D50,
-			channels: []Channel{
-				{
-					Name:        "red",
-					Symbol:      "r",
-					DisplayName: "Red",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "green",
-					Symbol:      "g",
-					DisplayName: "Green",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "blue",
-					Symbol:      "b",
-					DisplayName: "Blue",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-			},
-			useColorFunction: true,
-		},
-		{
-			name:        "ProPhoto",
-			displayName: "ProPhoto",
-			cssName:     "prophoto-rgb",
-			whitePoint:  convert.D50,
-			channels: []Channel{
-				{
-					Name:        "red",
-					Symbol:      "r",
-					DisplayName: "Red",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "green",
-					Symbol:      "g",
-					DisplayName: "Green",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "blue",
-					Symbol:      "b",
-					DisplayName: "Blue",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-			},
-			useColorFunction: true,
-		},
-		{
-			name:        "LinearRec2020",
-			displayName: "Linear Rec. 2020",
-			cssName:     "rec2020-linear",
-			whitePoint:  convert.D65,
-			channels: []Channel{
-				{
-					Name:        "red",
-					Symbol:      "r",
-					DisplayName: "Red",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "green",
-					Symbol:      "g",
-					DisplayName: "Green",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "blue",
-					Symbol:      "b",
-					DisplayName: "Blue",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-			},
-			useColorFunction: true,
-		},
-		{
-			name:        "Rec2020",
-			displayName: "Rec. 2020",
-			cssName:     "rec2020",
-			whitePoint:  convert.D65,
-			channels: []Channel{
-				{
-					Name:        "red",
-					Symbol:      "r",
-					DisplayName: "Red",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "green",
-					Symbol:      "g",
-					DisplayName: "Green",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-				{
-					Name:        "blue",
-					Symbol:      "b",
-					DisplayName: "Blue",
-					Min:         0,
-					Max:         1,
-					Precision:   6,
-				},
-			},
-			useColorFunction: true,
-		},
-		{
-			name:        "Hsl",
-			displayName: "HSL",
-			cssName:     "hsl",
-			whitePoint:  convert.D65,
-			channels: []Channel{
-				{
-					Name:        "hue",
-					Symbol:      "h",
-					DisplayName: "Hue",
-					Min:         0,
-					Max:         360,
-					Circular:    true,
-					Unit:        UnitDegree,
-					Precision:   2,
-				},
-				{
-					Name:        "sat",
-					Symbol:      "s",
-					DisplayName: "Saturation",
-					Min:         0,
-					Max:         1,
-					Unit:        UnitPercent,
-					Precision:   2,
-				},
-				{
-					Name:        "light",
-					Symbol:      "l",
-					DisplayName: "Lightness",
-					Min:         0,
-					Max:         1,
-					Unit:        UnitPercent,
-					Precision:   2,
-				},
-			},
-		},
-		{
-			name:        "Hsv",
-			displayName: "HSV",
-			cssName:     "hsv",
-			whitePoint:  convert.D65,
-			channels: []Channel{
-				{
-					Name:        "hue",
-					Symbol:      "h",
-					DisplayName: "Hue",
-					Min:         0,
-					Max:         360,
-					Circular:    true,
-					Unit:        UnitDegree,
-					Precision:   2,
-				},
-				{
-					Name:        "sat",
-					Symbol:      "s",
-					DisplayName: "Saturation",
-					Min:         0,
-					Max:         1,
-					Unit:        UnitPercent,
-					Precision:   2,
-				},
-				{
-					Name:        "val",
-					Symbol:      "v",
-					DisplayName: "Value",
-					Min:         0,
-					Max:         1,
-					Unit:        UnitPercent,
-					Precision:   2,
-				},
-			},
-			useColorFunction: true,
-		},
-		{
-			name:        "Hwb",
-			displayName: "HWB",
-			cssName:     "hwb",
-			whitePoint:  convert.D65,
-			channels: []Channel{
-				{
-					Name:        "hue",
-					Symbol:      "h",
-					DisplayName: "Hue",
-					Min:         0,
-					Max:         360,
-					Circular:    true,
-					Unit:        UnitDegree,
-					Precision:   2,
-				},
-				{
-					Name:        "white",
-					Symbol:      "w",
-					DisplayName: "Whiteness",
-					Min:         0,
-					Max:         1,
-					Unit:        UnitPercent,
-					Precision:   2,
-				},
-				{
-					Name:        "black",
-					Symbol:      "b",
-					DisplayName: "Blackness",
-					Min:         0,
-					Max:         1,
-					Unit:        UnitPercent,
-					Precision:   2,
-				},
-			},
-		},
-		{
 			name:        "XyzD65",
 			displayName: "CIE XYZ D65",
 			cssName:     "xyz-d65",
-			whitePoint:  convert.D65,
+			whitePoint:  D65,
 			channels: []Channel{
 				{
-					Name:        "x",
+					Name:        "X",
 					Symbol:      "x",
 					DisplayName: "X",
 					Min:         0,
@@ -491,7 +50,7 @@ var (
 					Precision:   8,
 				},
 				{
-					Name:        "y",
+					Name:        "Y",
 					Symbol:      "y",
 					DisplayName: "Y",
 					Min:         0,
@@ -499,7 +58,7 @@ var (
 					Precision:   8,
 				},
 				{
-					Name:        "z",
+					Name:        "Z",
 					Symbol:      "z",
 					DisplayName: "Z",
 					Min:         0,
@@ -513,10 +72,10 @@ var (
 			name:        "XyzD50",
 			displayName: "CIE XYZ D50",
 			cssName:     "xyz-d50",
-			whitePoint:  convert.D50,
+			whitePoint:  D50,
 			channels: []Channel{
 				{
-					Name:        "x",
+					Name:        "X",
 					Symbol:      "x",
 					DisplayName: "X",
 					Min:         0,
@@ -524,7 +83,7 @@ var (
 					Precision:   8,
 				},
 				{
-					Name:        "y",
+					Name:        "Y",
 					Symbol:      "y",
 					DisplayName: "Y",
 					Min:         0,
@@ -532,7 +91,7 @@ var (
 					Precision:   8,
 				},
 				{
-					Name:        "z",
+					Name:        "Z",
 					Symbol:      "z",
 					DisplayName: "Z",
 					Min:         0,
@@ -543,13 +102,451 @@ var (
 			useColorFunction: true,
 		},
 		{
+			name:        "LinearSrgb",
+			displayName: "Linear sRGB",
+			cssName:     "srgb-linear",
+			whitePoint:  D65,
+			channels: []Channel{
+				{
+					Name:        "Red",
+					Symbol:      "r",
+					DisplayName: "Red",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Green",
+					Symbol:      "g",
+					DisplayName: "Green",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Blue",
+					Symbol:      "b",
+					DisplayName: "Blue",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+			},
+			useColorFunction: true,
+		},
+		{
+			name:        "Srgb",
+			displayName: "sRGB",
+			cssName:     "srgb",
+			whitePoint:  D65,
+			channels: []Channel{
+				{
+					Name:        "Red",
+					Symbol:      "r",
+					DisplayName: "Red",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Green",
+					Symbol:      "g",
+					DisplayName: "Green",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Blue",
+					Symbol:      "b",
+					DisplayName: "Blue",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+			},
+			useColorFunction: true,
+		},
+		{
+			name:        "LinearDisplayP3",
+			displayName: "Linear Display P3",
+			cssName:     "display-p3-linear",
+			whitePoint:  D65,
+			channels: []Channel{
+				{
+					Name:        "Red",
+					Symbol:      "r",
+					DisplayName: "Red",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Green",
+					Symbol:      "g",
+					DisplayName: "Green",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Blue",
+					Symbol:      "b",
+					DisplayName: "Blue",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+			},
+			useColorFunction: true,
+		},
+		{
+			name:        "DisplayP3",
+			displayName: "Display P3",
+			cssName:     "display-p3",
+			whitePoint:  D65,
+			channels: []Channel{
+				{
+					Name:        "Red",
+					Symbol:      "r",
+					DisplayName: "Red",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Green",
+					Symbol:      "g",
+					DisplayName: "Green",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Blue",
+					Symbol:      "b",
+					DisplayName: "Blue",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+			},
+			useColorFunction: true,
+		},
+		{
+			name:        "LinearA98",
+			displayName: "Linear Adobe RGB (1998)",
+			cssName:     "a98-rgb-linear",
+			whitePoint:  D65,
+			channels: []Channel{
+				{
+					Name:        "Red",
+					Symbol:      "r",
+					DisplayName: "Red",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Green",
+					Symbol:      "g",
+					DisplayName: "Green",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Blue",
+					Symbol:      "b",
+					DisplayName: "Blue",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+			},
+			useColorFunction: true,
+		},
+		{
+			name:        "A98",
+			displayName: "Adobe RGB (1998)",
+			cssName:     "a98-rgb",
+			whitePoint:  D65,
+			channels: []Channel{
+				{
+					Name:        "Red",
+					Symbol:      "r",
+					DisplayName: "Red",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Green",
+					Symbol:      "g",
+					DisplayName: "Green",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Blue",
+					Symbol:      "b",
+					DisplayName: "Blue",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+			},
+			useColorFunction: true,
+		},
+		{
+			name:        "LinearProPhoto",
+			displayName: "Linear ProPhoto",
+			cssName:     "prophoto-rgb-linear",
+			whitePoint:  D50,
+			channels: []Channel{
+				{
+					Name:        "Red",
+					Symbol:      "r",
+					DisplayName: "Red",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Green",
+					Symbol:      "g",
+					DisplayName: "Green",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Blue",
+					Symbol:      "b",
+					DisplayName: "Blue",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+			},
+			useColorFunction: true,
+		},
+		{
+			name:        "ProPhoto",
+			displayName: "ProPhoto",
+			cssName:     "prophoto-rgb",
+			whitePoint:  D50,
+			channels: []Channel{
+				{
+					Name:        "Red",
+					Symbol:      "r",
+					DisplayName: "Red",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Green",
+					Symbol:      "g",
+					DisplayName: "Green",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Blue",
+					Symbol:      "b",
+					DisplayName: "Blue",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+			},
+			useColorFunction: true,
+		},
+		{
+			name:        "LinearRec2020",
+			displayName: "Linear Rec. 2020",
+			cssName:     "rec2020-linear",
+			whitePoint:  D65,
+			channels: []Channel{
+				{
+					Name:        "Red",
+					Symbol:      "r",
+					DisplayName: "Red",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Green",
+					Symbol:      "g",
+					DisplayName: "Green",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Blue",
+					Symbol:      "b",
+					DisplayName: "Blue",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+			},
+			useColorFunction: true,
+		},
+		{
+			name:        "Rec2020",
+			displayName: "Rec. 2020",
+			cssName:     "rec2020",
+			whitePoint:  D65,
+			channels: []Channel{
+				{
+					Name:        "Red",
+					Symbol:      "r",
+					DisplayName: "Red",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Green",
+					Symbol:      "g",
+					DisplayName: "Green",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+				{
+					Name:        "Blue",
+					Symbol:      "b",
+					DisplayName: "Blue",
+					Min:         0,
+					Max:         1,
+					Precision:   6,
+				},
+			},
+			useColorFunction: true,
+		},
+		{
+			name:        "Hsl",
+			displayName: "HSL",
+			cssName:     "hsl",
+			whitePoint:  D65,
+			channels: []Channel{
+				{
+					Name:        "Hue",
+					Symbol:      "h",
+					DisplayName: "Hue",
+					Min:         0,
+					Max:         360,
+					Circular:    true,
+					Unit:        UnitDegree,
+					Precision:   2,
+				},
+				{
+					Name:        "Saturation",
+					Symbol:      "s",
+					DisplayName: "Saturation",
+					Min:         0,
+					Max:         1,
+					Unit:        UnitPercent,
+					Precision:   4,
+				},
+				{
+					Name:        "Lightness",
+					Symbol:      "l",
+					DisplayName: "Lightness",
+					Min:         0,
+					Max:         1,
+					Unit:        UnitPercent,
+					Precision:   4,
+				},
+			},
+		},
+		{
+			name:        "Hsv",
+			displayName: "HSV",
+			cssName:     "hsv",
+			whitePoint:  D65,
+			channels: []Channel{
+				{
+					Name:        "Hue",
+					Symbol:      "h",
+					DisplayName: "Hue",
+					Min:         0,
+					Max:         360,
+					Circular:    true,
+					Unit:        UnitDegree,
+					Precision:   2,
+				},
+				{
+					Name:        "Saturation",
+					Symbol:      "s",
+					DisplayName: "Saturation",
+					Min:         0,
+					Max:         1,
+					Unit:        UnitPercent,
+					Precision:   4,
+				},
+				{
+					Name:        "Value",
+					Symbol:      "v",
+					DisplayName: "Value",
+					Min:         0,
+					Max:         1,
+					Unit:        UnitPercent,
+					Precision:   4,
+				},
+			},
+		},
+		{
+			name:        "Hwb",
+			displayName: "HWB",
+			cssName:     "hwb",
+			whitePoint:  D65,
+			channels: []Channel{
+				{
+					Name:        "Hue",
+					Symbol:      "h",
+					DisplayName: "Hue",
+					Min:         0,
+					Max:         360,
+					Circular:    true,
+					Unit:        UnitDegree,
+					Precision:   2,
+				},
+				{
+					Name:        "Whiteness",
+					Symbol:      "w",
+					DisplayName: "Whiteness",
+					Min:         0,
+					Max:         1,
+					Unit:        UnitPercent,
+					Precision:   4,
+				},
+				{
+					Name:        "Blackness",
+					Symbol:      "b",
+					DisplayName: "Blackness",
+					Min:         0,
+					Max:         1,
+					Unit:        UnitPercent,
+					Precision:   4,
+				},
+			},
+		},
+		{
 			name:        "Lab",
 			displayName: "CIE Lab",
 			cssName:     "lab",
-			whitePoint:  convert.D50,
+			whitePoint:  D50,
 			channels: []Channel{
 				{
-					Name:        "light",
+					Name:        "Lightness",
 					Symbol:      "l",
 					DisplayName: "Lightness",
 					Min:         0,
@@ -557,7 +554,7 @@ var (
 					Precision:   4,
 				},
 				{
-					Name:         "a",
+					Name:         "A",
 					Symbol:       "a",
 					DisplayName:  "Green-Red",
 					Min:          -125,
@@ -566,7 +563,7 @@ var (
 					Precision:    4,
 				},
 				{
-					Name:         "b",
+					Name:         "B",
 					Symbol:       "b",
 					DisplayName:  "Blue-Yellow",
 					Min:          -125,
@@ -580,10 +577,10 @@ var (
 			name:        "Lch",
 			displayName: "CIE LCh",
 			cssName:     "lch",
-			whitePoint:  convert.D50,
+			whitePoint:  D50,
 			channels: []Channel{
 				{
-					Name:        "light",
+					Name:        "Lightness",
 					Symbol:      "l",
 					DisplayName: "Lightness",
 					Min:         0,
@@ -591,7 +588,7 @@ var (
 					Precision:   4,
 				},
 				{
-					Name:         "chroma",
+					Name:         "Chroma",
 					Symbol:       "c",
 					DisplayName:  "Chroma",
 					Min:          0,
@@ -600,7 +597,7 @@ var (
 					Precision:    4,
 				},
 				{
-					Name:        "hue",
+					Name:        "Hue",
 					Symbol:      "h",
 					DisplayName: "Hue",
 					Min:         0,
@@ -615,10 +612,10 @@ var (
 			name:        "Oklab",
 			displayName: "Oklab",
 			cssName:     "oklab",
-			whitePoint:  convert.D65,
+			whitePoint:  D65,
 			channels: []Channel{
 				{
-					Name:        "light",
+					Name:        "Lightness",
 					Symbol:      "l",
 					DisplayName: "Lightness",
 					Min:         0,
@@ -626,7 +623,7 @@ var (
 					Precision:   6,
 				},
 				{
-					Name:         "a",
+					Name:         "A",
 					Symbol:       "a",
 					DisplayName:  "Green-Red",
 					Min:          -0.4,
@@ -635,7 +632,7 @@ var (
 					Precision:    6,
 				},
 				{
-					Name:         "b",
+					Name:         "B",
 					Symbol:       "b",
 					DisplayName:  "Blue-Yellow",
 					Min:          -0.4,
@@ -649,10 +646,10 @@ var (
 			name:        "Oklch",
 			displayName: "Oklch",
 			cssName:     "oklch",
-			whitePoint:  convert.D65,
+			whitePoint:  D65,
 			channels: []Channel{
 				{
-					Name:        "light",
+					Name:        "Lightness",
 					Symbol:      "l",
 					DisplayName: "Lightness",
 					Min:         0,
@@ -660,7 +657,7 @@ var (
 					Precision:   6,
 				},
 				{
-					Name:         "chroma",
+					Name:         "Chroma",
 					Symbol:       "c",
 					DisplayName:  "Chroma",
 					Min:          0,
@@ -669,7 +666,7 @@ var (
 					Precision:    6,
 				},
 				{
-					Name:        "hue",
+					Name:        "Hue",
 					Symbol:      "h",
 					DisplayName: "Hue",
 					Min:         0,
@@ -685,18 +682,22 @@ var (
 
 func (s Space) String() string {
 	switch s {
+	case XyzD65:
+		return "XyzD65"
+	case XyzD50:
+		return "XyzD50"
 	case LinearSrgb:
 		return "LinearSrgb"
 	case Srgb:
 		return "Srgb"
-	case LinearA98:
-		return "LinearA98"
-	case A98:
-		return "A98"
 	case LinearDisplayP3:
 		return "LinearDisplayP3"
 	case DisplayP3:
 		return "DisplayP3"
+	case LinearA98:
+		return "LinearA98"
+	case A98:
+		return "A98"
 	case LinearProPhoto:
 		return "LinearProPhoto"
 	case ProPhoto:
@@ -711,10 +712,6 @@ func (s Space) String() string {
 		return "Hsv"
 	case Hwb:
 		return "Hwb"
-	case XyzD65:
-		return "XyzD65"
-	case XyzD50:
-		return "XyzD50"
 	case Lab:
 		return "Lab"
 	case Lch:

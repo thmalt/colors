@@ -13,6 +13,34 @@ func (c Color) String() string {
 	var b strings.Builder
 	b.Grow(64)
 	switch c.space {
+	case space.XyzD65:
+		b.WriteString("color(xyz-d65 ")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 8))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 8))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 8))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 3))
+		}
+
+		b.WriteString(")")
+	case space.XyzD50:
+		b.WriteString("color(xyz-d50 ")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 8))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 8))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 8))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 3))
+		}
+
+		b.WriteString(")")
 	case space.LinearSrgb:
 		b.WriteString("color(srgb-linear ")
 		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
@@ -41,34 +69,6 @@ func (c Color) String() string {
 		}
 
 		b.WriteString(")")
-	case space.LinearA98:
-		b.WriteString("color(a98-rgb-linear ")
-		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c3, 6))
-
-		if alpha := normalizeFloat(c.alpha); alpha != 1 {
-			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
-		}
-
-		b.WriteString(")")
-	case space.A98:
-		b.WriteString("color(a98-rgb ")
-		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c3, 6))
-
-		if alpha := normalizeFloat(c.alpha); alpha != 1 {
-			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
-		}
-
-		b.WriteString(")")
 	case space.LinearDisplayP3:
 		b.WriteString("color(display-p3-linear ")
 		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
@@ -85,6 +85,34 @@ func (c Color) String() string {
 		b.WriteString(")")
 	case space.DisplayP3:
 		b.WriteString("color(display-p3 ")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 6))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 3))
+		}
+
+		b.WriteString(")")
+	case space.LinearA98:
+		b.WriteString("color(a98-rgb-linear ")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 6))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 3))
+		}
+
+		b.WriteString(")")
+	case space.A98:
+		b.WriteString("color(a98-rgb ")
 		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
 		b.WriteByte(' ')
 		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
@@ -158,10 +186,10 @@ func (c Color) String() string {
 		b.WriteString(formatNormalizedFloatPrec(c.c1, 2))
 		b.WriteByte(' ')
 		b.WriteString(formatNormalizedFloatPrec(c.c2*100, 2))
-		b.WriteString("%")
+		b.WriteByte('%')
 		b.WriteByte(' ')
 		b.WriteString(formatNormalizedFloatPrec(c.c3*100, 2))
-		b.WriteString("%")
+		b.WriteByte('%')
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
@@ -170,14 +198,14 @@ func (c Color) String() string {
 
 		b.WriteString(")")
 	case space.Hsv:
-		b.WriteString("color(hsv ")
+		b.WriteString("hsv(")
 		b.WriteString(formatNormalizedFloatPrec(c.c1, 2))
 		b.WriteByte(' ')
 		b.WriteString(formatNormalizedFloatPrec(c.c2*100, 2))
-		b.WriteString("%")
+		b.WriteByte('%')
 		b.WriteByte(' ')
 		b.WriteString(formatNormalizedFloatPrec(c.c3*100, 2))
-		b.WriteString("%")
+		b.WriteByte('%')
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
@@ -190,38 +218,10 @@ func (c Color) String() string {
 		b.WriteString(formatNormalizedFloatPrec(c.c1, 2))
 		b.WriteByte(' ')
 		b.WriteString(formatNormalizedFloatPrec(c.c2*100, 2))
-		b.WriteString("%")
+		b.WriteByte('%')
 		b.WriteByte(' ')
 		b.WriteString(formatNormalizedFloatPrec(c.c3*100, 2))
-		b.WriteString("%")
-
-		if alpha := normalizeFloat(c.alpha); alpha != 1 {
-			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
-		}
-
-		b.WriteString(")")
-	case space.XyzD65:
-		b.WriteString("color(xyz-d65 ")
-		b.WriteString(formatNormalizedFloatPrec(c.c1, 8))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c2, 8))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c3, 8))
-
-		if alpha := normalizeFloat(c.alpha); alpha != 1 {
-			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
-		}
-
-		b.WriteString(")")
-	case space.XyzD50:
-		b.WriteString("color(xyz-d50 ")
-		b.WriteString(formatNormalizedFloatPrec(c.c1, 8))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c2, 8))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c3, 8))
+		b.WriteByte('%')
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
@@ -288,5 +288,6 @@ func (c Color) String() string {
 	default:
 		return fmt.Sprintf("Color(<invalid space: %d>)", c.space)
 	}
+
 	return b.String()
 }

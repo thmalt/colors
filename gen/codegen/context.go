@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"slices"
+	"strings"
 
 	"github.com/thmalt/colors/gen/codegen/model"
 )
@@ -24,8 +26,9 @@ type Context struct {
 	Spaces      []*model.Space
 	WhitePoints []*model.WhitePoint
 
-	Funcs []ConvertFunc
-	Graph Graph
+	BuildSpaces []*model.Space
+	Funcs       []ConvertFunc
+	Graph       Graph
 
 	ConvertPkg Pkg
 	RootPkg    Pkg
@@ -33,8 +36,9 @@ type Context struct {
 
 	Path string
 
-	impls     map[Pair]struct{}
 	SplitFile bool
+
+	impls map[Pair]struct{}
 }
 
 func (ctx *Context) SetModuleByType(a any) {
@@ -109,6 +113,8 @@ func (ctx *Context) AddConvertFunc(funcs ...ConvertFunc) error {
 }
 
 func (ctx *Context) Build() error {
+	ctx.buildSpaces()
+
 	ctx.impls = make(map[Pair]struct{})
 
 	for _, fn := range ctx.Funcs {
@@ -168,4 +174,113 @@ func (ctx *Context) ResolveSpacePairName(from, to string) (*model.Space, *model.
 
 func (ctx *Context) ResolveSpacePair(pair Pair) (from, to *model.Space) {
 	return ctx.ResolveSpacePairName(pair.From, pair.To)
+}
+
+func (ctx *Context) buildSpaces() {
+	families := make(map[string][]*model.Space)
+	for _, s := range ctx.Spaces {
+		if s.Disable {
+			continue
+		}
+
+		families[s.Family] = append(families[s.Family], s)
+	}
+
+	var out []*model.Space
+
+	for _, family := range FamilyOrder {
+		group := families[family]
+		slices.SortStableFunc(group, func(a, b *model.Space) int {
+			oa := rgbOrder(a.Name)
+			ob := rgbOrder(b.Name)
+			if oa != ob {
+				if oa < ob {
+					return -1
+				} else {
+					return 1
+				}
+			}
+
+			aLinear := strings.HasPrefix(a.Name, "Linear")
+			bLinear := strings.HasPrefix(b.Name, "Linear")
+
+			if aLinear != bLinear {
+				return -1
+			}
+
+			return strings.Compare(a.Name, b.Name)
+		})
+
+		if len(group) == 0 {
+			continue
+		}
+
+		byName := make(map[string]*model.Space, len(group))
+		for _, s := range group {
+			byName[s.Name] = s
+		}
+
+		visited := make(map[string]bool, len(group))
+
+		var visit func(s *model.Space)
+		visit = func(s *model.Space) {
+			if visited[s.Name] {
+				return
+			}
+			visited[s.Name] = true
+
+			if s.Base != "" {
+				if base := byName[s.Base]; base != nil {
+					visit(base)
+				}
+			}
+
+			out = append(out, s)
+		}
+
+		for _, s := range group {
+			visit(s)
+		}
+
+		delete(families, family)
+	}
+
+	if len(families) > 0 {
+		var names []string
+		for name := range families {
+			names = append(names, name)
+		}
+		slices.Sort(names)
+
+		for _, family := range names {
+			out = append(out, families[family]...)
+		}
+	}
+
+	ctx.BuildSpaces = out
+}
+
+func rgbOrder(name string) int {
+	name = strings.TrimPrefix(name, "Linear")
+
+	switch name {
+	case "Srgb":
+		return 0
+	case "DisplayP3":
+		return 1
+	case "A98":
+		return 2
+	case "ProPhoto":
+		return 3
+	case "Rec2020":
+		return 4
+	case "Hsl":
+		return 100
+	case "Hsv":
+		return 101
+	case "Hwb":
+		return 102
+	default:
+		return 1000
+	}
 }

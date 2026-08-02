@@ -3,8 +3,10 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/thmalt/colors/gen/codegen"
 )
@@ -28,11 +30,33 @@ func main() {
 	ctx.AddSpaces(codegen.Spaces[:])
 	ctx.AddConvertFunc(codegen.ConvertFuncs[:]...)
 	ctx.AddWhitePoint(codegen.WhitePoints[:]...)
+
+	beg := time.Now()
+
+	fmt.Println("Building...")
 	ctx.Build()
 
+	fmt.Println()
+	fmt.Println("Spaces order:")
+	for i, space := range ctx.BuildSpaces {
+		fmt.Printf("%d\t%s\n", i, space.Name)
+	}
+
+	fmt.Println()
+
+	fmt.Println("Generating convert...")
 	codegen.GenerateConvertPkg(&ctx)
-	codegen.GenerateRootPkg(&ctx)
+
+	fmt.Println("Generating space...")
 	codegen.GenerateSpacePkg(&ctx)
+
+	fmt.Println("Generating colors...")
+	codegen.GenerateRootPkg(&ctx)
+
+	end := time.Now()
+
+	fmt.Println()
+	fmt.Printf("Completed in %v.\n", end.Sub(beg))
 }
 
 func findRoot(dir string) string {
