@@ -39,7 +39,7 @@ func GenerateConvertPkg(ctx *Context) {
 			fmt.Println("  Generate file", fileName)
 
 			genConvertPkgConversionBySpace(ctx, w, space)
-			w.WriteGoFile(
+			w.SaveGoFile(
 				filepath.Join(pkgPath, fileName),
 				ctx.ConvertPkg.Name,
 			)
@@ -51,7 +51,7 @@ func GenerateConvertPkg(ctx *Context) {
 		// all conversion in one file
 		genConvertPkgConversion(ctx, w)
 
-		w.WriteGoFile(
+		w.SaveGoFile(
 			filepath.Join(pkgPath, fileName),
 			ctx.ConvertPkg.Name,
 		)
@@ -60,7 +60,7 @@ func GenerateConvertPkg(ctx *Context) {
 	fmt.Println("  Generate file", fileName)
 
 	if genConvertPkgWhitePoint(ctx, w) {
-		w.WriteGoFile(
+		w.SaveGoFile(
 			filepath.Join(pkgPath, "whitepoint_gen.go"),
 			ctx.ConvertPkg.Name,
 		)
@@ -103,6 +103,7 @@ func genConvertPkgConversion(ctx *Context, w *writer.GoWriter) {
 }
 
 func genConvertPkgConversionBySpace(ctx *Context, w *writer.GoWriter, space *model.Space) {
+	first := true
 	for i, to := range ctx.BuildSpaces {
 		if to == nil {
 			log.Printf("space at index %d is nil\n", i)
@@ -121,7 +122,13 @@ func genConvertPkgConversionBySpace(ctx *Context, w *writer.GoWriter, space *mod
 			continue
 		}
 
-		processPair(ctx, w, space, to)
+		if !first {
+			w.Separate()
+		}
+
+		if processPair(ctx, w, space, to) {
+			first = false
+		}
 	}
 }
 
@@ -141,24 +148,25 @@ func genConvertPkgWhitePoint(ctx *Context, w *writer.GoWriter) bool {
 		w.LineWriteln(privateName, "Y = ", formatNormalizedFloat(xyz[1]))
 		w.LineWriteln(privateName, "Z = ", formatNormalizedFloat(xyz[2]))
 
-		w.Writeln()
+		w.Separate()
 
 		w.LineWriteln("inv", name, "X = 1 / ", privateName, "X")
 		w.LineWriteln("inv", name, "Y = 1 / ", privateName, "Y")
 		w.LineWriteln("inv", name, "Z = 1 / ", privateName, "Z")
+
 		w.End()
 
-		w.Writeln()
+		w.Separate()
 	}
 
 	return true
 }
 
-func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
+func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) bool {
 	path := ctx.Graph.FindPath(from, to)
 	if len(path) == 0 {
 		log.Printf("Not found conversion path: %q -> %q\n", from.Name, to.Name)
-		return
+		return false
 	}
 
 	ctx.impls[Pair{from.Name, to.Name}] = struct{}{}
@@ -187,14 +195,14 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 	}
 
 	funcName := FuncName(from.Name, to.Name)
-	w.LineCommentln("Conversion path (", len(path), " steps):")
-	w.LineCommentln()
-	w.LineCommentln("\t", from.DisplayName)
+
+	w.Comment("Conversion path (", len(path), " steps):")
+	w.Comment()
+	w.Comment("\t", from.DisplayName)
 	for _, node := range path {
-		w.LineCommentln("\t-> ", node.To.DisplayName)
+		w.Comment("\t-> ", node.To.DisplayName)
 	}
 
-	// w.LineCommentln(stringifyPath(path))
 	w.Func(funcName)
 	w.FuncParams(varJoinWithType(paramsVars...))
 	w.FuncResults(retString)
@@ -202,17 +210,24 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 
 	imported := false
 
-	wop := w.NewTemp()
+	wop := w.SubWriter()
 	inputVars := paramsVars
 
 	returned := false
 	last := len(ops) - 1
+
+	separate := false
 
 	for idx, op := range ops {
 		isLastOp := idx == last
 
 		switch op.Type {
 		case OpCall:
+			if separate {
+				wop.Separate()
+			}
+			separate = false
+
 			if isLastOp {
 				wop.Return(op.Pair.FuncName(), "(", strings.Join(inputVars, ", "), ")")
 				returned = true
@@ -234,6 +249,11 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 				inputVars = outputVars
 			}
 		case OpCbrt:
+			if idx > 0 {
+				wop.Separate()
+			}
+			separate = true
+
 			for _, v := range inputVars {
 				if !imported {
 					w.Import("math")
@@ -242,15 +262,22 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 
 				wop.LineWrite(v, " = math.Cbrt(", v, ")")
 			}
-
-			wop.NewlineWriteln()
 		case OpCube:
+			if idx > 0 {
+				wop.Separate()
+			}
+			separate = true
+
 			for _, v := range inputVars {
 				wop.LineWrite(v, " *= ", v, " * ", v)
 			}
 
-			wop.NewlineWriteln()
 		case OpMatrix:
+			if idx > 0 {
+				wop.Separate()
+			}
+			separate = true
+
 			outputVars := scope.ReserveUniqueN("f", len(inputVars))
 			isNewVar := true
 			if isLastOp {
@@ -301,14 +328,16 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 				}
 			}
 			inputVars = outputVars
-
-			wop.NewlineWriteln()
 		}
 	}
 
-	w.Write(wop.Bytes())
+	w.Append(wop)
 
 	if !returned {
+		if last > 0 {
+			w.Separate()
+		}
+
 		if returnResult {
 			w.Return(strings.Join(inputVars, ", "))
 		} else {
@@ -318,7 +347,7 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) {
 
 	w.End()
 
-	w.Writeln()
+	return true
 }
 
 func buildOps(ctx *Context, path []*Node) []Op {

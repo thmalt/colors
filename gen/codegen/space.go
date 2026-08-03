@@ -25,7 +25,7 @@ func GenerateSpacePkg(ctx *Context) {
 
 	genSpacePkgType(ctx, w)
 
-	w.WriteGoFile(
+	w.SaveGoFile(
 		filepath.Join(pkgPath, fileName),
 		ctx.SpacePkg.Name,
 	)
@@ -35,7 +35,7 @@ func GenerateSpacePkg(ctx *Context) {
 
 	genSpacePkgWhitePoint(ctx, w)
 
-	w.WriteGoFile(
+	w.SaveGoFile(
 		filepath.Join(pkgPath, fileName),
 		ctx.SpacePkg.Name,
 	)
@@ -45,7 +45,7 @@ func GenerateSpacePkg(ctx *Context) {
 func genSpacePkgType(ctx *Context, w *writer.GoWriter) {
 	w.LineWriteln("type Space uint", smallestUintType(len(ctx.BuildSpaces)))
 
-	w.Writeln()
+	w.Separate()
 
 	w.BeginGroup("const ")
 
@@ -57,14 +57,15 @@ func genSpacePkgType(ctx *Context, w *writer.GoWriter) {
 		w.LineWriteln(space.Name)
 	}
 
-	w.Writeln()
-	w.LineCommentln("Available space count")
+	w.Separate()
+
+	w.Comment("Available space count")
 	w.LineWriteln("SpaceCount")
 	w.End()
 
-	w.Writeln()
+	w.Separate()
 
-	ws := w.NewTemp()
+	ws := w.SubWriter()
 
 	w.Begin("var spaceInfos = [...]*spaceInfo")
 
@@ -131,15 +132,16 @@ func genSpacePkgType(ctx *Context, w *writer.GoWriter) {
 
 		ws.End()
 
-		ws.Writeln()
+		ws.Separate()
 	}
 
 	w.End()
-	w.Writeln()
 
-	w.Write(ws.Bytes())
+	w.Separate()
 
-	w.Writeln()
+	w.Append(ws)
+
+	w.Separate()
 
 	w.Method("s Space", "String")
 	w.FuncResults("string")
@@ -162,9 +164,11 @@ func genSpacePkgType(ctx *Context, w *writer.GoWriter) {
 }
 
 func genSpacePkgWhitePoint(ctx *Context, w *writer.GoWriter) {
-	w.Begin("type WhitePoint struct")
+	w.Begin("type WhitePoint struct ")
 	w.LineWriteln("Name string")
-	w.Writeln()
+
+	w.Separate()
+
 	w.LineWriteln("X ", FloatType)
 	w.LineWriteln("Y ", FloatType)
 	w.LineWriteln("Z ", FloatType)
@@ -172,11 +176,11 @@ func genSpacePkgWhitePoint(ctx *Context, w *writer.GoWriter) {
 
 	w.Writeln()
 
-	w.BeginGroup("var")
+	w.BeginGroup("var ")
 
 	for i, whitePoint := range ctx.WhitePoints {
 		if i > 0 {
-			w.Writeln()
+			w.Separate()
 		}
 
 		xyz := data.ChromaToXyz(whitePoint.X, whitePoint.Y)

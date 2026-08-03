@@ -27,7 +27,7 @@ func GenerateRootPkg(ctx *Context) {
 	genRootPkgColorType(ctx, w)
 	genRootPkgColorMethods(ctx, w)
 	genRootPkgColorConversionMethods(ctx, w)
-	w.WriteGoFile(
+	w.SaveGoFile(
 		filepath.Join(pkgPath, fileName),
 		ctx.RootPkg.Name,
 	)
@@ -40,7 +40,7 @@ func GenerateRootPkg(ctx *Context) {
 	w.Import(ctx.SpacePkg.Path)
 
 	genRootPkgColorConstructors(ctx, w)
-	w.WriteGoFile(
+	w.SaveGoFile(
 		filepath.Join(pkgPath, fileName),
 		ctx.RootPkg.Name,
 	)
@@ -56,7 +56,7 @@ func GenerateRootPkg(ctx *Context) {
 	)
 
 	genRootPkgColorStringify(ctx, w)
-	w.WriteGoFile(
+	w.SaveGoFile(
 		filepath.Join(pkgPath, fileName),
 		ctx.RootPkg.Name,
 	)
@@ -68,9 +68,9 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 		maxChannelCnt = max(maxChannelCnt, space.ChannelCount())
 	}
 
-	w.Begin("type Color struct")
+	w.Begin("type Color struct ")
 	w.LineWriteln("space ", ctx.SpacePkg.Join("Space"))
-	w.LineCommentln("channels")
+	w.Comment("channels")
 
 	w.LineWrite()
 
@@ -85,9 +85,9 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 	w.LineWrite("alpha ", FloatType)
 	w.End()
 
-	w.Writeln()
+	w.Separate()
 
-	w.LineCommentln("Get channel in current [space.Space]")
+	w.Comment("Get channel in current [space.Space]")
 	w.Method("c Color", "Channel")
 	w.FuncParams("index int")
 	w.FuncResults(FloatType, ", ", "bool")
@@ -105,8 +105,6 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 
 	w.End()
 
-	w.Writeln()
-
 	var b strings.Builder
 	var cases []string
 
@@ -118,6 +116,8 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 		cases = append(cases, b.String())
 	}
 
+	w.Separate()
+
 	// Channels
 	w.Method("c Color", "Channels")
 	w.FuncResults("[]", FloatType)
@@ -128,9 +128,9 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 	w.Return("nil")
 	w.End()
 
-	w.Writeln()
+	w.Separate()
 
-	w.Switch("info.ChannelCount()")
+	w.Switch("info.ChannelCount() ")
 	for i := maxChannelCnt; i > 0; i-- {
 		w.Case(i)
 		w.Return("[]", FloatType, "{", cases[i-1], "}")
@@ -141,7 +141,7 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 
 	w.End()
 
-	w.Writeln()
+	w.Separate()
 
 	// AppendChannels
 	w.Method("c Color", "AppendChannels")
@@ -154,13 +154,11 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 	w.Return("dst")
 	w.End()
 
-	w.Writeln()
+	w.Separate()
 
 	w.LineWriteln("ch := [...]", FloatType, "{", b.String(), "}")
 	w.Return("append(dst, ch[:info.ChannelCount()]...)")
 	w.End()
-
-	w.Writeln()
 }
 
 func genRootPkgColorMethods(ctx *Context, w *writer.GoWriter) {
@@ -180,7 +178,9 @@ func genRootPkgColorMethods(ctx *Context, w *writer.GoWriter) {
 			names = scope.ReserveUniqueAll(space.ChannelIdent()...)
 		}
 
-		w.LineCommentln(space.Name, " returns the color components in the [", ctx.SpacePkg.Join(space.Name), "] color space.")
+		w.Separate()
+
+		w.Comment(space.Name, " returns the color components in the [", ctx.SpacePkg.Join(space.Name), "] color space.")
 		w.Method("c Color", space.Name)
 		w.FuncResults(varJoinWithType(names...))
 		w.FuncBody()
@@ -195,9 +195,9 @@ func genRootPkgColorMethods(ctx *Context, w *writer.GoWriter) {
 		w.Return(b.String())
 		w.End()
 
-		w.Writeln()
+		w.Separate()
 
-		wsw := w.NewTemp()
+		wsw := w.SubWriter()
 
 		wsw.Switch("c.space ")
 		var args strings.Builder
@@ -229,18 +229,19 @@ func genRootPkgColorMethods(ctx *Context, w *writer.GoWriter) {
 		wsw.End()
 
 		if foundPath {
-			w.Write(wsw.Bytes())
+			w.Append(wsw)
 		} else {
 			w.Return()
 		}
 
 		w.End()
-		w.Writeln()
 	}
 }
 
 func genRootPkgColorConversionMethods(ctx *Context, w *writer.GoWriter) {
 	var spacePkg = ctx.SpacePkg
+
+	w.Separate()
 
 	w.Method("c Color", "To")
 	w.FuncParams("dst ", spacePkg.Join("Space"))
@@ -250,8 +251,9 @@ func genRootPkgColorConversionMethods(ctx *Context, w *writer.GoWriter) {
 	w.Return("c, nil")
 	w.End()
 
-	w.Writeln()
 	var scope VariableScope
+
+	w.Separate()
 
 	w.Switch("dst")
 	var b strings.Builder
@@ -278,13 +280,16 @@ func genRootPkgColorConversionMethods(ctx *Context, w *writer.GoWriter) {
 
 	w.End()
 
-	w.Writeln()
+	w.Separate()
 
 	w.Method("c Color", "MustTo")
 	w.FuncParams("dst ", spacePkg.Join("Space"))
 	w.FuncResults("Color")
 	w.FuncBody()
-	w.LineWriteln("to, _ := c.To(dst)")
+	w.LineWriteln("to, err := c.To(dst)")
+	w.If("err != nil")
+	w.LineWriteln("panic(err)")
+	w.End()
 	w.Return("to")
 	w.End()
 }
@@ -293,29 +298,33 @@ func genRootPkgColorConstructors(ctx *Context, w *writer.GoWriter) {
 	var b strings.Builder
 
 	for _, space := range ctx.BuildSpaces {
-		w.LineCommentln(space.Name, " returns a [Color] from ", space.DisplayName, " components.")
-		w.LineCommentln()
+		w.CommentFunc(func(gw *writer.GoWriter) {
+			gw.Writeln(space.Name, " returns a [Color] from ", space.DisplayName, " components.")
+			gw.Newline()
 
-		for _, c := range space.Channels {
-			w.LineComment('\t')
-			w.Write(c.Symbol)
-			w.Write(": [")
-			w.Write(formatNormalizedFloat(c.Min))
-			w.Write(", ")
-			w.Write(formatNormalizedFloat(c.Max))
+			for i, c := range space.Channels {
+				if i > 0 {
+					gw.Writeln()
+				}
 
-			if c.Circular {
-				w.Write(')')
-			} else {
-				w.Write(']')
+				gw.Write('\t')
+				gw.Write(c.Symbol)
+				gw.Write(": [")
+				gw.Write(formatNormalizedFloat(c.Min))
+				gw.Write(", ")
+				gw.Write(formatNormalizedFloat(c.Max))
+
+				if c.Circular {
+					gw.Write(')')
+				} else {
+					gw.Write(']')
+				}
+
+				if c.Unrestricted {
+					gw.Write(" (typical)")
+				}
 			}
-
-			if c.Unrestricted {
-				w.Write(" (typical)")
-			}
-
-			w.Writeln()
-		}
+		})
 
 		w.Func(space.Name)
 		params := space.ChannelSymbols()
@@ -344,6 +353,8 @@ func genRootPkgColorStringify(ctx *Context, w *writer.GoWriter) {
 
 	w.LineWriteln("var b strings.Builder")
 	w.LineWriteln("b.Grow(64)")
+
+	w.Separate()
 
 	w.Switch("c.space")
 
@@ -389,7 +400,7 @@ func genRootPkgColorStringify(ctx *Context, w *writer.GoWriter) {
 			}
 		}
 
-		w.Writeln()
+		w.Separate()
 
 		w.If("alpha := normalizeFloat(c.alpha); alpha != 1")
 		w.LineWriteln(`b.WriteString(" / ")`)
@@ -399,7 +410,7 @@ func genRootPkgColorStringify(ctx *Context, w *writer.GoWriter) {
 		w.Writeln("))")
 		w.End()
 
-		w.Writeln()
+		w.Separate()
 
 		w.LineWriteln(`b.WriteString(")")`)
 
@@ -409,7 +420,7 @@ func genRootPkgColorStringify(ctx *Context, w *writer.GoWriter) {
 	w.Return(`fmt.Sprintf("Color(<invalid space: %d>)", c.space)`)
 	w.End()
 
-	w.Writeln()
+	w.Separate()
 
 	w.Return("b.String()")
 
