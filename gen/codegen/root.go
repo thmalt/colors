@@ -72,7 +72,7 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 	w.LineWriteln("space ", ctx.SpacePkg.Join("Space"))
 	w.Comment("channels")
 
-	w.LineWrite()
+	w.Indent()
 
 	for i := range maxChannelCnt {
 		if i > 0 {
@@ -229,7 +229,7 @@ func genRootPkgColorMethods(ctx *Context, w *writer.GoWriter) {
 		wsw.End()
 
 		if foundPath {
-			w.Append(wsw)
+			w.Drain(wsw)
 		} else {
 			w.Return()
 		}

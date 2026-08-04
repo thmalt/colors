@@ -331,7 +331,7 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) bool {
 		}
 	}
 
-	w.Append(wop)
+	w.Drain(wop)
 
 	if !returned {
 		if last > 0 {

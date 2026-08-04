@@ -139,7 +139,7 @@ func genSpacePkgType(ctx *Context, w *writer.GoWriter) {
 
 	w.Separate()
 
-	w.Append(ws)
+	w.Drain(ws)
 
 	w.Separate()
 

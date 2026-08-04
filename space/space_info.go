@@ -42,16 +42,6 @@ const (
 	UnitDegree
 )
 
-func NewSpaceInfo(name, displayName, cssName string, whitePoint WhitePoint, channels []Channel) *spaceInfo {
-	return &spaceInfo{
-		name:        name,
-		displayName: displayName,
-		cssName:     cssName,
-		whitePoint:  whitePoint,
-		channels:    channels,
-	}
-}
-
 func (s *spaceInfo) Name() string           { return s.name }
 func (s *spaceInfo) DisplayName() string    { return s.displayName }
 func (s *spaceInfo) CssName() string        { return s.cssName }

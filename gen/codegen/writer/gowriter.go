@@ -37,6 +37,7 @@ func NewGoWriter() *GoWriter {
 	return &GoWriter{}
 }
 
+// SubWriter creates a new [GoWriter] whose contents can be written to w using [GoWriter.Drain].
 func (w *GoWriter) SubWriter() *GoWriter {
 	return &GoWriter{
 		indent:    w.indent,
@@ -44,7 +45,7 @@ func (w *GoWriter) SubWriter() *GoWriter {
 	}
 }
 
-func (w *GoWriter) Append(sub *GoWriter) {
+func (w *GoWriter) Drain(sub *GoWriter) {
 	w.Write(sub.Bytes())
 	sub.Reset()
 }
@@ -158,30 +159,67 @@ func (w *GoWriter) Module() string        { return w.module }
 func (w *GoWriter) RootPackage() string   { return w.rootMPkg }
 func (w *GoWriter) GeneratorPath() string { return w.generatorPath }
 
-func (w *GoWriter) newline() {
-	w.write('\n')
+func (w *GoWriter) Newline() {
+	w.Write('\n')
 }
 
-func (w *GoWriter) writef(format string, a ...any) {
+func (w *GoWriter) Writef(format string, a ...any) {
 	appendArgsFormat(&w.buf, format, a...)
 }
 
-func (w *GoWriter) write(a ...any) {
+func (w *GoWriter) Write(a ...any) {
 	appendArgs(&w.buf, a...)
 }
 
-func (w *GoWriter) writeln(a ...any) {
-	w.write(a...)
-	w.newline()
+func (w *GoWriter) Writeln(a ...any) {
+	w.Write(a...)
+	w.Newline()
+}
+
+func (w *GoWriter) LineWritef(format string, a ...any) {
+	w.Indent()
+	w.Writef(format, a...)
+}
+
+func (w *GoWriter) LineWrite(a ...any) {
+	w.Indent()
+	w.Write(a...)
+}
+
+func (w *GoWriter) LineWriteln(a ...any) {
+	w.Indent()
+	w.Write(a...)
+
+	w.Newline()
+}
+
+func (w *GoWriter) newlineWriteIndent() {
+	w.Newline()
+	w.writeIndent()
+}
+
+func (w *GoWriter) NewlineWritef(format string, a ...any) {
+	w.newlineWriteIndent()
+	w.Writef(format, a...)
+}
+
+func (w *GoWriter) NewlineWrite(a ...any) {
+	w.newlineWriteIndent()
+	w.Write(a...)
+}
+
+func (w *GoWriter) NewlineWriteln(a ...any) {
+	w.NewlineWrite(a...)
+	w.Newline()
 }
 
 func (w *GoWriter) writeIndent() {
 	for range w.indent {
-		w.write('\t')
+		w.Write('\t')
 	}
 }
 
-// Returns []byte, until next call [GoWrite.tempBytes] or [GoWrite.tempBytesFormat]
+// Returns temp []byte, until next call [GoWrite.tempBytes] or [GoWrite.tempBytesFormat]
 func (w *GoWriter) tempBytes(a ...any) []byte {
 	w.temp.Reset()
 
@@ -190,7 +228,7 @@ func (w *GoWriter) tempBytes(a ...any) []byte {
 	return w.temp.Bytes()
 }
 
-// Returns []byte, until next call [GoWrite.tempBytes] or [GoWrite.tempBytesFormat]
+// Returns temp []byte, until next call [GoWrite.tempBytes] or [GoWrite.tempBytesFormat]
 func (w *GoWriter) tempBytesFormat(format string, a ...any) []byte {
 	w.temp.Reset()
 
@@ -211,65 +249,12 @@ func (w *GoWriter) Out() {
 	w.indent--
 }
 
-func (w *GoWriter) Newline() {
-	w.newline()
-}
-
-func (w *GoWriter) Writef(format string, a ...any) {
-	w.writef(format, a...)
-}
-
-func (w *GoWriter) Write(a ...any) {
-	w.write(a...)
-}
-
-func (w *GoWriter) Writeln(a ...any) {
-	w.writeln(a...)
-}
-
-func (w *GoWriter) lineWriteIndent() {
+func (w *GoWriter) Indent() {
 	if !w.atLineStart() {
-		w.newline()
+		w.Newline()
 	}
 
 	w.writeIndent()
-}
-
-func (w *GoWriter) LineWritef(format string, a ...any) {
-	w.lineWriteIndent()
-	w.writef(format, a...)
-}
-
-func (w *GoWriter) LineWrite(a ...any) {
-	w.lineWriteIndent()
-	w.write(a...)
-}
-
-func (w *GoWriter) LineWriteln(a ...any) {
-	w.lineWriteIndent()
-	w.write(a...)
-
-	w.newline()
-}
-
-func (w *GoWriter) newlineWriteIndent() {
-	w.newline()
-	w.writeIndent()
-}
-
-func (w *GoWriter) NewlineWritef(format string, a ...any) {
-	w.newlineWriteIndent()
-	w.writef(format, a...)
-}
-
-func (w *GoWriter) NewlineWrite(a ...any) {
-	w.newlineWriteIndent()
-	w.write(a...)
-}
-
-func (w *GoWriter) NewlineWriteln(a ...any) {
-	w.NewlineWrite(a...)
-	w.newline()
 }
 
 func (w *GoWriter) atLineStart() bool {
@@ -278,7 +263,7 @@ func (w *GoWriter) atLineStart() bool {
 	return n == 0 || b[n-1] == '\n' || b[n-1] == '\r'
 }
 
-func (w *GoWriter) isLastSpace() bool {
+func (w *GoWriter) hasTrailingSpace() bool {
 	b := w.buf.Bytes()
 	r, _ := utf8.DecodeLastRune(b)
 
@@ -341,43 +326,17 @@ func (w *GoWriter) bracket(bracket rune) {
 	w.pushBracket(bracket)
 }
 
-func (w *GoWriter) intoBegin(bracket rune) {
+func (w *GoWriter) openIndent(bracket rune) {
 	w.bracket(bracket)
-	w.newline()
+	w.Newline()
+
 	w.In()
 }
 
-func (w *GoWriter) beginf(block blockKind, bracket rune, format string, a ...any) {
-	w.pushBlock(block)
-
-	w.LineWritef(format, a...)
-
-	w.intoBegin(bracket)
-}
-
-// Params can using []any, []any, any, ...
-func (w *GoWriter) begin(block blockKind, bracket rune, a ...any) {
-	w.pushBlock(block)
-
-	w.LineWrite()
-	for _, v := range a {
-		if x, ok := v.([]any); ok {
-			w.Write(x...)
-
-			continue
-		}
-
-		w.Write(v)
-	}
-
-	w.intoBegin(bracket)
-}
-
-func (w *GoWriter) end() {
+func (w *GoWriter) closeIndent() {
 	w.Out()
-	w.popBlock()
 
-	w.LineWrite()
+	w.Indent()
 	switch v := w.popBracket(); v {
 	case bracketBlock:
 		w.Write('}')
@@ -390,8 +349,35 @@ func (w *GoWriter) end() {
 	}
 }
 
+func (w *GoWriter) beginf(block blockKind, bracket rune, format string, a ...any) {
+	w.pushBlock(block)
+
+	w.LineWritef(format, a...)
+
+	w.openIndent(bracket)
+}
+
+// Params can using []any, []any, any, ...
+func (w *GoWriter) begin(block blockKind, bracket rune, a ...any) {
+	w.pushBlock(block)
+
+	w.Indent()
+	for _, v := range a {
+		if x, ok := v.([]any); ok {
+			w.Write(x...)
+
+			continue
+		}
+
+		w.Write(v)
+	}
+
+	w.openIndent(bracket)
+}
+
 func (w *GoWriter) End(a ...any) {
-	w.end()
+	w.popBlock()
+	w.closeIndent()
 	w.Writeln(a...)
 }
 
@@ -475,7 +461,7 @@ func (w *GoWriter) FuncBody() {
 
 	w.Write(' ')
 
-	w.intoBegin('{')
+	w.openIndent('{')
 }
 
 func (w *GoWriter) If(a ...any) {
@@ -490,10 +476,10 @@ func (w *GoWriter) ElseIf(a ...any) {
 	w.Out()
 	w.LineWrite("} else if ")
 	w.Write(a...)
-	if !w.isLastSpace() {
+	if !w.hasTrailingSpace() {
 		w.Write(' ')
 	}
-	w.intoBegin('{')
+	w.openIndent('{')
 }
 
 func (w *GoWriter) Else(a ...any) {
@@ -504,10 +490,10 @@ func (w *GoWriter) Else(a ...any) {
 	w.Out()
 	w.LineWrite("} else ")
 	w.Write(a...)
-	if !w.isLastSpace() {
+	if !w.hasTrailingSpace() {
 		w.Write(' ')
 	}
-	w.intoBegin('{')
+	w.openIndent('{')
 }
 
 func (w *GoWriter) Switch(a ...any) {
@@ -545,33 +531,22 @@ func (w *GoWriter) Return(a ...any) {
 		w.Write(b)
 	}
 
-	w.newline()
+	w.Newline()
 }
 
 func (w *GoWriter) comment(p []byte, inline bool) {
-	start := 0
+	first := true
 	lastBlank := false
 
-	first := true
-	for {
-		end := start
-		for end < len(p) && p[end] != '\n' {
-			end++
-		}
-
-		line := p[start:end]
-		if n := len(line); n > 0 && line[n-1] == '\r' {
-			line = line[:n-1]
-		}
-
+	forEachLine(p, func(line []byte) bool {
 		blank := isBlank(line)
 		if blank && lastBlank {
-			continue
+			return true
 		}
 
 		if inline && first {
 			if w.atLineStart() {
-				w.LineWrite()
+				w.Indent()
 			} else {
 				w.Write(' ')
 			}
@@ -590,13 +565,8 @@ func (w *GoWriter) comment(p []byte, inline bool) {
 		}
 
 		lastBlank = blank
-
-		if end == len(p) {
-			break
-		}
-
-		start = end + 1
-	}
+		return true
+	})
 }
 
 func (w *GoWriter) Comment(a ...any) {
@@ -628,7 +598,7 @@ func (w *GoWriter) CommentFunc(fn func(*GoWriter)) {
 
 func (w *GoWriter) SeparateN(n int) {
 	for i := w.TrailingBlankLinesN(n); i < n; i++ {
-		w.newline()
+		w.Newline()
 	}
 }
 

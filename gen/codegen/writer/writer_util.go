@@ -55,6 +55,8 @@ func WriteGo(w io.Writer, pkg, tags string, b []byte) (int, error) {
 	src = append(src, fmt.Sprintf("package %s\n\n", pkg)...)
 	src = append(src, b...)
 
+	src = normalizeGoSource(src)
+
 	formatted, err := format.Source(src)
 
 	if err != nil {
@@ -67,6 +69,71 @@ func WriteGo(w io.Writer, pkg, tags string, b []byte) (int, error) {
 
 func tagLines(tags string) string {
 	return "//go:build " + strings.ReplaceAll(tags, ",", " && ") + "\n"
+}
+
+func normalizeGoSource(src []byte) []byte {
+	var buf bytes.Buffer
+	lastBlank := false
+
+	forEachLine(src, func(line []byte) bool {
+		blank := isBlank(line)
+		if blank && lastBlank {
+			return true
+		}
+
+		if !blank {
+			buf.Write(line)
+		}
+		buf.WriteByte('\n')
+
+		lastBlank = blank
+		return true
+	})
+
+	b := buf.Bytes()
+
+	// Remove extra trailing blank lines.
+	for len(b) > 1 && b[len(b)-1] == '\n' && b[len(b)-2] == '\n' {
+		b = b[:len(b)-1]
+	}
+
+	// Ensure exactly one trailing newline.
+	if len(b) == 0 || b[len(b)-1] != '\n' {
+		b = append(b, '\n')
+	}
+
+	return b
+}
+
+func forEachLine(p []byte, fn func(line []byte) bool) {
+	start := 0
+
+	for start < len(p) {
+		end := start
+		for end < len(p) && p[end] != '\n' {
+			end++
+		}
+
+		line := p[start:end]
+		if n := len(line); n > 0 && line[n-1] == '\r' {
+			line = line[:n-1]
+		}
+
+		if !fn(line) {
+			return
+		}
+
+		if end == len(p) {
+			return
+		}
+
+		start = end + 1
+	}
+
+	// Empty input
+	if len(p) == 0 {
+		fn(nil)
+	}
 }
 
 func appendArgsFormat(dst *bytes.Buffer, format string, a ...any) {
@@ -116,44 +183,6 @@ func isASCIIBlank(p []byte) bool {
 			return false
 		}
 	}
-	return true
-}
-
-// for [bytes.Buffer]
-func isBlankArgs(a ...any) bool {
-	if len(a) == 0 {
-		return true
-	}
-
-	for _, v := range a {
-		switch x := v.(type) {
-		case string:
-			for _, r := range x {
-				if !unicode.IsSpace(r) {
-					return false
-				}
-			}
-		case []byte:
-			for len(x) > 0 {
-				r, size := utf8.DecodeRune(x)
-				if !unicode.IsSpace(r) {
-					return false
-				}
-				x = x[size:]
-			}
-		case byte:
-			if !unicode.IsSpace(rune(x)) {
-				return false
-			}
-		case rune:
-			if !unicode.IsSpace(x) {
-				return false
-			}
-		default:
-			return false
-		}
-	}
-
 	return true
 }
 
