@@ -14,6 +14,13 @@ var (
 		"Oklab",
 	}
 
+	HueInterpolation = [...]string{
+		"HueShorter",
+		"HueLonger",
+		"HueIncreasing",
+		"HueDecreasing",
+	}
+
 	Spaces = [...]model.Space{
 		{
 			Name:        "LinearSrgb",
@@ -188,6 +195,7 @@ var (
 			DisplayName: "HSL",
 			CssName:     "hsl",
 			WhitePoint:  "D65",
+			Coordinate:  model.Polar,
 			Channels: []model.Channel{
 				{Name: "Hue", Ident: "hue", Symbol: "h", DisplayName: "Hue", Min: 0, Max: 360, Circular: true, Unit: model.UnitDegree, Precision: 2},
 				{Name: "Saturation", Ident: "sat", Symbol: "s", DisplayName: "Saturation", Min: 0, Max: 1, Unit: model.UnitPercent, Precision: 4},
@@ -201,6 +209,7 @@ var (
 			DisplayName: "HSV",
 			CssName:     "hsv",
 			WhitePoint:  "D65",
+			Coordinate:  model.Polar,
 			Channels: []model.Channel{
 				{Name: "Hue", Ident: "hue", Symbol: "h", DisplayName: "Hue", Min: 0, Max: 360, Circular: true, Unit: model.UnitDegree, Precision: 2},
 				{Name: "Saturation", Ident: "sat", Symbol: "s", DisplayName: "Saturation", Min: 0, Max: 1, Unit: model.UnitPercent, Precision: 4},
@@ -214,6 +223,7 @@ var (
 			DisplayName: "HWB",
 			CssName:     "hwb",
 			WhitePoint:  "D65",
+			Coordinate:  model.Polar,
 			Channels: []model.Channel{
 				{Name: "Hue", Ident: "hue", Symbol: "h", DisplayName: "Hue", Min: 0, Max: 360, Circular: true, Unit: model.UnitDegree, Precision: 2},
 				{Name: "Whiteness", Ident: "white", Symbol: "w", DisplayName: "Whiteness", Min: 0, Max: 1, Unit: model.UnitPercent, Precision: 4},
@@ -268,6 +278,7 @@ var (
 			DisplayName: "CIE LCh",
 			CssName:     "lch",
 			WhitePoint:  "D50",
+			Coordinate:  model.Polar,
 			Channels: []model.Channel{
 				{Name: "Lightness", Ident: "light", Symbol: "l", DisplayName: "Lightness", Min: 0, Max: 100, Precision: 4},
 				{Name: "Chroma", Ident: "chroma", Symbol: "c", DisplayName: "Chroma", Min: 0, Max: 150, Unrestricted: true, Precision: 4},
@@ -294,6 +305,7 @@ var (
 			DisplayName: "Oklch",
 			CssName:     "oklch",
 			WhitePoint:  "D65",
+			Coordinate:  model.Polar,
 			Channels: []model.Channel{
 				{Name: "Lightness", Ident: "light", Symbol: "l", DisplayName: "Lightness", Min: 0, Max: 1, Precision: 6},
 				{Name: "Chroma", Ident: "chroma", Symbol: "c", DisplayName: "Chroma", Min: 0, Max: 0.4, Unrestricted: true, Precision: 6},

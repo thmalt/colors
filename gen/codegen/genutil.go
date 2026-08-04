@@ -11,12 +11,11 @@ import (
 const (
 	FloatType = "float64"
 
-	AlphaPrecision = 3
+	DefaultPrecision = 6
+	AlphaPrecision   = DefaultPrecision
 
 	FloatFormatNormalizedPrecFuncName = "formatNormalizedFloatPrec"
 	FloatFormatPrecFuncName           = "formatFloatPrec"
-
-	DefaultPrecision = 6
 )
 
 func smallestUintType(n int) int {

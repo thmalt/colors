@@ -33,10 +33,13 @@ type Context struct {
 	ConvertPkg Pkg
 	RootPkg    Pkg
 	SpacePkg   Pkg
+	InterpPkg  Pkg
 
 	Path string
 
 	SplitFile bool
+
+	FormatSource bool
 
 	impls map[Pair]struct{}
 }

@@ -24,7 +24,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -38,7 +38,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -52,7 +52,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -66,7 +66,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -80,7 +80,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -94,7 +94,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -108,7 +108,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -122,7 +122,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -136,7 +136,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -150,7 +150,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -164,7 +164,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -178,7 +178,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -194,7 +194,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -210,7 +210,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -226,7 +226,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -240,7 +240,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -254,7 +254,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -268,7 +268,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")
@@ -282,7 +282,7 @@ func (c Color) String() string {
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 3))
+			b.WriteString(formatFloatPrec(alpha, 6))
 		}
 
 		b.WriteString(")")

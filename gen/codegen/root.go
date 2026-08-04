@@ -11,12 +11,29 @@ import (
 )
 
 func GenerateRootPkg(ctx *Context) {
+	if ctx.RootPkg.Name == "" {
+		return
+	}
+
 	var pkgPath = filepath.Join(ctx.Directory, ctx.RootPkg.Path)
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
+	w.SetFormatSource(ctx.FormatSource)
 
 	// generate file color_gen.go
 	fileName := "color_gen.go"
+	fmt.Println("  Generate file", fileName)
+
+	w.Import(ctx.SpacePkg.Path)
+
+	genRootPkgColorType(ctx, w)
+	w.SaveGoFile(
+		filepath.Join(pkgPath, fileName),
+		ctx.RootPkg.Name,
+	)
+
+	// generate file color_gen.go
+	fileName = "color_convert_gen.go"
 	fmt.Println("  Generate file", fileName)
 
 	w.Import(
@@ -24,9 +41,8 @@ func GenerateRootPkg(ctx *Context) {
 		ctx.SpacePkg.Path,
 	)
 
-	genRootPkgColorType(ctx, w)
-	genRootPkgColorMethods(ctx, w)
 	genRootPkgColorConversionMethods(ctx, w)
+	genRootPkgColorConvertMethods(ctx, w)
 	w.SaveGoFile(
 		filepath.Join(pkgPath, fileName),
 		ctx.RootPkg.Name,
@@ -45,8 +61,8 @@ func GenerateRootPkg(ctx *Context) {
 		ctx.RootPkg.Name,
 	)
 
-	// generate file color_stringify_gen.go
-	fileName = "color_stringify_gen.go"
+	// generate file color_string_gen.go
+	fileName = "color_string_gen.go"
 	fmt.Println("  Generate file", fileName)
 
 	w.Import(
@@ -56,6 +72,20 @@ func GenerateRootPkg(ctx *Context) {
 	)
 
 	genRootPkgColorStringify(ctx, w)
+	w.SaveGoFile(
+		filepath.Join(pkgPath, fileName),
+		ctx.RootPkg.Name,
+	)
+
+	// generate file mix_gen.go
+	fileName = "mix_gen.go"
+	fmt.Println("  Generate file", fileName)
+
+	w.Import(
+		ctx.SpacePkg.Path,
+	)
+
+	genRootPkgMix(ctx, w)
 	w.SaveGoFile(
 		filepath.Join(pkgPath, fileName),
 		ctx.RootPkg.Name,
@@ -161,7 +191,7 @@ func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {
 	w.End()
 }
 
-func genRootPkgColorMethods(ctx *Context, w *writer.GoWriter) {
+func genRootPkgColorConvertMethods(ctx *Context, w *writer.GoWriter) {
 	var scope VariableScope
 	var convertPkg = ctx.ConvertPkg
 	var spacePkg = ctx.SpacePkg
@@ -279,19 +309,6 @@ func genRootPkgColorConversionMethods(ctx *Context, w *writer.GoWriter) {
 	w.End()
 
 	w.End()
-
-	w.Separate()
-
-	w.Method("c Color", "MustTo")
-	w.FuncParams("dst ", spacePkg.Join("Space"))
-	w.FuncResults("Color")
-	w.FuncBody()
-	w.LineWriteln("to, err := c.To(dst)")
-	w.If("err != nil")
-	w.LineWriteln("panic(err)")
-	w.End()
-	w.Return("to")
-	w.End()
 }
 
 func genRootPkgColorConstructors(ctx *Context, w *writer.GoWriter) {
@@ -304,7 +321,7 @@ func genRootPkgColorConstructors(ctx *Context, w *writer.GoWriter) {
 
 			for i, c := range space.Channels {
 				if i > 0 {
-					gw.Writeln()
+					gw.Newline()
 				}
 
 				gw.Write('\t')
@@ -342,7 +359,8 @@ func genRootPkgColorConstructors(ctx *Context, w *writer.GoWriter) {
 		w.Return("Color{space: space.", space.Name, ", ", b.String(), ", alpha: 1}")
 
 		w.End()
-		w.Writeln()
+
+		w.Separate()
 	}
 }
 
@@ -424,5 +442,138 @@ func genRootPkgColorStringify(ctx *Context, w *writer.GoWriter) {
 
 	w.Return("b.String()")
 
+	w.End()
+}
+
+func genRootPkgMix(ctx *Context, w *writer.GoWriter) {
+	w.Func("Mix")
+	w.FuncParams("c1, c2 Color, t float64, opts MixOptions")
+	w.FuncResults("Color")
+	w.FuncBody()
+
+	w.If("c1.space.IsValid() && c2.space.IsValid() && !opts.Space.IsValid()")
+	w.Return("Color{}")
+	w.End()
+
+	w.Separate()
+	w.LineWrite("c1 = c1.MustTo(opts.Space)")
+	w.LineWrite("c2 = c2.MustTo(opts.Space)")
+
+	w.Separate()
+	w.Switch("opts.Space ")
+	for _, space := range ctx.BuildSpaces {
+		w.Case(ctx.SpacePkg.Join(space.Name))
+		w.Return("mix", space.Name, "(c1, c2, t, opts)")
+	}
+	w.End()
+
+	w.Separate()
+	w.LineWrite(`panic("unreachable")`)
+	w.End()
+
+	for _, space := range ctx.BuildSpaces {
+		w.Separate()
+		genMixSpaceFunction(ctx, w, space)
+	}
+}
+
+func genMixSpaceFunction(ctx *Context, w *writer.GoWriter, space *model.Space) {
+	c1 := "cl1"
+	c2 := "cl2"
+
+	w.Func("mix", space.Name)
+	w.FuncParams(c1, ", ", c2, " Color, t float64, opts MixOptions")
+	w.FuncResults("Color")
+	w.FuncBody()
+
+	channels := space.Channels
+	v0 := space.ChannelSymbols()
+	v1 := make([]string, 0, len(v0))
+	v2 := make([]string, 0, len(v0))
+
+	for _, sym := range v0 {
+		v1 = append(v1, sym+"1")
+		v2 = append(v2, sym+"2")
+	}
+
+	w.LineWriteJoin(v1, ", ")
+	w.Write(" := ", c1, ".", space.Name, "()")
+
+	w.LineWriteJoin(v2, ", ")
+	w.Write(" := ", c2, ".", space.Name, "()")
+
+	w.Separate()
+	w.LineWrite("alpha1, alpha2 := ", c1, ".Alpha(), ", c2, ".Alpha()")
+
+	w.Separate()
+	w.LineWrite("alpha := lerp(alpha1, alpha2, t)")
+
+	w.Separate()
+	w.If("opts.Premultiplied")
+
+	for i := range v1 {
+		if !channels[i].Circular {
+			w.LineWrite(v1[i], " *= ", "alpha1")
+		}
+	}
+
+	w.Separate()
+	for i := range v2 {
+		if !channels[i].Circular {
+			w.LineWrite(v2[i], " *= ", "alpha2")
+		}
+	}
+
+	w.End()
+
+	w.Separate()
+	for i := range v0 {
+		if channels[i].Circular {
+			if i > 0 {
+				w.Separate()
+			}
+
+			w.LineWrite("var ", v0[i], " ", FloatType)
+			w.Switch("opts.Hue ")
+			for _, hue := range HueInterpolation {
+				w.Case(hue)
+				w.LineWrite(v0[i], " = lerp", hue, "(", v1[i], ", ", v2[i], ", t)")
+			}
+			w.End()
+
+			w.Separate()
+		} else {
+			w.LineWrite(v0[i], " := lerp(", v1[i], ", ", v2[i], ", t)")
+		}
+	}
+
+	w.Separate()
+	w.If("opts.Premultiplied")
+	w.If("alpha != 0")
+	w.LineWrite("inv := 1 / alpha")
+
+	w.Separate()
+	for i := range v0 {
+		if !channels[i].Circular {
+			w.LineWrite(v0[i], " *= inv")
+		}
+	}
+	w.End()
+	w.End()
+
+	w.Separate()
+
+	var b strings.Builder
+	for i, v := range v0 {
+		if i > 0 {
+			b.WriteString(", ")
+		}
+
+		b.WriteString("c")
+		b.WriteByte(byte('1' + i))
+		b.WriteString(": ")
+		b.WriteString(v)
+	}
+	w.Return("Color{space: ", ctx.SpacePkg.Join(space.Name), ", ", b.String(), ", alpha: alpha}")
 	w.End()
 }

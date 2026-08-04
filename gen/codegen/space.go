@@ -10,9 +10,14 @@ import (
 )
 
 func GenerateSpacePkg(ctx *Context) {
+	if ctx.SpacePkg.Name == "" {
+		return
+	}
+
 	var pkgPath = filepath.Join(ctx.Directory, ctx.SpacePkg.Path)
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
+	w.SetFormatSource(ctx.FormatSource)
 
 	// generate file ctx.SpacePkg.Name + _gen.go
 	fileName := ctx.SpacePkg.Name + "_gen.go"
@@ -82,6 +87,8 @@ func genSpacePkgType(ctx *Context, w *writer.GoWriter) {
 		if whitePoint := LookupWhitePoint(space.WhitePoint); whitePoint != nil {
 			ws.LineWritef("whitePoint: %s,\n", whitePoint.Name)
 		}
+
+		ws.LineWritef("coordinate: %s,\n", space.Coordinate)
 
 		ws.Begin("channels: []Channel")
 		for _, c := range space.Channels {
@@ -174,7 +181,7 @@ func genSpacePkgWhitePoint(ctx *Context, w *writer.GoWriter) {
 	w.LineWriteln("Z ", FloatType)
 	w.End()
 
-	w.Writeln()
+	w.Separate()
 
 	w.BeginGroup("var ")
 

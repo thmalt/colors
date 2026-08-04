@@ -14,6 +14,7 @@ import (
 func main() {
 	var ctx codegen.Context
 	ctx.SplitFile = true
+	ctx.FormatSource = true
 
 	ctx.SetModuleByType(ctx)
 	ctx.Directory = findRoot("./")
@@ -26,6 +27,9 @@ func main() {
 
 	ctx.SpacePkg.Name = "space"
 	ctx.SpacePkg.Path = "/space"
+
+	ctx.InterpPkg.Name = "interp"
+	ctx.InterpPkg.Path = "/interp"
 
 	ctx.AddSpaces(codegen.Spaces[:])
 	ctx.AddConvertFunc(codegen.ConvertFuncs[:]...)
@@ -52,6 +56,9 @@ func main() {
 
 	fmt.Println("Generating colors...")
 	codegen.GenerateRootPkg(&ctx)
+
+	fmt.Println("Generating interp...")
+	codegen.GenerateInterpPkg(&ctx)
 
 	end := time.Now()
 

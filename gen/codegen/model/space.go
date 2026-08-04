@@ -2,19 +2,21 @@ package model
 
 import (
 	"encoding/json"
+	"fmt"
 	"math"
 	"strings"
 )
 
 type Space struct {
-	Name        string    `json:"name"`
-	Family      string    `json:"Family,omitempty"`
-	Base        string    `json:"base,omitempty"`
-	DisplayName string    `json:"displayName"`
-	CssName     string    `json:"cssName"`
-	Aliases     []string  `json:"aliases,omitempty"`
-	WhitePoint  string    `json:"whitePoint"`
-	Channels    []Channel `json:"channels"`
+	Name        string           `json:"name"`
+	Family      string           `json:"Family,omitempty"`
+	Base        string           `json:"base,omitempty"`
+	DisplayName string           `json:"displayName"`
+	CssName     string           `json:"cssName"`
+	Aliases     []string         `json:"aliases,omitempty"`
+	WhitePoint  string           `json:"whitePoint"`
+	Coordinate  CoordinateSystem `json:"coordinate,omitempty"`
+	Channels    []Channel        `json:"channels"`
 
 	UseColorFunction bool `json:"useColorFunction"`
 	Disable          bool `json:"disable,omitempty"`
@@ -38,6 +40,13 @@ type Channel struct {
 	Precision int      `json:"precision,omitempty"`
 }
 
+type CoordinateSystem uint8
+
+const (
+	Cartesian CoordinateSystem = iota
+	Polar
+)
+
 type UnitKind uint8
 
 const (
@@ -49,6 +58,17 @@ const (
 	UnitGradian
 	UnitTurn
 )
+
+func (c CoordinateSystem) String() string {
+	switch c {
+	case Cartesian:
+		return "Cartesian"
+	case Polar:
+		return "Polar"
+	default:
+		return fmt.Sprintf("CoordinateSystem(%d)", c)
+	}
+}
 
 func (c Channel) MinDegree() float64 {
 	return AngleToDegree(c.Min, c.Unit)
@@ -73,7 +93,7 @@ func (u UnitKind) GoString() string {
 	case UnitTurn:
 		return "UnitTurn"
 	default:
-		return ""
+		return fmt.Sprintf("UnitKind(%d)", u)
 	}
 }
 

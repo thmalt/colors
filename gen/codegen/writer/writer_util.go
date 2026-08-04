@@ -44,7 +44,7 @@ const (
 	bracketArray = '['
 )
 
-func WriteGo(w io.Writer, pkg, tags string, b []byte) (int, error) {
+func WriteGo(w io.Writer, pkg, tags string, b []byte, formatSource bool) (int, error) {
 	var src []byte
 
 	if tags != "" {
@@ -56,6 +56,11 @@ func WriteGo(w io.Writer, pkg, tags string, b []byte) (int, error) {
 	src = append(src, b...)
 
 	src = normalizeGoSource(src)
+
+	if !formatSource {
+		fmt.Println("Don't using format")
+		return w.Write(src)
+	}
 
 	formatted, err := format.Source(src)
 

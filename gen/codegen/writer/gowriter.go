@@ -31,6 +31,8 @@ type GoWriter struct {
 	lastBlock    blockKind
 	blocks       []blockKind
 	bracketStack []rune
+
+	formatSource bool
 }
 
 func NewGoWriter() *GoWriter {
@@ -124,7 +126,7 @@ func (w *GoWriter) WriteGo(out io.Writer, pkg, tags string) (int, error) {
 
 	buf.Write(w.buf.Bytes())
 
-	return WriteGo(out, pkg, tags, buf.Bytes())
+	return WriteGo(out, pkg, tags, buf.Bytes(), w.formatSource)
 }
 
 func (w *GoWriter) SetGeneratedBy(module, generatorPath string) {
@@ -153,6 +155,14 @@ func (w *GoWriter) SetGeneratedFromType(a any) {
 
 	w.rootMPkg = filepath.Base(w.module)
 	w.generatorPath = "." + strings.TrimPrefix(pkgPath, w.module)
+}
+
+func (w *GoWriter) FormatSource() bool {
+	return w.formatSource
+}
+
+func (w *GoWriter) SetFormatSource(formatSource bool) {
+	w.formatSource = formatSource
 }
 
 func (w *GoWriter) Module() string        { return w.module }
@@ -212,6 +222,30 @@ func (w *GoWriter) NewlineWriteln(a ...any) {
 	w.NewlineWrite(a...)
 	w.Newline()
 }
+
+///
+
+func (w *GoWriter) WriteJoin(elems []string, sep string) {
+	for i, s := range elems {
+		if i > 0 {
+			w.Write(sep)
+		}
+		w.Write(s)
+	}
+}
+
+func (w *GoWriter) LineWriteJoin(elems []string, sep string) {
+	w.Indent()
+
+	for i, s := range elems {
+		if i > 0 {
+			w.Write(sep)
+		}
+		w.Write(s)
+	}
+}
+
+///
 
 func (w *GoWriter) writeIndent() {
 	for range w.indent {
@@ -397,16 +431,22 @@ func (w *GoWriter) BeginGroupf(format string, a ...any) {
 	w.beginf(blockNone, '(', format, a...)
 }
 
-func (w *GoWriter) Method(receiver, name string) {
+func (w *GoWriter) Method(receiver string, names ...string) {
 	w.pushBlock(blockFuncName)
 
-	w.LineWrite("func (", receiver, ") ", name)
+	w.LineWrite("func (", receiver, ") ")
+	for _, name := range names {
+		w.Write(name)
+	}
 }
 
-func (w *GoWriter) Func(name string) {
+func (w *GoWriter) Func(names ...string) {
 	w.pushBlock(blockFuncName)
 
-	w.LineWrite("func ", name)
+	w.LineWrite("func ")
+	for _, name := range names {
+		w.Write(name)
+	}
 }
 
 func (w *GoWriter) FuncParams(params ...any) {

@@ -1,5 +1,9 @@
 package space
 
+import (
+	"strconv"
+)
+
 type SpaceInfo interface {
 	Name() string
 	DisplayName() string
@@ -16,10 +20,18 @@ type spaceInfo struct {
 	displayName string
 	cssName     string
 	whitePoint  WhitePoint
+	coordinate  CoordinateSystem
 	channels    []Channel
 
 	useColorFunction bool
 }
+
+type CoordinateSystem uint8
+
+const (
+	Cartesian CoordinateSystem = iota
+	Polar
+)
 
 type Channel struct {
 	Name        string
@@ -58,4 +70,15 @@ func (s *spaceInfo) Channel(index int) (Channel, bool) {
 
 func (s *spaceInfo) Channels() []Channel {
 	return append([]Channel{}, s.channels...)
+}
+
+func (c CoordinateSystem) String() string {
+	switch c {
+	case Cartesian:
+		return "Cartesian"
+	case Polar:
+		return "Polar"
+	default:
+		return "CoordinateSystem(" + strconv.FormatUint(uint64(c), 10) + ")"
+	}
 }

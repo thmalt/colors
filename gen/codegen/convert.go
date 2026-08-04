@@ -13,15 +13,21 @@ import (
 )
 
 func GenerateConvertPkg(ctx *Context) {
+	if ctx.ConvertPkg.Name == "" {
+		return
+	}
+
 	var pkgPath = filepath.Join(ctx.Directory, ctx.ConvertPkg.Path)
 
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
+	w.SetFormatSource(ctx.FormatSource)
 
 	if ctx.SplitFile {
 		for i, space := range ctx.BuildSpaces {
 			if space == nil {
 				log.Printf("space at index %d is nil\n", i)
+				continue
 			}
 
 			if space.Disable {
@@ -103,7 +109,6 @@ func genConvertPkgConversion(ctx *Context, w *writer.GoWriter) {
 }
 
 func genConvertPkgConversionBySpace(ctx *Context, w *writer.GoWriter, space *model.Space) {
-	first := true
 	for i, to := range ctx.BuildSpaces {
 		if to == nil {
 			log.Printf("space at index %d is nil\n", i)
@@ -122,13 +127,9 @@ func genConvertPkgConversionBySpace(ctx *Context, w *writer.GoWriter, space *mod
 			continue
 		}
 
-		if !first {
-			w.Separate()
-		}
+		processPair(ctx, w, space, to)
 
-		if processPair(ctx, w, space, to) {
-			first = false
-		}
+		w.Separate()
 	}
 }
 

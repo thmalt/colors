@@ -60,6 +60,7 @@ var xyzD65Info = spaceInfo{
 	displayName: "CIE XYZ D65",
 	cssName:     "xyz-d65",
 	whitePoint:  D65,
+	coordinate:  Cartesian,
 	channels: []Channel{
 		{
 			Name:        "X",
@@ -94,6 +95,7 @@ var xyzD50Info = spaceInfo{
 	displayName: "CIE XYZ D50",
 	cssName:     "xyz-d50",
 	whitePoint:  D50,
+	coordinate:  Cartesian,
 	channels: []Channel{
 		{
 			Name:        "X",
@@ -128,6 +130,7 @@ var linearSrgbInfo = spaceInfo{
 	displayName: "Linear sRGB",
 	cssName:     "srgb-linear",
 	whitePoint:  D65,
+	coordinate:  Cartesian,
 	channels: []Channel{
 		{
 			Name:        "Red",
@@ -162,6 +165,7 @@ var srgbInfo = spaceInfo{
 	displayName: "sRGB",
 	cssName:     "srgb",
 	whitePoint:  D65,
+	coordinate:  Cartesian,
 	channels: []Channel{
 		{
 			Name:        "Red",
@@ -196,6 +200,7 @@ var linearDisplayP3Info = spaceInfo{
 	displayName: "Linear Display P3",
 	cssName:     "display-p3-linear",
 	whitePoint:  D65,
+	coordinate:  Cartesian,
 	channels: []Channel{
 		{
 			Name:        "Red",
@@ -230,6 +235,7 @@ var displayP3Info = spaceInfo{
 	displayName: "Display P3",
 	cssName:     "display-p3",
 	whitePoint:  D65,
+	coordinate:  Cartesian,
 	channels: []Channel{
 		{
 			Name:        "Red",
@@ -264,6 +270,7 @@ var linearA98Info = spaceInfo{
 	displayName: "Linear Adobe RGB (1998)",
 	cssName:     "a98-rgb-linear",
 	whitePoint:  D65,
+	coordinate:  Cartesian,
 	channels: []Channel{
 		{
 			Name:        "Red",
@@ -298,6 +305,7 @@ var a98Info = spaceInfo{
 	displayName: "Adobe RGB (1998)",
 	cssName:     "a98-rgb",
 	whitePoint:  D65,
+	coordinate:  Cartesian,
 	channels: []Channel{
 		{
 			Name:        "Red",
@@ -332,6 +340,7 @@ var linearProPhotoInfo = spaceInfo{
 	displayName: "Linear ProPhoto",
 	cssName:     "prophoto-rgb-linear",
 	whitePoint:  D50,
+	coordinate:  Cartesian,
 	channels: []Channel{
 		{
 			Name:        "Red",
@@ -366,6 +375,7 @@ var proPhotoInfo = spaceInfo{
 	displayName: "ProPhoto",
 	cssName:     "prophoto-rgb",
 	whitePoint:  D50,
+	coordinate:  Cartesian,
 	channels: []Channel{
 		{
 			Name:        "Red",
@@ -400,6 +410,7 @@ var linearRec2020Info = spaceInfo{
 	displayName: "Linear Rec. 2020",
 	cssName:     "rec2020-linear",
 	whitePoint:  D65,
+	coordinate:  Cartesian,
 	channels: []Channel{
 		{
 			Name:        "Red",
@@ -434,6 +445,7 @@ var rec2020Info = spaceInfo{
 	displayName: "Rec. 2020",
 	cssName:     "rec2020",
 	whitePoint:  D65,
+	coordinate:  Cartesian,
 	channels: []Channel{
 		{
 			Name:        "Red",
@@ -468,6 +480,7 @@ var hslInfo = spaceInfo{
 	displayName: "HSL",
 	cssName:     "hsl",
 	whitePoint:  D65,
+	coordinate:  Polar,
 	channels: []Channel{
 		{
 			Name:        "Hue",
@@ -505,6 +518,7 @@ var hsvInfo = spaceInfo{
 	displayName: "HSV",
 	cssName:     "hsv",
 	whitePoint:  D65,
+	coordinate:  Polar,
 	channels: []Channel{
 		{
 			Name:        "Hue",
@@ -542,6 +556,7 @@ var hwbInfo = spaceInfo{
 	displayName: "HWB",
 	cssName:     "hwb",
 	whitePoint:  D65,
+	coordinate:  Polar,
 	channels: []Channel{
 		{
 			Name:        "Hue",
@@ -579,6 +594,7 @@ var labInfo = spaceInfo{
 	displayName: "CIE Lab",
 	cssName:     "lab",
 	whitePoint:  D50,
+	coordinate:  Cartesian,
 	channels: []Channel{
 		{
 			Name:        "Lightness",
@@ -614,6 +630,7 @@ var lchInfo = spaceInfo{
 	displayName: "CIE LCh",
 	cssName:     "lch",
 	whitePoint:  D50,
+	coordinate:  Polar,
 	channels: []Channel{
 		{
 			Name:        "Lightness",
@@ -650,6 +667,7 @@ var oklabInfo = spaceInfo{
 	displayName: "Oklab",
 	cssName:     "oklab",
 	whitePoint:  D65,
+	coordinate:  Cartesian,
 	channels: []Channel{
 		{
 			Name:        "Lightness",
@@ -685,6 +703,7 @@ var oklchInfo = spaceInfo{
 	displayName: "Oklch",
 	cssName:     "oklch",
 	whitePoint:  D65,
+	coordinate:  Polar,
 	channels: []Channel{
 		{
 			Name:        "Lightness",
