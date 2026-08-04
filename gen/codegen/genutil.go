@@ -16,6 +16,8 @@ const (
 
 	FloatFormatNormalizedPrecFuncName = "formatNormalizedFloatPrec"
 	FloatFormatPrecFuncName           = "formatFloatPrec"
+
+	PanicUnreachable = `panic("unreachable")`
 )
 
 func smallestUintType(n int) int {

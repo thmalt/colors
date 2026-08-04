@@ -18,11 +18,10 @@ func (c Color) WithAlpha(alpha float64) Color {
 	return c
 }
 
-func (c Color) ChannelCount() (int, error) {
-	info := c.space.Info()
-	if info == nil {
-		return 0, ErrUnknownSpace
-	}
+func (c Color) ChannelCount() int {
+	return c.space.ChannelCount()
+}
 
-	return info.ChannelCount(), nil
+func (c Color) CoordinateSystem() space.CoordinateSystem {
+	return c.space.CoordinateSystem()
 }

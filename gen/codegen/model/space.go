@@ -2,8 +2,8 @@ package model
 
 import (
 	"encoding/json"
-	"fmt"
 	"math"
+	"strconv"
 	"strings"
 )
 
@@ -66,7 +66,7 @@ func (c CoordinateSystem) String() string {
 	case Polar:
 		return "Polar"
 	default:
-		return fmt.Sprintf("CoordinateSystem(%d)", c)
+		return "CoordinateSystem(" + strconv.FormatUint(uint64(c), 10) + ")"
 	}
 }
 
@@ -78,7 +78,7 @@ func (c Channel) MaxDegree() float64 {
 	return AngleToDegree(c.Max, c.Unit)
 }
 
-func (u UnitKind) GoString() string {
+func (u UnitKind) String() string {
 	switch u {
 	case UnitNumber:
 		return "UnitNumber"
@@ -93,7 +93,7 @@ func (u UnitKind) GoString() string {
 	case UnitTurn:
 		return "UnitTurn"
 	default:
-		return fmt.Sprintf("UnitKind(%d)", u)
+		return "UnitKind(" + strconv.FormatUint(uint64(u), 10) + ")"
 	}
 }
 

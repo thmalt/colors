@@ -3,13 +3,17 @@
 package colors
 
 import (
-	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/thmalt/colors/space"
 )
 
 func (c Color) String() string {
+	if !c.space.IsValid() {
+		return "Color(<invalid space: " + strconv.FormatUint(uint64(c.space), 10) + ">)"
+	}
+
 	var b strings.Builder
 	b.Grow(64)
 
@@ -287,7 +291,7 @@ func (c Color) String() string {
 
 		b.WriteString(")")
 	default:
-		return fmt.Sprintf("Color(<invalid space: %d>)", c.space)
+		panic("unreachable")
 	}
 
 	return b.String()

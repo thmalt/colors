@@ -6,7 +6,18 @@ import (
 	"github.com/thmalt/colors/space"
 )
 
+// Mix returns the [Color] interpolation of c1 and c2.
+//
+// The interpolation is performed in opts.Space. If opts.Space is
+// [space.SpaceInvalid], [space.Oklab] is used.
+//
+// The interpolation behavior can be customized through opts, including
+// premultiplied alpha and hue interpolation for polar color spaces.
 func Mix(c1, c2 Color, t float64, opts MixOptions) Color {
+	if opts.Space == space.SpaceInvalid {
+		opts.Space = space.Oklab
+	}
+
 	if c1.space.IsValid() && c2.space.IsValid() && !opts.Space.IsValid() {
 		return Color{}
 	}
@@ -58,707 +69,650 @@ func Mix(c1, c2 Color, t float64, opts MixOptions) Color {
 	panic("unreachable")
 }
 
-func mixXyzD65(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	x1, y1, z1 := cl1.XyzD65()
-	x2, y2, z2 := cl2.XyzD65()
+func mixXyzD65(c1, c2 Color, t float64, opts MixOptions) Color {
+	var x, y, z float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
-		x1 *= alpha1
-		y1 *= alpha1
-		z1 *= alpha1
+		w1, w2 := a1*(1-t), a2*t
 
-		x2 *= alpha2
-		y2 *= alpha2
-		z2 *= alpha2
-	}
+		x = c1.c1*w1 + c2.c1*w2
+		y = c1.c2*w1 + c2.c2*w2
+		z = c1.c3*w1 + c2.c3*w2
 
-	x := lerp(x1, x2, t)
-	y := lerp(y1, y2, t)
-	z := lerp(z1, z2, t)
-
-	if opts.Premultiplied {
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			x *= inv
 			y *= inv
 			z *= inv
 		}
+	} else {
+		x = lerp(c1.c1, c2.c1, t)
+		y = lerp(c1.c2, c2.c2, t)
+		z = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.XyzD65, c1: x, c2: y, c3: z, alpha: alpha}
+	return Color{
+		space: space.XyzD65,
+		c1:    x, c2: y, c3: z,
+		alpha: alpha,
+	}
 }
 
-func mixXyzD50(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	x1, y1, z1 := cl1.XyzD50()
-	x2, y2, z2 := cl2.XyzD50()
+func mixXyzD50(c1, c2 Color, t float64, opts MixOptions) Color {
+	var x, y, z float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
-		x1 *= alpha1
-		y1 *= alpha1
-		z1 *= alpha1
+		w1, w2 := a1*(1-t), a2*t
 
-		x2 *= alpha2
-		y2 *= alpha2
-		z2 *= alpha2
-	}
+		x = c1.c1*w1 + c2.c1*w2
+		y = c1.c2*w1 + c2.c2*w2
+		z = c1.c3*w1 + c2.c3*w2
 
-	x := lerp(x1, x2, t)
-	y := lerp(y1, y2, t)
-	z := lerp(z1, z2, t)
-
-	if opts.Premultiplied {
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			x *= inv
 			y *= inv
 			z *= inv
 		}
+	} else {
+		x = lerp(c1.c1, c2.c1, t)
+		y = lerp(c1.c2, c2.c2, t)
+		z = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.XyzD50, c1: x, c2: y, c3: z, alpha: alpha}
+	return Color{
+		space: space.XyzD50,
+		c1:    x, c2: y, c3: z,
+		alpha: alpha,
+	}
 }
 
-func mixLinearSrgb(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	r1, g1, b1 := cl1.LinearSrgb()
-	r2, g2, b2 := cl2.LinearSrgb()
+func mixLinearSrgb(c1, c2 Color, t float64, opts MixOptions) Color {
+	var r, g, b float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
-		r1 *= alpha1
-		g1 *= alpha1
-		b1 *= alpha1
+		w1, w2 := a1*(1-t), a2*t
 
-		r2 *= alpha2
-		g2 *= alpha2
-		b2 *= alpha2
-	}
+		r = c1.c1*w1 + c2.c1*w2
+		g = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
 
-	r := lerp(r1, r2, t)
-	g := lerp(g1, g2, t)
-	b := lerp(b1, b2, t)
-
-	if opts.Premultiplied {
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			r *= inv
 			g *= inv
 			b *= inv
 		}
+	} else {
+		r = lerp(c1.c1, c2.c1, t)
+		g = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.LinearSrgb, c1: r, c2: g, c3: b, alpha: alpha}
+	return Color{
+		space: space.LinearSrgb,
+		c1:    r, c2: g, c3: b,
+		alpha: alpha,
+	}
 }
 
-func mixSrgb(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	r1, g1, b1 := cl1.Srgb()
-	r2, g2, b2 := cl2.Srgb()
+func mixSrgb(c1, c2 Color, t float64, opts MixOptions) Color {
+	var r, g, b float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
-		r1 *= alpha1
-		g1 *= alpha1
-		b1 *= alpha1
+		w1, w2 := a1*(1-t), a2*t
 
-		r2 *= alpha2
-		g2 *= alpha2
-		b2 *= alpha2
-	}
+		r = c1.c1*w1 + c2.c1*w2
+		g = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
 
-	r := lerp(r1, r2, t)
-	g := lerp(g1, g2, t)
-	b := lerp(b1, b2, t)
-
-	if opts.Premultiplied {
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			r *= inv
 			g *= inv
 			b *= inv
 		}
+	} else {
+		r = lerp(c1.c1, c2.c1, t)
+		g = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.Srgb, c1: r, c2: g, c3: b, alpha: alpha}
+	return Color{
+		space: space.Srgb,
+		c1:    r, c2: g, c3: b,
+		alpha: alpha,
+	}
 }
 
-func mixLinearDisplayP3(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	r1, g1, b1 := cl1.LinearDisplayP3()
-	r2, g2, b2 := cl2.LinearDisplayP3()
+func mixLinearDisplayP3(c1, c2 Color, t float64, opts MixOptions) Color {
+	var r, g, b float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
-		r1 *= alpha1
-		g1 *= alpha1
-		b1 *= alpha1
+		w1, w2 := a1*(1-t), a2*t
 
-		r2 *= alpha2
-		g2 *= alpha2
-		b2 *= alpha2
-	}
+		r = c1.c1*w1 + c2.c1*w2
+		g = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
 
-	r := lerp(r1, r2, t)
-	g := lerp(g1, g2, t)
-	b := lerp(b1, b2, t)
-
-	if opts.Premultiplied {
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			r *= inv
 			g *= inv
 			b *= inv
 		}
+	} else {
+		r = lerp(c1.c1, c2.c1, t)
+		g = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.LinearDisplayP3, c1: r, c2: g, c3: b, alpha: alpha}
+	return Color{
+		space: space.LinearDisplayP3,
+		c1:    r, c2: g, c3: b,
+		alpha: alpha,
+	}
 }
 
-func mixDisplayP3(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	r1, g1, b1 := cl1.DisplayP3()
-	r2, g2, b2 := cl2.DisplayP3()
+func mixDisplayP3(c1, c2 Color, t float64, opts MixOptions) Color {
+	var r, g, b float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
-		r1 *= alpha1
-		g1 *= alpha1
-		b1 *= alpha1
+		w1, w2 := a1*(1-t), a2*t
 
-		r2 *= alpha2
-		g2 *= alpha2
-		b2 *= alpha2
-	}
+		r = c1.c1*w1 + c2.c1*w2
+		g = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
 
-	r := lerp(r1, r2, t)
-	g := lerp(g1, g2, t)
-	b := lerp(b1, b2, t)
-
-	if opts.Premultiplied {
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			r *= inv
 			g *= inv
 			b *= inv
 		}
+	} else {
+		r = lerp(c1.c1, c2.c1, t)
+		g = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.DisplayP3, c1: r, c2: g, c3: b, alpha: alpha}
+	return Color{
+		space: space.DisplayP3,
+		c1:    r, c2: g, c3: b,
+		alpha: alpha,
+	}
 }
 
-func mixLinearA98(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	r1, g1, b1 := cl1.LinearA98()
-	r2, g2, b2 := cl2.LinearA98()
+func mixLinearA98(c1, c2 Color, t float64, opts MixOptions) Color {
+	var r, g, b float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
-		r1 *= alpha1
-		g1 *= alpha1
-		b1 *= alpha1
+		w1, w2 := a1*(1-t), a2*t
 
-		r2 *= alpha2
-		g2 *= alpha2
-		b2 *= alpha2
-	}
+		r = c1.c1*w1 + c2.c1*w2
+		g = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
 
-	r := lerp(r1, r2, t)
-	g := lerp(g1, g2, t)
-	b := lerp(b1, b2, t)
-
-	if opts.Premultiplied {
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			r *= inv
 			g *= inv
 			b *= inv
 		}
+	} else {
+		r = lerp(c1.c1, c2.c1, t)
+		g = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.LinearA98, c1: r, c2: g, c3: b, alpha: alpha}
+	return Color{
+		space: space.LinearA98,
+		c1:    r, c2: g, c3: b,
+		alpha: alpha,
+	}
 }
 
-func mixA98(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	r1, g1, b1 := cl1.A98()
-	r2, g2, b2 := cl2.A98()
+func mixA98(c1, c2 Color, t float64, opts MixOptions) Color {
+	var r, g, b float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
-		r1 *= alpha1
-		g1 *= alpha1
-		b1 *= alpha1
+		w1, w2 := a1*(1-t), a2*t
 
-		r2 *= alpha2
-		g2 *= alpha2
-		b2 *= alpha2
-	}
+		r = c1.c1*w1 + c2.c1*w2
+		g = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
 
-	r := lerp(r1, r2, t)
-	g := lerp(g1, g2, t)
-	b := lerp(b1, b2, t)
-
-	if opts.Premultiplied {
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			r *= inv
 			g *= inv
 			b *= inv
 		}
+	} else {
+		r = lerp(c1.c1, c2.c1, t)
+		g = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.A98, c1: r, c2: g, c3: b, alpha: alpha}
+	return Color{
+		space: space.A98,
+		c1:    r, c2: g, c3: b,
+		alpha: alpha,
+	}
 }
 
-func mixLinearProPhoto(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	r1, g1, b1 := cl1.LinearProPhoto()
-	r2, g2, b2 := cl2.LinearProPhoto()
+func mixLinearProPhoto(c1, c2 Color, t float64, opts MixOptions) Color {
+	var r, g, b float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
-		r1 *= alpha1
-		g1 *= alpha1
-		b1 *= alpha1
+		w1, w2 := a1*(1-t), a2*t
 
-		r2 *= alpha2
-		g2 *= alpha2
-		b2 *= alpha2
-	}
+		r = c1.c1*w1 + c2.c1*w2
+		g = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
 
-	r := lerp(r1, r2, t)
-	g := lerp(g1, g2, t)
-	b := lerp(b1, b2, t)
-
-	if opts.Premultiplied {
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			r *= inv
 			g *= inv
 			b *= inv
 		}
+	} else {
+		r = lerp(c1.c1, c2.c1, t)
+		g = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.LinearProPhoto, c1: r, c2: g, c3: b, alpha: alpha}
+	return Color{
+		space: space.LinearProPhoto,
+		c1:    r, c2: g, c3: b,
+		alpha: alpha,
+	}
 }
 
-func mixProPhoto(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	r1, g1, b1 := cl1.ProPhoto()
-	r2, g2, b2 := cl2.ProPhoto()
+func mixProPhoto(c1, c2 Color, t float64, opts MixOptions) Color {
+	var r, g, b float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
-		r1 *= alpha1
-		g1 *= alpha1
-		b1 *= alpha1
+		w1, w2 := a1*(1-t), a2*t
 
-		r2 *= alpha2
-		g2 *= alpha2
-		b2 *= alpha2
-	}
+		r = c1.c1*w1 + c2.c1*w2
+		g = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
 
-	r := lerp(r1, r2, t)
-	g := lerp(g1, g2, t)
-	b := lerp(b1, b2, t)
-
-	if opts.Premultiplied {
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			r *= inv
 			g *= inv
 			b *= inv
 		}
+	} else {
+		r = lerp(c1.c1, c2.c1, t)
+		g = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.ProPhoto, c1: r, c2: g, c3: b, alpha: alpha}
+	return Color{
+		space: space.ProPhoto,
+		c1:    r, c2: g, c3: b,
+		alpha: alpha,
+	}
 }
 
-func mixLinearRec2020(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	r1, g1, b1 := cl1.LinearRec2020()
-	r2, g2, b2 := cl2.LinearRec2020()
+func mixLinearRec2020(c1, c2 Color, t float64, opts MixOptions) Color {
+	var r, g, b float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
-		r1 *= alpha1
-		g1 *= alpha1
-		b1 *= alpha1
+		w1, w2 := a1*(1-t), a2*t
 
-		r2 *= alpha2
-		g2 *= alpha2
-		b2 *= alpha2
-	}
+		r = c1.c1*w1 + c2.c1*w2
+		g = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
 
-	r := lerp(r1, r2, t)
-	g := lerp(g1, g2, t)
-	b := lerp(b1, b2, t)
-
-	if opts.Premultiplied {
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			r *= inv
 			g *= inv
 			b *= inv
 		}
+	} else {
+		r = lerp(c1.c1, c2.c1, t)
+		g = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.LinearRec2020, c1: r, c2: g, c3: b, alpha: alpha}
+	return Color{
+		space: space.LinearRec2020,
+		c1:    r, c2: g, c3: b,
+		alpha: alpha,
+	}
 }
 
-func mixRec2020(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	r1, g1, b1 := cl1.Rec2020()
-	r2, g2, b2 := cl2.Rec2020()
+func mixRec2020(c1, c2 Color, t float64, opts MixOptions) Color {
+	var r, g, b float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
-		r1 *= alpha1
-		g1 *= alpha1
-		b1 *= alpha1
+		w1, w2 := a1*(1-t), a2*t
 
-		r2 *= alpha2
-		g2 *= alpha2
-		b2 *= alpha2
-	}
+		r = c1.c1*w1 + c2.c1*w2
+		g = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
 
-	r := lerp(r1, r2, t)
-	g := lerp(g1, g2, t)
-	b := lerp(b1, b2, t)
-
-	if opts.Premultiplied {
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			r *= inv
 			g *= inv
 			b *= inv
 		}
+	} else {
+		r = lerp(c1.c1, c2.c1, t)
+		g = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.Rec2020, c1: r, c2: g, c3: b, alpha: alpha}
+	return Color{
+		space: space.Rec2020,
+		c1:    r, c2: g, c3: b,
+		alpha: alpha,
+	}
 }
 
-func mixHsl(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	h1, s1, l1 := cl1.Hsl()
-	h2, s2, l2 := cl2.Hsl()
+func mixHsl(c1, c2 Color, t float64, opts MixOptions) Color {
+	var h, s, l float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
-
-	if opts.Premultiplied {
-		s1 *= alpha1
-		l1 *= alpha1
-
-		s2 *= alpha2
-		l2 *= alpha2
-	}
-
-	var h float64
 	switch opts.Hue {
 	case HueShorter:
-		h = lerpHueShorter(h1, h2, t)
+		h = lerpHueShorter(c1.c1, c2.c1, t)
 	case HueLonger:
-		h = lerpHueLonger(h1, h2, t)
+		h = lerpHueShorter(c1.c1, c2.c1, t)
 	case HueIncreasing:
-		h = lerpHueIncreasing(h1, h2, t)
+		h = lerpHueShorter(c1.c1, c2.c1, t)
 	case HueDecreasing:
-		h = lerpHueDecreasing(h1, h2, t)
+		h = lerpHueShorter(c1.c1, c2.c1, t)
 	}
 
-	s := lerp(s1, s2, t)
-	l := lerp(l1, l2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		s = c1.c2*w1 + c2.c2*w2
+		l = c1.c3*w1 + c2.c3*w2
+
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			s *= inv
 			l *= inv
 		}
+	} else {
+		s = lerp(c1.c2, c2.c2, t)
+		l = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.Hsl, c1: h, c2: s, c3: l, alpha: alpha}
+	return Color{
+		space: space.Hsl,
+		c1:    h, c2: s, c3: l,
+		alpha: alpha,
+	}
 }
 
-func mixHsv(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	h1, s1, v1 := cl1.Hsv()
-	h2, s2, v2 := cl2.Hsv()
+func mixHsv(c1, c2 Color, t float64, opts MixOptions) Color {
+	var h, s, v float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
-
-	if opts.Premultiplied {
-		s1 *= alpha1
-		v1 *= alpha1
-
-		s2 *= alpha2
-		v2 *= alpha2
-	}
-
-	var h float64
 	switch opts.Hue {
 	case HueShorter:
-		h = lerpHueShorter(h1, h2, t)
+		h = lerpHueShorter(c1.c1, c2.c1, t)
 	case HueLonger:
-		h = lerpHueLonger(h1, h2, t)
+		h = lerpHueShorter(c1.c1, c2.c1, t)
 	case HueIncreasing:
-		h = lerpHueIncreasing(h1, h2, t)
+		h = lerpHueShorter(c1.c1, c2.c1, t)
 	case HueDecreasing:
-		h = lerpHueDecreasing(h1, h2, t)
+		h = lerpHueShorter(c1.c1, c2.c1, t)
 	}
 
-	s := lerp(s1, s2, t)
-	v := lerp(v1, v2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		s = c1.c2*w1 + c2.c2*w2
+		v = c1.c3*w1 + c2.c3*w2
+
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			s *= inv
 			v *= inv
 		}
+	} else {
+		s = lerp(c1.c2, c2.c2, t)
+		v = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.Hsv, c1: h, c2: s, c3: v, alpha: alpha}
+	return Color{
+		space: space.Hsv,
+		c1:    h, c2: s, c3: v,
+		alpha: alpha,
+	}
 }
 
-func mixHwb(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	h1, w1, b1 := cl1.Hwb()
-	h2, w2, b2 := cl2.Hwb()
+func mixHwb(c1, c2 Color, t float64, opts MixOptions) Color {
+	var h, w, b float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
-
-	if opts.Premultiplied {
-		w1 *= alpha1
-		b1 *= alpha1
-
-		w2 *= alpha2
-		b2 *= alpha2
-	}
-
-	var h float64
 	switch opts.Hue {
 	case HueShorter:
-		h = lerpHueShorter(h1, h2, t)
+		h = lerpHueShorter(c1.c1, c2.c1, t)
 	case HueLonger:
-		h = lerpHueLonger(h1, h2, t)
+		h = lerpHueShorter(c1.c1, c2.c1, t)
 	case HueIncreasing:
-		h = lerpHueIncreasing(h1, h2, t)
+		h = lerpHueShorter(c1.c1, c2.c1, t)
 	case HueDecreasing:
-		h = lerpHueDecreasing(h1, h2, t)
+		h = lerpHueShorter(c1.c1, c2.c1, t)
 	}
 
-	w := lerp(w1, w2, t)
-	b := lerp(b1, b2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		w = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
+
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			w *= inv
 			b *= inv
 		}
+	} else {
+		w = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.Hwb, c1: h, c2: w, c3: b, alpha: alpha}
+	return Color{
+		space: space.Hwb,
+		c1:    h, c2: w, c3: b,
+		alpha: alpha,
+	}
 }
 
-func mixLab(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	l1, a1, b1 := cl1.Lab()
-	l2, a2, b2 := cl2.Lab()
+func mixLab(c1, c2 Color, t float64, opts MixOptions) Color {
+	var l, a, b float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
-		l1 *= alpha1
-		a1 *= alpha1
-		b1 *= alpha1
+		w1, w2 := a1*(1-t), a2*t
 
-		l2 *= alpha2
-		a2 *= alpha2
-		b2 *= alpha2
-	}
+		l = c1.c1*w1 + c2.c1*w2
+		a = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
 
-	l := lerp(l1, l2, t)
-	a := lerp(a1, a2, t)
-	b := lerp(b1, b2, t)
-
-	if opts.Premultiplied {
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			l *= inv
 			a *= inv
 			b *= inv
 		}
+	} else {
+		l = lerp(c1.c1, c2.c1, t)
+		a = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.Lab, c1: l, c2: a, c3: b, alpha: alpha}
+	return Color{
+		space: space.Lab,
+		c1:    l, c2: a, c3: b,
+		alpha: alpha,
+	}
 }
 
-func mixLch(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	l1, c1, h1 := cl1.Lch()
-	l2, c2, h2 := cl2.Lch()
+func mixLch(c1, c2 Color, t float64, opts MixOptions) Color {
+	var l, c, h float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
-
-	if opts.Premultiplied {
-		l1 *= alpha1
-		c1 *= alpha1
-
-		l2 *= alpha2
-		c2 *= alpha2
-	}
-
-	l := lerp(l1, l2, t)
-	c := lerp(c1, c2, t)
-
-	var h float64
 	switch opts.Hue {
 	case HueShorter:
-		h = lerpHueShorter(h1, h2, t)
+		h = lerpHueShorter(c1.c3, c2.c3, t)
 	case HueLonger:
-		h = lerpHueLonger(h1, h2, t)
+		h = lerpHueShorter(c1.c3, c2.c3, t)
 	case HueIncreasing:
-		h = lerpHueIncreasing(h1, h2, t)
+		h = lerpHueShorter(c1.c3, c2.c3, t)
 	case HueDecreasing:
-		h = lerpHueDecreasing(h1, h2, t)
+		h = lerpHueShorter(c1.c3, c2.c3, t)
 	}
 
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
 	if opts.Premultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		l = c1.c1*w1 + c2.c1*w2
+		c = c1.c2*w1 + c2.c2*w2
+
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			l *= inv
 			c *= inv
 		}
+	} else {
+		l = lerp(c1.c1, c2.c1, t)
+		c = lerp(c1.c2, c2.c2, t)
 	}
 
-	return Color{space: space.Lch, c1: l, c2: c, c3: h, alpha: alpha}
+	return Color{
+		space: space.Lch,
+		c1:    l, c2: c, c3: h,
+		alpha: alpha,
+	}
 }
 
-func mixOklab(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	l1, a1, b1 := cl1.Oklab()
-	l2, a2, b2 := cl2.Oklab()
+func mixOklab(c1, c2 Color, t float64, opts MixOptions) Color {
+	var l, a, b float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
 
 	if opts.Premultiplied {
-		l1 *= alpha1
-		a1 *= alpha1
-		b1 *= alpha1
+		w1, w2 := a1*(1-t), a2*t
 
-		l2 *= alpha2
-		a2 *= alpha2
-		b2 *= alpha2
-	}
+		l = c1.c1*w1 + c2.c1*w2
+		a = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
 
-	l := lerp(l1, l2, t)
-	a := lerp(a1, a2, t)
-	b := lerp(b1, b2, t)
-
-	if opts.Premultiplied {
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			l *= inv
 			a *= inv
 			b *= inv
 		}
+	} else {
+		l = lerp(c1.c1, c2.c1, t)
+		a = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
 	}
 
-	return Color{space: space.Oklab, c1: l, c2: a, c3: b, alpha: alpha}
+	return Color{
+		space: space.Oklab,
+		c1:    l, c2: a, c3: b,
+		alpha: alpha,
+	}
 }
 
-func mixOklch(cl1, cl2 Color, t float64, opts MixOptions) Color {
-	l1, c1, h1 := cl1.Oklch()
-	l2, c2, h2 := cl2.Oklch()
+func mixOklch(c1, c2 Color, t float64, opts MixOptions) Color {
+	var l, c, h float64
 
-	alpha1, alpha2 := cl1.Alpha(), cl2.Alpha()
-
-	alpha := lerp(alpha1, alpha2, t)
-
-	if opts.Premultiplied {
-		l1 *= alpha1
-		c1 *= alpha1
-
-		l2 *= alpha2
-		c2 *= alpha2
-	}
-
-	l := lerp(l1, l2, t)
-	c := lerp(c1, c2, t)
-
-	var h float64
 	switch opts.Hue {
 	case HueShorter:
-		h = lerpHueShorter(h1, h2, t)
+		h = lerpHueShorter(c1.c3, c2.c3, t)
 	case HueLonger:
-		h = lerpHueLonger(h1, h2, t)
+		h = lerpHueShorter(c1.c3, c2.c3, t)
 	case HueIncreasing:
-		h = lerpHueIncreasing(h1, h2, t)
+		h = lerpHueShorter(c1.c3, c2.c3, t)
 	case HueDecreasing:
-		h = lerpHueDecreasing(h1, h2, t)
+		h = lerpHueShorter(c1.c3, c2.c3, t)
 	}
 
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
 	if opts.Premultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		l = c1.c1*w1 + c2.c1*w2
+		c = c1.c2*w1 + c2.c2*w2
+
 		if alpha != 0 {
 			inv := 1 / alpha
-
 			l *= inv
 			c *= inv
 		}
+	} else {
+		l = lerp(c1.c1, c2.c1, t)
+		c = lerp(c1.c2, c2.c2, t)
 	}
 
-	return Color{space: space.Oklch, c1: l, c2: c, c3: h, alpha: alpha}
+	return Color{
+		space: space.Oklch,
+		c1:    l, c2: c, c3: h,
+		alpha: alpha,
+	}
 }

@@ -6,15 +6,22 @@ import (
 	"github.com/thmalt/colors/space"
 )
 
+// Color represents a color in a [space.Space].
 type Color struct {
 	space space.Space
 	// channels
 	c1, c2, c3 float64
-	alpha      float64
+
+	alpha float64
 }
 
-// Get channel in current [space.Space]
+// Channel returns the channel value at index in the order defined by the
+// color's [space.Space]. The returned boolean reports whether index is valid.
 func (c Color) Channel(index int) (float64, bool) {
+	if index < 0 || index >= c.ChannelCount() {
+		return 0, false
+	}
+
 	switch index {
 	case 2:
 		return c.c3, true
@@ -23,16 +30,13 @@ func (c Color) Channel(index int) (float64, bool) {
 	case 0:
 		return c.c1, true
 	}
+
 	return 0, false
 }
 
+// Channels returns the channel values of c in the order defined by its [space.Space].
 func (c Color) Channels() []float64 {
-	info := c.space.Info()
-	if info == nil {
-		return nil
-	}
-
-	switch info.ChannelCount() {
+	switch c.ChannelCount() {
 	case 3:
 		return []float64{c.c1, c.c2, c.c3}
 	case 2:
@@ -45,11 +49,14 @@ func (c Color) Channels() []float64 {
 }
 
 func (c Color) AppendChannels(dst []float64) []float64 {
-	info := c.space.Info()
-	if info == nil {
+	switch c.ChannelCount() {
+	case 3:
+		return append(dst, c.c1, c.c2, c.c3)
+	case 2:
+		return append(dst, c.c1, c.c2)
+	case 1:
+		return append(dst, c.c1)
+	default:
 		return dst
 	}
-
-	ch := [...]float64{c.c1, c.c2, c.c3}
-	return append(dst, ch[:info.ChannelCount()]...)
 }

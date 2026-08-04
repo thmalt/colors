@@ -82,3 +82,16 @@ func (c CoordinateSystem) String() string {
 		return "CoordinateSystem(" + strconv.FormatUint(uint64(c), 10) + ")"
 	}
 }
+
+func (u UnitKind) String() string {
+	switch u {
+	case UnitNumber:
+		return "UnitNumber"
+	case UnitPercent:
+		return "UnitPercent"
+	case UnitDegree:
+		return "UnitDegree"
+	default:
+		return "UnitKind(" + strconv.FormatUint(uint64(u), 10) + ")"
+	}
+}

@@ -25,7 +25,6 @@ func GenerateSpacePkg(ctx *Context) {
 
 	w.Import(
 		"strconv",
-		// ctx.ConvertPkg.Path,
 	)
 
 	genSpacePkgType(ctx, w)
@@ -35,6 +34,18 @@ func GenerateSpacePkg(ctx *Context) {
 		ctx.SpacePkg.Name,
 	)
 
+	// generate file ctx.SpacePkg.Name + _info_gen.go
+	fileName = ctx.SpacePkg.Name + "_info_gen.go"
+	fmt.Println("  Generate file", fileName)
+
+	genSpacePkgSpaceInfo(ctx, w)
+
+	w.SaveGoFile(
+		filepath.Join(pkgPath, fileName),
+		ctx.SpacePkg.Name,
+	)
+
+	// generate file whitepoint_gen.go
 	fileName = "whitepoint_gen.go"
 	fmt.Println("  Generate file", fileName)
 
@@ -53,13 +64,18 @@ func genSpacePkgType(ctx *Context, w *writer.GoWriter) {
 	w.Separate()
 
 	w.BeginGroup("const ")
+	w.LineWriteln("SpaceInvalid Space = iota")
 
+	w.Separate()
+	var spaceFirst string
+	var maxChannelCnt = 0
 	for i, space := range ctx.BuildSpaces {
 		if i == 0 {
-			w.LineWriteln(space.Name, " Space = iota")
-			continue
+			spaceFirst = space.Name
 		}
 		w.LineWriteln(space.Name)
+
+		maxChannelCnt = max(maxChannelCnt, space.ChannelCount())
 	}
 
 	w.Separate()
@@ -67,94 +83,43 @@ func genSpacePkgType(ctx *Context, w *writer.GoWriter) {
 	w.Comment("Available space count")
 	w.LineWriteln("SpaceCount")
 	w.End()
+	w.Separate()
+	w.LineWriteln("const SpaceFirst = ", spaceFirst)
 
 	w.Separate()
 
-	ws := w.SubWriter()
-
 	w.Begin("var spaceInfos = [...]*spaceInfo")
-
+	w.LineWriteln("nil,")
 	for _, space := range ctx.BuildSpaces {
-		name := toLowerCaseFirstWord(space.Name) + "Info"
-		w.LineWriteln("&", name, ",")
-
-		ws.Begin("var ", name, " = spaceInfo")
-
-		ws.LineWritef("name: %q,\n", space.Name)
-		ws.LineWritef("displayName: %q,\n", space.DisplayName)
-		ws.LineWritef("cssName: %q,\n", space.CssName)
-
-		if whitePoint := LookupWhitePoint(space.WhitePoint); whitePoint != nil {
-			ws.LineWritef("whitePoint: %s,\n", whitePoint.Name)
-		}
-
-		ws.LineWritef("coordinate: %s,\n", space.Coordinate)
-
-		ws.Begin("channels: []Channel")
-		for _, c := range space.Channels {
-			ws.Begin()
-
-			ws.LineWritef("Name: %q,\n", c.Name)
-			ws.LineWritef("Symbol: %q,\n", c.Symbol)
-			ws.LineWritef("DisplayName: %q,\n", c.DisplayName)
-
-			unit := c.Unit
-			switch c.Unit {
-			case model.UnitRadian, model.UnitGradian, model.UnitTurn:
-				ws.LineWritef("Min: %g,\n", model.AngleToDegree(c.Min, c.Unit))
-				ws.LineWritef("Max: %g,\n", model.AngleToDegree(c.Max, c.Unit))
-				unit = model.UnitDegree
-			default:
-				ws.LineWritef("Min: %g,\n", c.Min)
-				ws.LineWritef("Max: %g,\n", c.Max)
-
-			}
-
-			if c.Circular {
-				ws.LineWritef("Circular: %t,\n", c.Circular)
-			}
-
-			if c.Unrestricted {
-				ws.LineWritef("Unrestricted: %t,\n", c.Unrestricted)
-			}
-
-			if c.Unit != model.UnitNumber {
-				ws.LineWritef("Unit: %s,\n", unit.GoString())
-			}
-
-			prec := c.Precision
-			if prec == 0 {
-				prec = DefaultPrecision
-			}
-
-			ws.LineWritef("Precision: %d,\n", prec)
-
-			ws.End(',')
-		}
-		ws.End(',')
-
-		if space.UseColorFunction {
-			ws.LineWriteln("useColorFunction: true,")
-		}
-
-		ws.End()
-
-		ws.Separate()
+		w.LineWriteln("&", spaceInfoName(space), ",")
 	}
 
 	w.End()
 
 	w.Separate()
-
-	w.Drain(ws)
+	w.Begin("var spaceChannelCounts = [...]uint", smallestUintType(maxChannelCnt))
+	w.LineWriteln("0,")
+	for _, space := range ctx.BuildSpaces {
+		w.LineWriteln(space.ChannelCount(), ",")
+	}
+	w.End()
 
 	w.Separate()
+	w.Begin("var coordinateSystems = [...]CoordinateSystem")
+	w.LineWriteln(model.CoordinateSystem(0), ",")
+	for _, space := range ctx.BuildSpaces {
+		w.LineWriteln(space.Coordinate, ",")
+	}
+	w.End()
 
+	w.Separate()
 	w.Method("s Space", "String")
 	w.FuncResults("string")
 	w.FuncBody()
 
-	w.Switch("s")
+	w.Switch("s ")
+	w.Case("SpaceInvalid")
+	w.Return(`"Invalid"`)
 
 	for _, space := range ctx.BuildSpaces {
 		w.Case(space.Name)
@@ -168,6 +133,77 @@ func genSpacePkgType(ctx *Context, w *writer.GoWriter) {
 	w.End()
 
 	w.End()
+}
+
+func spaceInfoName(space *model.Space) string {
+	return toLowerCaseFirstWord(space.Name) + "Info"
+}
+
+func genSpacePkgSpaceInfo(ctx *Context, w *writer.GoWriter) {
+	for _, space := range ctx.BuildSpaces {
+		w.Begin("var ", spaceInfoName(space), " = spaceInfo")
+
+		w.LineWritef("name: %q,\n", space.Name)
+		w.LineWritef("displayName: %q,\n", space.DisplayName)
+		w.LineWritef("cssName: %q,\n", space.CssName)
+
+		if whitePoint := LookupWhitePoint(space.WhitePoint); whitePoint != nil {
+			w.LineWritef("whitePoint: %s,\n", whitePoint.Name)
+		}
+
+		w.LineWritef("coordinate: %s,\n", space.Coordinate)
+
+		w.Begin("channels: []Channel")
+		for _, c := range space.Channels {
+			w.Begin()
+
+			w.LineWritef("Name: %q,\n", c.Name)
+			w.LineWritef("Symbol: %q,\n", c.Symbol)
+			w.LineWritef("DisplayName: %q,\n", c.DisplayName)
+
+			unit := c.Unit
+			switch c.Unit {
+			case model.UnitRadian, model.UnitGradian, model.UnitTurn:
+				w.LineWritef("Min: %g,\n", model.AngleToDegree(c.Min, c.Unit))
+				w.LineWritef("Max: %g,\n", model.AngleToDegree(c.Max, c.Unit))
+				unit = model.UnitDegree
+			default:
+				w.LineWritef("Min: %g,\n", c.Min)
+				w.LineWritef("Max: %g,\n", c.Max)
+
+			}
+
+			if c.Circular {
+				w.LineWritef("Circular: %t,\n", c.Circular)
+			}
+
+			if c.Unrestricted {
+				w.LineWritef("Unrestricted: %t,\n", c.Unrestricted)
+			}
+
+			if c.Unit != model.UnitNumber {
+				w.LineWritef("Unit: %s,\n", unit)
+			}
+
+			prec := c.Precision
+			if prec == 0 {
+				prec = DefaultPrecision
+			}
+
+			w.LineWritef("Precision: %d,\n", prec)
+
+			w.End(',')
+		}
+		w.End(',')
+
+		if space.UseColorFunction {
+			w.LineWriteln("useColorFunction: true,")
+		}
+
+		w.End()
+
+		w.Separate()
+	}
 }
 
 func genSpacePkgWhitePoint(ctx *Context, w *writer.GoWriter) {

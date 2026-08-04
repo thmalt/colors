@@ -8,6 +8,10 @@ import (
 )
 
 func (c Color) To(dst space.Space) (Color, error) {
+	if !c.space.IsValid() || !dst.IsValid() {
+		return Color{}, ErrInvalidSpace
+	}
+
 	if c.space == dst {
 		return c, nil
 	}
@@ -71,7 +75,7 @@ func (c Color) To(dst space.Space) (Color, error) {
 		l, c1, h := c.Oklch()
 		return Color{space: space.Oklch, c1: l, c2: c1, c3: h, alpha: c.alpha}, nil
 	default:
-		return Color{}, ErrUnknownSpace
+		return Color{}, ErrInvalidSpace
 	}
 }
 

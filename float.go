@@ -62,3 +62,7 @@ func clamp(x, lo, hi float64) float64 {
 func clamp01(x float64) float64 {
 	return clamp(x, 0, 1)
 }
+
+func wrap(v, min, max float64) float64 {
+	return math.Mod(v-min, max-min) + (min)
+}
