@@ -13,91 +13,64 @@ func GenerateRootPkg(ctx *Context) {
 		return
 	}
 
-	var pkgPath = filepath.Join(ctx.Directory, ctx.RootPkg.Path)
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
 	w.SetFormatSource(ctx.FormatSource)
 
-	// generate file color_gen.go
-	fileName := "color_gen.go"
-	fmt.Println("  Generate file", fileName)
+	pkgPath := filepath.Join(ctx.Directory, ctx.RootPkg.Path)
+	pkg := ctx.RootPkg.Name
 
-	w.Import(ctx.SpacePkg.Path)
+	emitGoFile(w, pkg, pkgPath, "color", func(w *writer.GoWriter) {
+		w.Import(
+			ctx.SpacePkg.Path,
+		)
 
-	genRootPkgColorType(ctx, w)
-	w.SaveGoFile(
-		filepath.Join(pkgPath, fileName),
-		ctx.RootPkg.Name,
-	)
+		genRootPkgColorType(ctx, w)
+	})
 
-	// generate file color_gen.go
-	fileName = "color_convert_gen.go"
-	fmt.Println("  Generate file", fileName)
+	emitGoFile(w, pkg, pkgPath, "color_convert", func(w *writer.GoWriter) {
+		w.Import(
+			ctx.ConvertPkg.Path,
+			ctx.SpacePkg.Path,
+		)
 
-	w.Import(
-		ctx.ConvertPkg.Path,
-		ctx.SpacePkg.Path,
-	)
+		genRootPkgColorConversionMethods(ctx, w)
+		genRootPkgColorConvertMethods(ctx, w)
+	})
 
-	genRootPkgColorConversionMethods(ctx, w)
-	genRootPkgColorConvertMethods(ctx, w)
-	w.SaveGoFile(
-		filepath.Join(pkgPath, fileName),
-		ctx.RootPkg.Name,
-	)
+	emitGoFile(w, pkg, pkgPath, "color_constructors", func(w *writer.GoWriter) {
+		w.Import(
+			ctx.SpacePkg.Path,
+		)
 
-	// generate file color_constructors_gen.go
+		genRootPkgColorConstructors(ctx, w)
+	})
 
-	fileName = "color_constructors_gen.go"
-	fmt.Println("  Generate file", fileName)
+	emitGoFile(w, pkg, pkgPath, "color_string", func(w *writer.GoWriter) {
+		w.Import(
+			"strconv",
+			"strings",
+			ctx.SpacePkg.Path,
+		)
 
-	w.Import(ctx.SpacePkg.Path)
+		genRootPkgColorStringMethod(ctx, w)
+	})
 
-	genRootPkgColorConstructors(ctx, w)
-	w.SaveGoFile(
-		filepath.Join(pkgPath, fileName),
-		ctx.RootPkg.Name,
-	)
+	emitGoFile(w, pkg, pkgPath, "mix", func(w *writer.GoWriter) {
+		w.Import(
+			ctx.SpacePkg.Path,
+		)
 
-	// generate file color_string_gen.go
-	fileName = "color_string_gen.go"
-	fmt.Println("  Generate file", fileName)
+		genRootPkgMix(ctx, w)
+	})
 
-	w.Import(
-		"strconv",
-		"strings",
-		ctx.SpacePkg.Path,
-	)
+	emitGoFile(w, pkg, pkgPath, "clamp", func(w *writer.GoWriter) {
+		w.Import(
+			ctx.SpacePkg.Path,
+		)
 
-	genRootPkgColorStringMethod(ctx, w)
-	w.SaveGoFile(
-		filepath.Join(pkgPath, fileName),
-		ctx.RootPkg.Name,
-	)
-
-	// generate file mix_gen.go
-	fileName = "mix_gen.go"
-	fmt.Println("  Generate file", fileName)
-
-	w.Import(
-		ctx.SpacePkg.Path,
-	)
-
-	genRootPkgMix(ctx, w)
-	w.SaveGoFile(
-		filepath.Join(pkgPath, fileName),
-		ctx.RootPkg.Name,
-	)
-
-	// generate file clamp_gen.go
-	fileName = "clamp_gen.go"
-	fmt.Println("  Generate file", fileName)
-
-	genRootPkgClamp(ctx, w)
-	w.SaveGoFile(
-		filepath.Join(pkgPath, fileName),
-		ctx.RootPkg.Name,
-	)
+		genRootPkgClamp(ctx, w)
+	})
 }
 
 func genRootPkgColorType(ctx *Context, w *writer.GoWriter) {

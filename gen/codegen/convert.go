@@ -1,7 +1,6 @@
 package codegen
 
 import (
-	"fmt"
 	"log"
 	"math"
 	"path/filepath"
@@ -17,13 +16,15 @@ func GenerateConvertPkg(ctx *Context) {
 		return
 	}
 
-	var pkgPath = filepath.Join(ctx.Directory, ctx.ConvertPkg.Path)
-
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
 	w.SetFormatSource(ctx.FormatSource)
 
-	if ctx.SplitFile {
+	pkgPath := filepath.Join(ctx.Directory, ctx.ConvertPkg.Path)
+	pkg := ctx.ConvertPkg.Name
+
+	if true {
+		// multiple files
 		for i, space := range ctx.BuildSpaces {
 			if space == nil {
 				log.Printf("space at index %d is nil\n", i)
@@ -34,48 +35,31 @@ func GenerateConvertPkg(ctx *Context) {
 				continue
 			}
 
-			var fileName string
+			filename := space.Name
 			if space.SnakeName != "" {
-
-				fileName = toSnakeCase(space.SnakeName) + "_gen.go"
-			} else {
-				fileName = toSnakeCase(space.Name) + "_gen.go"
+				filename = space.SnakeName
 			}
 
-			fmt.Println("  Generate file", fileName)
-
-			genConvertPkgConversionBySpace(ctx, w, space)
-			w.SaveGoFile(
-				filepath.Join(pkgPath, fileName),
-				ctx.ConvertPkg.Name,
-			)
+			emitGoFile(w, pkg, pkgPath, toSnakeCase(filename), func(w *writer.GoWriter) {
+				genConvertPkgConversionFile(ctx, w, space)
+			})
 		}
 	} else {
-		fileName := ctx.ConvertPkg.Name + "_gen.go"
-		fmt.Println("  Generate file", fileName)
+		// single file
+		// large file problem
+		emitGoFile(w, pkg, pkgPath, pkg, func(w *writer.GoWriter) {
+			w.Import("math")
 
-		// all conversion in one file
-		genConvertPkgConversion(ctx, w)
-
-		w.SaveGoFile(
-			filepath.Join(pkgPath, fileName),
-			ctx.ConvertPkg.Name,
-		)
+			genConvertPkgConversions(ctx, w)
+		})
 	}
-	fileName := "whitepoint_gen.go"
-	fmt.Println("  Generate file", fileName)
 
-	if genConvertPkgWhitePoint(ctx, w) {
-		w.SaveGoFile(
-			filepath.Join(pkgPath, "whitepoint_gen.go"),
-			ctx.ConvertPkg.Name,
-		)
-	}
+	emitGoFile(w, pkg, pkgPath, "whitepoint", func(w *writer.GoWriter) {
+		genConvertPkgWhitePoint(ctx, w)
+	})
 }
 
-func genConvertPkgConversion(ctx *Context, w *writer.GoWriter) {
-	w.Import("math")
-
+func genConvertPkgConversions(ctx *Context, w *writer.GoWriter) {
 	for i, from := range ctx.BuildSpaces {
 		if from == nil {
 			log.Printf("space at index %d is nil\n", i)
@@ -108,7 +92,7 @@ func genConvertPkgConversion(ctx *Context, w *writer.GoWriter) {
 	}
 }
 
-func genConvertPkgConversionBySpace(ctx *Context, w *writer.GoWriter, space *model.Space) {
+func genConvertPkgConversionFile(ctx *Context, w *writer.GoWriter, space *model.Space) {
 	for i, to := range ctx.BuildSpaces {
 		if to == nil {
 			log.Printf("space at index %d is nil\n", i)
@@ -189,10 +173,10 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) bool {
 	// variable returnResult of params and results
 	returnResult := scope.ContainsAny(resultsVars...)
 	if returnResult {
-		retString = valueTypeRepeat(len(resultsVars))
+		retString = repeatType(FloatType, len(resultsVars))
 	} else {
 		scope.ReserveAll(resultsVars...)
-		retString = varJoinWithType(resultsVars...)
+		retString = joinIdentsWithType(FloatType, resultsVars...)
 	}
 
 	funcName := FuncName(from.Name, to.Name)
@@ -205,13 +189,13 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) bool {
 	}
 
 	w.Func(funcName)
-	w.FuncParams(varJoinWithType(paramsVars...))
+	w.FuncParams(joinIdentsWithType(FloatType, paramsVars...))
 	w.FuncResults(retString)
 	w.FuncBody()
 
 	imported := false
 
-	wop := w.SubWriter()
+	sub := w.SubWriter()
 	inputVars := paramsVars
 
 	returned := false
@@ -225,57 +209,58 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) bool {
 		switch op.Type {
 		case OpCall:
 			if separate {
-				wop.Separate()
+				sub.Separate()
 			}
 			separate = false
 
 			if isLastOp {
-				wop.Return(op.Pair.FuncName(), "(", strings.Join(inputVars, ", "), ")")
+				sub.Return(op.Pair.FuncName(), "(", strings.Join(inputVars, ", "), ")")
 				returned = true
 			} else {
 				_, to := ctx.ResolveSpacePair(op.Pair)
 				outputVars := to.ChannelSymbols()
 
-				wop.LineWrite(strings.Join(outputVars, ", "))
+				sub.LineWrite(strings.Join(outputVars, ", "))
 				if scope.ContainsAll(outputVars...) {
-					wop.Write(" = ")
+					sub.Write(" = ")
 				} else {
-					wop.Write(" := ")
+					sub.Write(" := ")
 				}
-				wop.Write(op.Pair.FuncName(), "(")
-				wop.Write(strings.Join(inputVars, ", "))
-				wop.Writeln(")")
+				sub.Write(op.Pair.FuncName(), "(")
+				sub.Write(strings.Join(inputVars, ", "))
+				sub.Writeln(")")
 
 				scope.ReserveAll(outputVars...)
 				inputVars = outputVars
 			}
 		case OpCbrt:
 			if idx > 0 {
-				wop.Separate()
+				sub.Separate()
 			}
 			separate = true
 
-			for _, v := range inputVars {
-				if !imported {
-					w.Import("math")
-					imported = true
-				}
+			if !imported {
+				w.Import("math")
+				imported = true
+			}
 
-				wop.LineWrite(v, " = math.Cbrt(", v, ")")
+			for _, v := range inputVars {
+
+				sub.LineWrite(v, " = math.Cbrt(", v, ")")
 			}
 		case OpCube:
 			if idx > 0 {
-				wop.Separate()
+				sub.Separate()
 			}
 			separate = true
 
 			for _, v := range inputVars {
-				wop.LineWrite(v, " *= ", v, " * ", v)
+				sub.LineWrite(v, " *= ", v, " * ", v)
 			}
 
 		case OpMatrix:
 			if idx > 0 {
-				wop.Separate()
+				sub.Separate()
 			}
 			separate = true
 
@@ -292,11 +277,11 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) bool {
 			}
 
 			l := len(inputVars)
-			for i := range inputVars {
+			for i, out := range outputVars {
 				if isNewVar {
-					wop.LineWrite(outputVars[i], " := ")
+					sub.LineWrite(out, " := ")
 				} else {
-					wop.LineWrite(outputVars[i], " = ")
+					sub.LineWrite(out, " = ")
 				}
 
 				first := true
@@ -307,23 +292,23 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) bool {
 					case f == 0:
 					case math.Signbit(f):
 						if first {
-							wop.Write('-')
+							sub.Write('-')
 						} else {
-							wop.Write(" - ")
+							sub.Write(" - ")
 						}
 						f = -f
 					case !first:
-						wop.Write(" + ")
+						sub.Write(" + ")
 
 					}
 
 					switch f {
 					case 0:
 					case 1:
-						wop.Write(v)
+						sub.Write(v)
 						first = false
 					default:
-						wop.Write(formatFloat(f), '*', v)
+						sub.Write(formatFloat(f), '*', v)
 						first = false
 					}
 				}
@@ -332,7 +317,7 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) bool {
 		}
 	}
 
-	w.Drain(wop)
+	w.Drain(sub)
 
 	if !returned {
 		if last > 0 {

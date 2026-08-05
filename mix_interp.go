@@ -9,7 +9,7 @@ import (
 type MixOptions struct {
 	Space space.Space
 
-	Premultiplied bool
+	Unpremultiplied bool
 
 	Hue HueInterpolation
 }
@@ -29,6 +29,21 @@ func lerp(a, b, t float64) float64 {
 
 func lerpFMA(a, b, t float64) float64 {
 	return math.FMA(b-a, t, a)
+}
+
+func lerpHue(h1, h2 float64, t float64, hue HueInterpolation) float64 {
+	switch hue {
+	case HueShorter:
+		return lerpHueShorter(h1, h2, t)
+	case HueLonger:
+		return lerpHueLonger(h1, h2, t)
+	case HueIncreasing:
+		return lerpHueIncreasing(h1, h2, t)
+	case HueDecreasing:
+		return lerpHueDecreasing(h1, h2, t)
+	default:
+		return lerpHueShorter(h1, h2, t)
+	}
 }
 
 // Hue Shorter interpolation.

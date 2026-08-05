@@ -13,7 +13,7 @@ import (
 
 func main() {
 	var ctx codegen.Context
-	ctx.SplitFile = true
+	ctx.Optimization = codegen.OptimizeSpeed
 	ctx.FormatSource = true
 
 	ctx.SetModuleByType(ctx)

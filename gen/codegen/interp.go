@@ -1,7 +1,6 @@
 package codegen
 
 import (
-	"fmt"
 	"log"
 	"path/filepath"
 
@@ -20,28 +19,21 @@ func GenerateInterpPkg(ctx *Context) {
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
 	w.SetFormatSource(ctx.FormatSource)
 
-	for i, space := range ctx.BuildSpaces {
-		if space == nil {
-			log.Printf("GenerateInterpPkg: space at index %d is nil\n", i)
-			continue
+	emitGoFile(w, ctx.InterpPkg.Name, pkgPath, ctx.InterpPkg.Name, func(w *writer.GoWriter) {
+		for i, space := range ctx.BuildSpaces {
+			if space == nil {
+				log.Printf("GenerateInterpPkg: space at index %d is nil\n", i)
+				continue
+			}
+
+			if space.Disable {
+				continue
+			}
+
+			genInterp(w, space, false)
+			genInterp(w, space, true)
 		}
-
-		if space.Disable {
-			continue
-		}
-
-		genInterp(w, space, false)
-		genInterp(w, space, true)
-	}
-
-	fileName := ctx.InterpPkg.Name + "_gen.go"
-	fmt.Println("  Generate file", fileName)
-
-	w.SaveGoFile(
-		filepath.Join(pkgPath, fileName),
-		ctx.InterpPkg.Name,
-	)
-
+	})
 }
 
 func genInterp(w *writer.GoWriter, space *model.Space, withAlpha bool) {
@@ -65,13 +57,13 @@ func genInterp(w *writer.GoWriter, space *model.Space, withAlpha bool) {
 		w.Func(space.Name)
 	}
 
+	hue := ""
 	if space.Coordinate == model.Polar {
-		w.FuncParams(varJoinWithType(p1...), ", ", varJoinWithType(p2...), ", t float64", ", hue HueInterpolation")
-	} else {
-		w.FuncParams(varJoinWithType(p1...), ", ", varJoinWithType(p2...), ", t float64")
+		hue = ", hue HueInterpolation"
 	}
+	w.FuncParams(joinIdentsWithType(FloatType, p1...), ", ", joinIdentsWithType(FloatType, p2...), ", t ", FloatType, hue)
 
-	w.FuncResults(varJoinWithType(ident...))
+	w.FuncResults(joinIdentsWithType(FloatType, ident...))
 	w.FuncBody()
 
 	if withAlpha {

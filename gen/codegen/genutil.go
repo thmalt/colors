@@ -33,12 +33,12 @@ func smallestUintType(n int) int {
 	}
 }
 
-func valueTypeRepeat(n int) string {
-	return strings.Repeat(FloatType+", ", n-1) + FloatType
+func repeatType(typ string, n int) string {
+	return strings.Repeat(typ+", ", n-1) + typ
 }
 
-func varJoinWithType(vars ...string) string {
-	return strings.Join(vars, ", ") + " " + FloatType
+func joinIdentsWithType(typ string, vars ...string) string {
+	return strings.Join(vars, ", ") + " " + typ
 }
 
 func ModuleAndPathByType(a any) (module string, path string) {

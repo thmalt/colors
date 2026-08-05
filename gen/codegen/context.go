@@ -19,6 +19,13 @@ func (p Pkg) Join(ident string) string {
 	return p.Name + "." + ident
 }
 
+type Optimization int
+
+const (
+	OptimizeSize Optimization = iota
+	OptimizeSpeed
+)
+
 type Context struct {
 	Module    string
 	Directory string
@@ -37,9 +44,11 @@ type Context struct {
 
 	Path string
 
-	SplitFile bool
+	// SplitFile bool
 
 	FormatSource bool
+
+	Optimization Optimization
 
 	impls map[Pair]struct{}
 }

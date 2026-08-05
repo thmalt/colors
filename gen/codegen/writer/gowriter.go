@@ -49,6 +49,11 @@ func (w *GoWriter) SubWriter() *GoWriter {
 
 func (w *GoWriter) Drain(sub *GoWriter) {
 	w.Write(sub.Bytes())
+
+	for _, pkg := range sub.imports {
+		w.Import(pkg)
+	}
+
 	sub.Reset()
 }
 
@@ -631,9 +636,9 @@ func (w *GoWriter) InlineCommentf(format string, a ...any) {
 }
 
 func (w *GoWriter) CommentFunc(fn func(*GoWriter)) {
-	tmp := w.SubWriter()
-	fn(tmp)
-	w.Comment(tmp.Bytes())
+	cmt := w.SubWriter()
+	fn(cmt)
+	w.Comment(cmt.Bytes())
 }
 
 func (w *GoWriter) SeparateN(n int) {

@@ -29,7 +29,7 @@ func genRootPkgColorConvertMethods(ctx *Context, w *writer.GoWriter) {
 
 		w.Comment(space.Name, " returns the color components in the [", ctx.SpacePkg.Join(space.Name), "] color space.")
 		w.Method("c Color", space.Name)
-		w.FuncResults(varJoinWithType(names...))
+		w.FuncResults(joinIdentsWithType(FloatType, names...))
 		w.FuncBody()
 
 		w.If("c.space == ", spacePkg.Join(space.Name))

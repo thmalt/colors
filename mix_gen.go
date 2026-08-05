@@ -70,12 +70,12 @@ func Mix(c1, c2 Color, t float64, opts MixOptions) Color {
 }
 
 func mixXyzD65(c1, c2 Color, t float64, opts MixOptions) Color {
-	var x, y, z float64
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var x, y, z float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		x = c1.c1*w1 + c2.c1*w2
@@ -96,18 +96,20 @@ func mixXyzD65(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	return Color{
 		space: space.XyzD65,
-		c1:    x, c2: y, c3: z,
+		c1:    x,
+		c2:    y,
+		c3:    z,
 		alpha: alpha,
 	}
 }
 
 func mixXyzD50(c1, c2 Color, t float64, opts MixOptions) Color {
-	var x, y, z float64
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var x, y, z float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		x = c1.c1*w1 + c2.c1*w2
@@ -128,18 +130,20 @@ func mixXyzD50(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	return Color{
 		space: space.XyzD50,
-		c1:    x, c2: y, c3: z,
+		c1:    x,
+		c2:    y,
+		c3:    z,
 		alpha: alpha,
 	}
 }
 
 func mixLinearSrgb(c1, c2 Color, t float64, opts MixOptions) Color {
-	var r, g, b float64
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var r, g, b float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		r = c1.c1*w1 + c2.c1*w2
@@ -160,18 +164,20 @@ func mixLinearSrgb(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	return Color{
 		space: space.LinearSrgb,
-		c1:    r, c2: g, c3: b,
+		c1:    r,
+		c2:    g,
+		c3:    b,
 		alpha: alpha,
 	}
 }
 
 func mixSrgb(c1, c2 Color, t float64, opts MixOptions) Color {
-	var r, g, b float64
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var r, g, b float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		r = c1.c1*w1 + c2.c1*w2
@@ -192,18 +198,20 @@ func mixSrgb(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	return Color{
 		space: space.Srgb,
-		c1:    r, c2: g, c3: b,
+		c1:    r,
+		c2:    g,
+		c3:    b,
 		alpha: alpha,
 	}
 }
 
 func mixLinearDisplayP3(c1, c2 Color, t float64, opts MixOptions) Color {
-	var r, g, b float64
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var r, g, b float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		r = c1.c1*w1 + c2.c1*w2
@@ -224,18 +232,20 @@ func mixLinearDisplayP3(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	return Color{
 		space: space.LinearDisplayP3,
-		c1:    r, c2: g, c3: b,
+		c1:    r,
+		c2:    g,
+		c3:    b,
 		alpha: alpha,
 	}
 }
 
 func mixDisplayP3(c1, c2 Color, t float64, opts MixOptions) Color {
-	var r, g, b float64
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var r, g, b float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		r = c1.c1*w1 + c2.c1*w2
@@ -256,18 +266,20 @@ func mixDisplayP3(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	return Color{
 		space: space.DisplayP3,
-		c1:    r, c2: g, c3: b,
+		c1:    r,
+		c2:    g,
+		c3:    b,
 		alpha: alpha,
 	}
 }
 
 func mixLinearA98(c1, c2 Color, t float64, opts MixOptions) Color {
-	var r, g, b float64
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var r, g, b float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		r = c1.c1*w1 + c2.c1*w2
@@ -288,18 +300,20 @@ func mixLinearA98(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	return Color{
 		space: space.LinearA98,
-		c1:    r, c2: g, c3: b,
+		c1:    r,
+		c2:    g,
+		c3:    b,
 		alpha: alpha,
 	}
 }
 
 func mixA98(c1, c2 Color, t float64, opts MixOptions) Color {
-	var r, g, b float64
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var r, g, b float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		r = c1.c1*w1 + c2.c1*w2
@@ -320,18 +334,20 @@ func mixA98(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	return Color{
 		space: space.A98,
-		c1:    r, c2: g, c3: b,
+		c1:    r,
+		c2:    g,
+		c3:    b,
 		alpha: alpha,
 	}
 }
 
 func mixLinearProPhoto(c1, c2 Color, t float64, opts MixOptions) Color {
-	var r, g, b float64
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var r, g, b float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		r = c1.c1*w1 + c2.c1*w2
@@ -352,18 +368,20 @@ func mixLinearProPhoto(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	return Color{
 		space: space.LinearProPhoto,
-		c1:    r, c2: g, c3: b,
+		c1:    r,
+		c2:    g,
+		c3:    b,
 		alpha: alpha,
 	}
 }
 
 func mixProPhoto(c1, c2 Color, t float64, opts MixOptions) Color {
-	var r, g, b float64
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var r, g, b float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		r = c1.c1*w1 + c2.c1*w2
@@ -384,18 +402,20 @@ func mixProPhoto(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	return Color{
 		space: space.ProPhoto,
-		c1:    r, c2: g, c3: b,
+		c1:    r,
+		c2:    g,
+		c3:    b,
 		alpha: alpha,
 	}
 }
 
 func mixLinearRec2020(c1, c2 Color, t float64, opts MixOptions) Color {
-	var r, g, b float64
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var r, g, b float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		r = c1.c1*w1 + c2.c1*w2
@@ -416,18 +436,20 @@ func mixLinearRec2020(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	return Color{
 		space: space.LinearRec2020,
-		c1:    r, c2: g, c3: b,
+		c1:    r,
+		c2:    g,
+		c3:    b,
 		alpha: alpha,
 	}
 }
 
 func mixRec2020(c1, c2 Color, t float64, opts MixOptions) Color {
-	var r, g, b float64
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var r, g, b float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		r = c1.c1*w1 + c2.c1*w2
@@ -448,29 +470,20 @@ func mixRec2020(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	return Color{
 		space: space.Rec2020,
-		c1:    r, c2: g, c3: b,
+		c1:    r,
+		c2:    g,
+		c3:    b,
 		alpha: alpha,
 	}
 }
 
 func mixHsl(c1, c2 Color, t float64, opts MixOptions) Color {
-	var h, s, l float64
-
-	switch opts.Hue {
-	case HueShorter:
-		h = lerpHueShorter(c1.c1, c2.c1, t)
-	case HueLonger:
-		h = lerpHueShorter(c1.c1, c2.c1, t)
-	case HueIncreasing:
-		h = lerpHueShorter(c1.c1, c2.c1, t)
-	case HueDecreasing:
-		h = lerpHueShorter(c1.c1, c2.c1, t)
-	}
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var s, l float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		s = c1.c2*w1 + c2.c2*w2
@@ -485,32 +498,36 @@ func mixHsl(c1, c2 Color, t float64, opts MixOptions) Color {
 		s = lerp(c1.c2, c2.c2, t)
 		l = lerp(c1.c3, c2.c3, t)
 	}
+	var h float64
+	switch opts.Hue {
+	case HueShorter:
+		h = lerpHueShorter(c1.c1, c2.c1, t)
+	case HueLonger:
+		h = lerpHueLonger(c1.c1, c2.c1, t)
+	case HueIncreasing:
+		h = lerpHueIncreasing(c1.c1, c2.c1, t)
+	case HueDecreasing:
+		h = lerpHueDecreasing(c1.c1, c2.c1, t)
+	default:
+		h = lerpHueShorter(c1.c1, c2.c1, t)
+	}
 
 	return Color{
 		space: space.Hsl,
-		c1:    h, c2: s, c3: l,
+		c1:    h,
+		c2:    s,
+		c3:    l,
 		alpha: alpha,
 	}
 }
 
 func mixHsv(c1, c2 Color, t float64, opts MixOptions) Color {
-	var h, s, v float64
-
-	switch opts.Hue {
-	case HueShorter:
-		h = lerpHueShorter(c1.c1, c2.c1, t)
-	case HueLonger:
-		h = lerpHueShorter(c1.c1, c2.c1, t)
-	case HueIncreasing:
-		h = lerpHueShorter(c1.c1, c2.c1, t)
-	case HueDecreasing:
-		h = lerpHueShorter(c1.c1, c2.c1, t)
-	}
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var s, v float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		s = c1.c2*w1 + c2.c2*w2
@@ -525,32 +542,36 @@ func mixHsv(c1, c2 Color, t float64, opts MixOptions) Color {
 		s = lerp(c1.c2, c2.c2, t)
 		v = lerp(c1.c3, c2.c3, t)
 	}
+	var h float64
+	switch opts.Hue {
+	case HueShorter:
+		h = lerpHueShorter(c1.c1, c2.c1, t)
+	case HueLonger:
+		h = lerpHueLonger(c1.c1, c2.c1, t)
+	case HueIncreasing:
+		h = lerpHueIncreasing(c1.c1, c2.c1, t)
+	case HueDecreasing:
+		h = lerpHueDecreasing(c1.c1, c2.c1, t)
+	default:
+		h = lerpHueShorter(c1.c1, c2.c1, t)
+	}
 
 	return Color{
 		space: space.Hsv,
-		c1:    h, c2: s, c3: v,
+		c1:    h,
+		c2:    s,
+		c3:    v,
 		alpha: alpha,
 	}
 }
 
 func mixHwb(c1, c2 Color, t float64, opts MixOptions) Color {
-	var h, w, b float64
-
-	switch opts.Hue {
-	case HueShorter:
-		h = lerpHueShorter(c1.c1, c2.c1, t)
-	case HueLonger:
-		h = lerpHueShorter(c1.c1, c2.c1, t)
-	case HueIncreasing:
-		h = lerpHueShorter(c1.c1, c2.c1, t)
-	case HueDecreasing:
-		h = lerpHueShorter(c1.c1, c2.c1, t)
-	}
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var w, b float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		w = c1.c2*w1 + c2.c2*w2
@@ -565,21 +586,36 @@ func mixHwb(c1, c2 Color, t float64, opts MixOptions) Color {
 		w = lerp(c1.c2, c2.c2, t)
 		b = lerp(c1.c3, c2.c3, t)
 	}
+	var h float64
+	switch opts.Hue {
+	case HueShorter:
+		h = lerpHueShorter(c1.c1, c2.c1, t)
+	case HueLonger:
+		h = lerpHueLonger(c1.c1, c2.c1, t)
+	case HueIncreasing:
+		h = lerpHueIncreasing(c1.c1, c2.c1, t)
+	case HueDecreasing:
+		h = lerpHueDecreasing(c1.c1, c2.c1, t)
+	default:
+		h = lerpHueShorter(c1.c1, c2.c1, t)
+	}
 
 	return Color{
 		space: space.Hwb,
-		c1:    h, c2: w, c3: b,
+		c1:    h,
+		c2:    w,
+		c3:    b,
 		alpha: alpha,
 	}
 }
 
 func mixLab(c1, c2 Color, t float64, opts MixOptions) Color {
-	var l, a, b float64
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var l, a, b float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		l = c1.c1*w1 + c2.c1*w2
@@ -600,29 +636,20 @@ func mixLab(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	return Color{
 		space: space.Lab,
-		c1:    l, c2: a, c3: b,
+		c1:    l,
+		c2:    a,
+		c3:    b,
 		alpha: alpha,
 	}
 }
 
 func mixLch(c1, c2 Color, t float64, opts MixOptions) Color {
-	var l, c, h float64
-
-	switch opts.Hue {
-	case HueShorter:
-		h = lerpHueShorter(c1.c3, c2.c3, t)
-	case HueLonger:
-		h = lerpHueShorter(c1.c3, c2.c3, t)
-	case HueIncreasing:
-		h = lerpHueShorter(c1.c3, c2.c3, t)
-	case HueDecreasing:
-		h = lerpHueShorter(c1.c3, c2.c3, t)
-	}
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var l, c float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		l = c1.c1*w1 + c2.c1*w2
@@ -638,20 +665,36 @@ func mixLch(c1, c2 Color, t float64, opts MixOptions) Color {
 		c = lerp(c1.c2, c2.c2, t)
 	}
 
+	var h float64
+	switch opts.Hue {
+	case HueShorter:
+		h = lerpHueShorter(c1.c3, c2.c3, t)
+	case HueLonger:
+		h = lerpHueLonger(c1.c3, c2.c3, t)
+	case HueIncreasing:
+		h = lerpHueIncreasing(c1.c3, c2.c3, t)
+	case HueDecreasing:
+		h = lerpHueDecreasing(c1.c3, c2.c3, t)
+	default:
+		h = lerpHueShorter(c1.c3, c2.c3, t)
+	}
+
 	return Color{
 		space: space.Lch,
-		c1:    l, c2: c, c3: h,
+		c1:    l,
+		c2:    c,
+		c3:    h,
 		alpha: alpha,
 	}
 }
 
 func mixOklab(c1, c2 Color, t float64, opts MixOptions) Color {
-	var l, a, b float64
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var l, a, b float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		l = c1.c1*w1 + c2.c1*w2
@@ -672,29 +715,20 @@ func mixOklab(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	return Color{
 		space: space.Oklab,
-		c1:    l, c2: a, c3: b,
+		c1:    l,
+		c2:    a,
+		c3:    b,
 		alpha: alpha,
 	}
 }
 
 func mixOklch(c1, c2 Color, t float64, opts MixOptions) Color {
-	var l, c, h float64
-
-	switch opts.Hue {
-	case HueShorter:
-		h = lerpHueShorter(c1.c3, c2.c3, t)
-	case HueLonger:
-		h = lerpHueShorter(c1.c3, c2.c3, t)
-	case HueIncreasing:
-		h = lerpHueShorter(c1.c3, c2.c3, t)
-	case HueDecreasing:
-		h = lerpHueShorter(c1.c3, c2.c3, t)
-	}
-
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
-	if opts.Premultiplied {
+	var l, c float64
+
+	if !opts.Unpremultiplied {
 		w1, w2 := a1*(1-t), a2*t
 
 		l = c1.c1*w1 + c2.c1*w2
@@ -710,9 +744,25 @@ func mixOklch(c1, c2 Color, t float64, opts MixOptions) Color {
 		c = lerp(c1.c2, c2.c2, t)
 	}
 
+	var h float64
+	switch opts.Hue {
+	case HueShorter:
+		h = lerpHueShorter(c1.c3, c2.c3, t)
+	case HueLonger:
+		h = lerpHueLonger(c1.c3, c2.c3, t)
+	case HueIncreasing:
+		h = lerpHueIncreasing(c1.c3, c2.c3, t)
+	case HueDecreasing:
+		h = lerpHueDecreasing(c1.c3, c2.c3, t)
+	default:
+		h = lerpHueShorter(c1.c3, c2.c3, t)
+	}
+
 	return Color{
 		space: space.Oklch,
-		c1:    l, c2: c, c3: h,
+		c1:    l,
+		c2:    c,
+		c3:    h,
 		alpha: alpha,
 	}
 }

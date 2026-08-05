@@ -3,8 +3,6 @@ package codegen
 import "github.com/thmalt/colors/gen/codegen/writer"
 
 func genRootPkgClamp(ctx *Context, w *writer.GoWriter) {
-	w.Import(ctx.SpacePkg.Path)
-
 	w.Func("Clamp")
 	w.FuncParams("c Color")
 	w.FuncResults("Color")
