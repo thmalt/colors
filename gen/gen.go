@@ -16,6 +16,8 @@ func main() {
 	ctx.Optimization = codegen.OptimizeSpeed
 	ctx.FormatSource = true
 
+	// ctx.SeparateAfterComment = true
+
 	ctx.SetModuleByType(ctx)
 	ctx.Directory = findRoot("./")
 

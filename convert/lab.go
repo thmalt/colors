@@ -5,38 +5,23 @@ import (
 )
 
 const (
-	labDelta   = 6.0 / 29
-	labDelta2  = labDelta * labDelta
-	labDelta3  = labDelta2 * labDelta
+	labDelta  = 6.0 / 29
+	labDelta2 = labDelta * labDelta
+
+	labEpsilon = labDelta2 * labDelta // 216.0 / 24389.0
 	labInv3D2  = 1.0 / (3.0 * labDelta2)
 	lab4Over29 = 4.0 / 29
+
+	labKappa    = 24389.0 / 27.0
+	labInvKappa = 1 / labKappa
 
 	labInv116 = 1.0 / 116
 	labInv500 = 1.0 / 500
 	labInv200 = 1.0 / 200
 )
 
-func LabToLch(l, a, b float64) (float64, float64, float64) {
-	h := math.Atan2(b, a) * (180.0 / math.Pi)
-	if h < 0 {
-		h += 360
-	}
-
-	c := math.Hypot(a, b)
-
-	return l, c, h
-}
-
-func LchToLab(l, c, h float64) (float64, float64, float64) {
-	rad := h * (math.Pi / 180.0)
-	a := c * math.Cos(rad)
-	b := c * math.Sin(rad)
-
-	return l, a, b
-}
-
 func labF(t float64) float64 {
-	if t > labDelta3 {
+	if t > labEpsilon {
 		return math.Cbrt(t)
 	}
 	return t*labInv3D2 + lab4Over29

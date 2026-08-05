@@ -23,6 +23,7 @@ type Space struct {
 
 	// for generator
 	SnakeName string `json:"snakeName,omitempty"`
+	Comment   string `json:"comment,omitempty"`
 }
 
 type Channel struct {

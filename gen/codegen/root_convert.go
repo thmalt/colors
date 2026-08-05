@@ -19,7 +19,7 @@ func genRootPkgColorConvertMethods(ctx *Context, w *writer.GoWriter) {
 		scope.Reset()
 		scope.Reserve("c")
 
-		names := space.ChannelSymbols()
+		names := space.ChannelIdent()
 
 		if scope.ContainsAny(names...) {
 			names = scope.ReserveUniqueAll(space.ChannelIdent()...)

@@ -12,6 +12,10 @@ const (
 	SpaceInvalid Space = iota
 
 	XyzD65
+	// XyY is the CIE xyY color space using the D65 reference white.
+	// Conversions involving other reference whites automatically perform
+	// chromatic adaptation.
+	XyY
 	XyzD50
 	LinearSrgb
 	Srgb
@@ -28,6 +32,8 @@ const (
 	Hwb
 	Lab
 	Lch
+	Luv
+	Lchuv
 	Oklab
 	Oklch
 
@@ -40,6 +46,7 @@ const SpaceFirst = XyzD65
 var spaceInfos = [...]*spaceInfo{
 	nil,
 	&xyzD65Info,
+	&xyYInfo,
 	&xyzD50Info,
 	&linearSrgbInfo,
 	&srgbInfo,
@@ -56,12 +63,17 @@ var spaceInfos = [...]*spaceInfo{
 	&hwbInfo,
 	&labInfo,
 	&lchInfo,
+	&luvInfo,
+	&lchuvInfo,
 	&oklabInfo,
 	&oklchInfo,
 }
 
 var spaceChannelCounts = [...]uint8{
 	0,
+	3,
+	3,
+	3,
 	3,
 	3,
 	3,
@@ -97,10 +109,13 @@ var coordinateSystems = [...]CoordinateSystem{
 	Cartesian,
 	Cartesian,
 	Cartesian,
+	Cartesian,
 	Polar,
 	Polar,
 	Polar,
 	Cartesian,
+	Polar,
+	Polar,
 	Polar,
 	Cartesian,
 	Polar,
@@ -112,6 +127,8 @@ func (s Space) String() string {
 		return "Invalid"
 	case XyzD65:
 		return "XyzD65"
+	case XyY:
+		return "XyY"
 	case XyzD50:
 		return "XyzD50"
 	case LinearSrgb:
@@ -144,6 +161,10 @@ func (s Space) String() string {
 		return "Lab"
 	case Lch:
 		return "Lch"
+	case Luv:
+		return "Luv"
+	case Lchuv:
+		return "Lchuv"
 	case Oklab:
 		return "Oklab"
 	case Oklch:

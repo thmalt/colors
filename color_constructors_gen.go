@@ -15,6 +15,15 @@ func XyzD65(x, y, z float64) Color {
 	return Color{space: space.XyzD65, c1: x, c2: y, c3: z, alpha: 1}
 }
 
+// XyY returns a [Color] from CIE xyY components.
+//
+//	x: [0, 1]
+//	y: [0, 1]
+//	luminance: [0, 1] (typical)
+func XyY(x, y, luminance float64) Color {
+	return Color{space: space.XyY, c1: x, c2: y, c3: luminance, alpha: 1}
+}
+
 // XyzD50 returns a [Color] from CIE XYZ D50 components.
 //
 //	x: [0, 1]
@@ -157,6 +166,24 @@ func Lab(l, a, b float64) Color {
 //	h: [0, 360)
 func Lch(l, c, h float64) Color {
 	return Color{space: space.Lch, c1: l, c2: c, c3: h, alpha: 1}
+}
+
+// Luv returns a [Color] from CIE Luv components.
+//
+//	l: [0, 100]
+//	u: [-134, 220] (typical)
+//	v: [-140, 122] (typical)
+func Luv(l, u, v float64) Color {
+	return Color{space: space.Luv, c1: l, c2: u, c3: v, alpha: 1}
+}
+
+// Lchuv returns a [Color] from CIE LChuv components.
+//
+//	l: [0, 100]
+//	c: [0, 180] (typical)
+//	h: [0, 360)
+func Lchuv(l, c, h float64) Color {
+	return Color{space: space.Lchuv, c1: l, c2: c, c3: h, alpha: 1}
 }
 
 // Oklab returns a [Color] from Oklab components.

@@ -23,6 +23,24 @@ func LchToXyzD65(l, c, h float64) (x, y, z float64) {
 	return f1, f2, f3
 }
 
+// Conversion path (4 steps):
+//
+//	CIE LCh
+//	-> CIE Lab
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> CIE xyY
+func LchToXyY(l, c, h float64) (x, y, luminance float64) {
+	l, a, b := LchToLab(l, c, h)
+	x, y, z := LabToXyzD50(l, a, b)
+
+	f1 := 0.955473421488075*x - 0.023098454948764637*y + 0.06325924320057065*z
+	f2 := -0.028369709333863714*x + 1.009995398081304*y + 0.021041441191917323*z
+	f3 := 0.012314014864481988*x - 0.020507649298898947*y + 1.330365926242124*z
+
+	return XyzD65ToXyY(f1, f2, f3)
+}
+
 // Conversion path (2 steps):
 //
 //	CIE LCh
@@ -279,6 +297,32 @@ func LchToHwb(l, c, h float64) (float64, float64, float64) {
 	return SrgbToHwb(r, g, b)
 }
 
+// Conversion path (3 steps):
+//
+//	CIE LCh
+//	-> CIE Lab
+//	-> CIE XYZ D50
+//	-> CIE Luv
+func LchToLuv(l, c, h float64) (float64, float64, float64) {
+	l, a, b := LchToLab(l, c, h)
+	x, y, z := LabToXyzD50(l, a, b)
+	return XyzD50ToLuv(x, y, z)
+}
+
+// Conversion path (4 steps):
+//
+//	CIE LCh
+//	-> CIE Lab
+//	-> CIE XYZ D50
+//	-> CIE Luv
+//	-> CIE LChuv
+func LchToLchuv(l, c, h float64) (float64, float64, float64) {
+	l, a, b := LchToLab(l, c, h)
+	x, y, z := LabToXyzD50(l, a, b)
+	l, u, v := XyzD50ToLuv(x, y, z)
+	return LuvToLchuv(l, u, v)
+}
+
 // Conversion path (4 steps):
 //
 //	CIE LCh
@@ -329,5 +373,5 @@ func LchToOklch(l, c, h float64) (float64, float64, float64) {
 	f5 := 1.9779985324311684*f1 - 2.42859224204858*f2 + 0.450593709617411*f3
 	f6 := 0.0259040424655478*f1 + 0.7827717124575296*f2 - 0.8086757549230774*f3
 
-	return LabToLch(f4, f5, f6)
+	return OklabToOklch(f4, f5, f6)
 }

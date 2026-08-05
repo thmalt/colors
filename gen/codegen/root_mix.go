@@ -60,7 +60,7 @@ func genRootPkgMixSpaceFunc(ctx *Context, w *writer.GoWriter, space *model.Space
 
 	w.Separate()
 
-	symbols := space.ChannelSymbols()
+	idents := space.ChannelIdent()
 
 	w.LineWrite("var ")
 	sep := ""
@@ -70,7 +70,7 @@ func genRootPkgMixSpaceFunc(ctx *Context, w *writer.GoWriter, space *model.Space
 		}
 
 		w.Write(sep)
-		w.Write(symbols[i])
+		w.Write(idents[i])
 		sep = ", "
 	}
 	w.Write(" ", FloatType)
@@ -85,7 +85,7 @@ func genRootPkgMixSpaceFunc(ctx *Context, w *writer.GoWriter, space *model.Space
 			continue
 		}
 		index := i + 1
-		w.LineWritef("%s = c1.c%d*w1 + c2.c%d*w2\n", symbols[i], index, index)
+		w.LineWritef("%s = c1.c%d*w1 + c2.c%d*w2\n", idents[i], index, index)
 	}
 
 	w.Separate()
@@ -95,7 +95,7 @@ func genRootPkgMixSpaceFunc(ctx *Context, w *writer.GoWriter, space *model.Space
 		if c.Circular {
 			continue
 		}
-		w.LineWriteln(symbols[i], " *= inv")
+		w.LineWriteln(idents[i], " *= inv")
 	}
 	w.End()
 
@@ -105,7 +105,7 @@ func genRootPkgMixSpaceFunc(ctx *Context, w *writer.GoWriter, space *model.Space
 			continue
 		}
 		index := i + 1
-		w.LineWritef("%s = lerp(c1.c%d, c2.c%d, t)\n", symbols[i], index, index)
+		w.LineWritef("%s = lerp(c1.c%d, c2.c%d, t)\n", idents[i], index, index)
 	}
 	w.End()
 
@@ -118,14 +118,14 @@ func genRootPkgMixSpaceFunc(ctx *Context, w *writer.GoWriter, space *model.Space
 			w.Separate()
 		}
 
-		genMixHueInterpolation(ctx, w, i+1, symbols[i])
+		genMixHueInterpolation(ctx, w, i+1, idents[i])
 	}
 
 	w.Separate()
 	w.Begin("return Color")
 	w.LineWriteln("space: ", ctx.SpacePkg.Join(space.Name), ",")
-	for i, symbol := range symbols {
-		w.LineWritef("c%d: %s,\n", i+1, symbol)
+	for i, ident := range idents {
+		w.LineWritef("c%d: %s,\n", i+1, ident)
 	}
 	w.LineWriteln("alpha: alpha,")
 	w.End()
@@ -133,19 +133,19 @@ func genRootPkgMixSpaceFunc(ctx *Context, w *writer.GoWriter, space *model.Space
 	w.End()
 }
 
-func genMixHueInterpolation(ctx *Context, w *writer.GoWriter, index int, symbol string) {
+func genMixHueInterpolation(ctx *Context, w *writer.GoWriter, index int, ident string) {
 	switch ctx.Optimization {
 	case OptimizeSize:
-		w.LineWritef("%s := lerpHue(c1.c%d, c2.c%d, t, opts.Hue)", symbol, index, index)
+		w.LineWritef("%s := lerpHue(c1.c%d, c2.c%d, t, opts.Hue)", ident, index, index)
 	default:
-		w.LineWrite("var ", symbol, " ", FloatType)
+		w.LineWrite("var ", ident, " ", FloatType)
 		w.Switch("opts.Hue")
 		for _, hue := range HueInterpolation {
 			w.Case(hue)
-			w.LineWritef("%s = lerp%s(c1.c%d, c2.c%d, t)\n", symbol, hue, index, index)
+			w.LineWritef("%s = lerp%s(c1.c%d, c2.c%d, t)\n", ident, hue, index, index)
 		}
 		w.Default()
-		w.LineWritef("%s = lerpHueShorter(c1.c%d, c2.c%d, t)\n", symbol, index, index)
+		w.LineWritef("%s = lerpHueShorter(c1.c%d, c2.c%d, t)\n", ident, index, index)
 		w.End()
 	}
 }

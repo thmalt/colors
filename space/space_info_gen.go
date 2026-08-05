@@ -11,7 +11,7 @@ var xyzD65Info = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "X",
-			Symbol:      "x",
+			Symbol:      "X",
 			DisplayName: "X",
 			Min:         0,
 			Max:         1,
@@ -19,7 +19,7 @@ var xyzD65Info = spaceInfo{
 		},
 		{
 			Name:        "Y",
-			Symbol:      "y",
+			Symbol:      "Y",
 			DisplayName: "Y",
 			Min:         0,
 			Max:         1,
@@ -27,11 +27,47 @@ var xyzD65Info = spaceInfo{
 		},
 		{
 			Name:        "Z",
-			Symbol:      "z",
+			Symbol:      "Z",
 			DisplayName: "Z",
 			Min:         0,
 			Max:         1,
 			Precision:   8,
+		},
+	},
+	useColorFunction: true,
+}
+
+var xyYInfo = spaceInfo{
+	name:        "XyY",
+	displayName: "CIE xyY",
+	cssName:     "xyY",
+	whitePoint:  D65,
+	coordinate:  Cartesian,
+	channels: []Channel{
+		{
+			Name:        "Chromaticity x",
+			Symbol:      "x",
+			DisplayName: "x",
+			Min:         0,
+			Max:         1,
+			Precision:   8,
+		},
+		{
+			Name:        "Chromaticity y",
+			Symbol:      "y",
+			DisplayName: "y",
+			Min:         0,
+			Max:         1,
+			Precision:   8,
+		},
+		{
+			Name:         "Luminance",
+			Symbol:       "Y",
+			DisplayName:  "Y",
+			Min:          0,
+			Max:          1,
+			Unrestricted: true,
+			Precision:    8,
 		},
 	},
 	useColorFunction: true,
@@ -46,7 +82,7 @@ var xyzD50Info = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "X",
-			Symbol:      "x",
+			Symbol:      "X",
 			DisplayName: "X",
 			Min:         0,
 			Max:         1,
@@ -54,7 +90,7 @@ var xyzD50Info = spaceInfo{
 		},
 		{
 			Name:        "Y",
-			Symbol:      "y",
+			Symbol:      "Y",
 			DisplayName: "Y",
 			Min:         0,
 			Max:         1,
@@ -62,7 +98,7 @@ var xyzD50Info = spaceInfo{
 		},
 		{
 			Name:        "Z",
-			Symbol:      "z",
+			Symbol:      "Z",
 			DisplayName: "Z",
 			Min:         0,
 			Max:         1,
@@ -81,7 +117,7 @@ var linearSrgbInfo = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Red",
-			Symbol:      "r",
+			Symbol:      "R",
 			DisplayName: "Red",
 			Min:         0,
 			Max:         1,
@@ -89,7 +125,7 @@ var linearSrgbInfo = spaceInfo{
 		},
 		{
 			Name:        "Green",
-			Symbol:      "g",
+			Symbol:      "G",
 			DisplayName: "Green",
 			Min:         0,
 			Max:         1,
@@ -97,7 +133,7 @@ var linearSrgbInfo = spaceInfo{
 		},
 		{
 			Name:        "Blue",
-			Symbol:      "b",
+			Symbol:      "B",
 			DisplayName: "Blue",
 			Min:         0,
 			Max:         1,
@@ -116,7 +152,7 @@ var srgbInfo = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Red",
-			Symbol:      "r",
+			Symbol:      "R",
 			DisplayName: "Red",
 			Min:         0,
 			Max:         1,
@@ -124,7 +160,7 @@ var srgbInfo = spaceInfo{
 		},
 		{
 			Name:        "Green",
-			Symbol:      "g",
+			Symbol:      "G",
 			DisplayName: "Green",
 			Min:         0,
 			Max:         1,
@@ -132,7 +168,7 @@ var srgbInfo = spaceInfo{
 		},
 		{
 			Name:        "Blue",
-			Symbol:      "b",
+			Symbol:      "B",
 			DisplayName: "Blue",
 			Min:         0,
 			Max:         1,
@@ -151,7 +187,7 @@ var linearDisplayP3Info = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Red",
-			Symbol:      "r",
+			Symbol:      "R",
 			DisplayName: "Red",
 			Min:         0,
 			Max:         1,
@@ -159,7 +195,7 @@ var linearDisplayP3Info = spaceInfo{
 		},
 		{
 			Name:        "Green",
-			Symbol:      "g",
+			Symbol:      "G",
 			DisplayName: "Green",
 			Min:         0,
 			Max:         1,
@@ -167,7 +203,7 @@ var linearDisplayP3Info = spaceInfo{
 		},
 		{
 			Name:        "Blue",
-			Symbol:      "b",
+			Symbol:      "B",
 			DisplayName: "Blue",
 			Min:         0,
 			Max:         1,
@@ -186,7 +222,7 @@ var displayP3Info = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Red",
-			Symbol:      "r",
+			Symbol:      "R",
 			DisplayName: "Red",
 			Min:         0,
 			Max:         1,
@@ -194,7 +230,7 @@ var displayP3Info = spaceInfo{
 		},
 		{
 			Name:        "Green",
-			Symbol:      "g",
+			Symbol:      "G",
 			DisplayName: "Green",
 			Min:         0,
 			Max:         1,
@@ -202,7 +238,7 @@ var displayP3Info = spaceInfo{
 		},
 		{
 			Name:        "Blue",
-			Symbol:      "b",
+			Symbol:      "B",
 			DisplayName: "Blue",
 			Min:         0,
 			Max:         1,
@@ -221,7 +257,7 @@ var linearA98Info = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Red",
-			Symbol:      "r",
+			Symbol:      "R",
 			DisplayName: "Red",
 			Min:         0,
 			Max:         1,
@@ -229,7 +265,7 @@ var linearA98Info = spaceInfo{
 		},
 		{
 			Name:        "Green",
-			Symbol:      "g",
+			Symbol:      "G",
 			DisplayName: "Green",
 			Min:         0,
 			Max:         1,
@@ -237,7 +273,7 @@ var linearA98Info = spaceInfo{
 		},
 		{
 			Name:        "Blue",
-			Symbol:      "b",
+			Symbol:      "B",
 			DisplayName: "Blue",
 			Min:         0,
 			Max:         1,
@@ -256,7 +292,7 @@ var a98Info = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Red",
-			Symbol:      "r",
+			Symbol:      "R",
 			DisplayName: "Red",
 			Min:         0,
 			Max:         1,
@@ -264,7 +300,7 @@ var a98Info = spaceInfo{
 		},
 		{
 			Name:        "Green",
-			Symbol:      "g",
+			Symbol:      "G",
 			DisplayName: "Green",
 			Min:         0,
 			Max:         1,
@@ -272,7 +308,7 @@ var a98Info = spaceInfo{
 		},
 		{
 			Name:        "Blue",
-			Symbol:      "b",
+			Symbol:      "B",
 			DisplayName: "Blue",
 			Min:         0,
 			Max:         1,
@@ -291,7 +327,7 @@ var linearProPhotoInfo = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Red",
-			Symbol:      "r",
+			Symbol:      "R",
 			DisplayName: "Red",
 			Min:         0,
 			Max:         1,
@@ -299,7 +335,7 @@ var linearProPhotoInfo = spaceInfo{
 		},
 		{
 			Name:        "Green",
-			Symbol:      "g",
+			Symbol:      "G",
 			DisplayName: "Green",
 			Min:         0,
 			Max:         1,
@@ -307,7 +343,7 @@ var linearProPhotoInfo = spaceInfo{
 		},
 		{
 			Name:        "Blue",
-			Symbol:      "b",
+			Symbol:      "B",
 			DisplayName: "Blue",
 			Min:         0,
 			Max:         1,
@@ -326,7 +362,7 @@ var proPhotoInfo = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Red",
-			Symbol:      "r",
+			Symbol:      "R",
 			DisplayName: "Red",
 			Min:         0,
 			Max:         1,
@@ -334,7 +370,7 @@ var proPhotoInfo = spaceInfo{
 		},
 		{
 			Name:        "Green",
-			Symbol:      "g",
+			Symbol:      "G",
 			DisplayName: "Green",
 			Min:         0,
 			Max:         1,
@@ -342,7 +378,7 @@ var proPhotoInfo = spaceInfo{
 		},
 		{
 			Name:        "Blue",
-			Symbol:      "b",
+			Symbol:      "B",
 			DisplayName: "Blue",
 			Min:         0,
 			Max:         1,
@@ -361,7 +397,7 @@ var linearRec2020Info = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Red",
-			Symbol:      "r",
+			Symbol:      "R",
 			DisplayName: "Red",
 			Min:         0,
 			Max:         1,
@@ -369,7 +405,7 @@ var linearRec2020Info = spaceInfo{
 		},
 		{
 			Name:        "Green",
-			Symbol:      "g",
+			Symbol:      "G",
 			DisplayName: "Green",
 			Min:         0,
 			Max:         1,
@@ -377,7 +413,7 @@ var linearRec2020Info = spaceInfo{
 		},
 		{
 			Name:        "Blue",
-			Symbol:      "b",
+			Symbol:      "B",
 			DisplayName: "Blue",
 			Min:         0,
 			Max:         1,
@@ -396,7 +432,7 @@ var rec2020Info = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Red",
-			Symbol:      "r",
+			Symbol:      "R",
 			DisplayName: "Red",
 			Min:         0,
 			Max:         1,
@@ -404,7 +440,7 @@ var rec2020Info = spaceInfo{
 		},
 		{
 			Name:        "Green",
-			Symbol:      "g",
+			Symbol:      "G",
 			DisplayName: "Green",
 			Min:         0,
 			Max:         1,
@@ -412,7 +448,7 @@ var rec2020Info = spaceInfo{
 		},
 		{
 			Name:        "Blue",
-			Symbol:      "b",
+			Symbol:      "B",
 			DisplayName: "Blue",
 			Min:         0,
 			Max:         1,
@@ -431,7 +467,7 @@ var hslInfo = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Hue",
-			Symbol:      "h",
+			Symbol:      "H",
 			DisplayName: "Hue",
 			Min:         0,
 			Max:         360,
@@ -441,7 +477,7 @@ var hslInfo = spaceInfo{
 		},
 		{
 			Name:        "Saturation",
-			Symbol:      "s",
+			Symbol:      "S",
 			DisplayName: "Saturation",
 			Min:         0,
 			Max:         1,
@@ -450,7 +486,7 @@ var hslInfo = spaceInfo{
 		},
 		{
 			Name:        "Lightness",
-			Symbol:      "l",
+			Symbol:      "L",
 			DisplayName: "Lightness",
 			Min:         0,
 			Max:         1,
@@ -469,7 +505,7 @@ var hsvInfo = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Hue",
-			Symbol:      "h",
+			Symbol:      "H",
 			DisplayName: "Hue",
 			Min:         0,
 			Max:         360,
@@ -479,7 +515,7 @@ var hsvInfo = spaceInfo{
 		},
 		{
 			Name:        "Saturation",
-			Symbol:      "s",
+			Symbol:      "S",
 			DisplayName: "Saturation",
 			Min:         0,
 			Max:         1,
@@ -488,7 +524,7 @@ var hsvInfo = spaceInfo{
 		},
 		{
 			Name:        "Value",
-			Symbol:      "v",
+			Symbol:      "V",
 			DisplayName: "Value",
 			Min:         0,
 			Max:         1,
@@ -507,7 +543,7 @@ var hwbInfo = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Hue",
-			Symbol:      "h",
+			Symbol:      "H",
 			DisplayName: "Hue",
 			Min:         0,
 			Max:         360,
@@ -517,7 +553,7 @@ var hwbInfo = spaceInfo{
 		},
 		{
 			Name:        "Whiteness",
-			Symbol:      "w",
+			Symbol:      "W",
 			DisplayName: "Whiteness",
 			Min:         0,
 			Max:         1,
@@ -526,7 +562,7 @@ var hwbInfo = spaceInfo{
 		},
 		{
 			Name:        "Blackness",
-			Symbol:      "b",
+			Symbol:      "B",
 			DisplayName: "Blackness",
 			Min:         0,
 			Max:         1,
@@ -545,7 +581,7 @@ var labInfo = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Lightness",
-			Symbol:      "l",
+			Symbol:      "L",
 			DisplayName: "Lightness",
 			Min:         0,
 			Max:         100,
@@ -581,7 +617,7 @@ var lchInfo = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Lightness",
-			Symbol:      "l",
+			Symbol:      "L",
 			DisplayName: "Lightness",
 			Min:         0,
 			Max:         100,
@@ -589,10 +625,83 @@ var lchInfo = spaceInfo{
 		},
 		{
 			Name:         "Chroma",
-			Symbol:       "c",
+			Symbol:       "C",
 			DisplayName:  "Chroma",
 			Min:          0,
 			Max:          150,
+			Unrestricted: true,
+			Precision:    4,
+		},
+		{
+			Name:        "Hue",
+			Symbol:      "h",
+			DisplayName: "Hue",
+			Min:         0,
+			Max:         360,
+			Circular:    true,
+			Unit:        UnitDegree,
+			Precision:   4,
+		},
+	},
+}
+
+var luvInfo = spaceInfo{
+	name:        "Luv",
+	displayName: "CIE Luv",
+	cssName:     "luv",
+	whitePoint:  D50,
+	coordinate:  Polar,
+	channels: []Channel{
+		{
+			Name:        "Lightness",
+			Symbol:      "L",
+			DisplayName: "Lightness",
+			Min:         0,
+			Max:         100,
+			Precision:   4,
+		},
+		{
+			Name:         "U",
+			Symbol:       "u",
+			DisplayName:  "Green-Red Opponent",
+			Min:          -134,
+			Max:          220,
+			Unrestricted: true,
+			Precision:    4,
+		},
+		{
+			Name:         "V",
+			Symbol:       "v",
+			DisplayName:  "Blue-Yellow Opponent",
+			Min:          -140,
+			Max:          122,
+			Unrestricted: true,
+			Precision:    4,
+		},
+	},
+}
+
+var lchuvInfo = spaceInfo{
+	name:        "Lchuv",
+	displayName: "CIE LChuv",
+	cssName:     "lchuv",
+	whitePoint:  D50,
+	coordinate:  Polar,
+	channels: []Channel{
+		{
+			Name:        "Lightness",
+			Symbol:      "L",
+			DisplayName: "Lightness",
+			Min:         0,
+			Max:         100,
+			Precision:   4,
+		},
+		{
+			Name:         "Chroma",
+			Symbol:       "C",
+			DisplayName:  "Chroma",
+			Min:          0,
+			Max:          180,
 			Unrestricted: true,
 			Precision:    4,
 		},
@@ -618,7 +727,7 @@ var oklabInfo = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Lightness",
-			Symbol:      "l",
+			Symbol:      "L",
 			DisplayName: "Lightness",
 			Min:         0,
 			Max:         1,
@@ -627,7 +736,7 @@ var oklabInfo = spaceInfo{
 		{
 			Name:         "A",
 			Symbol:       "a",
-			DisplayName:  "Green-Red",
+			DisplayName:  "Green-Red Opponent",
 			Min:          -0.4,
 			Max:          0.4,
 			Unrestricted: true,
@@ -636,7 +745,7 @@ var oklabInfo = spaceInfo{
 		{
 			Name:         "B",
 			Symbol:       "b",
-			DisplayName:  "Blue-Yellow",
+			DisplayName:  "Blue-Yellow Opponent",
 			Min:          -0.4,
 			Max:          0.4,
 			Unrestricted: true,
@@ -654,7 +763,7 @@ var oklchInfo = spaceInfo{
 	channels: []Channel{
 		{
 			Name:        "Lightness",
-			Symbol:      "l",
+			Symbol:      "L",
 			DisplayName: "Lightness",
 			Min:         0,
 			Max:         1,
@@ -662,7 +771,7 @@ var oklchInfo = spaceInfo{
 		},
 		{
 			Name:         "Chroma",
-			Symbol:       "c",
+			Symbol:       "C",
 			DisplayName:  "Chroma",
 			Min:          0,
 			Max:          0.4,

@@ -203,7 +203,7 @@ func genRootPkgColorConversionMethods(ctx *Context, w *writer.GoWriter) {
 		scope.Reserve("c")
 
 		w.Case(spacePkg.Join(space.Name))
-		names := scope.ReserveUniqueAll(space.ChannelSymbols()...)
+		names := scope.ReserveUniqueAll(space.ChannelIdent()...)
 		w.LineWriteln(strings.Join(names, ", "), " := ", "c.", space.Name, "()")
 
 		b.Reset()
@@ -236,7 +236,7 @@ func genRootPkgColorConstructors(ctx *Context, w *writer.GoWriter) {
 				}
 
 				gw.Write('\t')
-				gw.Write(c.Symbol)
+				gw.Write(c.Ident)
 				gw.Write(": [")
 				gw.Write(formatNormalizedFloat(c.Min))
 				gw.Write(", ")
@@ -255,7 +255,7 @@ func genRootPkgColorConstructors(ctx *Context, w *writer.GoWriter) {
 		})
 
 		w.Func(space.Name)
-		params := space.ChannelSymbols()
+		params := space.ChannelIdent()
 		w.FuncParams(strings.Join(params, ", "), " ", FloatType)
 		w.FuncResults("Color")
 		w.FuncBody()

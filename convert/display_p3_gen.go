@@ -26,6 +26,22 @@ func DisplayP3ToXyzD65(r, g, b float64) (x, y, z float64) {
 //	Display P3
 //	-> Linear Display P3
 //	-> CIE XYZ D65
+//	-> CIE xyY
+func DisplayP3ToXyY(r, g, b float64) (x, y, luminance float64) {
+	r, g, b = DisplayP3ToLinearDisplayP3(r, g, b)
+
+	f1 := 0.4865709486482162*r + 0.265667693169093*g + 0.19821728523436252*b
+	f2 := 0.2289745640697488*r + 0.6917385218365062*g + 0.07928691409374501*b
+	f3 := 0.045113381858902624*g + 1.043944368900976*b
+
+	return XyzD65ToXyY(f1, f2, f3)
+}
+
+// Conversion path (3 steps):
+//
+//	Display P3
+//	-> Linear Display P3
+//	-> CIE XYZ D65
 //	-> CIE XYZ D50
 func DisplayP3ToXyzD50(r, g, b float64) (x, y, z float64) {
 	r, g, b = DisplayP3ToLinearDisplayP3(r, g, b)
@@ -264,6 +280,42 @@ func DisplayP3ToLch(r, g, b float64) (l, c, h float64) {
 	return LabToLch(l, a, b)
 }
 
+// Conversion path (4 steps):
+//
+//	Display P3
+//	-> Linear Display P3
+//	-> CIE XYZ D65
+//	-> CIE XYZ D50
+//	-> CIE Luv
+func DisplayP3ToLuv(r, g, b float64) (l, u, v float64) {
+	r, g, b = DisplayP3ToLinearDisplayP3(r, g, b)
+
+	f1 := 0.5151464429681158*r + 0.29200998206385786*g + 0.15713925139759397*b
+	f2 := 0.2412003221252552*r + 0.6922225411313817*g + 0.06657713674336295*b
+	f3 := -0.0010501391471401667*r + 0.04187827018907464*g + 0.7842764714685259*b
+
+	return XyzD50ToLuv(f1, f2, f3)
+}
+
+// Conversion path (5 steps):
+//
+//	Display P3
+//	-> Linear Display P3
+//	-> CIE XYZ D65
+//	-> CIE XYZ D50
+//	-> CIE Luv
+//	-> CIE LChuv
+func DisplayP3ToLchuv(r, g, b float64) (l, c, h float64) {
+	r, g, b = DisplayP3ToLinearDisplayP3(r, g, b)
+
+	f1 := 0.5151464429681158*r + 0.29200998206385786*g + 0.15713925139759397*b
+	f2 := 0.2412003221252552*r + 0.6922225411313817*g + 0.06657713674336295*b
+	f3 := -0.0010501391471401667*r + 0.04187827018907464*g + 0.7842764714685259*b
+
+	l, u, v := XyzD50ToLuv(f1, f2, f3)
+	return LuvToLchuv(l, u, v)
+}
+
 // Conversion path (3 steps):
 //
 //	Display P3
@@ -310,5 +362,5 @@ func DisplayP3ToOklch(r, g, b float64) (l, c, h float64) {
 	f5 := 1.9779985324311684*f1 - 2.42859224204858*f2 + 0.450593709617411*f3
 	f6 := 0.0259040424655478*f1 + 0.7827717124575296*f2 - 0.8086757549230774*f3
 
-	return LabToLch(f4, f5, f6)
+	return OklabToOklch(f4, f5, f6)
 }

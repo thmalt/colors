@@ -44,9 +44,8 @@ type Context struct {
 
 	Path string
 
-	// SplitFile bool
-
-	FormatSource bool
+	FormatSource         bool
+	SeparateAfterComment bool
 
 	Optimization Optimization
 

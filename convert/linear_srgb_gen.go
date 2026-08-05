@@ -21,6 +21,19 @@ func LinearSrgbToXyzD65(r, g, b float64) (x, y, z float64) {
 //
 //	Linear sRGB
 //	-> CIE XYZ D65
+//	-> CIE xyY
+func LinearSrgbToXyY(r, g, b float64) (x, y, luminance float64) {
+	f1 := 0.4123907992659593*r + 0.357584339383878*g + 0.1804807884018343*b
+	f2 := 0.21263900587151024*r + 0.715168678767756*g + 0.07219231536073371*b
+	f3 := 0.01933081871559182*r + 0.11919477979462598*g + 0.9505321522496607*b
+
+	return XyzD65ToXyY(f1, f2, f3)
+}
+
+// Conversion path (2 steps):
+//
+//	Linear sRGB
+//	-> CIE XYZ D65
 //	-> CIE XYZ D50
 func LinearSrgbToXyzD50(r, g, b float64) (x, y, z float64) {
 	x = 0.43606574687426913*r + 0.3851515095901597*g + 0.14307841996513865*b
@@ -195,6 +208,36 @@ func LinearSrgbToLch(r, g, b float64) (l, c, h float64) {
 	return LabToLch(l, a, b)
 }
 
+// Conversion path (3 steps):
+//
+//	Linear sRGB
+//	-> CIE XYZ D65
+//	-> CIE XYZ D50
+//	-> CIE Luv
+func LinearSrgbToLuv(r, g, b float64) (l, u, v float64) {
+	f1 := 0.43606574687426913*r + 0.3851515095901597*g + 0.14307841996513865*b
+	f2 := 0.22249317711056507*r + 0.7168870130944824*g + 0.06061980979495235*b
+	f3 := 0.013923921463169377*r + 0.09708132423141015*g + 0.7140993568158808*b
+
+	return XyzD50ToLuv(f1, f2, f3)
+}
+
+// Conversion path (4 steps):
+//
+//	Linear sRGB
+//	-> CIE XYZ D65
+//	-> CIE XYZ D50
+//	-> CIE Luv
+//	-> CIE LChuv
+func LinearSrgbToLchuv(r, g, b float64) (l, c, h float64) {
+	f1 := 0.43606574687426913*r + 0.3851515095901597*g + 0.14307841996513865*b
+	f2 := 0.22249317711056507*r + 0.7168870130944824*g + 0.06061980979495235*b
+	f3 := 0.013923921463169377*r + 0.09708132423141015*g + 0.7140993568158808*b
+
+	l, u, v := XyzD50ToLuv(f1, f2, f3)
+	return LuvToLchuv(l, u, v)
+}
+
 // Conversion path (2 steps):
 //
 //	Linear sRGB
@@ -235,5 +278,5 @@ func LinearSrgbToOklch(r, g, b float64) (l, c, h float64) {
 	f5 := 1.9779985324311684*f1 - 2.42859224204858*f2 + 0.450593709617411*f3
 	f6 := 0.0259040424655478*f1 + 0.7827717124575296*f2 - 0.8086757549230774*f3
 
-	return LabToLch(f4, f5, f6)
+	return OklabToOklch(f4, f5, f6)
 }

@@ -37,7 +37,7 @@ func GenerateInterpPkg(ctx *Context) {
 }
 
 func genInterp(w *writer.GoWriter, space *model.Space, withAlpha bool) {
-	ident := space.ChannelSymbols()
+	ident := space.ChannelIdent()
 	p1 := make([]string, 0, len(ident)+1)
 	p2 := make([]string, 0, len(ident)+1)
 	for _, param := range ident {

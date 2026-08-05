@@ -52,6 +52,14 @@ func genSpacePkgType(ctx *Context, w *writer.GoWriter) {
 		if i == 0 {
 			spaceFirst = space.Name
 		}
+
+		if space.Comment != "" {
+			if ctx.SeparateAfterComment {
+				w.Separate()
+			}
+
+			w.Comment(space.Comment)
+		}
 		w.LineWriteln(space.Name)
 
 		maxChannelCnt = max(maxChannelCnt, space.ChannelCount())
@@ -149,7 +157,6 @@ func genSpacePkgSpaceInfo(ctx *Context, w *writer.GoWriter) {
 			default:
 				w.LineWritef("Min: %g,\n", c.Min)
 				w.LineWritef("Max: %g,\n", c.Max)
-
 			}
 
 			if c.Circular {

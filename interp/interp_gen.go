@@ -17,6 +17,21 @@ func XyzD65Alpha(x1, y1, z1, alpha1 float64, x2, y2, z2, alpha2 float64, t float
 	return
 }
 
+func XyY(x1, y1, luminance1 float64, x2, y2, luminance2 float64, t float64) (x, y, luminance float64) {
+	x = lerp(x1, x2, t)
+	y = lerp(y1, y2, t)
+	luminance = lerp(luminance1, luminance2, t)
+	return
+}
+
+func XyYAlpha(x1, y1, luminance1, alpha1 float64, x2, y2, luminance2, alpha2 float64, t float64) (x, y, luminance, alpha float64) {
+	alpha = lerp(alpha1, alpha2, t)
+	x = lerp(x1, x2, t)
+	y = lerp(y1, y2, t)
+	luminance = lerp(luminance1, luminance2, t)
+	return
+}
+
 func XyzD50(x1, y1, z1 float64, x2, y2, z2 float64, t float64) (x, y, z float64) {
 	x = lerp(x1, x2, t)
 	y = lerp(y1, y2, t)
@@ -321,6 +336,58 @@ func Lch(l1, c1, h1 float64, l2, c2, h2 float64, t float64, hue HueInterpolation
 }
 
 func LchAlpha(l1, c1, h1, alpha1 float64, l2, c2, h2, alpha2 float64, t float64, hue HueInterpolation) (l, c, h, alpha float64) {
+	alpha = lerp(alpha1, alpha2, t)
+	l = lerp(l1, l2, t)
+	c = lerp(c1, c2, t)
+
+	switch hue {
+	case HueShorter:
+		h = lerpHueShorter(h1, h2, t)
+	case HueLonger:
+		h = lerpHueLonger(h1, h2, t)
+	case HueIncreasing:
+		h = lerpHueIncreasing(h1, h2, t)
+	case HueDecreasing:
+		h = lerpHueDecreasing(h1, h2, t)
+	}
+
+	return
+}
+
+func Luv(l1, u1, v1 float64, l2, u2, v2 float64, t float64, hue HueInterpolation) (l, u, v float64) {
+	l = lerp(l1, l2, t)
+	u = lerp(u1, u2, t)
+	v = lerp(v1, v2, t)
+	return
+}
+
+func LuvAlpha(l1, u1, v1, alpha1 float64, l2, u2, v2, alpha2 float64, t float64, hue HueInterpolation) (l, u, v, alpha float64) {
+	alpha = lerp(alpha1, alpha2, t)
+	l = lerp(l1, l2, t)
+	u = lerp(u1, u2, t)
+	v = lerp(v1, v2, t)
+	return
+}
+
+func Lchuv(l1, c1, h1 float64, l2, c2, h2 float64, t float64, hue HueInterpolation) (l, c, h float64) {
+	l = lerp(l1, l2, t)
+	c = lerp(c1, c2, t)
+
+	switch hue {
+	case HueShorter:
+		h = lerpHueShorter(h1, h2, t)
+	case HueLonger:
+		h = lerpHueLonger(h1, h2, t)
+	case HueIncreasing:
+		h = lerpHueIncreasing(h1, h2, t)
+	case HueDecreasing:
+		h = lerpHueDecreasing(h1, h2, t)
+	}
+
+	return
+}
+
+func LchuvAlpha(l1, c1, h1, alpha1 float64, l2, c2, h2, alpha2 float64, t float64, hue HueInterpolation) (l, c, h, alpha float64) {
 	alpha = lerp(alpha1, alpha2, t)
 	l = lerp(l1, l2, t)
 	c = lerp(c1, c2, t)

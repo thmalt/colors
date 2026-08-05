@@ -32,6 +32,20 @@ func (c Color) String() string {
 		}
 
 		b.WriteString(")")
+	case space.XyY:
+		b.WriteString("color(xyY ")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 8))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 8))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 8))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
 	case space.XyzD50:
 		b.WriteString("color(xyz-d50 ")
 		b.WriteString(formatNormalizedFloatPrec(c.c1, 8))
@@ -250,6 +264,34 @@ func (c Color) String() string {
 		b.WriteString(")")
 	case space.Lch:
 		b.WriteString("lch(")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.Luv:
+		b.WriteString("luv(")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.Lchuv:
+		b.WriteString("lchuv(")
 		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
 		b.WriteByte(' ')
 		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))

@@ -8,7 +8,7 @@ package convert
 //	-> Oklab
 //	-> CIE XYZ D65
 func OklchToXyzD65(l, c, h float64) (x, y, z float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -30,9 +30,33 @@ func OklchToXyzD65(l, c, h float64) (x, y, z float64) {
 //	Oklch
 //	-> Oklab
 //	-> CIE XYZ D65
+//	-> CIE xyY
+func OklchToXyY(l, c, h float64) (x, y, luminance float64) {
+	l, a, b := OklchToOklab(l, c, h)
+
+	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
+	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
+	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
+
+	f1 *= f1 * f1
+	f2 *= f2 * f2
+	f3 *= f3 * f3
+
+	f4 := 1.226879875845924*f1 - 0.557814994460217*f2 + 0.2813910456659646*f3
+	f5 := -0.040575745214800875*f1 + 1.112286803280317*f2 - 0.07171105806551642*f3
+	f6 := -0.07637293667466002*f1 - 0.4214933324022431*f2 + 1.5869240198367813*f3
+
+	return XyzD65ToXyY(f4, f5, f6)
+}
+
+// Conversion path (3 steps):
+//
+//	Oklch
+//	-> Oklab
+//	-> CIE XYZ D65
 //	-> CIE XYZ D50
 func OklchToXyzD50(l, c, h float64) (x, y, z float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -56,7 +80,7 @@ func OklchToXyzD50(l, c, h float64) (x, y, z float64) {
 //	-> CIE XYZ D65
 //	-> Linear sRGB
 func OklchToLinearSrgb(l, c, h float64) (r, g, b float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -81,7 +105,7 @@ func OklchToLinearSrgb(l, c, h float64) (r, g, b float64) {
 //	-> Linear sRGB
 //	-> sRGB
 func OklchToSrgb(l, c, h float64) (r, g, b float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -105,7 +129,7 @@ func OklchToSrgb(l, c, h float64) (r, g, b float64) {
 //	-> CIE XYZ D65
 //	-> Linear Display P3
 func OklchToLinearDisplayP3(l, c, h float64) (r, g, b float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -130,7 +154,7 @@ func OklchToLinearDisplayP3(l, c, h float64) (r, g, b float64) {
 //	-> Linear Display P3
 //	-> Display P3
 func OklchToDisplayP3(l, c, h float64) (r, g, b float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -154,7 +178,7 @@ func OklchToDisplayP3(l, c, h float64) (r, g, b float64) {
 //	-> CIE XYZ D65
 //	-> Linear Adobe RGB (1998)
 func OklchToLinearA98(l, c, h float64) (r, g, b float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -179,7 +203,7 @@ func OklchToLinearA98(l, c, h float64) (r, g, b float64) {
 //	-> Linear Adobe RGB (1998)
 //	-> Adobe RGB (1998)
 func OklchToA98(l, c, h float64) (r, g, b float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -204,7 +228,7 @@ func OklchToA98(l, c, h float64) (r, g, b float64) {
 //	-> CIE XYZ D50
 //	-> Linear ProPhoto
 func OklchToLinearProPhoto(l, c, h float64) (r, g, b float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -230,7 +254,7 @@ func OklchToLinearProPhoto(l, c, h float64) (r, g, b float64) {
 //	-> Linear ProPhoto
 //	-> ProPhoto
 func OklchToProPhoto(l, c, h float64) (r, g, b float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -254,7 +278,7 @@ func OklchToProPhoto(l, c, h float64) (r, g, b float64) {
 //	-> CIE XYZ D65
 //	-> Linear Rec. 2020
 func OklchToLinearRec2020(l, c, h float64) (r, g, b float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -279,7 +303,7 @@ func OklchToLinearRec2020(l, c, h float64) (r, g, b float64) {
 //	-> Linear Rec. 2020
 //	-> Rec. 2020
 func OklchToRec2020(l, c, h float64) (r, g, b float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -305,7 +329,7 @@ func OklchToRec2020(l, c, h float64) (r, g, b float64) {
 //	-> sRGB
 //	-> HSL
 func OklchToHsl(l, c, h float64) (float64, float64, float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -332,7 +356,7 @@ func OklchToHsl(l, c, h float64) (float64, float64, float64) {
 //	-> sRGB
 //	-> HSV
 func OklchToHsv(l, c, h float64) (float64, float64, float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -359,7 +383,7 @@ func OklchToHsv(l, c, h float64) (float64, float64, float64) {
 //	-> sRGB
 //	-> HWB
 func OklchToHwb(l, c, h float64) (float64, float64, float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -385,7 +409,7 @@ func OklchToHwb(l, c, h float64) (float64, float64, float64) {
 //	-> CIE XYZ D50
 //	-> CIE Lab
 func OklchToLab(l, c, h float64) (float64, float64, float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -411,7 +435,7 @@ func OklchToLab(l, c, h float64) (float64, float64, float64) {
 //	-> CIE Lab
 //	-> CIE LCh
 func OklchToLch(l, c, h float64) (float64, float64, float64) {
-	l, a, b := LchToLab(l, c, h)
+	l, a, b := OklchToOklab(l, c, h)
 
 	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
 	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
@@ -429,10 +453,54 @@ func OklchToLch(l, c, h float64) (float64, float64, float64) {
 	return LabToLch(l, a, b)
 }
 
-// Conversion path (1 steps):
+// Conversion path (4 steps):
 //
 //	Oklch
 //	-> Oklab
-func OklchToOklab(l, c, h float64) (float64, float64, float64) {
-	return LchToLab(l, c, h)
+//	-> CIE XYZ D65
+//	-> CIE XYZ D50
+//	-> CIE Luv
+func OklchToLuv(l, c, h float64) (float64, float64, float64) {
+	l, a, b := OklchToOklab(l, c, h)
+
+	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
+	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
+	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
+
+	f1 *= f1 * f1
+	f2 *= f2 * f2
+	f3 *= f3 * f3
+
+	f4 := 1.288586218172706*f1 - 0.5378717444973743*f2 + 0.21358120275423637*f3
+	f5 := -0.0025338764318735517*f1 + 1.092316798871916*f2 - 0.08978292244004274*f3
+	f6 := -0.06937382305734122*f1 - 0.2950083989443125*f2 + 1.1894868245121137*f3
+
+	return XyzD50ToLuv(f4, f5, f6)
+}
+
+// Conversion path (5 steps):
+//
+//	Oklch
+//	-> Oklab
+//	-> CIE XYZ D65
+//	-> CIE XYZ D50
+//	-> CIE Luv
+//	-> CIE LChuv
+func OklchToLchuv(l, c, h float64) (float64, float64, float64) {
+	l, a, b := OklchToOklab(l, c, h)
+
+	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
+	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
+	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
+
+	f1 *= f1 * f1
+	f2 *= f2 * f2
+	f3 *= f3 * f3
+
+	f4 := 1.288586218172706*f1 - 0.5378717444973743*f2 + 0.21358120275423637*f3
+	f5 := -0.0025338764318735517*f1 + 1.092316798871916*f2 - 0.08978292244004274*f3
+	f6 := -0.06937382305734122*f1 - 0.2950083989443125*f2 + 1.1894868245121137*f3
+
+	l, u, v := XyzD50ToLuv(f4, f5, f6)
+	return LuvToLchuv(l, u, v)
 }

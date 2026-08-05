@@ -14,6 +14,8 @@ func Clamp(c Color) Color {
 	switch c.space {
 	case space.XyzD65:
 		return clampXyzD65(c)
+	case space.XyY:
+		return clampXyY(c)
 	case space.XyzD50:
 		return clampXyzD50(c)
 	case space.LinearSrgb:
@@ -46,6 +48,10 @@ func Clamp(c Color) Color {
 		return clampLab(c)
 	case space.Lch:
 		return clampLch(c)
+	case space.Luv:
+		return clampLuv(c)
+	case space.Lchuv:
+		return clampLchuv(c)
 	case space.Oklab:
 		return clampOklab(c)
 	case space.Oklch:
@@ -59,6 +65,12 @@ func clampXyzD65(c Color) Color {
 	c.c1 = clamp(c.c1, 0, 1)
 	c.c2 = clamp(c.c2, 0, 1)
 	c.c3 = clamp(c.c3, 0, 1)
+	return c
+}
+
+func clampXyY(c Color) Color {
+	c.c1 = clamp(c.c1, 0, 1)
+	c.c2 = clamp(c.c2, 0, 1)
 	return c
 }
 
@@ -166,6 +178,17 @@ func clampLab(c Color) Color {
 }
 
 func clampLch(c Color) Color {
+	c.c1 = clamp(c.c1, 0, 100)
+	c.c3 = wrap(c.c3, 0, 360)
+	return c
+}
+
+func clampLuv(c Color) Color {
+	c.c1 = clamp(c.c1, 0, 100)
+	return c
+}
+
+func clampLchuv(c Color) Color {
 	c.c1 = clamp(c.c1, 0, 100)
 	c.c3 = wrap(c.c3, 0, 360)
 	return c

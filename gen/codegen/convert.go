@@ -162,8 +162,8 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) bool {
 		ops = newOps
 	}
 
-	paramsVars := from.ChannelSymbols()
-	resultsVars := to.ChannelSymbols()
+	paramsVars := from.ChannelIdent()
+	resultsVars := to.ChannelIdent()
 
 	var scope VariableScope
 	scope.ReserveAll(paramsVars...)
@@ -218,7 +218,7 @@ func processPair(ctx *Context, w *writer.GoWriter, from, to *model.Space) bool {
 				returned = true
 			} else {
 				_, to := ctx.ResolveSpacePair(op.Pair)
-				outputVars := to.ChannelSymbols()
+				outputVars := to.ChannelIdent()
 
 				sub.LineWrite(strings.Join(outputVars, ", "))
 				if scope.ContainsAll(outputVars...) {
