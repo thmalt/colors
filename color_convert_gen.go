@@ -7,87 +7,6 @@ import (
 	"github.com/thmalt/colors/space"
 )
 
-func (c Color) To(dst space.Space) (Color, error) {
-	if !c.space.IsValid() || !dst.IsValid() {
-		return Color{}, ErrInvalidSpace
-	}
-
-	if c.space == dst {
-		return c, nil
-	}
-
-	switch dst {
-	case space.XyzD65:
-		x, y, z := c.XyzD65()
-		return Color{space: space.XyzD65, c1: x, c2: y, c3: z, alpha: c.alpha}, nil
-	case space.XyY:
-		x, y, luminance := c.XyY()
-		return Color{space: space.XyY, c1: x, c2: y, c3: luminance, alpha: c.alpha}, nil
-	case space.XyzD50:
-		x, y, z := c.XyzD50()
-		return Color{space: space.XyzD50, c1: x, c2: y, c3: z, alpha: c.alpha}, nil
-	case space.LinearSrgb:
-		r, g, b := c.LinearSrgb()
-		return Color{space: space.LinearSrgb, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
-	case space.Srgb:
-		r, g, b := c.Srgb()
-		return Color{space: space.Srgb, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
-	case space.LinearDisplayP3:
-		r, g, b := c.LinearDisplayP3()
-		return Color{space: space.LinearDisplayP3, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
-	case space.DisplayP3:
-		r, g, b := c.DisplayP3()
-		return Color{space: space.DisplayP3, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
-	case space.LinearA98:
-		r, g, b := c.LinearA98()
-		return Color{space: space.LinearA98, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
-	case space.A98:
-		r, g, b := c.A98()
-		return Color{space: space.A98, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
-	case space.LinearProPhoto:
-		r, g, b := c.LinearProPhoto()
-		return Color{space: space.LinearProPhoto, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
-	case space.ProPhoto:
-		r, g, b := c.ProPhoto()
-		return Color{space: space.ProPhoto, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
-	case space.LinearRec2020:
-		r, g, b := c.LinearRec2020()
-		return Color{space: space.LinearRec2020, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
-	case space.Rec2020:
-		r, g, b := c.Rec2020()
-		return Color{space: space.Rec2020, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
-	case space.Hsl:
-		h, s, l := c.Hsl()
-		return Color{space: space.Hsl, c1: h, c2: s, c3: l, alpha: c.alpha}, nil
-	case space.Hsv:
-		h, s, v := c.Hsv()
-		return Color{space: space.Hsv, c1: h, c2: s, c3: v, alpha: c.alpha}, nil
-	case space.Hwb:
-		h, w, b := c.Hwb()
-		return Color{space: space.Hwb, c1: h, c2: w, c3: b, alpha: c.alpha}, nil
-	case space.Lab:
-		l, a, b := c.Lab()
-		return Color{space: space.Lab, c1: l, c2: a, c3: b, alpha: c.alpha}, nil
-	case space.Lch:
-		l, c1, h := c.Lch()
-		return Color{space: space.Lch, c1: l, c2: c1, c3: h, alpha: c.alpha}, nil
-	case space.Luv:
-		l, u, v := c.Luv()
-		return Color{space: space.Luv, c1: l, c2: u, c3: v, alpha: c.alpha}, nil
-	case space.Lchuv:
-		l, c1, h := c.Lchuv()
-		return Color{space: space.Lchuv, c1: l, c2: c1, c3: h, alpha: c.alpha}, nil
-	case space.Oklab:
-		l, a, b := c.Oklab()
-		return Color{space: space.Oklab, c1: l, c2: a, c3: b, alpha: c.alpha}, nil
-	case space.Oklch:
-		l, c1, h := c.Oklch()
-		return Color{space: space.Oklch, c1: l, c2: c1, c3: h, alpha: c.alpha}, nil
-	default:
-		return Color{}, ErrInvalidSpace
-	}
-}
-
 // XyzD65 returns the color components in the [space.XyzD65] color space.
 func (c Color) XyzD65() (x, y, z float64) {
 	if c.space == space.XyzD65 {
@@ -1007,7 +926,7 @@ func (c Color) Lab() (l, a, b float64) {
 }
 
 // Lch returns the color components in the [space.Lch] color space.
-func (c Color) Lch() (l, c1, h float64) {
+func (c Color) Lch() (float64, float64, float64) {
 	if c.space == space.Lch {
 		return c.c1, c.c2, c.c3
 	}
@@ -1056,7 +975,7 @@ func (c Color) Lch() (l, c1, h float64) {
 	case space.Oklch:
 		return convert.OklchToLch(c.c1, c.c2, c.c3)
 	default:
-		return
+		return 0, 0, 0
 	}
 }
 
@@ -1115,7 +1034,7 @@ func (c Color) Luv() (l, u, v float64) {
 }
 
 // Lchuv returns the color components in the [space.Lchuv] color space.
-func (c Color) Lchuv() (l, c1, h float64) {
+func (c Color) Lchuv() (float64, float64, float64) {
 	if c.space == space.Lchuv {
 		return c.c1, c.c2, c.c3
 	}
@@ -1164,7 +1083,7 @@ func (c Color) Lchuv() (l, c1, h float64) {
 	case space.Oklch:
 		return convert.OklchToLchuv(c.c1, c.c2, c.c3)
 	default:
-		return
+		return 0, 0, 0
 	}
 }
 
@@ -1223,7 +1142,7 @@ func (c Color) Oklab() (l, a, b float64) {
 }
 
 // Oklch returns the color components in the [space.Oklch] color space.
-func (c Color) Oklch() (l, c1, h float64) {
+func (c Color) Oklch() (float64, float64, float64) {
 	if c.space == space.Oklch {
 		return c.c1, c.c2, c.c3
 	}
@@ -1272,6 +1191,6 @@ func (c Color) Oklch() (l, c1, h float64) {
 	case space.Oklab:
 		return convert.OklabToOklch(c.c1, c.c2, c.c3)
 	default:
-		return
+		return 0, 0, 0
 	}
 }

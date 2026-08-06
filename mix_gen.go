@@ -9,12 +9,12 @@ import (
 // Mix returns the [Color] interpolation of c1 and c2.
 //
 // The interpolation is performed in opts.Space. If opts.Space is
-// [space.SpaceInvalid], [space.Oklab] is used.
+// [space.InvalidSpace], [space.Oklab] is used.
 //
 // The interpolation behavior can be customized through opts, including
 // premultiplied alpha and hue interpolation for polar color spaces.
 func Mix(c1, c2 Color, t float64, opts MixOptions) Color {
-	if opts.Space == space.SpaceInvalid {
+	if opts.Space == space.InvalidSpace {
 		opts.Space = space.Oklab
 	}
 

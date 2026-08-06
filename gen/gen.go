@@ -12,11 +12,16 @@ import (
 )
 
 func main() {
+	var enableDebug = os.Getenv("DEBUG") != ""
+
 	var ctx codegen.Context
 	ctx.Optimization = codegen.OptimizeSpeed
-	ctx.FormatSource = true
 
 	// ctx.SeparateAfterComment = true
+
+	if !enableDebug {
+		ctx.FormatSource = true
+	}
 
 	ctx.SetModuleByType(ctx)
 	ctx.Directory = findRoot("./")
@@ -43,12 +48,14 @@ func main() {
 	ctx.Build()
 
 	fmt.Println()
-	fmt.Println("Spaces order:")
-	for i, space := range ctx.BuildSpaces {
-		fmt.Printf("%d\t%s\n", i, space.Name)
-	}
 
-	fmt.Println()
+	if enableDebug {
+		fmt.Println("Spaces order:")
+		for i, space := range ctx.BuildSpaces {
+			fmt.Printf("%d\t%s\n", i, space.Name)
+		}
+		logGraphPaths(&ctx)
+	}
 
 	fmt.Println("Generating convert...")
 	codegen.GenerateConvertPkg(&ctx)
@@ -64,8 +71,33 @@ func main() {
 
 	end := time.Now()
 
+	if !ctx.FormatSource {
+		fmt.Println()
+		fmt.Println("Source formatting is disabled")
+	}
+
 	fmt.Println()
 	fmt.Printf("Completed in %v.\n", end.Sub(beg))
+
+}
+
+func logGraphPaths(ctx *codegen.Context) {
+	fmt.Println()
+	fmt.Println("Conversion path counts:")
+	for i, s := range ctx.BuildSpaces {
+		for j := i + 1; j < len(ctx.BuildSpaces); j++ {
+			to := ctx.BuildSpaces[j]
+
+			allPath := ctx.Graph.FindAllPath(s, to)
+			fmt.Println(s.Name, "->", to.Name, len(allPath))
+
+			allPath = ctx.Graph.FindAllPath(to, s)
+			fmt.Println(to.Name, "->", s.Name, len(allPath))
+
+			fmt.Println()
+		}
+	}
+	fmt.Println()
 }
 
 func findRoot(dir string) string {

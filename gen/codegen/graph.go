@@ -2,6 +2,7 @@ package codegen
 
 import (
 	"math"
+	"slices"
 
 	"github.com/thmalt/colors/gen/codegen/model"
 )
@@ -117,11 +118,43 @@ func (g *Graph) findPath(from, to *model.Space) []*Node {
 		space = node.From
 	}
 
-	// slices.Reverse(path)
-
-	for i, j := 0, len(path)-1; i < j; i, j = i+1, j-1 {
-		path[i], path[j] = path[j], path[i] // Idiomatic Go swap
-	}
+	slices.Reverse(path)
 
 	return path
+}
+
+func (g *Graph) FindAllPath(from, to *model.Space) [][]*Node {
+	var (
+		out     [][]*Node
+		path    []*Node
+		visited = map[*model.Space]bool{}
+	)
+
+	var dfs func(*model.Space)
+	dfs = func(space *model.Space) {
+		if space == to {
+			p := make([]*Node, len(path))
+			copy(p, path)
+			out = append(out, p)
+			return
+		}
+
+		visited[space] = true
+		defer delete(visited, space)
+
+		for i := range g.Nodes[space] {
+			node := &g.Nodes[space][i]
+
+			if visited[node.To] {
+				continue
+			}
+
+			path = append(path, node)
+			dfs(node.To)
+			path = path[:len(path)-1]
+		}
+	}
+
+	dfs(from)
+	return out
 }

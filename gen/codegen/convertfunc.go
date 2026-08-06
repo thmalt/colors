@@ -56,3 +56,9 @@ func (p Pair) FuncName() string {
 func FuncName(from, to string) string {
 	return from + "To" + to
 }
+
+type genOp struct {
+	Op
+
+	outputVars []string
+}

@@ -1,7 +1,7 @@
 package space
 
 func (s Space) IsValid() bool {
-	return s > SpaceInvalid && s < SpaceCount
+	return s > InvalidSpace && s < SpaceCount
 }
 
 func (s Space) ChannelCount() int {

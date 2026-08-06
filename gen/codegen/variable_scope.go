@@ -39,10 +39,10 @@ func (s *VariableScope) ReserveUniqueN(name string, count int) []string {
 
 	for i := range count {
 		for {
-			newName := name + strconv.Itoa(n)
+			out := appendInt(name, n)
 			n++
-			if s.Reserve(newName) {
-				names[i] = newName
+			if s.Reserve(out) {
+				names[i] = out
 
 				break
 			}
@@ -63,12 +63,58 @@ func (s *VariableScope) Reserve(name string) bool {
 		s.used = make(map[string]struct{})
 	}
 
-	if !s.Contains(name) {
-		s.used[name] = struct{}{}
-		return true
+	if s.Contains(name) {
+		return false
 	}
 
-	return false
+	s.used[name] = struct{}{}
+	return true
+}
+
+func (s *VariableScope) CreateUnique(name string) string {
+	if !s.Contains(name) {
+		return name
+	}
+
+	for n := 1; ; n++ {
+		out := appendInt(name, n)
+
+		if !s.Contains(out) {
+			return out
+		}
+	}
+}
+
+func (s *VariableScope) CreateUniqueN(name string, count int) []string {
+	names := make([]string, 0, count)
+
+	if !s.Contains(name) {
+		names = append(names, name)
+	}
+
+	for n := 1; len(names) < count; n++ {
+		out := appendInt(name, n)
+		if !s.Contains(out) {
+			names = append(names, out)
+		}
+
+	}
+
+	return names
+}
+
+func (s *VariableScope) CreateIndexedUniqueN(name string, count int) []string {
+	names := make([]string, 0, count)
+
+	for n := 1; len(names) < count; n++ {
+		out := appendInt(name, n)
+		if !s.Contains(out) {
+			names = append(names, out)
+		}
+
+	}
+
+	return names
 }
 
 func (s *VariableScope) Contains(name string) bool {

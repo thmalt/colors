@@ -33,8 +33,8 @@ func smallestUintType(n int) int {
 	}
 }
 
-func repeatType(typ string, n int) string {
-	return strings.Repeat(typ+", ", n-1) + typ
+func joinRepeatN(v string, n int) string {
+	return strings.Repeat(v+", ", n-1) + v
 }
 
 func joinIdentsWithType(typ string, vars ...string) string {

@@ -9,7 +9,7 @@ import (
 type Space uint8
 
 const (
-	SpaceInvalid Space = iota
+	InvalidSpace Space = iota
 
 	XyzD65
 	// XyY is the CIE xyY color space using the D65 reference white.
@@ -37,93 +37,19 @@ const (
 	Oklab
 	Oklch
 
-	// Available space count
+	// SpaceCount is the number of defined spaces, including InvalidSpace.
 	SpaceCount
+
+	// FirstSpace is the first valid color space.
+	FirstSpace = XyzD65
+
+	// LastSpace is the last valid color space.
+	LastSpace = Oklch
 )
-
-const SpaceFirst = XyzD65
-
-var spaceInfos = [...]*spaceInfo{
-	nil,
-	&xyzD65Info,
-	&xyYInfo,
-	&xyzD50Info,
-	&linearSrgbInfo,
-	&srgbInfo,
-	&linearDisplayP3Info,
-	&displayP3Info,
-	&linearA98Info,
-	&a98Info,
-	&linearProPhotoInfo,
-	&proPhotoInfo,
-	&linearRec2020Info,
-	&rec2020Info,
-	&hslInfo,
-	&hsvInfo,
-	&hwbInfo,
-	&labInfo,
-	&lchInfo,
-	&luvInfo,
-	&lchuvInfo,
-	&oklabInfo,
-	&oklchInfo,
-}
-
-var spaceChannelCounts = [...]uint8{
-	0,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-	3,
-}
-
-var coordinateSystems = [...]CoordinateSystem{
-	Cartesian,
-	Cartesian,
-	Cartesian,
-	Cartesian,
-	Cartesian,
-	Cartesian,
-	Cartesian,
-	Cartesian,
-	Cartesian,
-	Cartesian,
-	Cartesian,
-	Cartesian,
-	Cartesian,
-	Cartesian,
-	Polar,
-	Polar,
-	Polar,
-	Cartesian,
-	Polar,
-	Polar,
-	Polar,
-	Cartesian,
-	Polar,
-}
 
 func (s Space) String() string {
 	switch s {
-	case SpaceInvalid:
+	case InvalidSpace:
 		return "Invalid"
 	case XyzD65:
 		return "XyzD65"

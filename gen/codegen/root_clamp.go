@@ -1,6 +1,9 @@
 package codegen
 
-import "github.com/thmalt/colors/gen/codegen/writer"
+import (
+	"github.com/thmalt/colors/gen/codegen/model"
+	"github.com/thmalt/colors/gen/codegen/writer"
+)
 
 func genRootPkgClamp(ctx *Context, w *writer.GoWriter) {
 	w.Func("Clamp")
@@ -24,31 +27,34 @@ func genRootPkgClamp(ctx *Context, w *writer.GoWriter) {
 
 	w.Separate()
 	for _, space := range ctx.BuildSpaces {
-		w.Func("clamp", space.Name)
-		w.FuncParams("c Color")
-		w.FuncResults("Color")
-		w.FuncBody()
-		for i, c := range space.Channels {
-			if c.Unrestricted {
-				continue
-			}
-
-			var fn = "clamp"
-			if c.Circular {
-				fn = "wrap"
-			}
-
-			w.LineWritef("c.c%d = %s(c.c%d, %s, %s)\n",
-				i+1,
-				fn,
-				i+1,
-				formatNormalizedFloat(c.Min),
-				formatNormalizedFloat(c.Max),
-			)
-		}
-		w.Return("c")
-		w.End()
-
+		genRootPkgSpaceClamp(w, space)
 		w.Separate()
 	}
+}
+
+func genRootPkgSpaceClamp(w *writer.GoWriter, space *model.Space) {
+	w.Func("clamp", space.Name)
+	w.FuncParams("c Color")
+	w.FuncResults("Color")
+	w.FuncBody()
+	for i, c := range space.Channels {
+		if c.Unrestricted {
+			continue
+		}
+
+		var fn = "clamp"
+		if c.Circular {
+			fn = "wrap"
+		}
+
+		w.LineWritef("c.c%d = %s(c.c%d, %s, %s)\n",
+			i+1,
+			fn,
+			i+1,
+			formatNormalizedFloat(c.Min),
+			formatNormalizedFloat(c.Max),
+		)
+	}
+	w.Return("c")
+	w.End()
 }

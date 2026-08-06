@@ -6,10 +6,12 @@ import (
 )
 
 func genRootPkgMix(ctx *Context, w *writer.GoWriter) {
+	spacePkg := ctx.SpacePkg
+
 	w.Comment("Mix returns the [Color] interpolation of c1 and c2.")
 	w.Comment()
 	w.Comment("The interpolation is performed in opts.Space. If opts.Space is")
-	w.Comment("[space.SpaceInvalid], [space.Oklab] is used.")
+	w.Commentf("[%s], [%s] is used.", spacePkg.Join("InvalidSpace"), spacePkg.Join("Oklab"))
 	w.Comment()
 	w.Comment("The interpolation behavior can be customized through opts, including")
 	w.Comment("premultiplied alpha and hue interpolation for polar color spaces.")
@@ -18,7 +20,7 @@ func genRootPkgMix(ctx *Context, w *writer.GoWriter) {
 	w.FuncResults("Color")
 	w.FuncBody()
 
-	w.If("opts.Space == space.SpaceInvalid")
+	w.If("opts.Space == ", spacePkg.Join("InvalidSpace"))
 	w.LineWriteln("opts.Space = space.Oklab")
 	w.End()
 
@@ -45,11 +47,11 @@ func genRootPkgMix(ctx *Context, w *writer.GoWriter) {
 
 	for _, space := range ctx.BuildSpaces {
 		w.Separate()
-		genRootPkgMixSpaceFunc(ctx, w, space)
+		genRootPkgSpaceMix(ctx, w, space)
 	}
 }
 
-func genRootPkgMixSpaceFunc(ctx *Context, w *writer.GoWriter, space *model.Space) {
+func genRootPkgSpaceMix(ctx *Context, w *writer.GoWriter, space *model.Space) {
 	w.Func("mix", space.Name)
 	w.FuncParams("c1, c2 Color, t float64, opts MixOptions")
 	w.FuncResults("Color")
@@ -118,7 +120,7 @@ func genRootPkgMixSpaceFunc(ctx *Context, w *writer.GoWriter, space *model.Space
 			w.Separate()
 		}
 
-		genMixHueInterpolation(ctx, w, i+1, idents[i])
+		genRootPkgMixHueInterpolation(ctx, w, i+1, idents[i])
 	}
 
 	w.Separate()
@@ -133,10 +135,10 @@ func genRootPkgMixSpaceFunc(ctx *Context, w *writer.GoWriter, space *model.Space
 	w.End()
 }
 
-func genMixHueInterpolation(ctx *Context, w *writer.GoWriter, index int, ident string) {
+func genRootPkgMixHueInterpolation(ctx *Context, w *writer.GoWriter, index int, ident string) {
 	switch ctx.Optimization {
 	case OptimizeSize:
-		w.LineWritef("%s := lerpHue(c1.c%d, c2.c%d, t, opts.Hue)", ident, index, index)
+		w.LineWritef("%s := lerpHue(c1.c%d, c2.c%d, t, opts.Hue)\n", ident, index, index)
 	default:
 		w.LineWrite("var ", ident, " ", FloatType)
 		w.Switch("opts.Hue")

@@ -330,43 +330,42 @@ var (
 
 	ConvertFuncs = [...]ConvertFunc{
 		// standard transfer converter
-		{Pair: Pair{"Srgb", "LinearSrgb"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"LinearSrgb", "Srgb"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"A98", "LinearA98"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"LinearA98", "A98"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"DisplayP3", "LinearDisplayP3"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"LinearDisplayP3", "DisplayP3"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"ProPhoto", "LinearProPhoto"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"LinearProPhoto", "ProPhoto"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Rec2020", "LinearRec2020"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"LinearRec2020", "Rec2020"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"Srgb", "LinearSrgb"}, Implemented: true},
+		{Pair: Pair{"LinearSrgb", "Srgb"}, Implemented: true},
+		{Pair: Pair{"A98", "LinearA98"}, Implemented: true},
+		{Pair: Pair{"LinearA98", "A98"}, Implemented: true},
+		{Pair: Pair{"DisplayP3", "LinearDisplayP3"}, Implemented: true},
+		{Pair: Pair{"LinearDisplayP3", "DisplayP3"}, Implemented: true},
+		{Pair: Pair{"ProPhoto", "LinearProPhoto"}, Implemented: true},
+		{Pair: Pair{"LinearProPhoto", "ProPhoto"}, Implemented: true},
+		{Pair: Pair{"Rec2020", "LinearRec2020"}, Implemented: true},
+		{Pair: Pair{"LinearRec2020", "Rec2020"}, Implemented: true},
 		// standard converter
-		{Pair: Pair{"Srgb", "Hsl"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Hsl", "Srgb"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Srgb", "Hsv"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Hsv", "Srgb"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Srgb", "Hwb"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Hwb", "Srgb"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"Srgb", "Hsl"}, Implemented: true},
+		{Pair: Pair{"Hsl", "Srgb"}, Implemented: true},
+		{Pair: Pair{"Srgb", "Hsv"}, Implemented: true},
+		{Pair: Pair{"Hsv", "Srgb"}, Implemented: true},
+		{Pair: Pair{"Srgb", "Hwb"}, Implemented: true},
+		{Pair: Pair{"Hwb", "Srgb"}, Implemented: true},
 		// standard converter
-		{Pair: Pair{"XyY", "XyzD65"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"XyzD65", "XyY"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"XyY", "XyzD65"}, Implemented: true},
+		{Pair: Pair{"XyzD65", "XyY"}, Implemented: true},
 		//
-		{Pair: Pair{"Lab", "Lch"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Lch", "Lab"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Lab", "XyzD50"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"XyzD50", "Lab"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"Lab", "Lch"}, Implemented: true},
+		{Pair: Pair{"Lch", "Lab"}, Implemented: true},
+		{Pair: Pair{"Lab", "XyzD50"}, Implemented: true},
+		{Pair: Pair{"XyzD50", "Lab"}, Implemented: true},
 		//
-		{Pair: Pair{"Luv", "Lchuv"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Lchuv", "Luv"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"Luv", "XyzD50"}, Cost: 1, Implemented: true},
-		{Pair: Pair{"XyzD50", "Luv"}, Cost: 1, Implemented: true},
+		{Pair: Pair{"Luv", "Lchuv"}, Implemented: true},
+		{Pair: Pair{"Lchuv", "Luv"}, Implemented: true},
+		{Pair: Pair{"Luv", "XyzD50"}, Implemented: true},
+		{Pair: Pair{"XyzD50", "Luv"}, Implemented: true},
 		//
-		{Pair: Pair{"Oklab", "Oklch"}, Cost: 2, Implemented: true},
-		{Pair: Pair{"Oklch", "Oklab"}, Cost: 2, Implemented: true},
+		{Pair: Pair{"Oklab", "Oklch"}, Implemented: true},
+		{Pair: Pair{"Oklch", "Oklab"}, Implemented: true},
 		// generate with Ops
 		{
 			Pair: Pair{"Oklab", "XyzD65"},
-			Cost: 3,
 			Ops: []Op{
 				{Type: OpMatrix, Matrix: &data.OklabLabToLms},
 				{Type: OpCube},
@@ -375,7 +374,6 @@ var (
 		},
 		{
 			Pair: Pair{"XyzD65", "Oklab"},
-			Cost: 3,
 			Ops: []Op{
 				{Type: OpMatrix, Matrix: &data.OklabXyzD65ToLms},
 				{Type: OpCbrt},
@@ -385,63 +383,51 @@ var (
 		// Xyz
 		{
 			Pair: Pair{"XyzD65", "XyzD50"},
-			Cost: 1,
 			Ops:  []Op{{Type: OpMatrix, Matrix: &data.XyzD65ToXyzD50}},
 		},
 		{
 			Pair: Pair{"XyzD50", "XyzD65"},
-			Cost: 1,
 			Ops:  []Op{{Type: OpMatrix, Matrix: &data.XyzD50ToXyzD65}},
 		},
 		// Xyz* -> Linear*
 		{
 			Pair: Pair{"XyzD65", "LinearSrgb"},
-			Cost: 1,
 			Ops:  []Op{{Type: OpMatrix, Matrix: &data.XyzD65ToLinearSrgb}},
 		},
 		{
 			Pair: Pair{"LinearSrgb", "XyzD65"},
-			Cost: 1,
 			Ops:  []Op{{Type: OpMatrix, Matrix: &data.LinearSrgbToXyzD65}},
 		},
 		{
 			Pair: Pair{"XyzD65", "LinearDisplayP3"},
-			Cost: 1,
 			Ops:  []Op{{Type: OpMatrix, Matrix: &data.XyzD65ToLinearDisplayP3}},
 		},
 		{
 			Pair: Pair{"LinearDisplayP3", "XyzD65"},
-			Cost: 1,
 			Ops:  []Op{{Type: OpMatrix, Matrix: &data.LinearDisplayP3ToXyzD65}},
 		},
 		{
 			Pair: Pair{"XyzD65", "LinearA98"},
-			Cost: 1,
 			Ops:  []Op{{Type: OpMatrix, Matrix: &data.XyzD65ToLinearA98}},
 		},
 		{
 			Pair: Pair{"LinearA98", "XyzD65"},
-			Cost: 1,
 			Ops:  []Op{{Type: OpMatrix, Matrix: &data.LinearA98ToXyzD65}},
 		},
 		{
 			Pair: Pair{"XyzD50", "LinearProPhoto"},
-			Cost: 1,
 			Ops:  []Op{{Type: OpMatrix, Matrix: &data.XyzD50ToLinearProPhoto}},
 		},
 		{
 			Pair: Pair{"LinearProPhoto", "XyzD50"},
-			Cost: 1,
 			Ops:  []Op{{Type: OpMatrix, Matrix: &data.LinearProPhotoToXyzD50}},
 		},
 		{
 			Pair: Pair{"XyzD65", "LinearRec2020"},
-			Cost: 1,
 			Ops:  []Op{{Type: OpMatrix, Matrix: &data.XyzD65ToLinearRec2020}},
 		},
 		{
 			Pair: Pair{"LinearRec2020", "XyzD65"},
-			Cost: 1,
 			Ops:  []Op{{Type: OpMatrix, Matrix: &data.LinearRec2020ToXyzD65}},
 		},
 	}

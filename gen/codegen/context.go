@@ -37,6 +37,8 @@ type Context struct {
 	Funcs       []ConvertFunc
 	Graph       Graph
 
+	MaxChannelCount int
+
 	ConvertPkg Pkg
 	RootPkg    Pkg
 	SpacePkg   Pkg
@@ -189,10 +191,14 @@ func (ctx *Context) ResolveSpacePair(pair Pair) (from, to *model.Space) {
 
 func (ctx *Context) buildSpaces() {
 	families := make(map[string][]*model.Space)
+
+	maxChannelCount := 0
 	for _, s := range ctx.Spaces {
 		if s.Disable {
 			continue
 		}
+
+		maxChannelCount = max(maxChannelCount, s.ChannelCount())
 
 		families[s.Family] = append(families[s.Family], s)
 	}
@@ -268,6 +274,7 @@ func (ctx *Context) buildSpaces() {
 		}
 	}
 
+	ctx.MaxChannelCount = maxChannelCount
 	ctx.BuildSpaces = out
 }
 

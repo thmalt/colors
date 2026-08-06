@@ -58,7 +58,6 @@ func WriteGo(w io.Writer, pkg, tags string, b []byte, formatSource bool) (int, e
 	src = normalizeGoSource(src)
 
 	if !formatSource {
-		fmt.Println("Don't using format")
 		return w.Write(src)
 	}
 
@@ -188,6 +187,43 @@ func isASCIIBlank(p []byte) bool {
 			return false
 		}
 	}
+	return true
+}
+
+func isBlankArgs(a ...any) bool {
+	if len(a) == 0 {
+		return true
+	}
+
+	for _, v := range a {
+		switch x := v.(type) {
+		case string:
+			for _, r := range x {
+				if !unicode.IsSpace(r) {
+					return false
+				}
+			}
+		case []byte:
+			for len(x) > 0 {
+				r, size := utf8.DecodeRune(x)
+				if !unicode.IsSpace(r) {
+					return false
+				}
+				x = x[size:]
+			}
+		case byte:
+			if !unicode.IsSpace(rune(x)) {
+				return false
+			}
+		case rune:
+			if !unicode.IsSpace(x) {
+				return false
+			}
+		default:
+			return false
+		}
+	}
+
 	return true
 }
 

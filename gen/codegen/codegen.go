@@ -13,11 +13,21 @@ func emitGoFile(w *writer.GoWriter, pkg, path, filename string, fn func(w *write
 
 	fn(w)
 
-	suffix := "_gen.go"
-	if !strings.HasSuffix(filename, suffix) {
-		filename += suffix
-	}
+	filename = normalizeGenFilename(filename)
 
 	fmt.Println("  Generate file", filename)
 	w.SaveGoFile(filepath.Join(path, filename), pkg)
+}
+
+func normalizeGenFilename(filename string) string {
+	const suffix = "_gen.go"
+
+	if strings.HasSuffix(filename, suffix) {
+		return filename
+	}
+
+	filename = strings.TrimSuffix(filename, ".go")
+	filename = strings.TrimSuffix(filename, "_gen")
+
+	return filename + suffix
 }

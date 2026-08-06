@@ -436,6 +436,17 @@ func (w *GoWriter) BeginGroupf(format string, a ...any) {
 	w.beginf(blockNone, '(', format, a...)
 }
 
+func (w *GoWriter) WriteCall(name string, args ...string) {
+	w.Write(name, '(')
+	w.WriteJoin(args, ", ")
+	w.Write(')')
+}
+
+func (w *GoWriter) WriteCallln(name string, args ...string) {
+	w.WriteCall(name, args...)
+	w.Newline()
+}
+
 func (w *GoWriter) Method(receiver string, names ...string) {
 	w.pushBlock(blockFuncName)
 
@@ -567,16 +578,29 @@ func (w *GoWriter) Default() {
 	w.In()
 }
 
-func (w *GoWriter) Return(a ...any) {
-	b := w.tempBytes(a...)
+func (w *GoWriter) returnBytes(b []byte, newline bool) {
 	w.LineWrite("return")
+	w.Write(' ')
 
 	if !isBlank(b) {
-		w.Write(' ')
 		w.Write(b)
 	}
 
-	w.Newline()
+	if newline {
+		w.Newline()
+	}
+}
+
+func (w *GoWriter) Return(a ...any) {
+	w.returnBytes(w.tempBytes(a...), true)
+}
+
+func (w *GoWriter) Returnf(format string, a ...any) {
+	w.returnBytes(w.tempBytesFormat(format, a...), true)
+}
+
+func (w *GoWriter) ReturnInline(a ...any) {
+	w.returnBytes(w.tempBytes(a...), false)
 }
 
 func (w *GoWriter) comment(p []byte, inline bool) {
