@@ -2,79 +2,183 @@ package codegen
 
 import "github.com/thmalt/colors/gen/codegen/data"
 
-func prepareGenOps(ctx *Context, ops []Op, last *Node) []genOp {
-	genOps := make([]genOp, len(ops))
-	for i, op := range ops {
-		genOps[i].Op = op
-	}
+type GenOp struct {
+	Op
 
-	for i := range genOps {
-		if genOps[i].Type != OpMatrix {
-			continue
-		}
-
-		switch {
-		case i+1 < len(ops) && ops[i+1].Type == OpCall:
-			from := ctx.SpaceByName(genOps[i+1].Pair.From)
-			genOps[i].outputVars = from.ChannelIdent()
-		case i == len(genOps)-1:
-			genOps[i].outputVars = last.To.ChannelIdent()
-		}
-	}
-
-	return genOps
+	InputVars  []string
+	OutputVars []string
 }
 
-func buildOps(ctx *Context, path []*Node) []Op {
-	var result []Op
+func buildGenOps(ctx *Context, path []*Node, expand bool) []GenOp {
+	var ops []GenOp
+
+	if !expand && len(path) == 1 {
+		expand = true
+	}
+
 	for _, node := range path {
-		if len(node.Fn.Ops) == 0 {
-			result = append(result, Op{
+		nodeOps := buildNodeGenOps(ctx, node, expand)
+		assignNodeVars(ctx, node, nodeOps)
+		ops = append(ops, nodeOps...)
+	}
+
+	clearIntermediateVars(ops)
+
+	return ops
+}
+
+func buildNodeGenOps(ctx *Context, node *Node, expand bool) []GenOp {
+	if !expand || len(node.Fn.Ops) == 0 {
+		return []GenOp{{
+			Op: Op{
 				Type: OpCall,
 				Pair: node.Fn.Pair,
-			})
+			},
+			InputVars:  node.From.ChannelIdent(),
+			OutputVars: node.To.ChannelIdent(),
+		}}
+	}
+
+	var ops []GenOp
+	in := node.From.ChannelIdent()
+
+	for i, op := range node.Fn.Ops {
+		genOps := expandOps(ctx, op)
+		if len(genOps) == 0 {
 			continue
 		}
 
-		for _, op := range node.Fn.Ops {
-			result = append(result, expandOps(ctx, op)...)
+		genOps[0].InputVars = in
 
+		if next := nextCall(node.Fn.Ops, i); next != nil {
+			if sp := ctx.SpaceByName(next.Pair.From); sp != nil {
+				out := sp.ChannelIdent()
+				genOps[len(genOps)-1].OutputVars = out
+				in = out
+			} else {
+				genOps[len(genOps)-1].OutputVars = nil
+				in = nil
+			}
+		} else {
+			out := node.To.ChannelIdent()
+			genOps[len(genOps)-1].OutputVars = out
+			in = out
 		}
+
+		ops = append(ops, genOps...)
 	}
-	return result
+
+	return ops
 }
 
-func expandOps(ctx *Context, op Op) []Op {
-	var out []Op
-
-	switch op.Type {
-	case OpCall:
-		fn := ctx.ConvertFuncByPair(op.Pair)
-		if fn == nil {
-			panic("expandOps notfound " + op.Pair.FuncName())
-		}
-
-		if len(fn.Ops) == 0 {
-			return []Op{op}
-		}
-
-		for _, op := range fn.Ops {
-			out = append(out, expandOps(ctx, op)...)
-		}
-	default:
-		out = append(out, op)
+func assignNodeVars(ctx *Context, node *Node, ops []GenOp) {
+	if len(ops) == 0 {
+		return
 	}
 
+	in := node.From.ChannelIdent()
+
+	for i := range ops {
+		if ops[i].Type != OpCall {
+			continue
+		}
+
+		ops[i].InputVars = in
+
+		next := -1
+		for j := i + 1; j < len(ops); j++ {
+			if ops[j].Type == OpCall {
+				next = j
+				break
+			}
+		}
+
+		if next == -1 {
+			ops[i].OutputVars = node.To.ChannelIdent()
+			break
+		}
+
+		if sp := ctx.SpaceByName(ops[next].Pair.From); sp != nil {
+			out := sp.ChannelIdent()
+			ops[i].OutputVars = out
+			in = out
+		} else {
+			ops[i].OutputVars = nil
+			in = nil
+		}
+	}
+}
+
+func expandOps(ctx *Context, op Op) []GenOp {
+	if op.Type != OpCall {
+		return []GenOp{{Op: op}}
+	}
+
+	fn := ctx.ConvertFuncByPair(op.Pair)
+	if fn == nil || len(fn.Ops) == 0 {
+		return []GenOp{{Op: op}}
+	}
+
+	var out []GenOp
+	for _, op := range fn.Ops {
+		out = append(out, expandOps(ctx, op)...)
+	}
 	return out
 }
 
-func combineOps(ops []Op) []Op {
-	out := make([]Op, 0, len(ops))
+func nextCall(ops []Op, i int) *Op {
+	for i++; i < len(ops); i++ {
+		if ops[i].Type == OpCall {
+			return &ops[i]
+		}
+	}
+	return nil
+}
+
+func clearIntermediateVars(ops []GenOp) {
+	first := -1
+	last := -1
+
+	flush := func() {
+		if first < 0 {
+			return
+		}
+
+		for i := first; i < last; i++ {
+			ops[i].OutputVars = nil
+			if i+1 < len(ops) {
+				ops[i+1].InputVars = nil
+			}
+		}
+
+		first = -1
+		last = -1
+	}
+
+	for i := range ops {
+		if ops[i].Type == OpCall {
+			flush()
+			continue
+		}
+
+		if first < 0 {
+			first = i
+		}
+		last = i
+	}
+
+	flush()
+}
+
+func combineOps(ops []GenOp) []GenOp {
+	out := make([]GenOp, 0, len(ops))
 
 	var (
 		mat      [9]float64
 		hasMat   bool
 		lastPair Pair
+		input    []string
+		output   []string
 	)
 
 	flush := func() {
@@ -83,13 +187,19 @@ func combineOps(ops []Op) []Op {
 		}
 
 		m := mat
-		out = append(out, Op{
-			Type:   OpMatrix,
-			Pair:   lastPair,
-			Matrix: &m,
+		out = append(out, GenOp{
+			Op: Op{
+				Type:   OpMatrix,
+				Pair:   lastPair,
+				Matrix: &m,
+			},
+			InputVars:  input,
+			OutputVars: output,
 		})
 
 		hasMat = false
+		input = nil
+		output = nil
 	}
 
 	for _, op := range ops {
@@ -97,9 +207,13 @@ func combineOps(ops []Op) []Op {
 			if !hasMat {
 				mat = *op.Matrix
 				lastPair = op.Pair
+				input = op.InputVars // first matrix
+				output = op.OutputVars
 				hasMat = true
 			} else {
 				mat = data.Mat3MulFMA(*op.Matrix, mat)
+				lastPair = op.Pair
+				output = op.OutputVars // last matrix
 			}
 			continue
 		}

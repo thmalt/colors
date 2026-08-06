@@ -3,6 +3,7 @@ package codegen
 import (
 	"path/filepath"
 
+	"github.com/thmalt/colors/gen/codegen/model"
 	"github.com/thmalt/colors/gen/codegen/writer"
 )
 
@@ -46,19 +47,26 @@ func genSpacePkgSpace(ctx *Context, w *writer.GoWriter) {
 
 	w.Separate()
 	var firstSpace, lastSpace string
+
+	var aliasSpaces []*model.Space
+
 	for i, space := range ctx.BuildSpaces {
 		if i == 0 {
 			firstSpace = space.Name
 		}
 
-		if space.Comment != "" {
+		if space.Description != "" {
 			if ctx.SeparateAfterComment {
 				w.Separate()
 			}
 
-			w.Comment(space.Comment)
+			w.Comment(space.Description)
 		}
 		w.LineWriteln(space.Name)
+
+		if len(space.Aliases) > 0 {
+			aliasSpaces = append(aliasSpaces, space)
+		}
 
 		lastSpace = space.Name
 	}
@@ -75,6 +83,16 @@ func genSpacePkgSpace(ctx *Context, w *writer.GoWriter) {
 	w.Comment("LastSpace is the last valid color space.")
 	w.LineWriteln("LastSpace = ", lastSpace)
 
+	w.End()
+
+	w.Separate()
+	w.BeginGroup("const ")
+	for _, space := range aliasSpaces {
+		for _, alias := range space.Aliases {
+			w.Comment(alias, " is an alias for [", space.Name, "].")
+			w.LineWrite(alias, " = ", space.Name)
+		}
+	}
 	w.End()
 
 	w.Separate()

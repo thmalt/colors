@@ -13,7 +13,7 @@ func genConvertPkgWhitePoint(ctx *Context, w *writer.GoWriter) bool {
 	for _, whitepoint := range ctx.WhitePoints {
 		w.BeginGroup("const ")
 
-		xyz := data.ChromaToXyz(whitepoint.X, whitepoint.Y)
+		xyz := data.ChromaticityToXyz(whitepoint.X, whitepoint.Y)
 		name := whitepoint.Name
 		privateName := toLowerCaseFirstWord(name)
 

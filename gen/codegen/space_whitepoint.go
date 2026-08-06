@@ -25,7 +25,7 @@ func genSpacePkgWhitePoint(ctx *Context, w *writer.GoWriter) {
 			w.Separate()
 		}
 
-		xyz := data.ChromaToXyz(whitePoint.X, whitePoint.Y)
+		xyz := data.ChromaticityToXyz(whitePoint.X, whitePoint.Y)
 
 		w.Begin(whitePoint.Name, " = WhitePoint")
 

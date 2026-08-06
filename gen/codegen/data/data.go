@@ -66,8 +66,8 @@ var (
 )
 
 var (
-	D50Xyz = ChromaToXyz(D50.X, D50.Y)
-	D65Xyz = ChromaToXyz(D65.X, D65.Y)
+	D50Xyz = ChromaticityToXyz(D50.X, D50.Y)
+	D65Xyz = ChromaticityToXyz(D65.X, D65.Y)
 
 	OklabLabToLms    = Mat3InvertFMA(OklabLmsToLab)
 	OklabLmsToXyzD65 = Mat3InvertFMA(OklabXyzD65ToLms)

@@ -23,7 +23,7 @@ func genRootPkgColorStringMethod(ctx *Context, w *writer.GoWriter) {
 
 	for _, space := range ctx.BuildSpaces {
 		w.Case(ctx.SpacePkg.Join(space.Name))
-		if space.UseColorFunction {
+		if space.UseGenericColorFunction {
 			w.LineWriteln(`b.WriteString("color(`, space.CssName, ` ")`)
 		} else {
 			w.LineWriteln(`b.WriteString("`, space.CssName, `(")`)

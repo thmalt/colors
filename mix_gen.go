@@ -26,189 +26,63 @@ func Mix(c1, c2 Color, t float64, opts MixOptions) Color {
 	c2 = c2.MustTo(opts.Space)
 
 	switch opts.Space {
-	case space.XyzD65:
-		return mixXyzD65(c1, c2, t, opts)
-	case space.XyY:
-		return mixXyY(c1, c2, t, opts)
-	case space.XyzD50:
-		return mixXyzD50(c1, c2, t, opts)
-	case space.LinearSrgb:
-		return mixLinearSrgb(c1, c2, t, opts)
 	case space.Srgb:
 		return mixSrgb(c1, c2, t, opts)
-	case space.LinearDisplayP3:
-		return mixLinearDisplayP3(c1, c2, t, opts)
+	case space.LinearSrgb:
+		return mixLinearSrgb(c1, c2, t, opts)
 	case space.DisplayP3:
 		return mixDisplayP3(c1, c2, t, opts)
-	case space.LinearA98:
-		return mixLinearA98(c1, c2, t, opts)
+	case space.LinearDisplayP3:
+		return mixLinearDisplayP3(c1, c2, t, opts)
 	case space.A98:
 		return mixA98(c1, c2, t, opts)
-	case space.LinearProPhoto:
-		return mixLinearProPhoto(c1, c2, t, opts)
+	case space.LinearA98:
+		return mixLinearA98(c1, c2, t, opts)
 	case space.ProPhoto:
 		return mixProPhoto(c1, c2, t, opts)
-	case space.LinearRec2020:
-		return mixLinearRec2020(c1, c2, t, opts)
+	case space.LinearProPhoto:
+		return mixLinearProPhoto(c1, c2, t, opts)
 	case space.Rec2020:
 		return mixRec2020(c1, c2, t, opts)
+	case space.LinearRec2020:
+		return mixLinearRec2020(c1, c2, t, opts)
+	case space.XyzD50:
+		return mixXyzD50(c1, c2, t, opts)
+	case space.XyzD65:
+		return mixXyzD65(c1, c2, t, opts)
+	case space.XyYD50:
+		return mixXyYD50(c1, c2, t, opts)
+	case space.XyYD65:
+		return mixXyYD65(c1, c2, t, opts)
+	case space.LabD50:
+		return mixLabD50(c1, c2, t, opts)
+	case space.LchD50:
+		return mixLchD50(c1, c2, t, opts)
+	case space.LabD65:
+		return mixLabD65(c1, c2, t, opts)
+	case space.LchD65:
+		return mixLchD65(c1, c2, t, opts)
+	case space.LuvD50:
+		return mixLuvD50(c1, c2, t, opts)
+	case space.LchuvD50:
+		return mixLchuvD50(c1, c2, t, opts)
+	case space.LuvD65:
+		return mixLuvD65(c1, c2, t, opts)
+	case space.LchuvD65:
+		return mixLchuvD65(c1, c2, t, opts)
+	case space.Oklab:
+		return mixOklab(c1, c2, t, opts)
+	case space.Oklch:
+		return mixOklch(c1, c2, t, opts)
 	case space.Hsl:
 		return mixHsl(c1, c2, t, opts)
 	case space.Hsv:
 		return mixHsv(c1, c2, t, opts)
 	case space.Hwb:
 		return mixHwb(c1, c2, t, opts)
-	case space.Lab:
-		return mixLab(c1, c2, t, opts)
-	case space.Lch:
-		return mixLch(c1, c2, t, opts)
-	case space.Luv:
-		return mixLuv(c1, c2, t, opts)
-	case space.Lchuv:
-		return mixLchuv(c1, c2, t, opts)
-	case space.Oklab:
-		return mixOklab(c1, c2, t, opts)
-	case space.Oklch:
-		return mixOklch(c1, c2, t, opts)
 	}
 
 	panic("unreachable")
-}
-
-func mixXyzD65(c1, c2 Color, t float64, opts MixOptions) Color {
-	a1, a2 := c1.alpha, c2.alpha
-	alpha := lerp(a1, a2, t)
-
-	var x, y, z float64
-
-	if !opts.Unpremultiplied {
-		w1, w2 := a1*(1-t), a2*t
-
-		x = c1.c1*w1 + c2.c1*w2
-		y = c1.c2*w1 + c2.c2*w2
-		z = c1.c3*w1 + c2.c3*w2
-
-		if alpha != 0 {
-			inv := 1 / alpha
-			x *= inv
-			y *= inv
-			z *= inv
-		}
-	} else {
-		x = lerp(c1.c1, c2.c1, t)
-		y = lerp(c1.c2, c2.c2, t)
-		z = lerp(c1.c3, c2.c3, t)
-	}
-
-	return Color{
-		space: space.XyzD65,
-		c1:    x,
-		c2:    y,
-		c3:    z,
-		alpha: alpha,
-	}
-}
-
-func mixXyY(c1, c2 Color, t float64, opts MixOptions) Color {
-	a1, a2 := c1.alpha, c2.alpha
-	alpha := lerp(a1, a2, t)
-
-	var x, y, luminance float64
-
-	if !opts.Unpremultiplied {
-		w1, w2 := a1*(1-t), a2*t
-
-		x = c1.c1*w1 + c2.c1*w2
-		y = c1.c2*w1 + c2.c2*w2
-		luminance = c1.c3*w1 + c2.c3*w2
-
-		if alpha != 0 {
-			inv := 1 / alpha
-			x *= inv
-			y *= inv
-			luminance *= inv
-		}
-	} else {
-		x = lerp(c1.c1, c2.c1, t)
-		y = lerp(c1.c2, c2.c2, t)
-		luminance = lerp(c1.c3, c2.c3, t)
-	}
-
-	return Color{
-		space: space.XyY,
-		c1:    x,
-		c2:    y,
-		c3:    luminance,
-		alpha: alpha,
-	}
-}
-
-func mixXyzD50(c1, c2 Color, t float64, opts MixOptions) Color {
-	a1, a2 := c1.alpha, c2.alpha
-	alpha := lerp(a1, a2, t)
-
-	var x, y, z float64
-
-	if !opts.Unpremultiplied {
-		w1, w2 := a1*(1-t), a2*t
-
-		x = c1.c1*w1 + c2.c1*w2
-		y = c1.c2*w1 + c2.c2*w2
-		z = c1.c3*w1 + c2.c3*w2
-
-		if alpha != 0 {
-			inv := 1 / alpha
-			x *= inv
-			y *= inv
-			z *= inv
-		}
-	} else {
-		x = lerp(c1.c1, c2.c1, t)
-		y = lerp(c1.c2, c2.c2, t)
-		z = lerp(c1.c3, c2.c3, t)
-	}
-
-	return Color{
-		space: space.XyzD50,
-		c1:    x,
-		c2:    y,
-		c3:    z,
-		alpha: alpha,
-	}
-}
-
-func mixLinearSrgb(c1, c2 Color, t float64, opts MixOptions) Color {
-	a1, a2 := c1.alpha, c2.alpha
-	alpha := lerp(a1, a2, t)
-
-	var r, g, b float64
-
-	if !opts.Unpremultiplied {
-		w1, w2 := a1*(1-t), a2*t
-
-		r = c1.c1*w1 + c2.c1*w2
-		g = c1.c2*w1 + c2.c2*w2
-		b = c1.c3*w1 + c2.c3*w2
-
-		if alpha != 0 {
-			inv := 1 / alpha
-			r *= inv
-			g *= inv
-			b *= inv
-		}
-	} else {
-		r = lerp(c1.c1, c2.c1, t)
-		g = lerp(c1.c2, c2.c2, t)
-		b = lerp(c1.c3, c2.c3, t)
-	}
-
-	return Color{
-		space: space.LinearSrgb,
-		c1:    r,
-		c2:    g,
-		c3:    b,
-		alpha: alpha,
-	}
 }
 
 func mixSrgb(c1, c2 Color, t float64, opts MixOptions) Color {
@@ -245,7 +119,7 @@ func mixSrgb(c1, c2 Color, t float64, opts MixOptions) Color {
 	}
 }
 
-func mixLinearDisplayP3(c1, c2 Color, t float64, opts MixOptions) Color {
+func mixLinearSrgb(c1, c2 Color, t float64, opts MixOptions) Color {
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
@@ -271,7 +145,7 @@ func mixLinearDisplayP3(c1, c2 Color, t float64, opts MixOptions) Color {
 	}
 
 	return Color{
-		space: space.LinearDisplayP3,
+		space: space.LinearSrgb,
 		c1:    r,
 		c2:    g,
 		c3:    b,
@@ -313,7 +187,7 @@ func mixDisplayP3(c1, c2 Color, t float64, opts MixOptions) Color {
 	}
 }
 
-func mixLinearA98(c1, c2 Color, t float64, opts MixOptions) Color {
+func mixLinearDisplayP3(c1, c2 Color, t float64, opts MixOptions) Color {
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
@@ -339,7 +213,7 @@ func mixLinearA98(c1, c2 Color, t float64, opts MixOptions) Color {
 	}
 
 	return Color{
-		space: space.LinearA98,
+		space: space.LinearDisplayP3,
 		c1:    r,
 		c2:    g,
 		c3:    b,
@@ -381,7 +255,7 @@ func mixA98(c1, c2 Color, t float64, opts MixOptions) Color {
 	}
 }
 
-func mixLinearProPhoto(c1, c2 Color, t float64, opts MixOptions) Color {
+func mixLinearA98(c1, c2 Color, t float64, opts MixOptions) Color {
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
@@ -407,7 +281,7 @@ func mixLinearProPhoto(c1, c2 Color, t float64, opts MixOptions) Color {
 	}
 
 	return Color{
-		space: space.LinearProPhoto,
+		space: space.LinearA98,
 		c1:    r,
 		c2:    g,
 		c3:    b,
@@ -449,7 +323,7 @@ func mixProPhoto(c1, c2 Color, t float64, opts MixOptions) Color {
 	}
 }
 
-func mixLinearRec2020(c1, c2 Color, t float64, opts MixOptions) Color {
+func mixLinearProPhoto(c1, c2 Color, t float64, opts MixOptions) Color {
 	a1, a2 := c1.alpha, c2.alpha
 	alpha := lerp(a1, a2, t)
 
@@ -475,7 +349,7 @@ func mixLinearRec2020(c1, c2 Color, t float64, opts MixOptions) Color {
 	}
 
 	return Color{
-		space: space.LinearRec2020,
+		space: space.LinearProPhoto,
 		c1:    r,
 		c2:    g,
 		c3:    b,
@@ -513,6 +387,571 @@ func mixRec2020(c1, c2 Color, t float64, opts MixOptions) Color {
 		c1:    r,
 		c2:    g,
 		c3:    b,
+		alpha: alpha,
+	}
+}
+
+func mixLinearRec2020(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var r, g, b float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		r = c1.c1*w1 + c2.c1*w2
+		g = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			r *= inv
+			g *= inv
+			b *= inv
+		}
+	} else {
+		r = lerp(c1.c1, c2.c1, t)
+		g = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.LinearRec2020,
+		c1:    r,
+		c2:    g,
+		c3:    b,
+		alpha: alpha,
+	}
+}
+
+func mixXyzD50(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var x, y, z float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		x = c1.c1*w1 + c2.c1*w2
+		y = c1.c2*w1 + c2.c2*w2
+		z = c1.c3*w1 + c2.c3*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			x *= inv
+			y *= inv
+			z *= inv
+		}
+	} else {
+		x = lerp(c1.c1, c2.c1, t)
+		y = lerp(c1.c2, c2.c2, t)
+		z = lerp(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.XyzD50,
+		c1:    x,
+		c2:    y,
+		c3:    z,
+		alpha: alpha,
+	}
+}
+
+func mixXyzD65(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var x, y, z float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		x = c1.c1*w1 + c2.c1*w2
+		y = c1.c2*w1 + c2.c2*w2
+		z = c1.c3*w1 + c2.c3*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			x *= inv
+			y *= inv
+			z *= inv
+		}
+	} else {
+		x = lerp(c1.c1, c2.c1, t)
+		y = lerp(c1.c2, c2.c2, t)
+		z = lerp(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.XyzD65,
+		c1:    x,
+		c2:    y,
+		c3:    z,
+		alpha: alpha,
+	}
+}
+
+func mixXyYD50(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var x, y, luminance float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		x = c1.c1*w1 + c2.c1*w2
+		y = c1.c2*w1 + c2.c2*w2
+		luminance = c1.c3*w1 + c2.c3*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			x *= inv
+			y *= inv
+			luminance *= inv
+		}
+	} else {
+		x = lerp(c1.c1, c2.c1, t)
+		y = lerp(c1.c2, c2.c2, t)
+		luminance = lerp(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.XyYD50,
+		c1:    x,
+		c2:    y,
+		c3:    luminance,
+		alpha: alpha,
+	}
+}
+
+func mixXyYD65(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var x, y, luminance float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		x = c1.c1*w1 + c2.c1*w2
+		y = c1.c2*w1 + c2.c2*w2
+		luminance = c1.c3*w1 + c2.c3*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			x *= inv
+			y *= inv
+			luminance *= inv
+		}
+	} else {
+		x = lerp(c1.c1, c2.c1, t)
+		y = lerp(c1.c2, c2.c2, t)
+		luminance = lerp(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.XyYD65,
+		c1:    x,
+		c2:    y,
+		c3:    luminance,
+		alpha: alpha,
+	}
+}
+
+func mixLabD50(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var l, a, b float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		l = c1.c1*w1 + c2.c1*w2
+		a = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			l *= inv
+			a *= inv
+			b *= inv
+		}
+	} else {
+		l = lerp(c1.c1, c2.c1, t)
+		a = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.LabD50,
+		c1:    l,
+		c2:    a,
+		c3:    b,
+		alpha: alpha,
+	}
+}
+
+func mixLchD50(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var l, c float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		l = c1.c1*w1 + c2.c1*w2
+		c = c1.c2*w1 + c2.c2*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			l *= inv
+			c *= inv
+		}
+	} else {
+		l = lerp(c1.c1, c2.c1, t)
+		c = lerp(c1.c2, c2.c2, t)
+	}
+
+	var h float64
+	switch opts.Hue {
+	case HueShorter:
+		h = lerpHueShorter(c1.c3, c2.c3, t)
+	case HueLonger:
+		h = lerpHueLonger(c1.c3, c2.c3, t)
+	case HueIncreasing:
+		h = lerpHueIncreasing(c1.c3, c2.c3, t)
+	case HueDecreasing:
+		h = lerpHueDecreasing(c1.c3, c2.c3, t)
+	default:
+		h = lerpHueShorter(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.LchD50,
+		c1:    l,
+		c2:    c,
+		c3:    h,
+		alpha: alpha,
+	}
+}
+
+func mixLabD65(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var l, a, b float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		l = c1.c1*w1 + c2.c1*w2
+		a = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			l *= inv
+			a *= inv
+			b *= inv
+		}
+	} else {
+		l = lerp(c1.c1, c2.c1, t)
+		a = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.LabD65,
+		c1:    l,
+		c2:    a,
+		c3:    b,
+		alpha: alpha,
+	}
+}
+
+func mixLchD65(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var l, c float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		l = c1.c1*w1 + c2.c1*w2
+		c = c1.c2*w1 + c2.c2*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			l *= inv
+			c *= inv
+		}
+	} else {
+		l = lerp(c1.c1, c2.c1, t)
+		c = lerp(c1.c2, c2.c2, t)
+	}
+
+	var h float64
+	switch opts.Hue {
+	case HueShorter:
+		h = lerpHueShorter(c1.c3, c2.c3, t)
+	case HueLonger:
+		h = lerpHueLonger(c1.c3, c2.c3, t)
+	case HueIncreasing:
+		h = lerpHueIncreasing(c1.c3, c2.c3, t)
+	case HueDecreasing:
+		h = lerpHueDecreasing(c1.c3, c2.c3, t)
+	default:
+		h = lerpHueShorter(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.LchD65,
+		c1:    l,
+		c2:    c,
+		c3:    h,
+		alpha: alpha,
+	}
+}
+
+func mixLuvD50(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var l, u, v float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		l = c1.c1*w1 + c2.c1*w2
+		u = c1.c2*w1 + c2.c2*w2
+		v = c1.c3*w1 + c2.c3*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			l *= inv
+			u *= inv
+			v *= inv
+		}
+	} else {
+		l = lerp(c1.c1, c2.c1, t)
+		u = lerp(c1.c2, c2.c2, t)
+		v = lerp(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.LuvD50,
+		c1:    l,
+		c2:    u,
+		c3:    v,
+		alpha: alpha,
+	}
+}
+
+func mixLchuvD50(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var l, c float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		l = c1.c1*w1 + c2.c1*w2
+		c = c1.c2*w1 + c2.c2*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			l *= inv
+			c *= inv
+		}
+	} else {
+		l = lerp(c1.c1, c2.c1, t)
+		c = lerp(c1.c2, c2.c2, t)
+	}
+
+	var h float64
+	switch opts.Hue {
+	case HueShorter:
+		h = lerpHueShorter(c1.c3, c2.c3, t)
+	case HueLonger:
+		h = lerpHueLonger(c1.c3, c2.c3, t)
+	case HueIncreasing:
+		h = lerpHueIncreasing(c1.c3, c2.c3, t)
+	case HueDecreasing:
+		h = lerpHueDecreasing(c1.c3, c2.c3, t)
+	default:
+		h = lerpHueShorter(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.LchuvD50,
+		c1:    l,
+		c2:    c,
+		c3:    h,
+		alpha: alpha,
+	}
+}
+
+func mixLuvD65(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var l, u, v float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		l = c1.c1*w1 + c2.c1*w2
+		u = c1.c2*w1 + c2.c2*w2
+		v = c1.c3*w1 + c2.c3*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			l *= inv
+			u *= inv
+			v *= inv
+		}
+	} else {
+		l = lerp(c1.c1, c2.c1, t)
+		u = lerp(c1.c2, c2.c2, t)
+		v = lerp(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.LuvD65,
+		c1:    l,
+		c2:    u,
+		c3:    v,
+		alpha: alpha,
+	}
+}
+
+func mixLchuvD65(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var l, c float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		l = c1.c1*w1 + c2.c1*w2
+		c = c1.c2*w1 + c2.c2*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			l *= inv
+			c *= inv
+		}
+	} else {
+		l = lerp(c1.c1, c2.c1, t)
+		c = lerp(c1.c2, c2.c2, t)
+	}
+
+	var h float64
+	switch opts.Hue {
+	case HueShorter:
+		h = lerpHueShorter(c1.c3, c2.c3, t)
+	case HueLonger:
+		h = lerpHueLonger(c1.c3, c2.c3, t)
+	case HueIncreasing:
+		h = lerpHueIncreasing(c1.c3, c2.c3, t)
+	case HueDecreasing:
+		h = lerpHueDecreasing(c1.c3, c2.c3, t)
+	default:
+		h = lerpHueShorter(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.LchuvD65,
+		c1:    l,
+		c2:    c,
+		c3:    h,
+		alpha: alpha,
+	}
+}
+
+func mixOklab(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var l, a, b float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		l = c1.c1*w1 + c2.c1*w2
+		a = c1.c2*w1 + c2.c2*w2
+		b = c1.c3*w1 + c2.c3*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			l *= inv
+			a *= inv
+			b *= inv
+		}
+	} else {
+		l = lerp(c1.c1, c2.c1, t)
+		a = lerp(c1.c2, c2.c2, t)
+		b = lerp(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.Oklab,
+		c1:    l,
+		c2:    a,
+		c3:    b,
+		alpha: alpha,
+	}
+}
+
+func mixOklch(c1, c2 Color, t float64, opts MixOptions) Color {
+	a1, a2 := c1.alpha, c2.alpha
+	alpha := lerp(a1, a2, t)
+
+	var l, c float64
+
+	if !opts.Unpremultiplied {
+		w1, w2 := a1*(1-t), a2*t
+
+		l = c1.c1*w1 + c2.c1*w2
+		c = c1.c2*w1 + c2.c2*w2
+
+		if alpha != 0 {
+			inv := 1 / alpha
+			l *= inv
+			c *= inv
+		}
+	} else {
+		l = lerp(c1.c1, c2.c1, t)
+		c = lerp(c1.c2, c2.c2, t)
+	}
+
+	var h float64
+	switch opts.Hue {
+	case HueShorter:
+		h = lerpHueShorter(c1.c3, c2.c3, t)
+	case HueLonger:
+		h = lerpHueLonger(c1.c3, c2.c3, t)
+	case HueIncreasing:
+		h = lerpHueIncreasing(c1.c3, c2.c3, t)
+	case HueDecreasing:
+		h = lerpHueDecreasing(c1.c3, c2.c3, t)
+	default:
+		h = lerpHueShorter(c1.c3, c2.c3, t)
+	}
+
+	return Color{
+		space: space.Oklch,
+		c1:    l,
+		c2:    c,
+		c3:    h,
 		alpha: alpha,
 	}
 }
@@ -645,243 +1084,6 @@ func mixHwb(c1, c2 Color, t float64, opts MixOptions) Color {
 		c1:    h,
 		c2:    w,
 		c3:    b,
-		alpha: alpha,
-	}
-}
-
-func mixLab(c1, c2 Color, t float64, opts MixOptions) Color {
-	a1, a2 := c1.alpha, c2.alpha
-	alpha := lerp(a1, a2, t)
-
-	var l, a, b float64
-
-	if !opts.Unpremultiplied {
-		w1, w2 := a1*(1-t), a2*t
-
-		l = c1.c1*w1 + c2.c1*w2
-		a = c1.c2*w1 + c2.c2*w2
-		b = c1.c3*w1 + c2.c3*w2
-
-		if alpha != 0 {
-			inv := 1 / alpha
-			l *= inv
-			a *= inv
-			b *= inv
-		}
-	} else {
-		l = lerp(c1.c1, c2.c1, t)
-		a = lerp(c1.c2, c2.c2, t)
-		b = lerp(c1.c3, c2.c3, t)
-	}
-
-	return Color{
-		space: space.Lab,
-		c1:    l,
-		c2:    a,
-		c3:    b,
-		alpha: alpha,
-	}
-}
-
-func mixLch(c1, c2 Color, t float64, opts MixOptions) Color {
-	a1, a2 := c1.alpha, c2.alpha
-	alpha := lerp(a1, a2, t)
-
-	var l, c float64
-
-	if !opts.Unpremultiplied {
-		w1, w2 := a1*(1-t), a2*t
-
-		l = c1.c1*w1 + c2.c1*w2
-		c = c1.c2*w1 + c2.c2*w2
-
-		if alpha != 0 {
-			inv := 1 / alpha
-			l *= inv
-			c *= inv
-		}
-	} else {
-		l = lerp(c1.c1, c2.c1, t)
-		c = lerp(c1.c2, c2.c2, t)
-	}
-
-	var h float64
-	switch opts.Hue {
-	case HueShorter:
-		h = lerpHueShorter(c1.c3, c2.c3, t)
-	case HueLonger:
-		h = lerpHueLonger(c1.c3, c2.c3, t)
-	case HueIncreasing:
-		h = lerpHueIncreasing(c1.c3, c2.c3, t)
-	case HueDecreasing:
-		h = lerpHueDecreasing(c1.c3, c2.c3, t)
-	default:
-		h = lerpHueShorter(c1.c3, c2.c3, t)
-	}
-
-	return Color{
-		space: space.Lch,
-		c1:    l,
-		c2:    c,
-		c3:    h,
-		alpha: alpha,
-	}
-}
-
-func mixLuv(c1, c2 Color, t float64, opts MixOptions) Color {
-	a1, a2 := c1.alpha, c2.alpha
-	alpha := lerp(a1, a2, t)
-
-	var l, u, v float64
-
-	if !opts.Unpremultiplied {
-		w1, w2 := a1*(1-t), a2*t
-
-		l = c1.c1*w1 + c2.c1*w2
-		u = c1.c2*w1 + c2.c2*w2
-		v = c1.c3*w1 + c2.c3*w2
-
-		if alpha != 0 {
-			inv := 1 / alpha
-			l *= inv
-			u *= inv
-			v *= inv
-		}
-	} else {
-		l = lerp(c1.c1, c2.c1, t)
-		u = lerp(c1.c2, c2.c2, t)
-		v = lerp(c1.c3, c2.c3, t)
-	}
-
-	return Color{
-		space: space.Luv,
-		c1:    l,
-		c2:    u,
-		c3:    v,
-		alpha: alpha,
-	}
-}
-
-func mixLchuv(c1, c2 Color, t float64, opts MixOptions) Color {
-	a1, a2 := c1.alpha, c2.alpha
-	alpha := lerp(a1, a2, t)
-
-	var l, c float64
-
-	if !opts.Unpremultiplied {
-		w1, w2 := a1*(1-t), a2*t
-
-		l = c1.c1*w1 + c2.c1*w2
-		c = c1.c2*w1 + c2.c2*w2
-
-		if alpha != 0 {
-			inv := 1 / alpha
-			l *= inv
-			c *= inv
-		}
-	} else {
-		l = lerp(c1.c1, c2.c1, t)
-		c = lerp(c1.c2, c2.c2, t)
-	}
-
-	var h float64
-	switch opts.Hue {
-	case HueShorter:
-		h = lerpHueShorter(c1.c3, c2.c3, t)
-	case HueLonger:
-		h = lerpHueLonger(c1.c3, c2.c3, t)
-	case HueIncreasing:
-		h = lerpHueIncreasing(c1.c3, c2.c3, t)
-	case HueDecreasing:
-		h = lerpHueDecreasing(c1.c3, c2.c3, t)
-	default:
-		h = lerpHueShorter(c1.c3, c2.c3, t)
-	}
-
-	return Color{
-		space: space.Lchuv,
-		c1:    l,
-		c2:    c,
-		c3:    h,
-		alpha: alpha,
-	}
-}
-
-func mixOklab(c1, c2 Color, t float64, opts MixOptions) Color {
-	a1, a2 := c1.alpha, c2.alpha
-	alpha := lerp(a1, a2, t)
-
-	var l, a, b float64
-
-	if !opts.Unpremultiplied {
-		w1, w2 := a1*(1-t), a2*t
-
-		l = c1.c1*w1 + c2.c1*w2
-		a = c1.c2*w1 + c2.c2*w2
-		b = c1.c3*w1 + c2.c3*w2
-
-		if alpha != 0 {
-			inv := 1 / alpha
-			l *= inv
-			a *= inv
-			b *= inv
-		}
-	} else {
-		l = lerp(c1.c1, c2.c1, t)
-		a = lerp(c1.c2, c2.c2, t)
-		b = lerp(c1.c3, c2.c3, t)
-	}
-
-	return Color{
-		space: space.Oklab,
-		c1:    l,
-		c2:    a,
-		c3:    b,
-		alpha: alpha,
-	}
-}
-
-func mixOklch(c1, c2 Color, t float64, opts MixOptions) Color {
-	a1, a2 := c1.alpha, c2.alpha
-	alpha := lerp(a1, a2, t)
-
-	var l, c float64
-
-	if !opts.Unpremultiplied {
-		w1, w2 := a1*(1-t), a2*t
-
-		l = c1.c1*w1 + c2.c1*w2
-		c = c1.c2*w1 + c2.c2*w2
-
-		if alpha != 0 {
-			inv := 1 / alpha
-			l *= inv
-			c *= inv
-		}
-	} else {
-		l = lerp(c1.c1, c2.c1, t)
-		c = lerp(c1.c2, c2.c2, t)
-	}
-
-	var h float64
-	switch opts.Hue {
-	case HueShorter:
-		h = lerpHueShorter(c1.c3, c2.c3, t)
-	case HueLonger:
-		h = lerpHueLonger(c1.c3, c2.c3, t)
-	case HueIncreasing:
-		h = lerpHueIncreasing(c1.c3, c2.c3, t)
-	case HueDecreasing:
-		h = lerpHueDecreasing(c1.c3, c2.c3, t)
-	default:
-		h = lerpHueShorter(c1.c3, c2.c3, t)
-	}
-
-	return Color{
-		space: space.Oklch,
-		c1:    l,
-		c2:    c,
-		c3:    h,
 		alpha: alpha,
 	}
 }

@@ -18,62 +18,6 @@ func (c Color) String() string {
 	b.Grow(64)
 
 	switch c.space {
-	case space.XyzD65:
-		b.WriteString("color(xyz-d65 ")
-		b.WriteString(formatNormalizedFloatPrec(c.c1, 8))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c2, 8))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c3, 8))
-
-		if alpha := normalizeFloat(c.alpha); alpha != 1 {
-			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 6))
-		}
-
-		b.WriteString(")")
-	case space.XyY:
-		b.WriteString("color(xyY ")
-		b.WriteString(formatNormalizedFloatPrec(c.c1, 8))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c2, 8))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c3, 8))
-
-		if alpha := normalizeFloat(c.alpha); alpha != 1 {
-			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 6))
-		}
-
-		b.WriteString(")")
-	case space.XyzD50:
-		b.WriteString("color(xyz-d50 ")
-		b.WriteString(formatNormalizedFloatPrec(c.c1, 8))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c2, 8))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c3, 8))
-
-		if alpha := normalizeFloat(c.alpha); alpha != 1 {
-			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 6))
-		}
-
-		b.WriteString(")")
-	case space.LinearSrgb:
-		b.WriteString("color(srgb-linear ")
-		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c3, 6))
-
-		if alpha := normalizeFloat(c.alpha); alpha != 1 {
-			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 6))
-		}
-
-		b.WriteString(")")
 	case space.Srgb:
 		b.WriteString("color(srgb ")
 		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
@@ -88,8 +32,8 @@ func (c Color) String() string {
 		}
 
 		b.WriteString(")")
-	case space.LinearDisplayP3:
-		b.WriteString("color(display-p3-linear ")
+	case space.LinearSrgb:
+		b.WriteString("color(srgb-linear ")
 		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
 		b.WriteByte(' ')
 		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
@@ -116,8 +60,8 @@ func (c Color) String() string {
 		}
 
 		b.WriteString(")")
-	case space.LinearA98:
-		b.WriteString("color(a98-rgb-linear ")
+	case space.LinearDisplayP3:
+		b.WriteString("color(display-p3-linear ")
 		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
 		b.WriteByte(' ')
 		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
@@ -144,8 +88,8 @@ func (c Color) String() string {
 		}
 
 		b.WriteString(")")
-	case space.LinearProPhoto:
-		b.WriteString("color(prophoto-rgb-linear ")
+	case space.LinearA98:
+		b.WriteString("color(a98-rgb-linear ")
 		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
 		b.WriteByte(' ')
 		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
@@ -172,8 +116,8 @@ func (c Color) String() string {
 		}
 
 		b.WriteString(")")
-	case space.LinearRec2020:
-		b.WriteString("color(rec2020-linear ")
+	case space.LinearProPhoto:
+		b.WriteString("color(prophoto-rgb-linear ")
 		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
 		b.WriteByte(' ')
 		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
@@ -193,6 +137,216 @@ func (c Color) String() string {
 		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
 		b.WriteByte(' ')
 		b.WriteString(formatNormalizedFloatPrec(c.c3, 6))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.LinearRec2020:
+		b.WriteString("color(rec2020-linear ")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 6))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.XyzD50:
+		b.WriteString("color(xyz-d50 ")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 8))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 8))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 8))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.XyzD65:
+		b.WriteString("color(xyz-d65 ")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 8))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 8))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 8))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.XyYD50:
+		b.WriteString("color(xyy-d50 ")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 8))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 8))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 8))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.XyYD65:
+		b.WriteString("color(xyy-d65 ")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 8))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 8))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 8))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.LabD50:
+		b.WriteString("lab(")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.LchD50:
+		b.WriteString("lch(")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.LabD65:
+		b.WriteString("color(lab-d65 ")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.LchD65:
+		b.WriteString("color(lch-d65 ")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.LuvD50:
+		b.WriteString("luv(")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.LchuvD50:
+		b.WriteString("lchuv(")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.LuvD65:
+		b.WriteString("color(luv-d65 ")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.LchuvD65:
+		b.WriteString("color(lchuv-d65 ")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.Oklab:
+		b.WriteString("oklab(")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 6))
+
+		if alpha := normalizeFloat(c.alpha); alpha != 1 {
+			b.WriteString(" / ")
+			b.WriteString(formatFloatPrec(alpha, 6))
+		}
+
+		b.WriteString(")")
+	case space.Oklch:
+		b.WriteString("oklch(")
+		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
+		b.WriteByte(' ')
+		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")
@@ -241,90 +395,6 @@ func (c Color) String() string {
 		b.WriteByte(' ')
 		b.WriteString(formatNormalizedFloatPrec(c.c3*100, 2))
 		b.WriteByte('%')
-
-		if alpha := normalizeFloat(c.alpha); alpha != 1 {
-			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 6))
-		}
-
-		b.WriteString(")")
-	case space.Lab:
-		b.WriteString("lab(")
-		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
-
-		if alpha := normalizeFloat(c.alpha); alpha != 1 {
-			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 6))
-		}
-
-		b.WriteString(")")
-	case space.Lch:
-		b.WriteString("lch(")
-		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
-
-		if alpha := normalizeFloat(c.alpha); alpha != 1 {
-			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 6))
-		}
-
-		b.WriteString(")")
-	case space.Luv:
-		b.WriteString("luv(")
-		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
-
-		if alpha := normalizeFloat(c.alpha); alpha != 1 {
-			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 6))
-		}
-
-		b.WriteString(")")
-	case space.Lchuv:
-		b.WriteString("lchuv(")
-		b.WriteString(formatNormalizedFloatPrec(c.c1, 4))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c2, 4))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
-
-		if alpha := normalizeFloat(c.alpha); alpha != 1 {
-			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 6))
-		}
-
-		b.WriteString(")")
-	case space.Oklab:
-		b.WriteString("oklab(")
-		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c3, 6))
-
-		if alpha := normalizeFloat(c.alpha); alpha != 1 {
-			b.WriteString(" / ")
-			b.WriteString(formatFloatPrec(alpha, 6))
-		}
-
-		b.WriteString(")")
-	case space.Oklch:
-		b.WriteString("oklch(")
-		b.WriteString(formatNormalizedFloatPrec(c.c1, 6))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c2, 6))
-		b.WriteByte(' ')
-		b.WriteString(formatNormalizedFloatPrec(c.c3, 4))
 
 		if alpha := normalizeFloat(c.alpha); alpha != 1 {
 			b.WriteString(" / ")

@@ -9,7 +9,8 @@ import (
 	"github.com/thmalt/colors/gen/codegen/writer"
 )
 
-func genConvertPkgSpaceConversions(ctx *Context, w *writer.GoWriter, space *model.Space) {
+func genConvertPkgSpaceConversions(ctx *Context, w *writer.GoWriter, space *model.Space) int {
+	count := 0
 	for i, to := range ctx.BuildSpaces {
 		if to == nil {
 			log.Printf("space at index %d is nil\n", i)
@@ -31,7 +32,11 @@ func genConvertPkgSpaceConversions(ctx *Context, w *writer.GoWriter, space *mode
 		genConvertPkgSpacePair(ctx, w, space, to)
 
 		w.Separate()
+
+		count++
 	}
+
+	return count
 }
 
 func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Space) bool {
@@ -43,10 +48,8 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 
 	ctx.impls[Pair{from.Name, to.Name}] = struct{}{}
 
-	ops := buildOps(ctx, path)
+	ops := buildGenOps(ctx, path, true)
 	ops = combineOps(ops)
-
-	genOps := prepareGenOps(ctx, ops, path[len(path)-1])
 
 	paramsVars := from.ChannelIdent()
 	resultsVars := to.ChannelIdent()
@@ -86,11 +89,11 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 
 	returned := false
 
-	last := len(genOps) - 1
+	last := len(ops) - 1
 
 	separate := false
 
-	for idx, op := range genOps {
+	for idx, op := range ops {
 		isLastOp := idx == last
 
 		switch op.Type {
@@ -100,13 +103,18 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 			}
 			separate = false
 
+			fn := op.Pair.FuncName()
+
 			if isLastOp {
 				sub.ReturnInline()
-				sub.WriteCallln(op.Pair.FuncName(), inputVars...)
+				sub.WriteCallln(fn, inputVars...)
 				returned = true
 			} else {
-				_, to := ctx.ResolveSpacePair(op.Pair)
-				outputVars := to.ChannelIdent()
+				var outputVars []string
+				outputVars = op.OutputVars
+				if len(outputVars) == 0 {
+					outputVars = scope.CreateIndexedUniqueN("f", len(inputVars))
+				}
 
 				sub.LineWriteJoin(outputVars, ", ")
 				if scope.ContainsAll(outputVars...) {
@@ -114,7 +122,7 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 				} else {
 					sub.Write(" := ")
 				}
-				sub.WriteCallln(op.Pair.FuncName(), inputVars...)
+				sub.WriteCallln(fn, inputVars...)
 
 				scope.ReserveAll(outputVars...)
 				inputVars = outputVars
@@ -149,7 +157,7 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 			}
 			separate = true
 
-			outputVars := op.outputVars
+			outputVars := op.OutputVars
 
 			needTemp := len(outputVars) == 0 || ContainsAny(inputVars, outputVars)
 			if needTemp {

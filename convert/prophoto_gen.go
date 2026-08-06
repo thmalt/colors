@@ -6,71 +6,6 @@ import (
 	"math"
 )
 
-// Conversion path (3 steps):
-//
-//	ProPhoto
-//	-> Linear ProPhoto
-//	-> CIE XYZ D50
-//	-> CIE XYZ D65
-func ProPhotoToXyzD65(r, g, b float64) (x, y, z float64) {
-	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
-
-	x = 0.755584946617753*r + 0.11272399588586414*g + 0.0821469845480544*b
-	y = 0.2683182806216315*r + 0.7151231912368589*g + 0.016558528141509373*b
-	z = 0.003915972857256668*r - 0.012933550658199788*g + 1.0980753285608214*b
-
-	return
-}
-
-// Conversion path (4 steps):
-//
-//	ProPhoto
-//	-> Linear ProPhoto
-//	-> CIE XYZ D50
-//	-> CIE XYZ D65
-//	-> CIE xyY
-func ProPhotoToXyY(r, g, b float64) (x, y, luminance float64) {
-	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
-
-	x = 0.755584946617753*r + 0.11272399588586414*g + 0.0821469845480544*b
-	y = 0.2683182806216315*r + 0.7151231912368589*g + 0.016558528141509373*b
-	z := 0.003915972857256668*r - 0.012933550658199788*g + 1.0980753285608214*b
-
-	return XyzD65ToXyY(x, y, z)
-}
-
-// Conversion path (2 steps):
-//
-//	ProPhoto
-//	-> Linear ProPhoto
-//	-> CIE XYZ D50
-func ProPhotoToXyzD50(r, g, b float64) (x, y, z float64) {
-	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
-
-	x = 0.7977604896723026*r + 0.13518583717574031*g + 0.0313493495815248*b
-	y = 0.28807112822929337*r + 0.7118432178101014*g + 0.00008565396060525902*b
-	z = 0.8251046025104601 * b
-
-	return
-}
-
-// Conversion path (4 steps):
-//
-//	ProPhoto
-//	-> Linear ProPhoto
-//	-> CIE XYZ D50
-//	-> CIE XYZ D65
-//	-> Linear sRGB
-func ProPhotoToLinearSrgb(r, g, b float64) (float64, float64, float64) {
-	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
-
-	f1 := 2.0343675434777992*r - 0.7276344741733605*g - 0.3067330693044386*b
-	f2 := -0.22882679819538754*r + 1.231753396226232*g - 0.0029265980308447108*b
-	f3 := -0.008558424336656515*r - 0.15326820352831463*g + 1.161826627864971*b
-
-	return f1, f2, f3
-}
-
 // Conversion path (5 steps):
 //
 //	ProPhoto
@@ -95,13 +30,13 @@ func ProPhotoToSrgb(r, g, b float64) (float64, float64, float64) {
 //	-> Linear ProPhoto
 //	-> CIE XYZ D50
 //	-> CIE XYZ D65
-//	-> Linear Display P3
-func ProPhotoToLinearDisplayP3(r, g, b float64) (float64, float64, float64) {
+//	-> Linear sRGB
+func ProPhotoToLinearSrgb(r, g, b float64) (float64, float64, float64) {
 	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
 
-	f1 := 1.6325644756403463*r - 0.37976860913765814*g - 0.25279586650268804*b
-	f2 := -0.15370187517951672*r + 1.1667130856300256*g - 0.01301121045050935*b
-	f3 := 0.010393259035519391*r - 0.06280787134187336*g + 1.0524146123063536*b
+	f1 := 2.0343675434777992*r - 0.7276344741733605*g - 0.3067330693044386*b
+	f2 := -0.22882679819538754*r + 1.231753396226232*g - 0.0029265980308447108*b
+	f3 := -0.008558424336656515*r - 0.15326820352831463*g + 1.161826627864971*b
 
 	return f1, f2, f3
 }
@@ -130,13 +65,13 @@ func ProPhotoToDisplayP3(r, g, b float64) (float64, float64, float64) {
 //	-> Linear ProPhoto
 //	-> CIE XYZ D50
 //	-> CIE XYZ D65
-//	-> Linear Adobe RGB (1998)
-func ProPhotoToLinearA98(r, g, b float64) (float64, float64, float64) {
+//	-> Linear Display P3
+func ProPhotoToLinearDisplayP3(r, g, b float64) (float64, float64, float64) {
 	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
 
-	f1 := 1.389641428825866*r - 0.1694550436588262*g - 0.22018638516703945*b
-	f2 := -0.22882679819538748*r + 1.2317533962262321*g - 0.0029265980308446965*b
-	f3 := -0.017625099786621013*r - 0.09625801583691754*g + 1.1138831156235387*b
+	f1 := 1.6325644756403463*r - 0.37976860913765814*g - 0.25279586650268804*b
+	f2 := -0.15370187517951672*r + 1.1667130856300256*g - 0.01301121045050935*b
+	f3 := 0.010393259035519391*r - 0.06280787134187336*g + 1.0524146123063536*b
 
 	return f1, f2, f3
 }
@@ -165,13 +100,13 @@ func ProPhotoToA98(r, g, b float64) (float64, float64, float64) {
 //	-> Linear ProPhoto
 //	-> CIE XYZ D50
 //	-> CIE XYZ D65
-//	-> Linear Rec. 2020
-func ProPhotoToLinearRec2020(r, g, b float64) (float64, float64, float64) {
+//	-> Linear Adobe RGB (1998)
+func ProPhotoToLinearA98(r, g, b float64) (float64, float64, float64) {
 	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
 
-	f1 := 1.20065064757354*r - 0.05756371883832568*g - 0.1430869287352142*b
-	f2 := -0.06994344512182135*r + 1.080627953097656*g - 0.010684507975834796*b
-	f3 := 0.005541523587186888*r - 0.040782560669736234*g + 1.035241037082549*b
+	f1 := 1.389641428825866*r - 0.1694550436588262*g - 0.22018638516703945*b
+	f2 := -0.22882679819538748*r + 1.2317533962262321*g - 0.0029265980308446965*b
+	f3 := -0.017625099786621013*r - 0.09625801583691754*g + 1.1138831156235387*b
 
 	return f1, f2, f3
 }
@@ -192,6 +127,278 @@ func ProPhotoToRec2020(r, g, b float64) (float64, float64, float64) {
 	f3 := 0.005541523587186888*r - 0.040782560669736234*g + 1.035241037082549*b
 
 	return LinearRec2020ToRec2020(f1, f2, f3)
+}
+
+// Conversion path (4 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+func ProPhotoToLinearRec2020(r, g, b float64) (float64, float64, float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	f1 := 1.20065064757354*r - 0.05756371883832568*g - 0.1430869287352142*b
+	f2 := -0.06994344512182135*r + 1.080627953097656*g - 0.010684507975834796*b
+	f3 := 0.005541523587186888*r - 0.040782560669736234*g + 1.035241037082549*b
+
+	return f1, f2, f3
+}
+
+// Conversion path (2 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+func ProPhotoToXyzD50(r, g, b float64) (x, y, z float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	x = 0.7977604896723026*r + 0.13518583717574031*g + 0.0313493495815248*b
+	y = 0.28807112822929337*r + 0.7118432178101014*g + 0.00008565396060525902*b
+	z = 0.8251046025104601 * b
+
+	return
+}
+
+// Conversion path (3 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+func ProPhotoToXyzD65(r, g, b float64) (x, y, z float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	x = 0.755584946617753*r + 0.11272399588586414*g + 0.0821469845480544*b
+	y = 0.2683182806216315*r + 0.7151231912368589*g + 0.016558528141509373*b
+	z = 0.003915972857256668*r - 0.012933550658199788*g + 1.0980753285608214*b
+
+	return
+}
+
+// Conversion path (3 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE xyY
+func ProPhotoToXyYD50(r, g, b float64) (x, y, luminance float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	x = 0.7977604896723026*r + 0.13518583717574031*g + 0.0313493495815248*b
+	y = 0.28807112822929337*r + 0.7118432178101014*g + 0.00008565396060525902*b
+	z := 0.8251046025104601 * b
+
+	return XyzToXyY(x, y, z)
+}
+
+// Conversion path (4 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> CIE xyY
+func ProPhotoToXyYD65(r, g, b float64) (x, y, luminance float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	x = 0.755584946617753*r + 0.11272399588586414*g + 0.0821469845480544*b
+	y = 0.2683182806216315*r + 0.7151231912368589*g + 0.016558528141509373*b
+	z := 0.003915972857256668*r - 0.012933550658199788*g + 1.0980753285608214*b
+
+	return XyzToXyY(x, y, z)
+}
+
+// Conversion path (3 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE Lab D50
+func ProPhotoToLabD50(r, g, b float64) (float64, float64, float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	x := 0.7977604896723026*r + 0.13518583717574031*g + 0.0313493495815248*b
+	y := 0.28807112822929337*r + 0.7118432178101014*g + 0.00008565396060525902*b
+	z := 0.8251046025104601 * b
+
+	return XyzD50ToLabD50(x, y, z)
+}
+
+// Conversion path (4 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE Lab D50
+//	-> CIE LCh D50
+func ProPhotoToLchD50(r, g, b float64) (l, c, h float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	x := 0.7977604896723026*r + 0.13518583717574031*g + 0.0313493495815248*b
+	y := 0.28807112822929337*r + 0.7118432178101014*g + 0.00008565396060525902*b
+	z := 0.8251046025104601 * b
+
+	l, a, b := XyzD50ToLabD50(x, y, z)
+	return LxyToLch(l, a, b)
+}
+
+// Conversion path (4 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> CIE Lab D65
+func ProPhotoToLabD65(r, g, b float64) (float64, float64, float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	x := 0.755584946617753*r + 0.11272399588586414*g + 0.0821469845480544*b
+	y := 0.2683182806216315*r + 0.7151231912368589*g + 0.016558528141509373*b
+	z := 0.003915972857256668*r - 0.012933550658199788*g + 1.0980753285608214*b
+
+	return XyzD65ToLabD65(x, y, z)
+}
+
+// Conversion path (5 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> CIE Lab D65
+//	-> CIE LCh D65
+func ProPhotoToLchD65(r, g, b float64) (l, c, h float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	x := 0.755584946617753*r + 0.11272399588586414*g + 0.0821469845480544*b
+	y := 0.2683182806216315*r + 0.7151231912368589*g + 0.016558528141509373*b
+	z := 0.003915972857256668*r - 0.012933550658199788*g + 1.0980753285608214*b
+
+	l, a, b := XyzD65ToLabD65(x, y, z)
+	return LxyToLch(l, a, b)
+}
+
+// Conversion path (3 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE Luv D50
+func ProPhotoToLuvD50(r, g, b float64) (l, u, v float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	x := 0.7977604896723026*r + 0.13518583717574031*g + 0.0313493495815248*b
+	y := 0.28807112822929337*r + 0.7118432178101014*g + 0.00008565396060525902*b
+	z := 0.8251046025104601 * b
+
+	return XyzD50ToLuvD50(x, y, z)
+}
+
+// Conversion path (4 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE Luv D50
+//	-> CIE LChuv D50
+func ProPhotoToLchuvD50(r, g, b float64) (l, c, h float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	x := 0.7977604896723026*r + 0.13518583717574031*g + 0.0313493495815248*b
+	y := 0.28807112822929337*r + 0.7118432178101014*g + 0.00008565396060525902*b
+	z := 0.8251046025104601 * b
+
+	l, u, v := XyzD50ToLuvD50(x, y, z)
+	return LxyToLch(l, u, v)
+}
+
+// Conversion path (4 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> CIE Luv D65
+func ProPhotoToLuvD65(r, g, b float64) (l, u, v float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	x := 0.755584946617753*r + 0.11272399588586414*g + 0.0821469845480544*b
+	y := 0.2683182806216315*r + 0.7151231912368589*g + 0.016558528141509373*b
+	z := 0.003915972857256668*r - 0.012933550658199788*g + 1.0980753285608214*b
+
+	return XyzD65ToLuvD65(x, y, z)
+}
+
+// Conversion path (5 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> CIE Luv D65
+//	-> CIE LChuv D65
+func ProPhotoToLchuvD65(r, g, b float64) (l, c, h float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	x := 0.755584946617753*r + 0.11272399588586414*g + 0.0821469845480544*b
+	y := 0.2683182806216315*r + 0.7151231912368589*g + 0.016558528141509373*b
+	z := 0.003915972857256668*r - 0.012933550658199788*g + 1.0980753285608214*b
+
+	l, u, v := XyzD65ToLuvD65(x, y, z)
+	return LxyToLch(l, u, v)
+}
+
+// Conversion path (4 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Oklab
+func ProPhotoToOklab(r, g, b float64) (float64, float64, float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	f1 := 0.7154424243056291*r + 0.35279783713060575*g - 0.0682402614362351*b
+	f2 := 0.27440814683324566*r + 0.6678051564290166*g + 0.057786696737737606*b
+	f3 := 0.10978321198270294*r + 0.18620051955921105*g + 0.7040162684580858*b
+
+	f1 = math.Cbrt(f1)
+	f2 = math.Cbrt(f2)
+	f3 = math.Cbrt(f3)
+
+	l := 0.210454268309314*f1 + 0.7936177747023054*f2 - 0.0040720430116193*f3
+	a := 1.9779985324311684*f1 - 2.42859224204858*f2 + 0.450593709617411*f3
+	b = 0.0259040424655478*f1 + 0.7827717124575296*f2 - 0.8086757549230774*f3
+
+	return l, a, b
+}
+
+// Conversion path (5 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Oklab
+//	-> Oklch
+func ProPhotoToOklch(r, g, b float64) (l, c, h float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	f1 := 0.7154424243056291*r + 0.35279783713060575*g - 0.0682402614362351*b
+	f2 := 0.27440814683324566*r + 0.6678051564290166*g + 0.057786696737737606*b
+	f3 := 0.10978321198270294*r + 0.18620051955921105*g + 0.7040162684580858*b
+
+	f1 = math.Cbrt(f1)
+	f2 = math.Cbrt(f2)
+	f3 = math.Cbrt(f3)
+
+	l = 0.210454268309314*f1 + 0.7936177747023054*f2 - 0.0040720430116193*f3
+	a := 1.9779985324311684*f1 - 2.42859224204858*f2 + 0.450593709617411*f3
+	b = 0.0259040424655478*f1 + 0.7827717124575296*f2 - 0.8086757549230774*f3
+
+	return LxyToLch(l, a, b)
 }
 
 // Conversion path (6 steps):
@@ -252,123 +459,4 @@ func ProPhotoToHwb(r, g, b float64) (float64, float64, float64) {
 
 	r, g, b = LinearSrgbToSrgb(f1, f2, f3)
 	return SrgbToHwb(r, g, b)
-}
-
-// Conversion path (3 steps):
-//
-//	ProPhoto
-//	-> Linear ProPhoto
-//	-> CIE XYZ D50
-//	-> CIE Lab
-func ProPhotoToLab(r, g, b float64) (float64, float64, float64) {
-	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
-
-	x := 0.7977604896723026*r + 0.13518583717574031*g + 0.0313493495815248*b
-	y := 0.28807112822929337*r + 0.7118432178101014*g + 0.00008565396060525902*b
-	z := 0.8251046025104601 * b
-
-	return XyzD50ToLab(x, y, z)
-}
-
-// Conversion path (4 steps):
-//
-//	ProPhoto
-//	-> Linear ProPhoto
-//	-> CIE XYZ D50
-//	-> CIE Lab
-//	-> CIE LCh
-func ProPhotoToLch(r, g, b float64) (l, c, h float64) {
-	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
-
-	x := 0.7977604896723026*r + 0.13518583717574031*g + 0.0313493495815248*b
-	y := 0.28807112822929337*r + 0.7118432178101014*g + 0.00008565396060525902*b
-	z := 0.8251046025104601 * b
-
-	l, a, b := XyzD50ToLab(x, y, z)
-	return LabToLch(l, a, b)
-}
-
-// Conversion path (3 steps):
-//
-//	ProPhoto
-//	-> Linear ProPhoto
-//	-> CIE XYZ D50
-//	-> CIE Luv
-func ProPhotoToLuv(r, g, b float64) (l, u, v float64) {
-	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
-
-	x := 0.7977604896723026*r + 0.13518583717574031*g + 0.0313493495815248*b
-	y := 0.28807112822929337*r + 0.7118432178101014*g + 0.00008565396060525902*b
-	z := 0.8251046025104601 * b
-
-	return XyzD50ToLuv(x, y, z)
-}
-
-// Conversion path (4 steps):
-//
-//	ProPhoto
-//	-> Linear ProPhoto
-//	-> CIE XYZ D50
-//	-> CIE Luv
-//	-> CIE LChuv
-func ProPhotoToLchuv(r, g, b float64) (l, c, h float64) {
-	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
-
-	x := 0.7977604896723026*r + 0.13518583717574031*g + 0.0313493495815248*b
-	y := 0.28807112822929337*r + 0.7118432178101014*g + 0.00008565396060525902*b
-	z := 0.8251046025104601 * b
-
-	l, u, v := XyzD50ToLuv(x, y, z)
-	return LuvToLchuv(l, u, v)
-}
-
-// Conversion path (4 steps):
-//
-//	ProPhoto
-//	-> Linear ProPhoto
-//	-> CIE XYZ D50
-//	-> CIE XYZ D65
-//	-> Oklab
-func ProPhotoToOklab(r, g, b float64) (float64, float64, float64) {
-	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
-
-	f1 := 0.7154424243056291*r + 0.35279783713060575*g - 0.0682402614362351*b
-	f2 := 0.27440814683324566*r + 0.6678051564290166*g + 0.057786696737737606*b
-	f3 := 0.10978321198270294*r + 0.18620051955921105*g + 0.7040162684580858*b
-
-	f1 = math.Cbrt(f1)
-	f2 = math.Cbrt(f2)
-	f3 = math.Cbrt(f3)
-
-	l := 0.210454268309314*f1 + 0.7936177747023054*f2 - 0.0040720430116193*f3
-	a := 1.9779985324311684*f1 - 2.42859224204858*f2 + 0.450593709617411*f3
-	b = 0.0259040424655478*f1 + 0.7827717124575296*f2 - 0.8086757549230774*f3
-
-	return l, a, b
-}
-
-// Conversion path (5 steps):
-//
-//	ProPhoto
-//	-> Linear ProPhoto
-//	-> CIE XYZ D50
-//	-> CIE XYZ D65
-//	-> Oklab
-//	-> Oklch
-func ProPhotoToOklch(r, g, b float64) (l, c, h float64) {
-	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
-
-	f1 := 0.7154424243056291*r + 0.35279783713060575*g - 0.0682402614362351*b
-	f2 := 0.27440814683324566*r + 0.6678051564290166*g + 0.057786696737737606*b
-	f3 := 0.10978321198270294*r + 0.18620051955921105*g + 0.7040162684580858*b
-
-	f1 = math.Cbrt(f1)
-	f2 = math.Cbrt(f2)
-	f3 = math.Cbrt(f3)
-
-	l = 0.210454268309314*f1 + 0.7936177747023054*f2 - 0.0040720430116193*f3
-	a := 1.9779985324311684*f1 - 2.42859224204858*f2 + 0.450593709617411*f3
-	b = 0.0259040424655478*f1 + 0.7827717124575296*f2 - 0.8086757549230774*f3
-
-	return OklabToOklch(l, a, b)
 }

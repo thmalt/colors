@@ -78,7 +78,6 @@ func main() {
 
 	fmt.Println()
 	fmt.Printf("Completed in %v.\n", end.Sub(beg))
-
 }
 
 func logGraphPaths(ctx *codegen.Context) {

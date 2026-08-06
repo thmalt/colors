@@ -11,90 +11,113 @@ type Space uint8
 const (
 	InvalidSpace Space = iota
 
-	XyzD65
-	// XyY is the CIE xyY color space using the D65 reference white.
-	// Conversions involving other reference whites automatically perform
-	// chromatic adaptation.
-	XyY
-	XyzD50
-	LinearSrgb
 	Srgb
-	LinearDisplayP3
+	LinearSrgb
 	DisplayP3
-	LinearA98
+	LinearDisplayP3
 	A98
-	LinearProPhoto
+	LinearA98
 	ProPhoto
-	LinearRec2020
+	LinearProPhoto
 	Rec2020
+	LinearRec2020
+	XyzD50
+	XyzD65
+	XyYD50
+	XyYD65
+	LabD50
+	LchD50
+	LabD65
+	LchD65
+	LuvD50
+	LchuvD50
+	LuvD65
+	LchuvD65
+	Oklab
+	Oklch
 	Hsl
 	Hsv
 	Hwb
-	Lab
-	Lch
-	Luv
-	Lchuv
-	Oklab
-	Oklch
 
 	// SpaceCount is the number of defined spaces, including InvalidSpace.
 	SpaceCount
 
 	// FirstSpace is the first valid color space.
-	FirstSpace = XyzD65
+	FirstSpace = Srgb
 
 	// LastSpace is the last valid color space.
-	LastSpace = Oklch
+	LastSpace = Hwb
+)
+
+const (
+	// Lab is an alias for [LabD50].
+	Lab = LabD50
+	// Lch is an alias for [LchD50].
+	Lch = LchD50
+	// Luv is an alias for [LuvD50].
+	Luv = LuvD50
+	// Lchuv is an alias for [LchuvD50].
+	Lchuv = LchuvD50
 )
 
 func (s Space) String() string {
 	switch s {
 	case InvalidSpace:
 		return "Invalid"
-	case XyzD65:
-		return "XyzD65"
-	case XyY:
-		return "XyY"
-	case XyzD50:
-		return "XyzD50"
-	case LinearSrgb:
-		return "LinearSrgb"
 	case Srgb:
 		return "Srgb"
-	case LinearDisplayP3:
-		return "LinearDisplayP3"
+	case LinearSrgb:
+		return "LinearSrgb"
 	case DisplayP3:
 		return "DisplayP3"
-	case LinearA98:
-		return "LinearA98"
+	case LinearDisplayP3:
+		return "LinearDisplayP3"
 	case A98:
 		return "A98"
-	case LinearProPhoto:
-		return "LinearProPhoto"
+	case LinearA98:
+		return "LinearA98"
 	case ProPhoto:
 		return "ProPhoto"
-	case LinearRec2020:
-		return "LinearRec2020"
+	case LinearProPhoto:
+		return "LinearProPhoto"
 	case Rec2020:
 		return "Rec2020"
+	case LinearRec2020:
+		return "LinearRec2020"
+	case XyzD50:
+		return "XyzD50"
+	case XyzD65:
+		return "XyzD65"
+	case XyYD50:
+		return "XyYD50"
+	case XyYD65:
+		return "XyYD65"
+	case LabD50:
+		return "LabD50"
+	case LchD50:
+		return "LchD50"
+	case LabD65:
+		return "LabD65"
+	case LchD65:
+		return "LchD65"
+	case LuvD50:
+		return "LuvD50"
+	case LchuvD50:
+		return "LchuvD50"
+	case LuvD65:
+		return "LuvD65"
+	case LchuvD65:
+		return "LchuvD65"
+	case Oklab:
+		return "Oklab"
+	case Oklch:
+		return "Oklch"
 	case Hsl:
 		return "Hsl"
 	case Hsv:
 		return "Hsv"
 	case Hwb:
 		return "Hwb"
-	case Lab:
-		return "Lab"
-	case Lch:
-		return "Lch"
-	case Luv:
-		return "Luv"
-	case Lchuv:
-		return "Lchuv"
-	case Oklab:
-		return "Oklab"
-	case Oklch:
-		return "Oklch"
 	default:
 		return "Space(" + strconv.FormatUint(uint64(s), 10) + ")"
 	}

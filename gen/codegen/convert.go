@@ -1,6 +1,7 @@
 package codegen
 
 import (
+	"fmt"
 	"log"
 	"path/filepath"
 
@@ -27,6 +28,7 @@ func GenerateConvertPkg(ctx *Context) {
 }
 
 func genConvertPkgConversionFiles(ctx *Context, w *writer.GoWriter, pkg, pkgPath string) {
+	total := 0
 	for i, space := range ctx.BuildSpaces {
 		if space == nil {
 			log.Printf("space at index %d is nil\n", i)
@@ -43,7 +45,10 @@ func genConvertPkgConversionFiles(ctx *Context, w *writer.GoWriter, pkg, pkgPath
 		}
 
 		emitGoFile(w, pkg, pkgPath, toSnakeCase(filename), func(w *writer.GoWriter) {
-			genConvertPkgSpaceConversions(ctx, w, space)
+			total += genConvertPkgSpaceConversions(ctx, w, space)
 		})
 	}
+
+	fmt.Println("total conversion:", total)
+	fmt.Println()
 }

@@ -7,163 +7,65 @@ import (
 	"github.com/thmalt/colors/space"
 )
 
-// XyzD65 returns the color components in the [space.XyzD65] color space.
-func (c Color) XyzD65() (x, y, z float64) {
-	if c.space == space.XyzD65 {
+// Srgb returns the color components in the [space.Srgb] color space.
+func (c Color) Srgb() (r, g, b float64) {
+	if c.space == space.Srgb {
 		return c.c1, c.c2, c.c3
 	}
 
 	switch c.space {
-	case space.XyY:
-		return convert.XyYToXyzD65(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToSrgb(c.c1, c.c2, c.c3)
+	case space.DisplayP3:
+		return convert.DisplayP3ToSrgb(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToSrgb(c.c1, c.c2, c.c3)
+	case space.A98:
+		return convert.A98ToSrgb(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToSrgb(c.c1, c.c2, c.c3)
+	case space.ProPhoto:
+		return convert.ProPhotoToSrgb(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToSrgb(c.c1, c.c2, c.c3)
+	case space.Rec2020:
+		return convert.Rec2020ToSrgb(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToSrgb(c.c1, c.c2, c.c3)
 	case space.XyzD50:
-		return convert.XyzD50ToXyzD65(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToXyzD65(c.c1, c.c2, c.c3)
-	case space.Srgb:
-		return convert.SrgbToXyzD65(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToXyzD65(c.c1, c.c2, c.c3)
-	case space.DisplayP3:
-		return convert.DisplayP3ToXyzD65(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToXyzD65(c.c1, c.c2, c.c3)
-	case space.A98:
-		return convert.A98ToXyzD65(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToXyzD65(c.c1, c.c2, c.c3)
-	case space.ProPhoto:
-		return convert.ProPhotoToXyzD65(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToXyzD65(c.c1, c.c2, c.c3)
-	case space.Rec2020:
-		return convert.Rec2020ToXyzD65(c.c1, c.c2, c.c3)
-	case space.Hsl:
-		return convert.HslToXyzD65(c.c1, c.c2, c.c3)
-	case space.Hsv:
-		return convert.HsvToXyzD65(c.c1, c.c2, c.c3)
-	case space.Hwb:
-		return convert.HwbToXyzD65(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToXyzD65(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToXyzD65(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToXyzD65(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToXyzD65(c.c1, c.c2, c.c3)
-	case space.Oklab:
-		return convert.OklabToXyzD65(c.c1, c.c2, c.c3)
-	case space.Oklch:
-		return convert.OklchToXyzD65(c.c1, c.c2, c.c3)
-	default:
-		return
-	}
-}
-
-// XyY returns the color components in the [space.XyY] color space.
-func (c Color) XyY() (x, y, luminance float64) {
-	if c.space == space.XyY {
-		return c.c1, c.c2, c.c3
-	}
-
-	switch c.space {
+		return convert.XyzD50ToSrgb(c.c1, c.c2, c.c3)
 	case space.XyzD65:
-		return convert.XyzD65ToXyY(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToXyY(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToXyY(c.c1, c.c2, c.c3)
-	case space.Srgb:
-		return convert.SrgbToXyY(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToXyY(c.c1, c.c2, c.c3)
-	case space.DisplayP3:
-		return convert.DisplayP3ToXyY(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToXyY(c.c1, c.c2, c.c3)
-	case space.A98:
-		return convert.A98ToXyY(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToXyY(c.c1, c.c2, c.c3)
-	case space.ProPhoto:
-		return convert.ProPhotoToXyY(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToXyY(c.c1, c.c2, c.c3)
-	case space.Rec2020:
-		return convert.Rec2020ToXyY(c.c1, c.c2, c.c3)
-	case space.Hsl:
-		return convert.HslToXyY(c.c1, c.c2, c.c3)
-	case space.Hsv:
-		return convert.HsvToXyY(c.c1, c.c2, c.c3)
-	case space.Hwb:
-		return convert.HwbToXyY(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToXyY(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToXyY(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToXyY(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToXyY(c.c1, c.c2, c.c3)
+		return convert.XyzD65ToSrgb(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToSrgb(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToSrgb(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToSrgb(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToSrgb(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToSrgb(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToSrgb(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToSrgb(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToSrgb(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToSrgb(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToSrgb(c.c1, c.c2, c.c3)
 	case space.Oklab:
-		return convert.OklabToXyY(c.c1, c.c2, c.c3)
+		return convert.OklabToSrgb(c.c1, c.c2, c.c3)
 	case space.Oklch:
-		return convert.OklchToXyY(c.c1, c.c2, c.c3)
-	default:
-		return
-	}
-}
-
-// XyzD50 returns the color components in the [space.XyzD50] color space.
-func (c Color) XyzD50() (x, y, z float64) {
-	if c.space == space.XyzD50 {
-		return c.c1, c.c2, c.c3
-	}
-
-	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToXyzD50(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToXyzD50(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToXyzD50(c.c1, c.c2, c.c3)
-	case space.Srgb:
-		return convert.SrgbToXyzD50(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToXyzD50(c.c1, c.c2, c.c3)
-	case space.DisplayP3:
-		return convert.DisplayP3ToXyzD50(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToXyzD50(c.c1, c.c2, c.c3)
-	case space.A98:
-		return convert.A98ToXyzD50(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToXyzD50(c.c1, c.c2, c.c3)
-	case space.ProPhoto:
-		return convert.ProPhotoToXyzD50(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToXyzD50(c.c1, c.c2, c.c3)
-	case space.Rec2020:
-		return convert.Rec2020ToXyzD50(c.c1, c.c2, c.c3)
+		return convert.OklchToSrgb(c.c1, c.c2, c.c3)
 	case space.Hsl:
-		return convert.HslToXyzD50(c.c1, c.c2, c.c3)
+		return convert.HslToSrgb(c.c1, c.c2, c.c3)
 	case space.Hsv:
-		return convert.HsvToXyzD50(c.c1, c.c2, c.c3)
+		return convert.HsvToSrgb(c.c1, c.c2, c.c3)
 	case space.Hwb:
-		return convert.HwbToXyzD50(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToXyzD50(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToXyzD50(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToXyzD50(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToXyzD50(c.c1, c.c2, c.c3)
-	case space.Oklab:
-		return convert.OklabToXyzD50(c.c1, c.c2, c.c3)
-	case space.Oklch:
-		return convert.OklchToXyzD50(c.c1, c.c2, c.c3)
+		return convert.HwbToSrgb(c.c1, c.c2, c.c3)
 	default:
 		return
 	}
@@ -176,156 +78,58 @@ func (c Color) LinearSrgb() (r, g, b float64) {
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToLinearSrgb(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToLinearSrgb(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToLinearSrgb(c.c1, c.c2, c.c3)
 	case space.Srgb:
 		return convert.SrgbToLinearSrgb(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToLinearSrgb(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
 		return convert.DisplayP3ToLinearSrgb(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToLinearSrgb(c.c1, c.c2, c.c3)
 	case space.A98:
 		return convert.A98ToLinearSrgb(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToLinearSrgb(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
 		return convert.ProPhotoToLinearSrgb(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToLinearSrgb(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToLinearSrgb(c.c1, c.c2, c.c3)
 	case space.Hsl:
 		return convert.HslToLinearSrgb(c.c1, c.c2, c.c3)
 	case space.Hsv:
 		return convert.HsvToLinearSrgb(c.c1, c.c2, c.c3)
 	case space.Hwb:
 		return convert.HwbToLinearSrgb(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToLinearSrgb(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToLinearSrgb(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToLinearSrgb(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToLinearSrgb(c.c1, c.c2, c.c3)
-	case space.Oklab:
-		return convert.OklabToLinearSrgb(c.c1, c.c2, c.c3)
-	case space.Oklch:
-		return convert.OklchToLinearSrgb(c.c1, c.c2, c.c3)
-	default:
-		return
-	}
-}
-
-// Srgb returns the color components in the [space.Srgb] color space.
-func (c Color) Srgb() (r, g, b float64) {
-	if c.space == space.Srgb {
-		return c.c1, c.c2, c.c3
-	}
-
-	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToSrgb(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToSrgb(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToSrgb(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToSrgb(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToSrgb(c.c1, c.c2, c.c3)
-	case space.DisplayP3:
-		return convert.DisplayP3ToSrgb(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToSrgb(c.c1, c.c2, c.c3)
-	case space.A98:
-		return convert.A98ToSrgb(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToSrgb(c.c1, c.c2, c.c3)
-	case space.ProPhoto:
-		return convert.ProPhotoToSrgb(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToSrgb(c.c1, c.c2, c.c3)
-	case space.Rec2020:
-		return convert.Rec2020ToSrgb(c.c1, c.c2, c.c3)
-	case space.Hsl:
-		return convert.HslToSrgb(c.c1, c.c2, c.c3)
-	case space.Hsv:
-		return convert.HsvToSrgb(c.c1, c.c2, c.c3)
-	case space.Hwb:
-		return convert.HwbToSrgb(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToSrgb(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToSrgb(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToSrgb(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToSrgb(c.c1, c.c2, c.c3)
-	case space.Oklab:
-		return convert.OklabToSrgb(c.c1, c.c2, c.c3)
-	case space.Oklch:
-		return convert.OklchToSrgb(c.c1, c.c2, c.c3)
-	default:
-		return
-	}
-}
-
-// LinearDisplayP3 returns the color components in the [space.LinearDisplayP3] color space.
-func (c Color) LinearDisplayP3() (r, g, b float64) {
-	if c.space == space.LinearDisplayP3 {
-		return c.c1, c.c2, c.c3
-	}
-
-	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.Srgb:
-		return convert.SrgbToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.DisplayP3:
-		return convert.DisplayP3ToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.A98:
-		return convert.A98ToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.ProPhoto:
-		return convert.ProPhotoToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.Rec2020:
-		return convert.Rec2020ToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.Hsl:
-		return convert.HslToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.Hsv:
-		return convert.HsvToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.Hwb:
-		return convert.HwbToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.Oklab:
-		return convert.OklabToLinearDisplayP3(c.c1, c.c2, c.c3)
-	case space.Oklch:
-		return convert.OklchToLinearDisplayP3(c.c1, c.c2, c.c3)
 	default:
 		return
 	}
@@ -338,102 +142,122 @@ func (c Color) DisplayP3() (r, g, b float64) {
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToDisplayP3(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToDisplayP3(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToDisplayP3(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToDisplayP3(c.c1, c.c2, c.c3)
 	case space.Srgb:
 		return convert.SrgbToDisplayP3(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToDisplayP3(c.c1, c.c2, c.c3)
 	case space.LinearDisplayP3:
 		return convert.LinearDisplayP3ToDisplayP3(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToDisplayP3(c.c1, c.c2, c.c3)
 	case space.A98:
 		return convert.A98ToDisplayP3(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToDisplayP3(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToDisplayP3(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
 		return convert.ProPhotoToDisplayP3(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToDisplayP3(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToDisplayP3(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToDisplayP3(c.c1, c.c2, c.c3)
 	case space.Hsl:
 		return convert.HslToDisplayP3(c.c1, c.c2, c.c3)
 	case space.Hsv:
 		return convert.HsvToDisplayP3(c.c1, c.c2, c.c3)
 	case space.Hwb:
 		return convert.HwbToDisplayP3(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToDisplayP3(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToDisplayP3(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToDisplayP3(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToDisplayP3(c.c1, c.c2, c.c3)
-	case space.Oklab:
-		return convert.OklabToDisplayP3(c.c1, c.c2, c.c3)
-	case space.Oklch:
-		return convert.OklchToDisplayP3(c.c1, c.c2, c.c3)
 	default:
 		return
 	}
 }
 
-// LinearA98 returns the color components in the [space.LinearA98] color space.
-func (c Color) LinearA98() (r, g, b float64) {
-	if c.space == space.LinearA98 {
+// LinearDisplayP3 returns the color components in the [space.LinearDisplayP3] color space.
+func (c Color) LinearDisplayP3() (r, g, b float64) {
+	if c.space == space.LinearDisplayP3 {
 		return c.c1, c.c2, c.c3
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToLinearA98(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToLinearA98(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToLinearA98(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToLinearA98(c.c1, c.c2, c.c3)
 	case space.Srgb:
-		return convert.SrgbToLinearA98(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToLinearA98(c.c1, c.c2, c.c3)
+		return convert.SrgbToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToLinearDisplayP3(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
-		return convert.DisplayP3ToLinearA98(c.c1, c.c2, c.c3)
+		return convert.DisplayP3ToLinearDisplayP3(c.c1, c.c2, c.c3)
 	case space.A98:
-		return convert.A98ToLinearA98(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToLinearA98(c.c1, c.c2, c.c3)
+		return convert.A98ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToLinearDisplayP3(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
-		return convert.ProPhotoToLinearA98(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToLinearA98(c.c1, c.c2, c.c3)
+		return convert.ProPhotoToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToLinearDisplayP3(c.c1, c.c2, c.c3)
 	case space.Rec2020:
-		return convert.Rec2020ToLinearA98(c.c1, c.c2, c.c3)
-	case space.Hsl:
-		return convert.HslToLinearA98(c.c1, c.c2, c.c3)
-	case space.Hsv:
-		return convert.HsvToLinearA98(c.c1, c.c2, c.c3)
-	case space.Hwb:
-		return convert.HwbToLinearA98(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToLinearA98(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToLinearA98(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToLinearA98(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToLinearA98(c.c1, c.c2, c.c3)
+		return convert.Rec2020ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToLinearDisplayP3(c.c1, c.c2, c.c3)
 	case space.Oklab:
-		return convert.OklabToLinearA98(c.c1, c.c2, c.c3)
+		return convert.OklabToLinearDisplayP3(c.c1, c.c2, c.c3)
 	case space.Oklch:
-		return convert.OklchToLinearA98(c.c1, c.c2, c.c3)
+		return convert.OklchToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToLinearDisplayP3(c.c1, c.c2, c.c3)
 	default:
 		return
 	}
@@ -446,102 +270,122 @@ func (c Color) A98() (r, g, b float64) {
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToA98(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToA98(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToA98(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToA98(c.c1, c.c2, c.c3)
 	case space.Srgb:
 		return convert.SrgbToA98(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToA98(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToA98(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
 		return convert.DisplayP3ToA98(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToA98(c.c1, c.c2, c.c3)
 	case space.LinearA98:
 		return convert.LinearA98ToA98(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToA98(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
 		return convert.ProPhotoToA98(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToA98(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToA98(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToA98(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToA98(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToA98(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToA98(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToA98(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToA98(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToA98(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToA98(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToA98(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToA98(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToA98(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToA98(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToA98(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToA98(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToA98(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToA98(c.c1, c.c2, c.c3)
 	case space.Hsl:
 		return convert.HslToA98(c.c1, c.c2, c.c3)
 	case space.Hsv:
 		return convert.HsvToA98(c.c1, c.c2, c.c3)
 	case space.Hwb:
 		return convert.HwbToA98(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToA98(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToA98(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToA98(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToA98(c.c1, c.c2, c.c3)
-	case space.Oklab:
-		return convert.OklabToA98(c.c1, c.c2, c.c3)
-	case space.Oklch:
-		return convert.OklchToA98(c.c1, c.c2, c.c3)
 	default:
 		return
 	}
 }
 
-// LinearProPhoto returns the color components in the [space.LinearProPhoto] color space.
-func (c Color) LinearProPhoto() (r, g, b float64) {
-	if c.space == space.LinearProPhoto {
+// LinearA98 returns the color components in the [space.LinearA98] color space.
+func (c Color) LinearA98() (r, g, b float64) {
+	if c.space == space.LinearA98 {
 		return c.c1, c.c2, c.c3
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToLinearProPhoto(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToLinearProPhoto(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToLinearProPhoto(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.Srgb:
-		return convert.SrgbToLinearProPhoto(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToLinearProPhoto(c.c1, c.c2, c.c3)
+		return convert.SrgbToLinearA98(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToLinearA98(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
-		return convert.DisplayP3ToLinearProPhoto(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToLinearProPhoto(c.c1, c.c2, c.c3)
+		return convert.DisplayP3ToLinearA98(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToLinearA98(c.c1, c.c2, c.c3)
 	case space.A98:
-		return convert.A98ToLinearProPhoto(c.c1, c.c2, c.c3)
+		return convert.A98ToLinearA98(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
-		return convert.ProPhotoToLinearProPhoto(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToLinearProPhoto(c.c1, c.c2, c.c3)
+		return convert.ProPhotoToLinearA98(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToLinearA98(c.c1, c.c2, c.c3)
 	case space.Rec2020:
-		return convert.Rec2020ToLinearProPhoto(c.c1, c.c2, c.c3)
-	case space.Hsl:
-		return convert.HslToLinearProPhoto(c.c1, c.c2, c.c3)
-	case space.Hsv:
-		return convert.HsvToLinearProPhoto(c.c1, c.c2, c.c3)
-	case space.Hwb:
-		return convert.HwbToLinearProPhoto(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToLinearProPhoto(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToLinearProPhoto(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToLinearProPhoto(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToLinearProPhoto(c.c1, c.c2, c.c3)
+		return convert.Rec2020ToLinearA98(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToLinearA98(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToLinearA98(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToLinearA98(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToLinearA98(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToLinearA98(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToLinearA98(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToLinearA98(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToLinearA98(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToLinearA98(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToLinearA98(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToLinearA98(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToLinearA98(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToLinearA98(c.c1, c.c2, c.c3)
 	case space.Oklab:
-		return convert.OklabToLinearProPhoto(c.c1, c.c2, c.c3)
+		return convert.OklabToLinearA98(c.c1, c.c2, c.c3)
 	case space.Oklch:
-		return convert.OklchToLinearProPhoto(c.c1, c.c2, c.c3)
+		return convert.OklchToLinearA98(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToLinearA98(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToLinearA98(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToLinearA98(c.c1, c.c2, c.c3)
 	default:
 		return
 	}
@@ -554,102 +398,122 @@ func (c Color) ProPhoto() (r, g, b float64) {
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToProPhoto(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToProPhoto(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToProPhoto(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToProPhoto(c.c1, c.c2, c.c3)
 	case space.Srgb:
 		return convert.SrgbToProPhoto(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToProPhoto(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToProPhoto(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
 		return convert.DisplayP3ToProPhoto(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToProPhoto(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToProPhoto(c.c1, c.c2, c.c3)
 	case space.A98:
 		return convert.A98ToProPhoto(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToProPhoto(c.c1, c.c2, c.c3)
 	case space.LinearProPhoto:
 		return convert.LinearProPhotoToProPhoto(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToProPhoto(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToProPhoto(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToProPhoto(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToProPhoto(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToProPhoto(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToProPhoto(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToProPhoto(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToProPhoto(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToProPhoto(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToProPhoto(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToProPhoto(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToProPhoto(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToProPhoto(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToProPhoto(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToProPhoto(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToProPhoto(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToProPhoto(c.c1, c.c2, c.c3)
 	case space.Hsl:
 		return convert.HslToProPhoto(c.c1, c.c2, c.c3)
 	case space.Hsv:
 		return convert.HsvToProPhoto(c.c1, c.c2, c.c3)
 	case space.Hwb:
 		return convert.HwbToProPhoto(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToProPhoto(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToProPhoto(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToProPhoto(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToProPhoto(c.c1, c.c2, c.c3)
-	case space.Oklab:
-		return convert.OklabToProPhoto(c.c1, c.c2, c.c3)
-	case space.Oklch:
-		return convert.OklchToProPhoto(c.c1, c.c2, c.c3)
 	default:
 		return
 	}
 }
 
-// LinearRec2020 returns the color components in the [space.LinearRec2020] color space.
-func (c Color) LinearRec2020() (r, g, b float64) {
-	if c.space == space.LinearRec2020 {
+// LinearProPhoto returns the color components in the [space.LinearProPhoto] color space.
+func (c Color) LinearProPhoto() (r, g, b float64) {
+	if c.space == space.LinearProPhoto {
 		return c.c1, c.c2, c.c3
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToLinearRec2020(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToLinearRec2020(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToLinearRec2020(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.Srgb:
-		return convert.SrgbToLinearRec2020(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToLinearRec2020(c.c1, c.c2, c.c3)
+		return convert.SrgbToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
-		return convert.DisplayP3ToLinearRec2020(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToLinearRec2020(c.c1, c.c2, c.c3)
+		return convert.DisplayP3ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.A98:
-		return convert.A98ToLinearRec2020(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToLinearRec2020(c.c1, c.c2, c.c3)
+		return convert.A98ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
-		return convert.ProPhotoToLinearRec2020(c.c1, c.c2, c.c3)
+		return convert.ProPhotoToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.Rec2020:
-		return convert.Rec2020ToLinearRec2020(c.c1, c.c2, c.c3)
-	case space.Hsl:
-		return convert.HslToLinearRec2020(c.c1, c.c2, c.c3)
-	case space.Hsv:
-		return convert.HsvToLinearRec2020(c.c1, c.c2, c.c3)
-	case space.Hwb:
-		return convert.HwbToLinearRec2020(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToLinearRec2020(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToLinearRec2020(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToLinearRec2020(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToLinearRec2020(c.c1, c.c2, c.c3)
+		return convert.Rec2020ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.Oklab:
-		return convert.OklabToLinearRec2020(c.c1, c.c2, c.c3)
+		return convert.OklabToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.Oklch:
-		return convert.OklchToLinearRec2020(c.c1, c.c2, c.c3)
+		return convert.OklchToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToLinearProPhoto(c.c1, c.c2, c.c3)
 	default:
 		return
 	}
@@ -662,426 +526,890 @@ func (c Color) Rec2020() (r, g, b float64) {
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToRec2020(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToRec2020(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToRec2020(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToRec2020(c.c1, c.c2, c.c3)
 	case space.Srgb:
 		return convert.SrgbToRec2020(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToRec2020(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToRec2020(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
 		return convert.DisplayP3ToRec2020(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToRec2020(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToRec2020(c.c1, c.c2, c.c3)
 	case space.A98:
 		return convert.A98ToRec2020(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToRec2020(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToRec2020(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
 		return convert.ProPhotoToRec2020(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToRec2020(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToRec2020(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToRec2020(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToRec2020(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToRec2020(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToRec2020(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToRec2020(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToRec2020(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToRec2020(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToRec2020(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToRec2020(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToRec2020(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToRec2020(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToRec2020(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToRec2020(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToRec2020(c.c1, c.c2, c.c3)
 	case space.Hsl:
 		return convert.HslToRec2020(c.c1, c.c2, c.c3)
 	case space.Hsv:
 		return convert.HsvToRec2020(c.c1, c.c2, c.c3)
 	case space.Hwb:
 		return convert.HwbToRec2020(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToRec2020(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToRec2020(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToRec2020(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToRec2020(c.c1, c.c2, c.c3)
-	case space.Oklab:
-		return convert.OklabToRec2020(c.c1, c.c2, c.c3)
-	case space.Oklch:
-		return convert.OklchToRec2020(c.c1, c.c2, c.c3)
 	default:
 		return
 	}
 }
 
-// Hsl returns the color components in the [space.Hsl] color space.
-func (c Color) Hsl() (h, s, l float64) {
-	if c.space == space.Hsl {
+// LinearRec2020 returns the color components in the [space.LinearRec2020] color space.
+func (c Color) LinearRec2020() (r, g, b float64) {
+	if c.space == space.LinearRec2020 {
 		return c.c1, c.c2, c.c3
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToHsl(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToHsl(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToHsl(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToHsl(c.c1, c.c2, c.c3)
 	case space.Srgb:
-		return convert.SrgbToHsl(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToHsl(c.c1, c.c2, c.c3)
+		return convert.SrgbToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
-		return convert.DisplayP3ToHsl(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToHsl(c.c1, c.c2, c.c3)
+		return convert.DisplayP3ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.A98:
-		return convert.A98ToHsl(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToHsl(c.c1, c.c2, c.c3)
+		return convert.A98ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
-		return convert.ProPhotoToHsl(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToHsl(c.c1, c.c2, c.c3)
+		return convert.ProPhotoToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.Rec2020:
-		return convert.Rec2020ToHsl(c.c1, c.c2, c.c3)
-	case space.Hsv:
-		return convert.HsvToHsl(c.c1, c.c2, c.c3)
-	case space.Hwb:
-		return convert.HwbToHsl(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToHsl(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToHsl(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToHsl(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToHsl(c.c1, c.c2, c.c3)
+		return convert.Rec2020ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.Oklab:
-		return convert.OklabToHsl(c.c1, c.c2, c.c3)
+		return convert.OklabToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.Oklch:
-		return convert.OklchToHsl(c.c1, c.c2, c.c3)
-	default:
-		return
-	}
-}
-
-// Hsv returns the color components in the [space.Hsv] color space.
-func (c Color) Hsv() (h, s, v float64) {
-	if c.space == space.Hsv {
-		return c.c1, c.c2, c.c3
-	}
-
-	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToHsv(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToHsv(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToHsv(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToHsv(c.c1, c.c2, c.c3)
-	case space.Srgb:
-		return convert.SrgbToHsv(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToHsv(c.c1, c.c2, c.c3)
-	case space.DisplayP3:
-		return convert.DisplayP3ToHsv(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToHsv(c.c1, c.c2, c.c3)
-	case space.A98:
-		return convert.A98ToHsv(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToHsv(c.c1, c.c2, c.c3)
-	case space.ProPhoto:
-		return convert.ProPhotoToHsv(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToHsv(c.c1, c.c2, c.c3)
-	case space.Rec2020:
-		return convert.Rec2020ToHsv(c.c1, c.c2, c.c3)
+		return convert.OklchToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.Hsl:
-		return convert.HslToHsv(c.c1, c.c2, c.c3)
+		return convert.HslToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.Hwb:
-		return convert.HwbToHsv(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToHsv(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToHsv(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToHsv(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToHsv(c.c1, c.c2, c.c3)
-	case space.Oklab:
-		return convert.OklabToHsv(c.c1, c.c2, c.c3)
-	case space.Oklch:
-		return convert.OklchToHsv(c.c1, c.c2, c.c3)
+		return convert.HwbToLinearRec2020(c.c1, c.c2, c.c3)
 	default:
 		return
 	}
 }
 
-// Hwb returns the color components in the [space.Hwb] color space.
-func (c Color) Hwb() (h, w, b float64) {
-	if c.space == space.Hwb {
+// XyzD50 returns the color components in the [space.XyzD50] color space.
+func (c Color) XyzD50() (x, y, z float64) {
+	if c.space == space.XyzD50 {
 		return c.c1, c.c2, c.c3
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToHwb(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToHwb(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToHwb(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToHwb(c.c1, c.c2, c.c3)
 	case space.Srgb:
-		return convert.SrgbToHwb(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToHwb(c.c1, c.c2, c.c3)
+		return convert.SrgbToXyzD50(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToXyzD50(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
-		return convert.DisplayP3ToHwb(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToHwb(c.c1, c.c2, c.c3)
+		return convert.DisplayP3ToXyzD50(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToXyzD50(c.c1, c.c2, c.c3)
 	case space.A98:
-		return convert.A98ToHwb(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToHwb(c.c1, c.c2, c.c3)
+		return convert.A98ToXyzD50(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToXyzD50(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
-		return convert.ProPhotoToHwb(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToHwb(c.c1, c.c2, c.c3)
+		return convert.ProPhotoToXyzD50(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToXyzD50(c.c1, c.c2, c.c3)
 	case space.Rec2020:
-		return convert.Rec2020ToHwb(c.c1, c.c2, c.c3)
-	case space.Hsl:
-		return convert.HslToHwb(c.c1, c.c2, c.c3)
-	case space.Hsv:
-		return convert.HsvToHwb(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToHwb(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToHwb(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToHwb(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToHwb(c.c1, c.c2, c.c3)
+		return convert.Rec2020ToXyzD50(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToXyzD50(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToXyzD50(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToXyzD50(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToXyzD50(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToXyzD50(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToXyzD50(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToXyzD50(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToXyzD50(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToXyzD50(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToXyzD50(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToXyzD50(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToXyzD50(c.c1, c.c2, c.c3)
 	case space.Oklab:
-		return convert.OklabToHwb(c.c1, c.c2, c.c3)
+		return convert.OklabToXyzD50(c.c1, c.c2, c.c3)
 	case space.Oklch:
-		return convert.OklchToHwb(c.c1, c.c2, c.c3)
+		return convert.OklchToXyzD50(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToXyzD50(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToXyzD50(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToXyzD50(c.c1, c.c2, c.c3)
 	default:
 		return
 	}
 }
 
-// Lab returns the color components in the [space.Lab] color space.
-func (c Color) Lab() (l, a, b float64) {
-	if c.space == space.Lab {
+// XyzD65 returns the color components in the [space.XyzD65] color space.
+func (c Color) XyzD65() (x, y, z float64) {
+	if c.space == space.XyzD65 {
 		return c.c1, c.c2, c.c3
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToLab(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToLab(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToLab(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToLab(c.c1, c.c2, c.c3)
 	case space.Srgb:
-		return convert.SrgbToLab(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToLab(c.c1, c.c2, c.c3)
+		return convert.SrgbToXyzD65(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToXyzD65(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
-		return convert.DisplayP3ToLab(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToLab(c.c1, c.c2, c.c3)
+		return convert.DisplayP3ToXyzD65(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToXyzD65(c.c1, c.c2, c.c3)
 	case space.A98:
-		return convert.A98ToLab(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToLab(c.c1, c.c2, c.c3)
+		return convert.A98ToXyzD65(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToXyzD65(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
-		return convert.ProPhotoToLab(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToLab(c.c1, c.c2, c.c3)
+		return convert.ProPhotoToXyzD65(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToXyzD65(c.c1, c.c2, c.c3)
 	case space.Rec2020:
-		return convert.Rec2020ToLab(c.c1, c.c2, c.c3)
-	case space.Hsl:
-		return convert.HslToLab(c.c1, c.c2, c.c3)
-	case space.Hsv:
-		return convert.HsvToLab(c.c1, c.c2, c.c3)
-	case space.Hwb:
-		return convert.HwbToLab(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToLab(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToLab(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToLab(c.c1, c.c2, c.c3)
+		return convert.Rec2020ToXyzD65(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToXyzD65(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToXyzD65(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToXyzD65(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToXyzD65(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToXyzD65(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToXyzD65(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToXyzD65(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToXyzD65(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToXyzD65(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToXyzD65(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToXyzD65(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToXyzD65(c.c1, c.c2, c.c3)
 	case space.Oklab:
-		return convert.OklabToLab(c.c1, c.c2, c.c3)
+		return convert.OklabToXyzD65(c.c1, c.c2, c.c3)
 	case space.Oklch:
-		return convert.OklchToLab(c.c1, c.c2, c.c3)
+		return convert.OklchToXyzD65(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToXyzD65(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToXyzD65(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToXyzD65(c.c1, c.c2, c.c3)
 	default:
 		return
 	}
 }
 
-// Lch returns the color components in the [space.Lch] color space.
-func (c Color) Lch() (float64, float64, float64) {
-	if c.space == space.Lch {
+// XyYD50 returns the color components in the [space.XyYD50] color space.
+func (c Color) XyYD50() (x, y, luminance float64) {
+	if c.space == space.XyYD50 {
 		return c.c1, c.c2, c.c3
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToLch(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToLch(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToLch(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToLch(c.c1, c.c2, c.c3)
 	case space.Srgb:
-		return convert.SrgbToLch(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToLch(c.c1, c.c2, c.c3)
+		return convert.SrgbToXyYD50(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToXyYD50(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
-		return convert.DisplayP3ToLch(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToLch(c.c1, c.c2, c.c3)
+		return convert.DisplayP3ToXyYD50(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToXyYD50(c.c1, c.c2, c.c3)
 	case space.A98:
-		return convert.A98ToLch(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToLch(c.c1, c.c2, c.c3)
+		return convert.A98ToXyYD50(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToXyYD50(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
-		return convert.ProPhotoToLch(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToLch(c.c1, c.c2, c.c3)
+		return convert.ProPhotoToXyYD50(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToXyYD50(c.c1, c.c2, c.c3)
 	case space.Rec2020:
-		return convert.Rec2020ToLch(c.c1, c.c2, c.c3)
-	case space.Hsl:
-		return convert.HslToLch(c.c1, c.c2, c.c3)
-	case space.Hsv:
-		return convert.HsvToLch(c.c1, c.c2, c.c3)
-	case space.Hwb:
-		return convert.HwbToLch(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToLch(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToLch(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToLch(c.c1, c.c2, c.c3)
+		return convert.Rec2020ToXyYD50(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToXyYD50(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToXyYD50(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToXyYD50(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToXyYD50(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToXyYD50(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToXyYD50(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToXyYD50(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToXyYD50(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToXyYD50(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToXyYD50(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToXyYD50(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToXyYD50(c.c1, c.c2, c.c3)
 	case space.Oklab:
-		return convert.OklabToLch(c.c1, c.c2, c.c3)
+		return convert.OklabToXyYD50(c.c1, c.c2, c.c3)
 	case space.Oklch:
-		return convert.OklchToLch(c.c1, c.c2, c.c3)
+		return convert.OklchToXyYD50(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToXyYD50(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToXyYD50(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToXyYD50(c.c1, c.c2, c.c3)
+	default:
+		return
+	}
+}
+
+// XyYD65 returns the color components in the [space.XyYD65] color space.
+func (c Color) XyYD65() (x, y, luminance float64) {
+	if c.space == space.XyYD65 {
+		return c.c1, c.c2, c.c3
+	}
+
+	switch c.space {
+	case space.Srgb:
+		return convert.SrgbToXyYD65(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToXyYD65(c.c1, c.c2, c.c3)
+	case space.DisplayP3:
+		return convert.DisplayP3ToXyYD65(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToXyYD65(c.c1, c.c2, c.c3)
+	case space.A98:
+		return convert.A98ToXyYD65(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToXyYD65(c.c1, c.c2, c.c3)
+	case space.ProPhoto:
+		return convert.ProPhotoToXyYD65(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToXyYD65(c.c1, c.c2, c.c3)
+	case space.Rec2020:
+		return convert.Rec2020ToXyYD65(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToXyYD65(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToXyYD65(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToXyYD65(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToXyYD65(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToXyYD65(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToXyYD65(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToXyYD65(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToXyYD65(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToXyYD65(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToXyYD65(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToXyYD65(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToXyYD65(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToXyYD65(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToXyYD65(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToXyYD65(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToXyYD65(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToXyYD65(c.c1, c.c2, c.c3)
+	default:
+		return
+	}
+}
+
+// LabD50 returns the color components in the [space.LabD50] color space.
+func (c Color) LabD50() (l, a, b float64) {
+	if c.space == space.LabD50 {
+		return c.c1, c.c2, c.c3
+	}
+
+	switch c.space {
+	case space.Srgb:
+		return convert.SrgbToLabD50(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToLabD50(c.c1, c.c2, c.c3)
+	case space.DisplayP3:
+		return convert.DisplayP3ToLabD50(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToLabD50(c.c1, c.c2, c.c3)
+	case space.A98:
+		return convert.A98ToLabD50(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToLabD50(c.c1, c.c2, c.c3)
+	case space.ProPhoto:
+		return convert.ProPhotoToLabD50(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToLabD50(c.c1, c.c2, c.c3)
+	case space.Rec2020:
+		return convert.Rec2020ToLabD50(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToLabD50(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToLabD50(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToLabD50(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToLabD50(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToLabD50(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToLabD50(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToLabD50(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToLabD50(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToLabD50(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToLabD50(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToLabD50(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToLabD50(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToLabD50(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToLabD50(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToLabD50(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToLabD50(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToLabD50(c.c1, c.c2, c.c3)
+	default:
+		return
+	}
+}
+
+// LchD50 returns the color components in the [space.LchD50] color space.
+func (c Color) LchD50() (float64, float64, float64) {
+	if c.space == space.LchD50 {
+		return c.c1, c.c2, c.c3
+	}
+
+	switch c.space {
+	case space.Srgb:
+		return convert.SrgbToLchD50(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToLchD50(c.c1, c.c2, c.c3)
+	case space.DisplayP3:
+		return convert.DisplayP3ToLchD50(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToLchD50(c.c1, c.c2, c.c3)
+	case space.A98:
+		return convert.A98ToLchD50(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToLchD50(c.c1, c.c2, c.c3)
+	case space.ProPhoto:
+		return convert.ProPhotoToLchD50(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToLchD50(c.c1, c.c2, c.c3)
+	case space.Rec2020:
+		return convert.Rec2020ToLchD50(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToLchD50(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToLchD50(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToLchD50(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToLchD50(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToLchD50(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToLchD50(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToLchD50(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToLchD50(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToLchD50(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToLchD50(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToLchD50(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToLchD50(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToLchD50(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToLchD50(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToLchD50(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToLchD50(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToLchD50(c.c1, c.c2, c.c3)
 	default:
 		return 0, 0, 0
 	}
 }
 
-// Luv returns the color components in the [space.Luv] color space.
-func (c Color) Luv() (l, u, v float64) {
-	if c.space == space.Luv {
+// LabD65 returns the color components in the [space.LabD65] color space.
+func (c Color) LabD65() (l, a, b float64) {
+	if c.space == space.LabD65 {
 		return c.c1, c.c2, c.c3
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToLuv(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToLuv(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToLuv(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToLuv(c.c1, c.c2, c.c3)
 	case space.Srgb:
-		return convert.SrgbToLuv(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToLuv(c.c1, c.c2, c.c3)
+		return convert.SrgbToLabD65(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToLabD65(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
-		return convert.DisplayP3ToLuv(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToLuv(c.c1, c.c2, c.c3)
+		return convert.DisplayP3ToLabD65(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToLabD65(c.c1, c.c2, c.c3)
 	case space.A98:
-		return convert.A98ToLuv(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToLuv(c.c1, c.c2, c.c3)
+		return convert.A98ToLabD65(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToLabD65(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
-		return convert.ProPhotoToLuv(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToLuv(c.c1, c.c2, c.c3)
+		return convert.ProPhotoToLabD65(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToLabD65(c.c1, c.c2, c.c3)
 	case space.Rec2020:
-		return convert.Rec2020ToLuv(c.c1, c.c2, c.c3)
-	case space.Hsl:
-		return convert.HslToLuv(c.c1, c.c2, c.c3)
-	case space.Hsv:
-		return convert.HsvToLuv(c.c1, c.c2, c.c3)
-	case space.Hwb:
-		return convert.HwbToLuv(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToLuv(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToLuv(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToLuv(c.c1, c.c2, c.c3)
+		return convert.Rec2020ToLabD65(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToLabD65(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToLabD65(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToLabD65(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToLabD65(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToLabD65(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToLabD65(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToLabD65(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToLabD65(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToLabD65(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToLabD65(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToLabD65(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToLabD65(c.c1, c.c2, c.c3)
 	case space.Oklab:
-		return convert.OklabToLuv(c.c1, c.c2, c.c3)
+		return convert.OklabToLabD65(c.c1, c.c2, c.c3)
 	case space.Oklch:
-		return convert.OklchToLuv(c.c1, c.c2, c.c3)
+		return convert.OklchToLabD65(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToLabD65(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToLabD65(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToLabD65(c.c1, c.c2, c.c3)
 	default:
 		return
 	}
 }
 
-// Lchuv returns the color components in the [space.Lchuv] color space.
-func (c Color) Lchuv() (float64, float64, float64) {
-	if c.space == space.Lchuv {
+// LchD65 returns the color components in the [space.LchD65] color space.
+func (c Color) LchD65() (float64, float64, float64) {
+	if c.space == space.LchD65 {
 		return c.c1, c.c2, c.c3
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToLchuv(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToLchuv(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToLchuv(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToLchuv(c.c1, c.c2, c.c3)
 	case space.Srgb:
-		return convert.SrgbToLchuv(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToLchuv(c.c1, c.c2, c.c3)
+		return convert.SrgbToLchD65(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToLchD65(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
-		return convert.DisplayP3ToLchuv(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToLchuv(c.c1, c.c2, c.c3)
+		return convert.DisplayP3ToLchD65(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToLchD65(c.c1, c.c2, c.c3)
 	case space.A98:
-		return convert.A98ToLchuv(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToLchuv(c.c1, c.c2, c.c3)
+		return convert.A98ToLchD65(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToLchD65(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
-		return convert.ProPhotoToLchuv(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToLchuv(c.c1, c.c2, c.c3)
+		return convert.ProPhotoToLchD65(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToLchD65(c.c1, c.c2, c.c3)
 	case space.Rec2020:
-		return convert.Rec2020ToLchuv(c.c1, c.c2, c.c3)
-	case space.Hsl:
-		return convert.HslToLchuv(c.c1, c.c2, c.c3)
-	case space.Hsv:
-		return convert.HsvToLchuv(c.c1, c.c2, c.c3)
-	case space.Hwb:
-		return convert.HwbToLchuv(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToLchuv(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToLchuv(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToLchuv(c.c1, c.c2, c.c3)
+		return convert.Rec2020ToLchD65(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToLchD65(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToLchD65(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToLchD65(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToLchD65(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToLchD65(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToLchD65(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToLchD65(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToLchD65(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToLchD65(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToLchD65(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToLchD65(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToLchD65(c.c1, c.c2, c.c3)
 	case space.Oklab:
-		return convert.OklabToLchuv(c.c1, c.c2, c.c3)
+		return convert.OklabToLchD65(c.c1, c.c2, c.c3)
 	case space.Oklch:
-		return convert.OklchToLchuv(c.c1, c.c2, c.c3)
+		return convert.OklchToLchD65(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToLchD65(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToLchD65(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToLchD65(c.c1, c.c2, c.c3)
+	default:
+		return 0, 0, 0
+	}
+}
+
+// LuvD50 returns the color components in the [space.LuvD50] color space.
+func (c Color) LuvD50() (l, u, v float64) {
+	if c.space == space.LuvD50 {
+		return c.c1, c.c2, c.c3
+	}
+
+	switch c.space {
+	case space.Srgb:
+		return convert.SrgbToLuvD50(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToLuvD50(c.c1, c.c2, c.c3)
+	case space.DisplayP3:
+		return convert.DisplayP3ToLuvD50(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToLuvD50(c.c1, c.c2, c.c3)
+	case space.A98:
+		return convert.A98ToLuvD50(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToLuvD50(c.c1, c.c2, c.c3)
+	case space.ProPhoto:
+		return convert.ProPhotoToLuvD50(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToLuvD50(c.c1, c.c2, c.c3)
+	case space.Rec2020:
+		return convert.Rec2020ToLuvD50(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToLuvD50(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToLuvD50(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToLuvD50(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToLuvD50(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToLuvD50(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToLuvD50(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToLuvD50(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToLuvD50(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToLuvD50(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToLuvD50(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToLuvD50(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToLuvD50(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToLuvD50(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToLuvD50(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToLuvD50(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToLuvD50(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToLuvD50(c.c1, c.c2, c.c3)
+	default:
+		return
+	}
+}
+
+// LchuvD50 returns the color components in the [space.LchuvD50] color space.
+func (c Color) LchuvD50() (float64, float64, float64) {
+	if c.space == space.LchuvD50 {
+		return c.c1, c.c2, c.c3
+	}
+
+	switch c.space {
+	case space.Srgb:
+		return convert.SrgbToLchuvD50(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToLchuvD50(c.c1, c.c2, c.c3)
+	case space.DisplayP3:
+		return convert.DisplayP3ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.A98:
+		return convert.A98ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.ProPhoto:
+		return convert.ProPhotoToLchuvD50(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToLchuvD50(c.c1, c.c2, c.c3)
+	case space.Rec2020:
+		return convert.Rec2020ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToLchuvD50(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToLchuvD50(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToLchuvD50(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToLchuvD50(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToLchuvD50(c.c1, c.c2, c.c3)
+	default:
+		return 0, 0, 0
+	}
+}
+
+// LuvD65 returns the color components in the [space.LuvD65] color space.
+func (c Color) LuvD65() (l, u, v float64) {
+	if c.space == space.LuvD65 {
+		return c.c1, c.c2, c.c3
+	}
+
+	switch c.space {
+	case space.Srgb:
+		return convert.SrgbToLuvD65(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToLuvD65(c.c1, c.c2, c.c3)
+	case space.DisplayP3:
+		return convert.DisplayP3ToLuvD65(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToLuvD65(c.c1, c.c2, c.c3)
+	case space.A98:
+		return convert.A98ToLuvD65(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToLuvD65(c.c1, c.c2, c.c3)
+	case space.ProPhoto:
+		return convert.ProPhotoToLuvD65(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToLuvD65(c.c1, c.c2, c.c3)
+	case space.Rec2020:
+		return convert.Rec2020ToLuvD65(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToLuvD65(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToLuvD65(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToLuvD65(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToLuvD65(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToLuvD65(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToLuvD65(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToLuvD65(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToLuvD65(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToLuvD65(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToLuvD65(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToLuvD65(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToLuvD65(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToLuvD65(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToLuvD65(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToLuvD65(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToLuvD65(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToLuvD65(c.c1, c.c2, c.c3)
+	default:
+		return
+	}
+}
+
+// LchuvD65 returns the color components in the [space.LchuvD65] color space.
+func (c Color) LchuvD65() (float64, float64, float64) {
+	if c.space == space.LchuvD65 {
+		return c.c1, c.c2, c.c3
+	}
+
+	switch c.space {
+	case space.Srgb:
+		return convert.SrgbToLchuvD65(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToLchuvD65(c.c1, c.c2, c.c3)
+	case space.DisplayP3:
+		return convert.DisplayP3ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.A98:
+		return convert.A98ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.ProPhoto:
+		return convert.ProPhotoToLchuvD65(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToLchuvD65(c.c1, c.c2, c.c3)
+	case space.Rec2020:
+		return convert.Rec2020ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToLchuvD65(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToLchuvD65(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToLchuvD65(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToLchuvD65(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToLchuvD65(c.c1, c.c2, c.c3)
 	default:
 		return 0, 0, 0
 	}
@@ -1094,48 +1422,58 @@ func (c Color) Oklab() (l, a, b float64) {
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToOklab(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToOklab(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToOklab(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToOklab(c.c1, c.c2, c.c3)
 	case space.Srgb:
 		return convert.SrgbToOklab(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToOklab(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToOklab(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
 		return convert.DisplayP3ToOklab(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToOklab(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToOklab(c.c1, c.c2, c.c3)
 	case space.A98:
 		return convert.A98ToOklab(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToOklab(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToOklab(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
 		return convert.ProPhotoToOklab(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToOklab(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToOklab(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToOklab(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToOklab(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToOklab(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToOklab(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToOklab(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToOklab(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToOklab(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToOklab(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToOklab(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToOklab(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToOklab(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToOklab(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToOklab(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToOklab(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToOklab(c.c1, c.c2, c.c3)
 	case space.Hsl:
 		return convert.HslToOklab(c.c1, c.c2, c.c3)
 	case space.Hsv:
 		return convert.HsvToOklab(c.c1, c.c2, c.c3)
 	case space.Hwb:
 		return convert.HwbToOklab(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToOklab(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToOklab(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToOklab(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToOklab(c.c1, c.c2, c.c3)
-	case space.Oklch:
-		return convert.OklchToOklab(c.c1, c.c2, c.c3)
 	default:
 		return
 	}
@@ -1148,49 +1486,251 @@ func (c Color) Oklch() (float64, float64, float64) {
 	}
 
 	switch c.space {
-	case space.XyzD65:
-		return convert.XyzD65ToOklch(c.c1, c.c2, c.c3)
-	case space.XyY:
-		return convert.XyYToOklch(c.c1, c.c2, c.c3)
-	case space.XyzD50:
-		return convert.XyzD50ToOklch(c.c1, c.c2, c.c3)
-	case space.LinearSrgb:
-		return convert.LinearSrgbToOklch(c.c1, c.c2, c.c3)
 	case space.Srgb:
 		return convert.SrgbToOklch(c.c1, c.c2, c.c3)
-	case space.LinearDisplayP3:
-		return convert.LinearDisplayP3ToOklch(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToOklch(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
 		return convert.DisplayP3ToOklch(c.c1, c.c2, c.c3)
-	case space.LinearA98:
-		return convert.LinearA98ToOklch(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToOklch(c.c1, c.c2, c.c3)
 	case space.A98:
 		return convert.A98ToOklch(c.c1, c.c2, c.c3)
-	case space.LinearProPhoto:
-		return convert.LinearProPhotoToOklch(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToOklch(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
 		return convert.ProPhotoToOklch(c.c1, c.c2, c.c3)
-	case space.LinearRec2020:
-		return convert.LinearRec2020ToOklch(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToOklch(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToOklch(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToOklch(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToOklch(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToOklch(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToOklch(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToOklch(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToOklch(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToOklch(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToOklch(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToOklch(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToOklch(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToOklch(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToOklch(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToOklch(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToOklch(c.c1, c.c2, c.c3)
 	case space.Hsl:
 		return convert.HslToOklch(c.c1, c.c2, c.c3)
 	case space.Hsv:
 		return convert.HsvToOklch(c.c1, c.c2, c.c3)
 	case space.Hwb:
 		return convert.HwbToOklch(c.c1, c.c2, c.c3)
-	case space.Lab:
-		return convert.LabToOklch(c.c1, c.c2, c.c3)
-	case space.Lch:
-		return convert.LchToOklch(c.c1, c.c2, c.c3)
-	case space.Luv:
-		return convert.LuvToOklch(c.c1, c.c2, c.c3)
-	case space.Lchuv:
-		return convert.LchuvToOklch(c.c1, c.c2, c.c3)
-	case space.Oklab:
-		return convert.OklabToOklch(c.c1, c.c2, c.c3)
 	default:
 		return 0, 0, 0
+	}
+}
+
+// Hsl returns the color components in the [space.Hsl] color space.
+func (c Color) Hsl() (h, s, l float64) {
+	if c.space == space.Hsl {
+		return c.c1, c.c2, c.c3
+	}
+
+	switch c.space {
+	case space.Srgb:
+		return convert.SrgbToHsl(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToHsl(c.c1, c.c2, c.c3)
+	case space.DisplayP3:
+		return convert.DisplayP3ToHsl(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToHsl(c.c1, c.c2, c.c3)
+	case space.A98:
+		return convert.A98ToHsl(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToHsl(c.c1, c.c2, c.c3)
+	case space.ProPhoto:
+		return convert.ProPhotoToHsl(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToHsl(c.c1, c.c2, c.c3)
+	case space.Rec2020:
+		return convert.Rec2020ToHsl(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToHsl(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToHsl(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToHsl(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToHsl(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToHsl(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToHsl(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToHsl(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToHsl(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToHsl(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToHsl(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToHsl(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToHsl(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToHsl(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToHsl(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToHsl(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToHsl(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToHsl(c.c1, c.c2, c.c3)
+	default:
+		return
+	}
+}
+
+// Hsv returns the color components in the [space.Hsv] color space.
+func (c Color) Hsv() (h, s, v float64) {
+	if c.space == space.Hsv {
+		return c.c1, c.c2, c.c3
+	}
+
+	switch c.space {
+	case space.Srgb:
+		return convert.SrgbToHsv(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToHsv(c.c1, c.c2, c.c3)
+	case space.DisplayP3:
+		return convert.DisplayP3ToHsv(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToHsv(c.c1, c.c2, c.c3)
+	case space.A98:
+		return convert.A98ToHsv(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToHsv(c.c1, c.c2, c.c3)
+	case space.ProPhoto:
+		return convert.ProPhotoToHsv(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToHsv(c.c1, c.c2, c.c3)
+	case space.Rec2020:
+		return convert.Rec2020ToHsv(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToHsv(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToHsv(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToHsv(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToHsv(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToHsv(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToHsv(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToHsv(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToHsv(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToHsv(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToHsv(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToHsv(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToHsv(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToHsv(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToHsv(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToHsv(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToHsv(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToHsv(c.c1, c.c2, c.c3)
+	default:
+		return
+	}
+}
+
+// Hwb returns the color components in the [space.Hwb] color space.
+func (c Color) Hwb() (h, w, b float64) {
+	if c.space == space.Hwb {
+		return c.c1, c.c2, c.c3
+	}
+
+	switch c.space {
+	case space.Srgb:
+		return convert.SrgbToHwb(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToHwb(c.c1, c.c2, c.c3)
+	case space.DisplayP3:
+		return convert.DisplayP3ToHwb(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToHwb(c.c1, c.c2, c.c3)
+	case space.A98:
+		return convert.A98ToHwb(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToHwb(c.c1, c.c2, c.c3)
+	case space.ProPhoto:
+		return convert.ProPhotoToHwb(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToHwb(c.c1, c.c2, c.c3)
+	case space.Rec2020:
+		return convert.Rec2020ToHwb(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToHwb(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToHwb(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToHwb(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToHwb(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToHwb(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToHwb(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToHwb(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToHwb(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToHwb(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToHwb(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToHwb(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToHwb(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToHwb(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToHwb(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToHwb(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToHwb(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToHwb(c.c1, c.c2, c.c3)
+	default:
+		return
 	}
 }

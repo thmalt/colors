@@ -2,147 +2,6 @@
 
 package space
 
-var xyzD65Info = spaceInfo{
-	name:        "XyzD65",
-	displayName: "CIE XYZ D65",
-	cssName:     "xyz-d65",
-	whitePoint:  D65,
-	coordinate:  Cartesian,
-	channels: []Channel{
-		{
-			Name:        "X",
-			Symbol:      "X",
-			DisplayName: "X",
-			Min:         0,
-			Max:         1,
-			Precision:   8,
-		},
-		{
-			Name:        "Y",
-			Symbol:      "Y",
-			DisplayName: "Y",
-			Min:         0,
-			Max:         1,
-			Precision:   8,
-		},
-		{
-			Name:        "Z",
-			Symbol:      "Z",
-			DisplayName: "Z",
-			Min:         0,
-			Max:         1,
-			Precision:   8,
-		},
-	},
-	useColorFunction: true,
-}
-
-var xyYInfo = spaceInfo{
-	name:        "XyY",
-	displayName: "CIE xyY",
-	cssName:     "xyY",
-	whitePoint:  D65,
-	coordinate:  Cartesian,
-	channels: []Channel{
-		{
-			Name:        "Chromaticity x",
-			Symbol:      "x",
-			DisplayName: "x",
-			Min:         0,
-			Max:         1,
-			Precision:   8,
-		},
-		{
-			Name:        "Chromaticity y",
-			Symbol:      "y",
-			DisplayName: "y",
-			Min:         0,
-			Max:         1,
-			Precision:   8,
-		},
-		{
-			Name:         "Luminance",
-			Symbol:       "Y",
-			DisplayName:  "Y",
-			Min:          0,
-			Max:          1,
-			Unrestricted: true,
-			Precision:    8,
-		},
-	},
-	useColorFunction: true,
-}
-
-var xyzD50Info = spaceInfo{
-	name:        "XyzD50",
-	displayName: "CIE XYZ D50",
-	cssName:     "xyz-d50",
-	whitePoint:  D50,
-	coordinate:  Cartesian,
-	channels: []Channel{
-		{
-			Name:        "X",
-			Symbol:      "X",
-			DisplayName: "X",
-			Min:         0,
-			Max:         1,
-			Precision:   8,
-		},
-		{
-			Name:        "Y",
-			Symbol:      "Y",
-			DisplayName: "Y",
-			Min:         0,
-			Max:         1,
-			Precision:   8,
-		},
-		{
-			Name:        "Z",
-			Symbol:      "Z",
-			DisplayName: "Z",
-			Min:         0,
-			Max:         1,
-			Precision:   8,
-		},
-	},
-	useColorFunction: true,
-}
-
-var linearSrgbInfo = spaceInfo{
-	name:        "LinearSrgb",
-	displayName: "Linear sRGB",
-	cssName:     "srgb-linear",
-	whitePoint:  D65,
-	coordinate:  Cartesian,
-	channels: []Channel{
-		{
-			Name:        "Red",
-			Symbol:      "R",
-			DisplayName: "Red",
-			Min:         0,
-			Max:         1,
-			Precision:   6,
-		},
-		{
-			Name:        "Green",
-			Symbol:      "G",
-			DisplayName: "Green",
-			Min:         0,
-			Max:         1,
-			Precision:   6,
-		},
-		{
-			Name:        "Blue",
-			Symbol:      "B",
-			DisplayName: "Blue",
-			Min:         0,
-			Max:         1,
-			Precision:   6,
-		},
-	},
-	useColorFunction: true,
-}
-
 var srgbInfo = spaceInfo{
 	name:        "Srgb",
 	displayName: "sRGB",
@@ -178,10 +37,10 @@ var srgbInfo = spaceInfo{
 	useColorFunction: true,
 }
 
-var linearDisplayP3Info = spaceInfo{
-	name:        "LinearDisplayP3",
-	displayName: "Linear Display P3",
-	cssName:     "display-p3-linear",
+var linearSrgbInfo = spaceInfo{
+	name:        "LinearSrgb",
+	displayName: "Linear sRGB",
+	cssName:     "srgb-linear",
 	whitePoint:  D65,
 	coordinate:  Cartesian,
 	channels: []Channel{
@@ -248,10 +107,10 @@ var displayP3Info = spaceInfo{
 	useColorFunction: true,
 }
 
-var linearA98Info = spaceInfo{
-	name:        "LinearA98",
-	displayName: "Linear Adobe RGB (1998)",
-	cssName:     "a98-rgb-linear",
+var linearDisplayP3Info = spaceInfo{
+	name:        "LinearDisplayP3",
+	displayName: "Linear Display P3",
+	cssName:     "display-p3-linear",
 	whitePoint:  D65,
 	coordinate:  Cartesian,
 	channels: []Channel{
@@ -318,11 +177,11 @@ var a98Info = spaceInfo{
 	useColorFunction: true,
 }
 
-var linearProPhotoInfo = spaceInfo{
-	name:        "LinearProPhoto",
-	displayName: "Linear ProPhoto",
-	cssName:     "prophoto-rgb-linear",
-	whitePoint:  D50,
+var linearA98Info = spaceInfo{
+	name:        "LinearA98",
+	displayName: "Linear Adobe RGB (1998)",
+	cssName:     "a98-rgb-linear",
+	whitePoint:  D65,
 	coordinate:  Cartesian,
 	channels: []Channel{
 		{
@@ -388,11 +247,11 @@ var proPhotoInfo = spaceInfo{
 	useColorFunction: true,
 }
 
-var linearRec2020Info = spaceInfo{
-	name:        "LinearRec2020",
-	displayName: "Linear Rec. 2020",
-	cssName:     "rec2020-linear",
-	whitePoint:  D65,
+var linearProPhotoInfo = spaceInfo{
+	name:        "LinearProPhoto",
+	displayName: "Linear ProPhoto",
+	cssName:     "prophoto-rgb-linear",
+	whitePoint:  D50,
 	coordinate:  Cartesian,
 	channels: []Channel{
 		{
@@ -456,6 +315,552 @@ var rec2020Info = spaceInfo{
 		},
 	},
 	useColorFunction: true,
+}
+
+var linearRec2020Info = spaceInfo{
+	name:        "LinearRec2020",
+	displayName: "Linear Rec. 2020",
+	cssName:     "rec2020-linear",
+	whitePoint:  D65,
+	coordinate:  Cartesian,
+	channels: []Channel{
+		{
+			Name:        "Red",
+			Symbol:      "R",
+			DisplayName: "Red",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+		{
+			Name:        "Green",
+			Symbol:      "G",
+			DisplayName: "Green",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+		{
+			Name:        "Blue",
+			Symbol:      "B",
+			DisplayName: "Blue",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+	},
+	useColorFunction: true,
+}
+
+var xyzD50Info = spaceInfo{
+	name:        "XyzD50",
+	displayName: "CIE XYZ D50",
+	cssName:     "xyz-d50",
+	whitePoint:  D50,
+	coordinate:  Cartesian,
+	channels: []Channel{
+		{
+			Name:        "X",
+			Symbol:      "X",
+			DisplayName: "X",
+			Min:         0,
+			Max:         1,
+			Precision:   8,
+		},
+		{
+			Name:        "Y",
+			Symbol:      "Y",
+			DisplayName: "Y",
+			Min:         0,
+			Max:         1,
+			Precision:   8,
+		},
+		{
+			Name:        "Z",
+			Symbol:      "Z",
+			DisplayName: "Z",
+			Min:         0,
+			Max:         1,
+			Precision:   8,
+		},
+	},
+	useColorFunction: true,
+}
+
+var xyzD65Info = spaceInfo{
+	name:        "XyzD65",
+	displayName: "CIE XYZ D65",
+	cssName:     "xyz-d65",
+	whitePoint:  D65,
+	coordinate:  Cartesian,
+	channels: []Channel{
+		{
+			Name:        "X",
+			Symbol:      "X",
+			DisplayName: "X",
+			Min:         0,
+			Max:         1,
+			Precision:   8,
+		},
+		{
+			Name:        "Y",
+			Symbol:      "Y",
+			DisplayName: "Y",
+			Min:         0,
+			Max:         1,
+			Precision:   8,
+		},
+		{
+			Name:        "Z",
+			Symbol:      "Z",
+			DisplayName: "Z",
+			Min:         0,
+			Max:         1,
+			Precision:   8,
+		},
+	},
+	useColorFunction: true,
+}
+
+var xyYD50Info = spaceInfo{
+	name:        "XyYD50",
+	displayName: "CIE xyY",
+	cssName:     "xyy-d50",
+	whitePoint:  D50,
+	coordinate:  Cartesian,
+	channels: []Channel{
+		{
+			Name:        "Chromaticity x",
+			Symbol:      "x",
+			DisplayName: "x",
+			Min:         0,
+			Max:         1,
+			Precision:   8,
+		},
+		{
+			Name:        "Chromaticity y",
+			Symbol:      "y",
+			DisplayName: "y",
+			Min:         0,
+			Max:         1,
+			Precision:   8,
+		},
+		{
+			Name:         "Luminance",
+			Symbol:       "Y",
+			DisplayName:  "Y",
+			Min:          0,
+			Max:          1,
+			Unrestricted: true,
+			Precision:    8,
+		},
+	},
+	useColorFunction: true,
+}
+
+var xyYD65Info = spaceInfo{
+	name:        "XyYD65",
+	displayName: "CIE xyY",
+	cssName:     "xyy-d65",
+	whitePoint:  D65,
+	coordinate:  Cartesian,
+	channels: []Channel{
+		{
+			Name:        "Chromaticity x",
+			Symbol:      "x",
+			DisplayName: "x",
+			Min:         0,
+			Max:         1,
+			Precision:   8,
+		},
+		{
+			Name:        "Chromaticity y",
+			Symbol:      "y",
+			DisplayName: "y",
+			Min:         0,
+			Max:         1,
+			Precision:   8,
+		},
+		{
+			Name:         "Luminance",
+			Symbol:       "Y",
+			DisplayName:  "Y",
+			Min:          0,
+			Max:          1,
+			Unrestricted: true,
+			Precision:    8,
+		},
+	},
+	useColorFunction: true,
+}
+
+var labD50Info = spaceInfo{
+	name:        "LabD50",
+	displayName: "CIE Lab D50",
+	cssName:     "lab",
+	whitePoint:  D50,
+	coordinate:  Cartesian,
+	channels: []Channel{
+		{
+			Name:        "Lightness",
+			Symbol:      "L",
+			DisplayName: "Lightness",
+			Min:         0,
+			Max:         100,
+			Precision:   4,
+		},
+		{
+			Name:         "A",
+			Symbol:       "a",
+			DisplayName:  "Green-Red",
+			Min:          -125,
+			Max:          125,
+			Unrestricted: true,
+			Precision:    4,
+		},
+		{
+			Name:         "B",
+			Symbol:       "b",
+			DisplayName:  "Blue-Yellow",
+			Min:          -125,
+			Max:          125,
+			Unrestricted: true,
+			Precision:    4,
+		},
+	},
+}
+
+var lchD50Info = spaceInfo{
+	name:        "LchD50",
+	displayName: "CIE LCh D50",
+	cssName:     "lch",
+	whitePoint:  D50,
+	coordinate:  Polar,
+	channels: []Channel{
+		{
+			Name:        "Lightness",
+			Symbol:      "L",
+			DisplayName: "Lightness",
+			Min:         0,
+			Max:         100,
+			Precision:   4,
+		},
+		{
+			Name:         "Chroma",
+			Symbol:       "C",
+			DisplayName:  "Chroma",
+			Min:          0,
+			Max:          150,
+			Unrestricted: true,
+			Precision:    4,
+		},
+		{
+			Name:        "Hue",
+			Symbol:      "h",
+			DisplayName: "Hue",
+			Min:         0,
+			Max:         360,
+			Circular:    true,
+			Unit:        UnitDegree,
+			Precision:   4,
+		},
+	},
+}
+
+var labD65Info = spaceInfo{
+	name:        "LabD65",
+	displayName: "CIE Lab D65",
+	cssName:     "lab-d65",
+	whitePoint:  D65,
+	coordinate:  Cartesian,
+	channels: []Channel{
+		{
+			Name:        "Lightness",
+			Symbol:      "L",
+			DisplayName: "Lightness",
+			Min:         0,
+			Max:         100,
+			Precision:   4,
+		},
+		{
+			Name:         "A",
+			Symbol:       "a",
+			DisplayName:  "Green-Red",
+			Min:          -125,
+			Max:          125,
+			Unrestricted: true,
+			Precision:    4,
+		},
+		{
+			Name:         "B",
+			Symbol:       "b",
+			DisplayName:  "Blue-Yellow",
+			Min:          -125,
+			Max:          125,
+			Unrestricted: true,
+			Precision:    4,
+		},
+	},
+	useColorFunction: true,
+}
+
+var lchD65Info = spaceInfo{
+	name:        "LchD65",
+	displayName: "CIE LCh D65",
+	cssName:     "lch-d65",
+	whitePoint:  D65,
+	coordinate:  Polar,
+	channels: []Channel{
+		{
+			Name:        "Lightness",
+			Symbol:      "L",
+			DisplayName: "Lightness",
+			Min:         0,
+			Max:         100,
+			Precision:   4,
+		},
+		{
+			Name:         "Chroma",
+			Symbol:       "C",
+			DisplayName:  "Chroma",
+			Min:          0,
+			Max:          150,
+			Unrestricted: true,
+			Precision:    4,
+		},
+		{
+			Name:        "Hue",
+			Symbol:      "h",
+			DisplayName: "Hue",
+			Min:         0,
+			Max:         360,
+			Circular:    true,
+			Unit:        UnitDegree,
+			Precision:   4,
+		},
+	},
+	useColorFunction: true,
+}
+
+var luvD50Info = spaceInfo{
+	name:        "LuvD50",
+	displayName: "CIE Luv D50",
+	cssName:     "luv",
+	whitePoint:  D50,
+	coordinate:  Polar,
+	channels: []Channel{
+		{
+			Name:        "Lightness",
+			Symbol:      "L",
+			DisplayName: "Lightness",
+			Min:         0,
+			Max:         100,
+			Precision:   4,
+		},
+		{
+			Name:         "U",
+			Symbol:       "u",
+			DisplayName:  "Green-Red Opponent",
+			Min:          -134,
+			Max:          220,
+			Unrestricted: true,
+			Precision:    4,
+		},
+		{
+			Name:         "V",
+			Symbol:       "v",
+			DisplayName:  "Blue-Yellow Opponent",
+			Min:          -140,
+			Max:          122,
+			Unrestricted: true,
+			Precision:    4,
+		},
+	},
+}
+
+var lchuvD50Info = spaceInfo{
+	name:        "LchuvD50",
+	displayName: "CIE LChuv D50",
+	cssName:     "lchuv",
+	whitePoint:  D50,
+	coordinate:  Polar,
+	channels: []Channel{
+		{
+			Name:        "Lightness",
+			Symbol:      "L",
+			DisplayName: "Lightness",
+			Min:         0,
+			Max:         100,
+			Precision:   4,
+		},
+		{
+			Name:         "Chroma",
+			Symbol:       "C",
+			DisplayName:  "Chroma",
+			Min:          0,
+			Max:          180,
+			Unrestricted: true,
+			Precision:    4,
+		},
+		{
+			Name:        "Hue",
+			Symbol:      "h",
+			DisplayName: "Hue",
+			Min:         0,
+			Max:         360,
+			Circular:    true,
+			Unit:        UnitDegree,
+			Precision:   4,
+		},
+	},
+}
+
+var luvD65Info = spaceInfo{
+	name:        "LuvD65",
+	displayName: "CIE Luv D65",
+	cssName:     "luv-d65",
+	whitePoint:  D65,
+	coordinate:  Polar,
+	channels: []Channel{
+		{
+			Name:        "Lightness",
+			Symbol:      "L",
+			DisplayName: "Lightness",
+			Min:         0,
+			Max:         100,
+			Precision:   4,
+		},
+		{
+			Name:         "U",
+			Symbol:       "u",
+			DisplayName:  "Green-Red Opponent",
+			Min:          -134,
+			Max:          220,
+			Unrestricted: true,
+			Precision:    4,
+		},
+		{
+			Name:         "V",
+			Symbol:       "v",
+			DisplayName:  "Blue-Yellow Opponent",
+			Min:          -140,
+			Max:          122,
+			Unrestricted: true,
+			Precision:    4,
+		},
+	},
+	useColorFunction: true,
+}
+
+var lchuvD65Info = spaceInfo{
+	name:        "LchuvD65",
+	displayName: "CIE LChuv D65",
+	cssName:     "lchuv-d65",
+	whitePoint:  D65,
+	coordinate:  Polar,
+	channels: []Channel{
+		{
+			Name:        "Lightness",
+			Symbol:      "L",
+			DisplayName: "Lightness",
+			Min:         0,
+			Max:         100,
+			Precision:   4,
+		},
+		{
+			Name:         "Chroma",
+			Symbol:       "C",
+			DisplayName:  "Chroma",
+			Min:          0,
+			Max:          180,
+			Unrestricted: true,
+			Precision:    4,
+		},
+		{
+			Name:        "Hue",
+			Symbol:      "h",
+			DisplayName: "Hue",
+			Min:         0,
+			Max:         360,
+			Circular:    true,
+			Unit:        UnitDegree,
+			Precision:   4,
+		},
+	},
+	useColorFunction: true,
+}
+
+var oklabInfo = spaceInfo{
+	name:        "Oklab",
+	displayName: "Oklab",
+	cssName:     "oklab",
+	whitePoint:  D65,
+	coordinate:  Cartesian,
+	channels: []Channel{
+		{
+			Name:        "Lightness",
+			Symbol:      "L",
+			DisplayName: "Lightness",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+		{
+			Name:         "A",
+			Symbol:       "a",
+			DisplayName:  "Green-Red Opponent",
+			Min:          -0.4,
+			Max:          0.4,
+			Unrestricted: true,
+			Precision:    6,
+		},
+		{
+			Name:         "B",
+			Symbol:       "b",
+			DisplayName:  "Blue-Yellow Opponent",
+			Min:          -0.4,
+			Max:          0.4,
+			Unrestricted: true,
+			Precision:    6,
+		},
+	},
+}
+
+var oklchInfo = spaceInfo{
+	name:        "Oklch",
+	displayName: "Oklch",
+	cssName:     "oklch",
+	whitePoint:  D65,
+	coordinate:  Polar,
+	channels: []Channel{
+		{
+			Name:        "Lightness",
+			Symbol:      "L",
+			DisplayName: "Lightness",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+		{
+			Name:         "Chroma",
+			Symbol:       "C",
+			DisplayName:  "Chroma",
+			Min:          0,
+			Max:          0.4,
+			Unrestricted: true,
+			Precision:    6,
+		},
+		{
+			Name:        "Hue",
+			Symbol:      "h",
+			DisplayName: "Hue",
+			Min:         0,
+			Max:         360,
+			Circular:    true,
+			Unit:        UnitDegree,
+			Precision:   4,
+		},
+	},
 }
 
 var hslInfo = spaceInfo{
@@ -567,225 +972,6 @@ var hwbInfo = spaceInfo{
 			Min:         0,
 			Max:         1,
 			Unit:        UnitPercent,
-			Precision:   4,
-		},
-	},
-}
-
-var labInfo = spaceInfo{
-	name:        "Lab",
-	displayName: "CIE Lab",
-	cssName:     "lab",
-	whitePoint:  D50,
-	coordinate:  Cartesian,
-	channels: []Channel{
-		{
-			Name:        "Lightness",
-			Symbol:      "L",
-			DisplayName: "Lightness",
-			Min:         0,
-			Max:         100,
-			Precision:   4,
-		},
-		{
-			Name:         "A",
-			Symbol:       "a",
-			DisplayName:  "Green-Red",
-			Min:          -125,
-			Max:          125,
-			Unrestricted: true,
-			Precision:    4,
-		},
-		{
-			Name:         "B",
-			Symbol:       "b",
-			DisplayName:  "Blue-Yellow",
-			Min:          -125,
-			Max:          125,
-			Unrestricted: true,
-			Precision:    4,
-		},
-	},
-}
-
-var lchInfo = spaceInfo{
-	name:        "Lch",
-	displayName: "CIE LCh",
-	cssName:     "lch",
-	whitePoint:  D50,
-	coordinate:  Polar,
-	channels: []Channel{
-		{
-			Name:        "Lightness",
-			Symbol:      "L",
-			DisplayName: "Lightness",
-			Min:         0,
-			Max:         100,
-			Precision:   4,
-		},
-		{
-			Name:         "Chroma",
-			Symbol:       "C",
-			DisplayName:  "Chroma",
-			Min:          0,
-			Max:          150,
-			Unrestricted: true,
-			Precision:    4,
-		},
-		{
-			Name:        "Hue",
-			Symbol:      "h",
-			DisplayName: "Hue",
-			Min:         0,
-			Max:         360,
-			Circular:    true,
-			Unit:        UnitDegree,
-			Precision:   4,
-		},
-	},
-}
-
-var luvInfo = spaceInfo{
-	name:        "Luv",
-	displayName: "CIE Luv",
-	cssName:     "luv",
-	whitePoint:  D50,
-	coordinate:  Polar,
-	channels: []Channel{
-		{
-			Name:        "Lightness",
-			Symbol:      "L",
-			DisplayName: "Lightness",
-			Min:         0,
-			Max:         100,
-			Precision:   4,
-		},
-		{
-			Name:         "U",
-			Symbol:       "u",
-			DisplayName:  "Green-Red Opponent",
-			Min:          -134,
-			Max:          220,
-			Unrestricted: true,
-			Precision:    4,
-		},
-		{
-			Name:         "V",
-			Symbol:       "v",
-			DisplayName:  "Blue-Yellow Opponent",
-			Min:          -140,
-			Max:          122,
-			Unrestricted: true,
-			Precision:    4,
-		},
-	},
-}
-
-var lchuvInfo = spaceInfo{
-	name:        "Lchuv",
-	displayName: "CIE LChuv",
-	cssName:     "lchuv",
-	whitePoint:  D50,
-	coordinate:  Polar,
-	channels: []Channel{
-		{
-			Name:        "Lightness",
-			Symbol:      "L",
-			DisplayName: "Lightness",
-			Min:         0,
-			Max:         100,
-			Precision:   4,
-		},
-		{
-			Name:         "Chroma",
-			Symbol:       "C",
-			DisplayName:  "Chroma",
-			Min:          0,
-			Max:          180,
-			Unrestricted: true,
-			Precision:    4,
-		},
-		{
-			Name:        "Hue",
-			Symbol:      "h",
-			DisplayName: "Hue",
-			Min:         0,
-			Max:         360,
-			Circular:    true,
-			Unit:        UnitDegree,
-			Precision:   4,
-		},
-	},
-}
-
-var oklabInfo = spaceInfo{
-	name:        "Oklab",
-	displayName: "Oklab",
-	cssName:     "oklab",
-	whitePoint:  D65,
-	coordinate:  Cartesian,
-	channels: []Channel{
-		{
-			Name:        "Lightness",
-			Symbol:      "L",
-			DisplayName: "Lightness",
-			Min:         0,
-			Max:         1,
-			Precision:   6,
-		},
-		{
-			Name:         "A",
-			Symbol:       "a",
-			DisplayName:  "Green-Red Opponent",
-			Min:          -0.4,
-			Max:          0.4,
-			Unrestricted: true,
-			Precision:    6,
-		},
-		{
-			Name:         "B",
-			Symbol:       "b",
-			DisplayName:  "Blue-Yellow Opponent",
-			Min:          -0.4,
-			Max:          0.4,
-			Unrestricted: true,
-			Precision:    6,
-		},
-	},
-}
-
-var oklchInfo = spaceInfo{
-	name:        "Oklch",
-	displayName: "Oklch",
-	cssName:     "oklch",
-	whitePoint:  D65,
-	coordinate:  Polar,
-	channels: []Channel{
-		{
-			Name:        "Lightness",
-			Symbol:      "L",
-			DisplayName: "Lightness",
-			Min:         0,
-			Max:         1,
-			Precision:   6,
-		},
-		{
-			Name:         "Chroma",
-			Symbol:       "C",
-			DisplayName:  "Chroma",
-			Min:          0,
-			Max:          0.4,
-			Unrestricted: true,
-			Precision:    6,
-		},
-		{
-			Name:        "Hue",
-			Symbol:      "h",
-			DisplayName: "Hue",
-			Min:         0,
-			Max:         360,
-			Circular:    true,
-			Unit:        UnitDegree,
 			Precision:   4,
 		},
 	},

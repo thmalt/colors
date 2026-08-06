@@ -8,22 +8,26 @@ import (
 )
 
 type Space struct {
-	Name        string           `json:"name"`
-	Family      string           `json:"Family,omitempty"`
-	Base        string           `json:"base,omitempty"`
-	DisplayName string           `json:"displayName"`
-	CssName     string           `json:"cssName"`
-	Aliases     []string         `json:"aliases,omitempty"`
-	WhitePoint  string           `json:"whitePoint"`
-	Coordinate  CoordinateSystem `json:"coordinate,omitempty"`
-	Channels    []Channel        `json:"channels"`
+	// Canonical identifier
+	Name    string   `json:"name"`
+	Aliases []string `json:"aliases,omitempty"`
 
-	UseColorFunction bool `json:"useColorFunction"`
-	Disable          bool `json:"disable,omitempty"`
+	Family string `json:"family,omitempty"`
+	Base   string `json:"base,omitempty"`
+
+	DisplayName string `json:"displayName"`
+	CssName     string `json:"cssName"`
+
+	WhitePoint string           `json:"whitePoint"`
+	Coordinate CoordinateSystem `json:"coordinate,omitempty"`
+	Channels   []Channel        `json:"channels"`
+
+	UseGenericColorFunction bool `json:"useGenericColorFunction"`
+	Disable                 bool `json:"disable,omitempty"`
 
 	// for generator
-	SnakeName string `json:"snakeName,omitempty"`
-	Comment   string `json:"comment,omitempty"`
+	SnakeName   string `json:"snakeName,omitempty"`
+	Description string `json:"description,omitempty"`
 }
 
 type Channel struct {

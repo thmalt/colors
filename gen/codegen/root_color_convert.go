@@ -60,7 +60,15 @@ func genRootPkgColorConvertMethod(ctx *Context, w *writer.GoWriter, space *model
 		sub.Case(ctx.SpacePkg.Join(src.Name))
 
 		sub.ReturnInline()
-		sub.WriteCallln(ctx.ConvertPkg.Join(FuncName(src.Name, space.Name)), args...)
+
+		pair := Pair{src.Name, space.Name}
+
+		fnName := pair.FuncName()
+		if fn := ctx.ConvertFuncByPair(pair); fn != nil {
+			fnName = fn.Pair.FuncName()
+		}
+
+		sub.WriteCallln(ctx.ConvertPkg.Join(fnName), args...)
 	}
 	sub.Default()
 	if !hasNamedReturn {

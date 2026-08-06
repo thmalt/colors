@@ -17,10 +17,18 @@ import (
 	"fmt"
 
 	"github.com/thmalt/colors"
+	"github.com/thmalt/colors/space"
 )
 
 func main() {
-	c := colors.Rgb(50, 60, 70).WithAlpha(0.995)
+	c := colors.RgbAlpha(50, 60, 70, 0.995) // or colors.Rgb(50, 60, 70).WithAlpha(0.995)
+
+	// Loop over all available color spaces.
+	for s := space.FirstSpace; s < space.SpaceCount; s++ {
+		fmt.Println(c.MustTo(s))
+	}
+
+	fmt.Println()
 
 	// color space info
 	inf := c.Space().Info()

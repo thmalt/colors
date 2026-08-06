@@ -39,8 +39,9 @@ func (op OpType) String() string {
 }
 
 type Op struct {
-	Type   OpType
-	Pair   Pair
+	Type OpType
+	Pair Pair
+
 	Matrix *[9]float64
 }
 
@@ -50,15 +51,9 @@ type Pair struct {
 }
 
 func (p Pair) FuncName() string {
-	return FuncName(string(p.From), string(p.To))
+	return FuncName(p.From, p.To)
 }
 
 func FuncName(from, to string) string {
 	return from + "To" + to
-}
-
-type genOp struct {
-	Op
-
-	outputVars []string
 }

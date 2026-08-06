@@ -2,10 +2,11 @@ package data
 
 import "math"
 
-func ChromaToXyz(x, y float64) [3]float64 {
+func ChromaticityToXyz(x, y float64) [3]float64 {
 	return [3]float64{x / y, 1, (1 - x - y) / y}
 }
 
+// Use [ChromaticAdaptationMatrixFMA] for more accurate results.
 func ChromaticAdaptationMatrix(from, to [3]float64, cat [9]float64) [9]float64 {
 	lmsFrom := Mat3MulVec3(cat, from)
 	lmsTo := Mat3MulVec3(cat, to)
@@ -22,12 +23,13 @@ func ChromaticAdaptationMatrix(from, to [3]float64, cat [9]float64) [9]float64 {
 	return Mat3Mul(inv, scaled)
 }
 
+// Use [RgbToXyzMatrixFMA] for more accurate results.
 func RgbToXyzMatrix(primaries [3][2]float64, white [3]float64) [9]float64 {
 	m := [9]float64{}
 
-	r := ChromaToXyz(primaries[0][0], primaries[0][1])
-	g := ChromaToXyz(primaries[1][0], primaries[1][1])
-	b := ChromaToXyz(primaries[2][0], primaries[2][1])
+	r := ChromaticityToXyz(primaries[0][0], primaries[0][1])
+	g := ChromaticityToXyz(primaries[1][0], primaries[1][1])
+	b := ChromaticityToXyz(primaries[2][0], primaries[2][1])
 
 	m[0] = r[0]
 	m[1] = g[0]
@@ -47,6 +49,7 @@ func RgbToXyzMatrix(primaries [3][2]float64, white [3]float64) [9]float64 {
 	return Mat3ScaleCols(m, scale)
 }
 
+// Use [Mat3MulVec3FMA] for more accurate results.
 func Mat3MulVec3(m [9]float64, v [3]float64) [3]float64 {
 	x0 := m[0]*v[0] + m[1]*v[1] + m[2]*v[2]
 	x1 := m[3]*v[0] + m[4]*v[1] + m[5]*v[2]
@@ -55,6 +58,7 @@ func Mat3MulVec3(m [9]float64, v [3]float64) [3]float64 {
 	return [3]float64{x0, x1, x2}
 }
 
+// Use [Mat3MulFMA] for more accurate results.
 func Mat3Mul(a, b [9]float64) [9]float64 {
 	x0 := a[0]*b[0] + a[1]*b[3] + a[2]*b[6]
 	x1 := a[0]*b[1] + a[1]*b[4] + a[2]*b[7]
@@ -71,10 +75,12 @@ func Mat3Mul(a, b [9]float64) [9]float64 {
 	return [9]float64{x0, x1, x2, x3, x4, x5, x6, x7, x8}
 }
 
+// Use [Mat3DetFMA] for more accurate results.
 func Mat3Det(m [9]float64) float64 {
 	return m[0]*(m[4]*m[8]-m[5]*m[7]) - m[1]*(m[3]*m[8]-m[5]*m[6]) + m[2]*(m[3]*m[7]-m[4]*m[6])
 }
 
+// Use [Mat3InvertFMA] for more accurate results.
 func Mat3Invert(m [9]float64) [9]float64 {
 	det := Mat3Det(m)
 	inv := 1 / det
@@ -148,9 +154,9 @@ func ChromaticAdaptationMatrixFMA(from, to [3]float64, cat [9]float64) [9]float6
 func RgbToXyzMatrixFMA(primaries [3][2]float64, white [3]float64) [9]float64 {
 	m := [9]float64{}
 
-	r := ChromaToXyz(primaries[0][0], primaries[0][1])
-	g := ChromaToXyz(primaries[1][0], primaries[1][1])
-	b := ChromaToXyz(primaries[2][0], primaries[2][1])
+	r := ChromaticityToXyz(primaries[0][0], primaries[0][1])
+	g := ChromaticityToXyz(primaries[1][0], primaries[1][1])
+	b := ChromaticityToXyz(primaries[2][0], primaries[2][1])
 
 	m[0] = r[0]
 	m[1] = g[0]
