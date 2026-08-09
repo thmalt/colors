@@ -2,29 +2,16 @@
 
 package colors
 
-import (
-	"github.com/thmalt/colors/space"
-)
-
 func (m Mixer) Mix(c1, c2 Color, t float64) Color {
 	switch m.channels {
 	case 3:
-		a1, a2, a3, aa := c1.c1, c1.c2, c1.c3, c1.alpha
-		b1, b2, b3, ba := c2.c1, c2.c2, c2.c3, c2.alpha
-		c1, c2, c3, ca := m.unsafe.Mix3(a1, a2, a3, aa, b1, b2, b3, ba, t)
-		return Color{space: m.space, c1: c1, c2: c2, c3: c3, alpha: ca}
+		x1, x2, x3, alpha := m.unsafe.Mix3(
+			c1.c1, c1.c2, c1.c3, c1.alpha,
+			c2.c1, c2.c2, c2.c3, c2.alpha,
+			t,
+		)
+		return Color{space: m.space, c1: x1, c2: x2, c3: x3, alpha: alpha}
 	default:
 		return Color{}
-	}
-}
-
-func hueIndex(s space.Space) int {
-	switch s {
-	case space.Hsl, space.Hsv, space.Hwb:
-		return 0
-	case space.LchD50, space.LchD65, space.LchuvD50, space.LchuvD65, space.Oklch:
-		return 2
-	default:
-		return -1
 	}
 }

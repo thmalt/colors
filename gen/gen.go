@@ -76,7 +76,7 @@ func main() {
 
 	if !ctx.FormatSource {
 		fmt.Println()
-		fmt.Println("Source formatting is disabled")
+		fmt.Println("NOTICE: Source formatting is disabled")
 	}
 
 	fmt.Println()

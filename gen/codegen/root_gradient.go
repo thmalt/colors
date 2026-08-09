@@ -4,7 +4,6 @@ import "github.com/thmalt/colors/gen/codegen/writer"
 
 func genRootPkgGradient(ctx *Context, w *writer.GoWriter) {
 	hueIndexes := buildHueIndexes(ctx)
-	_ = hueIndexes
 
 	genRootPkgGradientAtMethod(w, hueIndexes)
 
@@ -107,22 +106,14 @@ func genRootPkgGradientAtNMethod(w *writer.GoWriter, channelCount int) {
 	w.ReturnInline()
 	w.Writeln("g.unsafeMixer.Mix", channelCount, "(")
 	w.In()
+
 	w.Indent()
-	for i := range channelCount {
-		if i > 0 {
-			w.Write(", ")
-		}
-		w.Write("a.c", i+1)
-	}
-	w.Writeln(", a.alpha,")
+	writeColorChannels(w, "a", channelCount)
+	w.Write(",")
 	w.Indent()
-	for i := range channelCount {
-		if i > 0 {
-			w.Write(", ")
-		}
-		w.Write("b.c", i+1)
-	}
-	w.Writeln(", b.alpha,")
+	writeColorChannels(w, "b", channelCount)
+	w.Write(",")
+
 	w.LineWriteln("seg,")
 	w.Out()
 	w.LineWriteln(")")

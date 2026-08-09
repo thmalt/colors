@@ -23,7 +23,7 @@ const (
 )
 
 // Mix interpolates two colors using the default mix options.
-// It is equivalent to MixWith(c1, c2, t, MixOptions{}).
+// It is equivalent to [MixWith](c1, c2, t, [MixOptions]{}).
 func Mix(c1, c2 Color, t float64) Color {
 	return MixWith(c1, c2, t, MixOptions{})
 }

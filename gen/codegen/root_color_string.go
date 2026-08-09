@@ -40,7 +40,7 @@ func genRootPkgColorStringMethod(ctx *Context, w *writer.GoWriter) {
 			w.Write("c.c", i+1)
 
 			if percent {
-				w.Write(" * 100")
+				w.Write("*100")
 			}
 
 			w.Write(", ")

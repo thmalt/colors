@@ -40,49 +40,14 @@ func genRootPkgMix(ctx *Context, w *writer.GoWriter) {
 	w.Switch("opts.Space.ChannelCount()")
 
 	channelCounts := buildChannelCounts(ctx)
-	vars := make([]string, ctx.MaxChannelCount+1)
-	for count, ok := range channelCounts {
+
+	for channelCount, ok := range channelCounts {
 		if !ok {
 			continue
 		}
 
-		vars = toVars(vars[:0], "f", count)
-		vars = append(vars, "alpha")
-
-		w.Case(count)
-		w.LineWriteJoin(vars, ", ")
-		w.Write(" := unsafeMixer.Mix", count, "(")
-		w.In()
-
-		w.Indent()
-		for i := range count {
-			if i > 0 {
-				w.Write(", ")
-			}
-			w.Write("c1.c", i+1)
-		}
-		w.Writeln(", c1.alpha,")
-
-		w.Indent()
-		for i := range count {
-			if i > 0 {
-				w.Write(", ")
-			}
-			w.Write("c2.c", i+1)
-		}
-		w.Writeln(", c2.alpha,")
-		w.LineWriteln("t,")
-		w.Out()
-		w.LineWriteln(")")
-		w.ReturnInline("Color{space: opts.Space, ")
-		for i := range count {
-			if i > 0 {
-				w.Write(", ")
-			}
-			w.Write("c", i+1, ": f", i+1)
-		}
-		w.Writeln(", alpha: alpha}")
-
+		w.Case(channelCount)
+		genRootPkgMixerMethodCase(w, "unsafeMixer.Mix", "opts.Space", channelCount)
 	}
 	w.End()
 

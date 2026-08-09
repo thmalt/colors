@@ -100,7 +100,7 @@ func genSpacePkgSpace(ctx *Context, w *writer.GoWriter) {
 	w.FuncResults("string")
 	w.FuncBody()
 
-	w.Switch("s ")
+	w.Switch("s")
 	w.Case("InvalidSpace")
 	w.Return(`"Invalid"`)
 

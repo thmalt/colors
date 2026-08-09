@@ -206,6 +206,7 @@ var (
 		},
 		{
 			Name:        "XyzD65",
+			Aliases:     []string{"Xyz"},
 			Family:      "XYZ",
 			DisplayName: "CIE XYZ D65",
 			CssName:     "xyz-d65",

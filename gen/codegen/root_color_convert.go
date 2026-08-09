@@ -43,7 +43,7 @@ func genRootPkgColorConvertMethod(ctx *Context, w *writer.GoWriter, space *model
 
 	sub := w.SubWriter()
 
-	sub.Switch("c.space ")
+	sub.Switch("c.space")
 
 	var foundPath = false
 	for _, src := range ctx.BuildSpaces {

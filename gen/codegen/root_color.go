@@ -42,7 +42,7 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 	w.End()
 
 	w.Separate()
-	w.Switch("index ")
+	w.Switch("index")
 
 	for i := maxChannelCnt; i > 0; i-- {
 		w.Case(i - 1)
@@ -74,7 +74,7 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 	w.FuncResults("[]", FloatType)
 	w.FuncBody()
 
-	w.Switch("c.ChannelCount() ")
+	w.Switch("c.ChannelCount()")
 	for i := maxChannelCnt; i > 0; i-- {
 		w.Case(i)
 		w.Return("[]", FloatType, "{", cases[i-1], "}")
@@ -92,7 +92,7 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 	w.FuncParams("dst []", FloatType)
 	w.FuncResults("[]", FloatType)
 	w.FuncBody()
-	w.Switch("c.ChannelCount() ")
+	w.Switch("c.ChannelCount()")
 	for i := maxChannelCnt; i > 0; i-- {
 		w.Case(i)
 		w.Return("append(dst, ", cases[i-1], ")")

@@ -36,9 +36,9 @@ func genRootPkgColorTo(ctx *Context, w *writer.GoWriter) {
 		w.Writef(" := c.%s()\n", space.Name)
 
 		w.ReturnInline("Color{")
-		w.Write("space: ", ctx.SpacePkg.Join(space.Name), ",")
+		w.Write("space: ", ctx.SpacePkg.Join(space.Name), ", ")
 		for i, name := range names {
-			w.Write("c", i+1, ": ", name, ",")
+			w.Write("c", i+1, ": ", name, ", ")
 		}
 		w.Write("alpha: c.alpha")
 		w.Writeln("}, nil")

@@ -15,7 +15,7 @@ func genRootPkgClamp(ctx *Context, w *writer.GoWriter) {
 	w.End()
 
 	w.Separate()
-	w.Switch("c.space ")
+	w.Switch("c.space")
 	for _, space := range ctx.BuildSpaces {
 		w.Case(ctx.SpacePkg.Join(space.Name))
 		w.Return("clamp", space.Name, "(c)")

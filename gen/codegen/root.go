@@ -65,11 +65,7 @@ func GenerateRootPkg(ctx *Context) {
 	})
 
 	emitGoFile(w, pkg, pkgPath, "mixer", func(w *writer.GoWriter) {
-		w.Import(ctx.SpacePkg.Path)
-
-		//genRootPkgMixer(ctx, w)
 		genRootPkgMixerMethod(ctx, w)
-		genRootPkgHueIndexFunc(ctx, w)
 	})
 
 	emitGoFile(w, pkg, pkgPath, "gradient", func(w *writer.GoWriter) {

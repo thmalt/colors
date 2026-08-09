@@ -30,12 +30,12 @@ func MixWith(c1, c2 Color, t float64, opts MixOptions) Color {
 
 	switch opts.Space.ChannelCount() {
 	case 3:
-		f1, f2, f3, alpha := unsafeMixer.Mix3(
+		x1, x2, x3, alpha := unsafeMixer.Mix3(
 			c1.c1, c1.c2, c1.c3, c1.alpha,
 			c2.c1, c2.c2, c2.c3, c2.alpha,
 			t,
 		)
-		return Color{space: opts.Space, c1: f1, c2: f2, c3: f3, alpha: alpha}
+		return Color{space: opts.Space, c1: x1, c2: x2, c3: x3, alpha: alpha}
 	}
 
 	return Color{}
