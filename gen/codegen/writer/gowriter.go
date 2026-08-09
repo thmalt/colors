@@ -447,7 +447,7 @@ func (w *GoWriter) WriteCallln(name string, args ...string) {
 	w.Newline()
 }
 
-func (w *GoWriter) Method(receiver string, names ...string) {
+func (w *GoWriter) Method(receiver string, names ...any) {
 	w.pushBlock(blockFuncName)
 
 	w.LineWrite("func (", receiver, ") ")
@@ -553,7 +553,7 @@ func (w *GoWriter) Else(a ...any) {
 }
 
 func (w *GoWriter) Switch(a ...any) {
-	w.begin(blockSwitch, '{', "switch ", a)
+	w.begin(blockSwitch, '{', "switch ", a, ' ')
 }
 
 func (w *GoWriter) Case(a ...any) {

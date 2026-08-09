@@ -32,6 +32,8 @@ var spaceInfos = [...]*spaceInfo{
 	&hsvInfo,
 	&hwbInfo,
 }
+
+// spaceChannelCounts is indexed by [Space] for fast channel-count lookup.
 var spaceChannelCounts = [...]uint8{
 	0, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3,
@@ -39,7 +41,15 @@ var spaceChannelCounts = [...]uint8{
 	3, 3, 3, 3,
 }
 
-var coordinateSystems = [...]CoordinateSystem{
+// spaceHueIndexes is indexed by [Space] for fast hue-index lookup.
+var spaceHueIndexes = [...]int8{
+	-1, -1, -1, -1, -1, -1, -1, -1,
+	-1, -1, -1, -1, -1, -1, -1, -1,
+	2, -1, 2, -1, 2, -1, 2, -1,
+	2, 0, 0, 0,
+}
+
+var spaceCoordinateSystems = [...]CoordinateSystem{
 	Cartesian, Cartesian, Cartesian, Cartesian, Cartesian, Cartesian, Cartesian, Cartesian,
 	Cartesian, Cartesian, Cartesian, Cartesian, Cartesian, Cartesian, Cartesian, Cartesian,
 	Polar, Cartesian, Polar, Polar, Polar, Polar, Polar, Cartesian,

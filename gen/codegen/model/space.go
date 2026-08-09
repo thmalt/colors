@@ -157,6 +157,7 @@ func AngleToDegree(value float64, unit UnitKind) float64 {
 	case UnitGradian:
 		return value * 0.9
 	}
+
 	return value
 }
 
@@ -180,4 +181,14 @@ func (s Space) ChannelIdent() []string {
 	}
 
 	return slice
+}
+
+func (s Space) HueIndex() int8 {
+	for i, c := range s.Channels {
+		if c.Circular {
+			return int8(i)
+		}
+	}
+
+	return -1
 }

@@ -17,18 +17,12 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 	w.Commentf("Color represents a color in a [%s].", spaceIdent)
 	w.Begin("type Color struct ")
 	w.LineWriteln("space ", spaceIdent)
+	w.Separate()
 	w.Comment("channels")
 
-	w.Indent()
-
 	for i := range maxChannelCnt {
-		if i > 0 {
-			w.Write(", ")
-		}
-		w.Writef("c%d", i+1)
+		w.LineWriteln("c", i+1, " ", FloatType)
 	}
-
-	w.Writeln(" ", FloatType)
 
 	w.Separate()
 	w.LineWriteln("alpha ", FloatType)

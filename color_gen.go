@@ -9,8 +9,11 @@ import (
 // Color represents a color in a [space.Space].
 type Color struct {
 	space space.Space
+
 	// channels
-	c1, c2, c3 float64
+	c1 float64
+	c2 float64
+	c3 float64
 
 	alpha float64
 }

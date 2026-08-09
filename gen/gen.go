@@ -38,6 +38,9 @@ func main() {
 	ctx.InterpPkg.Name = "interp"
 	ctx.InterpPkg.Path = "/interp"
 
+	ctx.MixerPkg.Name = "mixer"
+	ctx.MixerPkg.Path = "/mixer"
+
 	ctx.AddSpaces(codegen.Spaces[:])
 	ctx.AddConvertFunc(codegen.ConvertFuncs[:]...)
 	ctx.AddWhitePoint(codegen.WhitePoints[:]...)
@@ -66,8 +69,8 @@ func main() {
 	fmt.Println("Generating colors...")
 	codegen.GenerateRootPkg(&ctx)
 
-	fmt.Println("Generating interp...")
-	codegen.GenerateInterpPkg(&ctx)
+	fmt.Println("Generating mixer...")
+	codegen.GenerateMixerPkg(&ctx)
 
 	end := time.Now()
 

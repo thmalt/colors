@@ -22,6 +22,7 @@ type spaceInfo struct {
 	whitePoint  WhitePoint
 	coordinate  CoordinateSystem
 	channels    []Channel
+	hueIndex    int8
 
 	useColorFunction bool
 }
@@ -58,6 +59,7 @@ func (s *spaceInfo) Name() string           { return s.name }
 func (s *spaceInfo) DisplayName() string    { return s.displayName }
 func (s *spaceInfo) CssName() string        { return s.cssName }
 func (s *spaceInfo) WhitePoint() WhitePoint { return s.whitePoint }
+func (s *spaceInfo) HueIndex() int8         { return s.hueIndex }
 func (s *spaceInfo) ChannelCount() int      { return len(s.channels) }
 
 func (s *spaceInfo) Channel(index int) (Channel, bool) {

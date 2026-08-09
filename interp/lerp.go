@@ -1,6 +1,12 @@
+// Copied from ./gen/codegen/internal/interp/lerp.go.
+// DO NOT EDIT. Changes will be overwritten.
+
 package interp
 
-import "math"
+import (
+	"math"
+	"strconv"
+)
 
 type HueInterpolation uint8
 
@@ -11,12 +17,40 @@ const (
 	HueDecreasing
 )
 
-func lerp(a, b, t float64) float64 {
-	return a + (b-a)*t // a*(1-t) + b*t
+func (h HueInterpolation) String() string {
+	switch h {
+	case HueShorter:
+		return "Shorter"
+	case HueLonger:
+		return "Longer"
+	case HueIncreasing:
+		return "Increasing"
+	case HueDecreasing:
+		return "Decreasing"
+	default:
+		return "HueInterpolation(" + strconv.FormatUint(uint64(h), 10) + ")"
+	}
 }
 
-func lerpFMA(a, b, t float64) float64 {
+func Lerp(a, b, t float64) float64 {
+	return a + (b-a)*t // or a*(1-t) + b*t
+}
+
+func LerpFMA(a, b, t float64) float64 {
 	return math.FMA(b-a, t, a)
+}
+
+func LerpHue(h1, h2 float64, t float64, hue HueInterpolation) float64 {
+	switch hue {
+	case HueLonger:
+		return LerpHueLonger(h1, h2, t)
+	case HueIncreasing:
+		return LerpHueIncreasing(h1, h2, t)
+	case HueDecreasing:
+		return LerpHueDecreasing(h1, h2, t)
+	default:
+		return LerpHueShorter(h1, h2, t)
+	}
 }
 
 // Hue Shorter interpolation.
@@ -24,7 +58,7 @@ func lerpFMA(a, b, t float64) float64 {
 //	h1 ∈ [0, 360)
 //	h2 ∈ [0, 360)
 //	t  ∈ [0, 1]
-func lerpHueShorter(h1, h2, t float64) float64 {
+func LerpHueShorter(h1, h2, t float64) float64 {
 	if d := h2 - h1; d > 180 {
 		h1 += 360
 	} else if d < -180 {
@@ -45,7 +79,7 @@ func lerpHueShorter(h1, h2, t float64) float64 {
 //	h1 ∈ [0, 360)
 //	h2 ∈ [0, 360)
 //	t  ∈ [0, 1]
-func lerpHueLonger(h1, h2, t float64) float64 {
+func LerpHueLonger(h1, h2, t float64) float64 {
 	if d := h2 - h1; 0 < d && d < 180 {
 		h1 += 360
 	} else if -180 < d && d <= 0 {
@@ -66,7 +100,7 @@ func lerpHueLonger(h1, h2, t float64) float64 {
 //	h1 ∈ [0, 360)
 //	h2 ∈ [0, 360)
 //	t  ∈ [0, 1]
-func lerpHueIncreasing(h1, h2, t float64) float64 {
+func LerpHueIncreasing(h1, h2, t float64) float64 {
 	if h2 < h1 {
 		h2 += 360
 	}
@@ -85,7 +119,7 @@ func lerpHueIncreasing(h1, h2, t float64) float64 {
 //	h1 ∈ [0, 360)
 //	h2 ∈ [0, 360)
 //	t  ∈ [0, 1]
-func lerpHueDecreasing(h1, h2, t float64) float64 {
+func LerpHueDecreasing(h1, h2, t float64) float64 {
 	if h1 < h2 {
 		h1 += 360
 	}

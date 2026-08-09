@@ -41,6 +41,7 @@ type Context struct {
 	RootPkg    Pkg
 	SpacePkg   Pkg
 	InterpPkg  Pkg
+	MixerPkg   Pkg
 
 	Path string
 

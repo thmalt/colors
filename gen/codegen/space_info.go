@@ -60,6 +60,7 @@ func genSpacePkgSpaceInfo(ctx *Context, w *writer.GoWriter) {
 			w.End(',')
 		}
 		w.End(',')
+		w.LineWritef("hueIndex: %d,\n", space.HueIndex())
 
 		if space.UseGenericColorFunction {
 			w.LineWriteln("useColorFunction: true,")

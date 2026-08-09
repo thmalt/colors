@@ -14,6 +14,7 @@ func genSpacePkgTables(ctx *Context, w *writer.GoWriter) {
 	w.End()
 
 	next := wrapEvery(w, 8)
+	w.Comment("spaceChannelCounts is indexed by [Space] for fast channel-count lookup.")
 	w.Begin("var spaceChannelCounts = [...]uint", smallestUintType(ctx.MaxChannelCount))
 	w.LineWrite("0, ")
 	next()
@@ -23,9 +24,20 @@ func genSpacePkgTables(ctx *Context, w *writer.GoWriter) {
 	}
 	w.End()
 
+	next = wrapEvery(w, 8)
+	w.Comment("spaceHueIndexes is indexed by [Space] for fast hue-index lookup.")
+	w.Begin("var spaceHueIndexes = [...]int8")
+	w.LineWrite("-1, ")
+	next()
+	for _, space := range ctx.BuildSpaces {
+		w.Write(space.HueIndex(), ", ")
+		next()
+	}
+	w.End()
+
 	w.Separate()
 	next = wrapEvery(w, 8)
-	w.Begin("var coordinateSystems = [...]CoordinateSystem")
+	w.Begin("var spaceCoordinateSystems = [...]CoordinateSystem")
 	w.LineWrite(model.CoordinateSystem(0), ", ")
 	next()
 	for _, space := range ctx.BuildSpaces {
@@ -33,7 +45,6 @@ func genSpacePkgTables(ctx *Context, w *writer.GoWriter) {
 		next()
 	}
 	w.End()
-
 }
 
 func wrapEvery(w *writer.GoWriter, n int) func() {

@@ -34,6 +34,7 @@ var srgbInfo = spaceInfo{
 			Precision:   6,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -69,6 +70,7 @@ var linearSrgbInfo = spaceInfo{
 			Precision:   6,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -104,6 +106,7 @@ var displayP3Info = spaceInfo{
 			Precision:   6,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -139,6 +142,7 @@ var linearDisplayP3Info = spaceInfo{
 			Precision:   6,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -174,6 +178,7 @@ var a98Info = spaceInfo{
 			Precision:   6,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -209,6 +214,7 @@ var linearA98Info = spaceInfo{
 			Precision:   6,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -244,6 +250,7 @@ var proPhotoInfo = spaceInfo{
 			Precision:   6,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -279,6 +286,7 @@ var linearProPhotoInfo = spaceInfo{
 			Precision:   6,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -314,6 +322,7 @@ var rec2020Info = spaceInfo{
 			Precision:   6,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -349,6 +358,7 @@ var linearRec2020Info = spaceInfo{
 			Precision:   6,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -384,6 +394,7 @@ var xyzD50Info = spaceInfo{
 			Precision:   8,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -419,6 +430,7 @@ var xyzD65Info = spaceInfo{
 			Precision:   8,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -455,6 +467,7 @@ var xyYD50Info = spaceInfo{
 			Precision:    8,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -491,6 +504,7 @@ var xyYD65Info = spaceInfo{
 			Precision:    8,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -528,6 +542,7 @@ var labD50Info = spaceInfo{
 			Precision:    4,
 		},
 	},
+	hueIndex: -1,
 }
 
 var lchD50Info = spaceInfo{
@@ -565,6 +580,7 @@ var lchD50Info = spaceInfo{
 			Precision:   4,
 		},
 	},
+	hueIndex: 2,
 }
 
 var labD65Info = spaceInfo{
@@ -601,6 +617,7 @@ var labD65Info = spaceInfo{
 			Precision:    4,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -639,6 +656,7 @@ var lchD65Info = spaceInfo{
 			Precision:   4,
 		},
 	},
+	hueIndex:         2,
 	useColorFunction: true,
 }
 
@@ -676,6 +694,7 @@ var luvD50Info = spaceInfo{
 			Precision:    4,
 		},
 	},
+	hueIndex: -1,
 }
 
 var lchuvD50Info = spaceInfo{
@@ -713,6 +732,7 @@ var lchuvD50Info = spaceInfo{
 			Precision:   4,
 		},
 	},
+	hueIndex: 2,
 }
 
 var luvD65Info = spaceInfo{
@@ -749,6 +769,7 @@ var luvD65Info = spaceInfo{
 			Precision:    4,
 		},
 	},
+	hueIndex:         -1,
 	useColorFunction: true,
 }
 
@@ -787,6 +808,7 @@ var lchuvD65Info = spaceInfo{
 			Precision:   4,
 		},
 	},
+	hueIndex:         2,
 	useColorFunction: true,
 }
 
@@ -824,6 +846,7 @@ var oklabInfo = spaceInfo{
 			Precision:    6,
 		},
 	},
+	hueIndex: -1,
 }
 
 var oklchInfo = spaceInfo{
@@ -861,6 +884,7 @@ var oklchInfo = spaceInfo{
 			Precision:   4,
 		},
 	},
+	hueIndex: 2,
 }
 
 var hslInfo = spaceInfo{
@@ -899,6 +923,7 @@ var hslInfo = spaceInfo{
 			Precision:   4,
 		},
 	},
+	hueIndex: 0,
 }
 
 var hsvInfo = spaceInfo{
@@ -937,6 +962,7 @@ var hsvInfo = spaceInfo{
 			Precision:   4,
 		},
 	},
+	hueIndex: 0,
 }
 
 var hwbInfo = spaceInfo{
@@ -975,4 +1001,5 @@ var hwbInfo = spaceInfo{
 			Precision:   4,
 		},
 	},
+	hueIndex: 0,
 }
