@@ -1,15 +1,21 @@
 package codegen
 
-import "github.com/thmalt/colors/gen/codegen/writer"
+import (
+	"strconv"
 
-func writeColorChannels(w *writer.GoWriter, name string, channelCount int) {
-	for i := range channelCount {
-		if i > 0 {
-			w.Write(", ")
-		}
-		w.Write(name, ".c", i+1)
+	"github.com/thmalt/colors/gen/codegen/writer"
+)
+
+func appendVars(dst []string, ident string, count int, extra ...string) []string {
+	for i := 1; i <= count; i++ {
+		dst = append(dst, ident+strconv.Itoa(i))
 	}
-	w.Write(", ", name, ".alpha")
+
+	if len(extra) > 0 {
+		dst = append(dst, extra...)
+	}
+
+	return dst
 }
 
 func writeColorLiteral(w *writer.GoWriter, space string, channelCount int, vars ...string) {

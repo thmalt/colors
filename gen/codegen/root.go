@@ -69,8 +69,6 @@ func GenerateRootPkg(ctx *Context) {
 	})
 
 	emitGoFile(w, pkg, pkgPath, "gradient", func(w *writer.GoWriter) {
-		w.Import("sort")
-
 		genRootPkgGradient(ctx, w)
 	})
 	emitGoFile(w, pkg, pkgPath, "clamp", func(w *writer.GoWriter) {

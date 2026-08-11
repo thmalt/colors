@@ -28,26 +28,22 @@ func genRootPkgMixerMethod(ctx *Context, w *writer.GoWriter) {
 }
 
 func genRootPkgMixerMethodCase(w *writer.GoWriter, name, space string, channelCount int) {
-	vars := make([]string, 0, channelCount+1)
+	var temp []string
 
-	vars = toVars(vars, "x", channelCount)
-	vars = append(vars, "alpha")
-
-	w.LineWriteJoin(vars, ", ")
+	w.LineWriteJoin(appendVars(temp[:0], "x", channelCount, "alpha"), ", ")
 	w.Write(" := ", name, channelCount, "(")
 	w.In()
 
-	w.Indent()
-	writeColorChannels(w, "c1", channelCount)
+	w.LineWriteJoin(appendVars(temp[:0], "c1.c", channelCount, "c1.alpha"), ", ")
 	w.Write(",")
-	w.Indent()
-	writeColorChannels(w, "c2", channelCount)
+	w.LineWriteJoin(appendVars(temp[:0], "c2.c", channelCount, "c2.alpha"), ", ")
 	w.Write(",")
+
 	w.LineWriteln("t,")
 
 	w.Out()
 	w.LineWriteln(")")
 
 	w.ReturnInline()
-	writeColorLiteral(w, space, channelCount, vars...)
+	writeColorLiteral(w, space, channelCount, appendVars(temp[:0], "x", channelCount, "alpha")...)
 }

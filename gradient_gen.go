@@ -2,48 +2,8 @@
 
 package colors
 
-import (
-	"sort"
-)
-
-func (g *Gradient) At(t float64) Color {
-	switch g.channels {
-	case 3:
-		c1, c2, c3, alpha := g.at3(t)
-		return Color{space: g.space, c1: c1, c2: c2, c3: c3, alpha: alpha}
-	}
-
-	return Color{}
-}
-
-func (g *Gradient) at3(t float64) (c1, c2, c3, alpha float64) {
-	i := sort.Search(len(g.stops), func(i int) bool {
-		return g.stops[i].position >= t
-	})
-
-	if i == 0 {
-		s := g.stops[0]
-		return s.c1, s.c2, s.c3, s.alpha
-	}
-
-	if i == len(g.stops) {
-		s := g.stops[len(g.stops)-1]
-		return s.c1, s.c2, s.c3, s.alpha
-	}
-
-	a := g.stops[i-1]
-	b := g.stops[i]
-
-	seg := (t - a.position) / (b.position - a.position)
-
-	return g.unsafeMixer.Mix3(
-		a.c1, a.c2, a.c3, a.alpha,
-		b.c1, b.c2, b.c3, b.alpha,
-		seg,
-	)
-}
-
 type gradientStop struct {
+	original float64
 	position float64
 
 	c1 float64
@@ -53,14 +13,45 @@ type gradientStop struct {
 	alpha float64
 }
 
-func newGradientStop(position float64, color Color) (g gradientStop) {
-	g.position = position
+func newGradientStop(original, position float64, color Color) gradientStop {
+	return gradientStop{
+		original: original,
+		position: position,
+		c1:       color.c1,
+		c2:       color.c2,
+		c3:       color.c3,
+		alpha:    color.alpha,
+	}
+}
 
-	g.c1 = color.c1
-	g.c2 = color.c2
-	g.c3 = color.c3
+// At returns the interpolated color at position t.
+func (g Gradient) At(t float64) Color {
+	i := g.findStop(t)
 
-	g.alpha = color.alpha
+	if i == 0 {
+		s := g.stops[0]
+		return Color{space: g.space, c1: s.c1, c2: s.c2, c3: s.c3, alpha: s.alpha}
+	}
 
-	return
+	if i == len(g.stops) {
+		s := g.stops[len(g.stops)-1]
+		return Color{space: g.space, c1: s.c1, c2: s.c2, c3: s.c3, alpha: s.alpha}
+	}
+
+	a := g.stops[i-1]
+	b := g.stops[i]
+
+	seg := (t - a.position) / (b.position - a.position)
+
+	switch g.channels {
+	case 3:
+		c1, c2, c3, alpha := g.unsafeMixer.Mix3(
+			a.c1, a.c2, a.c3, a.alpha,
+			b.c1, b.c2, b.c3, b.alpha,
+			seg,
+		)
+		return Color{space: g.space, c1: c1, c2: c2, c3: c3, alpha: alpha}
+	}
+
+	return Color{}
 }
