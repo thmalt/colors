@@ -2,7 +2,12 @@
 
 package colors
 
+// Mix converts c1 and c2 to the mixer's color space and linearly interpolates them.
+// The result is returned in the mixer's color space.
 func (m Mixer) Mix(c1, c2 Color, t float64) Color {
+	c1, _ = c1.To(m.space)
+	c2, _ = c2.To(m.space)
+
 	switch m.channels {
 	case 3:
 		x1, x2, x3, alpha := m.unsafe.Mix3(

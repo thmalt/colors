@@ -80,6 +80,7 @@ func main() {
 	}
 
 	fmt.Println()
+	fmt.Printf("INFO: Spaces: %d, Conversion: %d\n", len(ctx.BuildSpaces), ctx.TotalConversionGenerated)
 	fmt.Printf("Completed in %v.\n", end.Sub(beg))
 }
 

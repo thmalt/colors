@@ -403,7 +403,7 @@ func (c Color) String() string {
 
 		b.WriteString(")")
 	default:
-		panic("unreachable")
+		return "Color(<unhandled space: " + strconv.FormatUint(uint64(c.space), 10) + ">)"
 	}
 
 	return b.String()

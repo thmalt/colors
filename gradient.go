@@ -1,72 +1,136 @@
 package colors
 
 import (
-	"fmt"
+	"math"
+	"slices"
 	"sort"
-
-	"github.com/thmalt/colors/mixer"
-	"github.com/thmalt/colors/space"
 )
 
-// Gradient interpolates colors between a sequence of stops.
 type Gradient struct {
-	space       space.Space
-	channels    uint8
-	unsafeMixer mixer.UnsafeMixer
-	stops       []gradientStop
+	mixer Mixer
+	stops []GradientStop
 }
 
 type GradientStop struct {
-	Position float64
-	Color    Color
+	Color  Color
+	Offset float64
 }
 
-func NewGradient(s space.Space, premultiplied bool, hue HueInterpolation, stops ...GradientStop) (Gradient, error) {
-	if s == space.InvalidSpace {
-		s = space.Oklab
-	}
+func NewGradientWithOptions(opts InterpOptions, stops ...GradientStop) Gradient {
+	mixer := NewMixerWithOptions(opts)
 
-	if !s.IsValid() {
-		return Gradient{}, fmt.Errorf("invalid gradient space: %s", s)
-	}
+	stops = slices.Clone(stops)
 
-	channels := uint8(s.ChannelCount())
-	gradientStops := make([]gradientStop, len(stops))
-	for i, stop := range stops {
-		color, err := stop.Color.To(s)
-		if err != nil {
-			return Gradient{}, fmt.Errorf(
-				"convert stop color at position %g: %w",
-				stop.Position, err,
-			)
+	// Convert color to space of mixer
+	for i := range stops {
+		if !stops[i].IsHint() {
+			stops[i].Color, _ = stops[i].Color.To(mixer.space)
 		}
 
-		position := stop.Position
-		if i > 0 && position < gradientStops[i-1].position {
-			position = gradientStops[i-1].position
+		if !stops[i].HasOffset() {
+			continue
 		}
 
-		gradientStops[i] = newGradientStop(stop.Position, position, color)
+		if i < 1 {
+			continue
+		}
+
+		if stops[i].Offset < stops[i-1].Offset {
+			stops[i].Offset = stops[i-1].Offset
+		}
 	}
+
+	resolved := resolveStops(stops, mixer)
 
 	return Gradient{
-		space:       s,
-		unsafeMixer: mixer.NewUnsafeMixer(s.HueIndex(), premultiplied, hue),
-		stops:       gradientStops,
-		channels:    channels,
-	}, nil
+		mixer: mixer,
+		stops: resolved,
+	}
 }
 
-// NewStop returns a new [GradientStop].
-func NewStop(position float64, color Color) GradientStop {
+// NewGradient returns a new [Gradient] using [DefaultInterpOptions].
+func NewGradient(stops ...GradientStop) Gradient {
+	return NewGradientWithOptions(DefaultInterpOptions(), stops...)
+}
+
+func NewHint(offset float64) GradientStop {
 	return GradientStop{
-		Position: position,
-		Color:    color,
+		Color:  Color{},
+		Offset: offset,
 	}
+}
+
+func NewStop(color Color) GradientStop {
+	return GradientStop{
+		Color:  color,
+		Offset: math.NaN(),
+	}
+}
+
+func NewStopAt(color Color, offset float64) GradientStop {
+	return GradientStop{
+		Color:  color,
+		Offset: offset,
+	}
+}
+
+func NewStopsAt(color Color, offsets ...float64) []GradientStop {
+	stops := make([]GradientStop, len(offsets))
+	for i, offset := range offsets {
+		stops[i] = GradientStop{Color: color, Offset: offset}
+	}
+	return stops
+}
+
+func (s GradientStop) HasOffset() bool {
+	return !math.IsNaN(s.Offset)
+}
+
+func (s GradientStop) IsHint() bool {
+	return !s.Color.space.IsValid()
+}
+
+func (g Gradient) At(t float64) Color {
+	i := g.findStop(t)
+
+	if i == 0 {
+		return g.stops[0].Color
+	}
+
+	if i == len(g.stops) {
+		return g.stops[len(g.stops)-1].Color
+	}
+
+	a := g.stops[i-1]
+	b := g.stops[i]
+
+	seg := (t - a.Offset) / (b.Offset - a.Offset)
+
+	return g.mixer.Mix(a.Color, b.Color, seg)
 }
 
 func (g Gradient) findStop(t float64) int {
 	return sort.Search(len(g.stops), func(i int) bool {
-		return g.stops[i].position >= t
+		return g.stops[i].Offset > t // >= t
 	})
+}
+
+// func (g Gradient) findStop(t float64) int {
+// 	lo, hi := 0, len(g.stops)
+
+// 	for lo < hi {
+// 		mid := lo + (hi-lo)/2
+
+// 		if g.stops[mid].Offset <= t {
+// 			lo = mid + 1
+// 		} else {
+// 			hi = mid
+// 		}
+// 	}
+
+// 	return lo
+// }
+
+func (g Gradient) Stops() []GradientStop {
+	return slices.Clone(g.stops)
 }

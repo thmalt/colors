@@ -6,6 +6,6 @@ func (c Color) Mix(other Color, t float64) Color {
 }
 
 // MixWith is shorthand for [MixWith](c, other, t, opts).
-func (c Color) MixWith(other Color, t float64, opts MixOptions) Color {
+func (c Color) MixWith(other Color, t float64, opts InterpOptions) Color {
 	return MixWith(c, other, t, opts)
 }

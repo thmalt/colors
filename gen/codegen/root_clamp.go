@@ -11,7 +11,7 @@ func genRootPkgClamp(ctx *Context, w *writer.GoWriter) {
 	w.FuncResults("Color")
 	w.FuncBody()
 	w.If("!c.space.IsValid()")
-	w.Return("Color{}")
+	w.Return("c")
 	w.End()
 
 	w.Separate()
@@ -21,7 +21,7 @@ func genRootPkgClamp(ctx *Context, w *writer.GoWriter) {
 		w.Return("clamp", space.Name, "(c)")
 	}
 	w.Default()
-	w.LineWriteln(PanicUnreachable)
+	w.Return("c")
 	w.End()
 	w.End()
 

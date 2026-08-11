@@ -55,22 +55,10 @@ func GenerateRootPkg(ctx *Context) {
 		genRootPkgColorStringMethod(ctx, w)
 	})
 
-	emitGoFile(w, pkg, pkgPath, "mix", func(w *writer.GoWriter) {
-		w.Import(
-			ctx.MixerPkg.Path,
-			ctx.SpacePkg.Path,
-		)
-
-		genRootPkgMix(ctx, w)
-	})
-
 	emitGoFile(w, pkg, pkgPath, "mixer", func(w *writer.GoWriter) {
 		genRootPkgMixerMethod(ctx, w)
 	})
 
-	emitGoFile(w, pkg, pkgPath, "gradient", func(w *writer.GoWriter) {
-		genRootPkgGradient(ctx, w)
-	})
 	emitGoFile(w, pkg, pkgPath, "clamp", func(w *writer.GoWriter) {
 		w.Import(ctx.SpacePkg.Path)
 

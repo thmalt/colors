@@ -10,8 +10,10 @@ func genRootPkgColorStringMethod(ctx *Context, w *writer.GoWriter) {
 	w.FuncResults("string")
 	w.FuncBody()
 
+	invalidReturn := `"Color(<invalid space: " + strconv.FormatUint(uint64(c.space), 10) + ">)"`
+	unhandledReturn := `"Color(<unhandled space: " + strconv.FormatUint(uint64(c.space), 10) + ">)"`
 	w.If("!c.space.IsValid()")
-	w.Return(`"Color(<invalid space: " + strconv.FormatUint(uint64(c.space), 10) + ">)"`)
+	w.Return(invalidReturn)
 	w.End()
 
 	w.Separate()
@@ -80,7 +82,7 @@ func genRootPkgColorStringMethod(ctx *Context, w *writer.GoWriter) {
 	}
 
 	w.Default()
-	w.LineWriteln(PanicUnreachable)
+	w.Return(unhandledReturn)
 	w.End()
 
 	w.Separate()

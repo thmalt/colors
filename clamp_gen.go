@@ -8,7 +8,7 @@ import (
 
 func Clamp(c Color) Color {
 	if !c.space.IsValid() {
-		return Color{}
+		return c
 	}
 
 	switch c.space {
@@ -67,7 +67,7 @@ func Clamp(c Color) Color {
 	case space.Hwb:
 		return clampHwb(c)
 	default:
-		panic("unreachable")
+		return c
 	}
 }
 

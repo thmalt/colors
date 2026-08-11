@@ -7,10 +7,18 @@ import (
 func genRootPkgMixerMethod(ctx *Context, w *writer.GoWriter) {
 	channelCounts := buildChannelCounts(ctx)
 
+	// func (m Mixer) Mix(c1, c2 Color, t float64) Color
+	w.Comment("Mix converts c1 and c2 to the mixer's color space and linearly interpolates them.")
+	w.Comment("The result is returned in the mixer's color space.")
 	w.Method("m Mixer", "Mix")
 	w.FuncParams("c1, c2 Color, t ", FloatType)
 	w.FuncResults("Color")
 	w.FuncBody()
+
+	w.LineWriteln("c1, _ = c1.To(m.space)")
+	w.LineWriteln("c2, _ = c2.To(m.space)")
+
+	w.Separate()
 	w.Switch("m.channels")
 	for channelCount, ok := range channelCounts {
 		if !ok {
@@ -23,6 +31,7 @@ func genRootPkgMixerMethod(ctx *Context, w *writer.GoWriter) {
 	w.Default()
 	w.Return("Color{}")
 	w.End()
+
 	w.End()
 	w.Separate()
 }

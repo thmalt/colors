@@ -51,6 +51,9 @@ type Context struct {
 	Optimization Optimization
 
 	impls map[Pair]struct{}
+
+	// for logger
+	TotalConversionGenerated int
 }
 
 func (ctx *Context) SetModuleByType(a any) {

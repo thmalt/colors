@@ -1,48 +1,39 @@
 package gradient
 
-import (
-	"math"
+import "math"
 
-	"github.com/thmalt/colors"
-)
-
+// Linear defines the geometry of a linear gradient.
 type Linear struct {
-	gradient colors.Gradient
-
-	angle float64
-
 	width  float64
 	height float64
+	angle  float64
 
-	ax, ay float64 // gradient direction coefficients
-	bias   float64 // gradient offset
+	// Cached transform values.
+	dx, dy float64
+	start  float64
+	bias   float64
 }
 
-func NewLinear(gradient colors.Gradient, angle float64, width, height float64) *Linear {
-	l := &Linear{
-		gradient: gradient,
-		angle:    angle,
-		width:    width,
-		height:   height,
+// NewLinear creates a linear gradient.
+//
+//   - width, height: gradient bounds in pixels.
+//   - angle: gradient angle in turns.
+func NewLinear(width, height, angle float64) Linear {
+	l := Linear{
+		angle: angle,
 	}
 
-	l.updateTransform()
-
+	l.SetBounds(width, height)
 	return l
 }
 
-func (l *Linear) SetBounds(width, height float64) {
-	l.width = width
-	l.height = height
-	l.updateTransform()
-}
-
-func (l *Linear) At(x, y float64) colors.Color {
-	return l.gradient.At(l.ax*x + l.ay*y + l.bias)
+// PositionAt returns the normalized gradient position at (x, y).
+func (l *Linear) PositionAt(x, y float64) float64 {
+	return l.dx*x + l.dy*y + l.bias
 }
 
 func (l *Linear) updateTransform() {
-	rad := l.angle * math.Pi / 180
+	rad := l.angle * tau
 	sin, cos := math.Sincos(rad)
 
 	dx, dy := sin, -cos
@@ -50,7 +41,33 @@ func (l *Linear) updateTransform() {
 
 	L := (math.Abs(dx)*hw + math.Abs(dy)*hh) * 2
 
-	l.ax = dx / L
-	l.ay = dy / L
-	l.bias = 0.5 - hw*l.ax - hh*l.ay
+	l.dx = dx / L
+	l.dy = dy / L
+	l.bias = 0.5 - hw*l.dx - hh*l.dy
+}
+
+// Bounds returns the width and height of the gradient bounds in pixels.
+func (l *Linear) Bounds() (width, height float64) {
+	return l.width, l.height
+}
+
+// SetBounds sets the gradient bounds in pixels.
+// Width and height are clamped to a minimum of 1.
+func (l *Linear) SetBounds(width, height float64) {
+	l.width = max(1, width)
+	l.height = max(1, height)
+
+	l.updateTransform()
+}
+
+// Angle returns the gradient angle in turns.
+func (l *Linear) Angle() float32 {
+	return l.Angle()
+}
+
+// SetAngle sets the gradient angle in turns.
+func (l *Linear) SetAngle(angle float64) {
+	l.angle = angle
+
+	l.updateTransform()
 }
