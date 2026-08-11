@@ -13,6 +13,7 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 		maxChannelCnt = max(maxChannelCnt, space.ChannelCount())
 	}
 
+	// type Color struct{}
 	spaceIdent := ctx.SpacePkg.Join("Space")
 	w.Commentf("Color represents a color in a [%s].", spaceIdent)
 	w.Begin("type Color struct ")
@@ -30,6 +31,7 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 
 	w.Separate()
 
+	// func (c Color) Channel(index int) (float64, bool)
 	w.Comment("Channel returns the channel value at index in the order defined by the")
 	w.Commentf("color's [%s]. The returned boolean reports whether index is valid.", spaceIdent)
 	w.Method("c Color", "Channel")
@@ -52,7 +54,7 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 	w.End()
 
 	w.Separate()
-	w.LineWritef("return 0, false\n") // panic(%q)", "Color.Channel unreachable
+	w.LineWritef("return 0, false\n")
 
 	w.End()
 
@@ -69,6 +71,7 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 
 	w.Separate()
 
+	// func (c Color) Channels() []float64
 	w.Commentf("Channels returns the channel values of c in the order defined by its [%s].", spaceIdent)
 	w.Method("c Color", "Channels")
 	w.FuncResults("[]", FloatType)
@@ -87,7 +90,7 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 
 	w.Separate()
 
-	// AppendChannels
+	// func (c Color) AppendChannels(dst []float64) []float64
 	w.Method("c Color", "AppendChannels")
 	w.FuncParams("dst []", FloatType)
 	w.FuncResults("[]", FloatType)

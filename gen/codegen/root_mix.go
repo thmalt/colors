@@ -24,7 +24,7 @@ func genRootPkgMix(ctx *Context, w *writer.GoWriter) {
 	w.End()
 
 	w.Separate()
-	w.If("c1.space.IsValid() && c2.space.IsValid() && !opts.Space.IsValid()")
+	w.If("!c1.space.IsValid() || !c2.space.IsValid() || !opts.Space.IsValid()")
 	w.Return("Color{}")
 	w.End()
 

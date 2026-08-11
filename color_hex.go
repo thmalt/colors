@@ -10,7 +10,7 @@ func encodeHexByte(dst []byte, b byte) {
 }
 
 func (c Color) Hex() string {
-	const max = 255
+	const max = 0xff
 
 	r, g, b := c.Srgb()
 

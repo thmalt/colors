@@ -19,7 +19,7 @@ func MixWith(c1, c2 Color, t float64, opts MixOptions) Color {
 		opts.Space = space.Oklab
 	}
 
-	if c1.space.IsValid() && c2.space.IsValid() && !opts.Space.IsValid() {
+	if !c1.space.IsValid() || !c2.space.IsValid() || !opts.Space.IsValid() {
 		return Color{}
 	}
 

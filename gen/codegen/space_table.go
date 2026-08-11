@@ -14,6 +14,7 @@ func genSpacePkgTables(ctx *Context, w *writer.GoWriter) {
 	w.End()
 
 	next := wrapEvery(w, 8)
+	w.Separate()
 	w.Comment("spaceChannelCounts is indexed by [Space] for fast channel-count lookup.")
 	w.Begin("var spaceChannelCounts = [...]uint", smallestUintType(ctx.MaxChannelCount))
 	w.LineWrite("0, ")
@@ -25,6 +26,7 @@ func genSpacePkgTables(ctx *Context, w *writer.GoWriter) {
 	w.End()
 
 	next = wrapEvery(w, 8)
+	w.Separate()
 	w.Comment("spaceHueIndexes is indexed by [Space] for fast hue-index lookup.")
 	w.Begin("var spaceHueIndexes = [...]int8")
 	w.LineWrite("-1, ")
