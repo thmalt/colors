@@ -1,3 +1,14 @@
+// Copyright (C) 2008 Apple Inc.  All rights reserved.
+// Copyright (C) 2015 Google Inc. All rights reserved.
+//
+// Portions of this file are based on Blink's CSSGradientValue
+// implementation.
+//
+// Original source:
+// third_party/blink/renderer/core/css/css_gradient_value.cc
+//
+// See third_party/LICENSES, section "Blink - CSSGradientValue".
+
 package colors
 
 import (
@@ -23,30 +34,60 @@ func convertStopColors(stops []GradientStop, dst space.Space) {
 }
 
 func resolveStopOffsets(stops []GradientStop) {
-	n := len(stops)
+	count := len(stops)
+	if count == 0 {
+		return
+	}
 
-	prev := -1
+	// Resolve the first and last offsets.
+	if !stops[0].HasOffset() {
+		stops[0].Offset = 0
+	}
+	if count > 1 && !stops[count-1].HasOffset() {
+		stops[count-1].Offset = 1
+	}
+
+	// Ensure offsets are non-decreasing.
+	prev := 0
 	for i := range stops {
 		if !stops[i].HasOffset() {
-			switch i {
-			case 0:
-				stops[i].Offset = 0
-			case n - 1:
-				stops[i].Offset = 1
-			default:
-				continue
-			}
+			continue
 		}
 
-		if prev >= 0 && stops[i].Offset < stops[prev].Offset {
+		if stops[i].Offset < stops[prev].Offset {
 			stops[i].Offset = stops[prev].Offset
 		}
 
 		prev = i
 	}
+
+	// Evenly distribute runs of unspecified offsets.
+	if count > 2 {
+		start := -1
+		for i := range count {
+			if !stops[i].HasOffset() {
+				if start < 0 {
+					start = i
+				}
+				continue
+			}
+
+			if start < 0 {
+				continue
+			}
+
+			beg := stops[start-1].Offset
+			end := stops[i].Offset
+			step := (end - beg) / float64(i-start+1)
+			for j := start; j < i; j++ {
+				stops[j].Offset = beg + float64(j-start+1)*step
+			}
+
+			start = -1
+		}
+	}
 }
 
-// resolveHints returns new value
 func resolveHints(stops []GradientStop, mixer Mixer) []GradientStop {
 	resolved := make([]GradientStop, 0, len(stops))
 	resolved = append(resolved, stops[0])
@@ -69,6 +110,11 @@ func resolveHints(stops []GradientStop, mixer Mixer) []GradientStop {
 	return resolved
 }
 
+// resolveHints resolves color hints according to the CSS gradient
+// color-hint resolution algorithm.
+//
+// The algorithm is based on WebKit/Blink's CSSGradientValue
+// implementation. See third_party/licenses/blink.txt.
 func resolveHint(dst []GradientStop, left, hint, right GradientStop, mixer Mixer) []GradientStop {
 	offsetLeft := left.Offset
 	offset := hint.Offset

@@ -1,0 +1,18 @@
+Third-Party Software
+====================
+
+This project incorporates portions of the following projects:
+
+1. Blink
+   Used in: gradient stop/color-hint resolution.
+   Source:
+   third_party/blink/renderer/core/css/css_gradient_value.cc
+   License: BSD-style
+   See: third_party/LICENSES, "Blink - CSSGradientValue".
+
+2. Skia
+   Used in: dithering implementation.
+   Source:
+   src/gpu/DitherUtils.cpp
+   License: BSD-style
+   See: third_party/LICENSES, "Skia - DitherUtils".

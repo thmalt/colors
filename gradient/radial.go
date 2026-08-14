@@ -96,25 +96,27 @@ func (r Radial) Radii() (rx, ry float64) {
 	return r.rx, r.ry
 }
 
-// SetRadius sets the radius and changes the radial gradient shape to a circle.
+// SetRadius sets the radius as a fraction of half the minimum bounds dimension
+// and changes the radial gradient shape to a circle.
 func (r *Radial) SetRadius(radius float64) {
 	r.shape = RadialCircle
 	r.size = RadialExplicit
 
+	radius *= (min(r.width, r.height)) / 2
 	r.rx = radius
 	r.ry = radius
 
 	r.updateTransform()
 }
 
-// SetRadii sets the horizontal and vertical radii and changes the radial
-// gradient shape to an ellipse.
+// SetRadii sets the horizontal and vertical radii as fractions of half the
+// corresponding bounds dimensions and changes the radial gradient shape to an ellipse.
 func (r *Radial) SetRadii(rx, ry float64) {
 	r.shape = RadialEllipse
 	r.size = RadialExplicit
 
-	r.rx = rx
-	r.ry = ry
+	r.rx = rx * r.width / 2
+	r.ry = ry * r.height / 2
 
 	r.updateTransform()
 }

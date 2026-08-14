@@ -19,28 +19,7 @@ type GradientStop struct {
 func NewGradientWithOptions(opts InterpOptions, stops ...GradientStop) Gradient {
 	mixer := NewMixerWithOptions(opts)
 
-	stops = slices.Clone(stops)
-
-	// Convert color to space of mixer
-	for i := range stops {
-		if !stops[i].IsHint() {
-			stops[i].Color, _ = stops[i].Color.To(mixer.space)
-		}
-
-		if !stops[i].HasOffset() {
-			continue
-		}
-
-		if i < 1 {
-			continue
-		}
-
-		if stops[i].Offset < stops[i-1].Offset {
-			stops[i].Offset = stops[i-1].Offset
-		}
-	}
-
-	resolved := resolveStops(stops, mixer)
+	resolved := resolveStops(slices.Clone(stops), mixer)
 
 	return Gradient{
 		mixer: mixer,
