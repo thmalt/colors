@@ -3,6 +3,7 @@ package main
 import (
 	"image"
 	"image/png"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -15,6 +16,7 @@ var (
 	purple = colors.Oklab(0.52, 0.08, -0.14)
 	orange = colors.Oklab(0.72, 0.12, 0.12)
 
+	// css: in oklab, #1b469e, #504baa, #784db6, #b56c8a, #f87c3e
 	linearGradient = colors.NewGradientBuilder().
 			AddStop(blue).
 			AddStop(blue.Mix(purple, 0.5), 0.25).
@@ -23,7 +25,7 @@ var (
 			AddStop(orange, 1).
 			Build()
 
-	// css: radial-gradient(... in oklab, #3f5efb 0%, #00ff88, #ce436d, #0413bf 50%, #fc466b)
+	// css: in oklab, #3f5efb 0%, #00ff88, #ce436d, #0413bf 50%, #fc466b
 	radialGradient = colors.NewGradientBuilder().
 			AddStop(colors.Rgb(63, 94, 251)).
 			AddStop(colors.Rgb(0, 255, 136)).
@@ -32,7 +34,7 @@ var (
 			AddStop(colors.Rgb(252, 70, 107)).
 			Build()
 
-	// css: conic-gradient(... in oklab, #f69d3c, 10deg, #3f87a6, 350deg, #ebf8e1);
+	// css: in oklab, #f69d3c, 10deg, #3f87a6, 350deg, #ebf8e1
 	conicGradient = colors.NewGradientBuilder().
 			AddStop(colors.Rgb(0xf6, 0x9d, 0x3c)).
 			AddHint(gradient.DegToTurn(10)).
@@ -46,43 +48,80 @@ const width, height = 512, 256
 
 func main() {
 	// Create geometric gradients.
-	linear := gradient.NewLinear(width, height, gradient.ToBottomRight)
+
+	// css: linear-gradient(to bottom right, ...)
+	linearSpec := gradient.NewLinearSpec()
+	linearSpec.SetSize(width, height)
+	linearSpec.SetDirection(gradient.ToBottomRight)
+	linear, err := linearSpec.Build()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// css: radial-gradient(farthest-corner ...)
-	radial := gradient.NewRadial(width, height, 0.5, 0.5)
+	radialSpec := gradient.NewRadialSpec()
+	radialSpec.SetSize(width, height)
+	radial, err := radialSpec.Build()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// css: conic-gradient(from 0.25turn at 50% 30%, ...);
-	conic := gradient.NewConic(width, height, 0.5, 0.3, gradient.ToRight)
+	conicSpec := gradient.NewConicSpec()
+	conicSpec.SetSize(width, height)
+	conicSpec.SetCenter(0.5, 0.3)             // 50% 30%
+	conicSpec.SetStartAngle(gradient.ToRight) // 0.25turn
+	conic, err := conicSpec.Build()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Render conic gradient.
+	// css: conic-gradient(from 0.25turn at 50% 30% in oklab, #f69d3c, 10deg, #3f87a6, 350deg, #ebf8e1);
+	conicImage := renderImage(width, height, func(x, y float64) colors.Color {
+		t := conic.PositionAt(x, y)
+		return conicGradient.At(t)
+	}, true)
+	saveImage("output/conic.png", conicImage)
 
 	// Render linear gradient.
+	// css: linear-gradient(to bottom right in oklab, #1b469e, #504baa, #784db6, #b56c8a, #f87c3e)
 	linearImage := renderImage(width, height, func(x, y float64) colors.Color {
 		t := linear.PositionAt(x, y)
 		return linearGradient.At(t)
 	}, true)
 	saveImage("output/linear.png", linearImage)
 
+	// RadialCircle
+	radialSpec.SetShape(gradient.RadialCircle)
+	radial, err = radialSpec.Build()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Render circular radial gradient.
-	radial.SetShape(gradient.RadialCircle)
 	circleRadialImage := renderImage(width, height, func(x, y float64) colors.Color {
 		t := radial.PositionAt(x, y)
 		return radialGradient.At(t)
 	}, true)
 	saveImage("output/radial-circle.png", circleRadialImage)
 
+	// RadialEllipse
+	// css: radial-gradient(circle in oklab, #3f5efb, #00ff88, #ce436d, #0413bf 50%, #fc466b)
+	radialSpec.SetShape(gradient.RadialEllipse)
+	radial, err = radialSpec.Build()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Render elliptical radial gradient.
-	radial.SetShape(gradient.RadialEllipse)
+	// css: radial-gradient(in oklab, #3f5efb, #00ff88, #ce436d, #0413bf 50%, #fc466b)
 	ellipseRadialImage := renderImage(width, height, func(x, y float64) colors.Color {
 		t := radial.PositionAt(x, y)
 		return radialGradient.At(t)
 	}, true)
 	saveImage("output/radial-ellipse.png", ellipseRadialImage)
 
-	// Render conic gradient.
-	conicImage := renderImage(width, height, func(x, y float64) colors.Color {
-		t := conic.PositionAt(x, y)
-		return conicGradient.At(t)
-	}, true)
-	saveImage("output/conic.png", conicImage)
 }
 
 func renderImage(width, height float64, fn func(x, y float64) colors.Color, dither bool) *image.RGBA64 {

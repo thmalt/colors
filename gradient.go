@@ -6,14 +6,25 @@ import (
 	"sort"
 )
 
-type Gradient struct {
-	mixer Mixer
-	stops []GradientStop
-}
-
 type GradientStop struct {
 	Color  Color
 	Offset float64
+}
+
+type SpreadMethod uint8
+
+const (
+	SpreadPad SpreadMethod = iota
+	SpreadRepeat
+	SpreadReflect
+)
+
+type Gradient struct {
+	spread SpreadMethod
+
+	mixer Mixer
+
+	stops []GradientStop
 }
 
 func NewGradientWithOptions(opts InterpOptions, stops ...GradientStop) Gradient {
@@ -69,7 +80,13 @@ func (s GradientStop) IsHint() bool {
 	return !s.Color.space.IsValid()
 }
 
+func (g *Gradient) SetSpread(method SpreadMethod) {
+	g.spread = method
+}
+
 func (g Gradient) At(t float64) Color {
+	t = spread(t, g.spread)
+
 	i := g.findStop(t)
 
 	if i == 0 {
@@ -112,4 +129,20 @@ func (g Gradient) findStop(t float64) int {
 
 func (g Gradient) Stops() []GradientStop {
 	return slices.Clone(g.stops)
+}
+
+func spread(t float64, method SpreadMethod) float64 {
+	switch method {
+	case SpreadRepeat:
+		return t - math.Floor(t)
+	case SpreadReflect:
+		cycle := math.Floor(t)
+		local := t - cycle
+		if int(cycle)&1 != 0 {
+			return 1 - local
+		}
+		return local
+	default:
+		return clamp01(t)
+	}
 }
