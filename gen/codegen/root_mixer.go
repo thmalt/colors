@@ -7,6 +7,8 @@ import (
 func genRootPkgMixerMethod(ctx *Context, w *writer.GoWriter) {
 	channelCounts := buildChannelCounts(ctx)
 
+	w.Separate()
+
 	// func (m Mixer) Mix(c1, c2 Color, t float64) Color
 	w.Comment("Mix converts c1 and c2 to the mixer's color space and linearly interpolates them.")
 	w.Comment("The result is returned in the mixer's color space.")

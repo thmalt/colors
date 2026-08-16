@@ -124,6 +124,23 @@ func A98ToRec2020(r, g, b float64) (float64, float64, float64) {
 	return LinearRec2020ToRec2020(f1, f2, f3)
 }
 
+// Conversion path (4 steps):
+//
+//	Adobe RGB (1998)
+//	-> Linear Adobe RGB (1998)
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+//	-> Rec. 2020 Scene Referred
+func A98ToRec2020OETF(r, g, b float64) (float64, float64, float64) {
+	r, g, b = A98ToLinearA98(r, g, b)
+
+	f1 := 0.8773338416636568*r + 0.07749370651571999*g + 0.04517245182062312*b
+	f2 := 0.09662259146620364*r + 0.8915273202441808*g + 0.011850088289615656*b
+	f3 := 0.02292106270284832*r + 0.04303668501067944*g + 0.934042252286472*b
+
+	return LinearRec2020ToRec2020OETF(f1, f2, f3)
+}
+
 // Conversion path (3 steps):
 //
 //	Adobe RGB (1998)

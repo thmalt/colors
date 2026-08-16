@@ -12,233 +12,38 @@ func Clamp(c Color) Color {
 	}
 
 	switch c.space {
-	case space.Srgb:
-		return clampSrgb(c)
-	case space.LinearSrgb:
-		return clampLinearSrgb(c)
-	case space.DisplayP3:
-		return clampDisplayP3(c)
-	case space.LinearDisplayP3:
-		return clampLinearDisplayP3(c)
-	case space.A98:
-		return clampA98(c)
-	case space.LinearA98:
-		return clampLinearA98(c)
-	case space.ProPhoto:
-		return clampProPhoto(c)
-	case space.LinearProPhoto:
-		return clampLinearProPhoto(c)
-	case space.Rec2020:
-		return clampRec2020(c)
-	case space.LinearRec2020:
-		return clampLinearRec2020(c)
-	case space.XyzD50:
-		return clampXyzD50(c)
-	case space.XyzD65:
-		return clampXyzD65(c)
-	case space.XyYD50:
-		return clampXyYD50(c)
-	case space.XyYD65:
-		return clampXyYD65(c)
-	case space.LabD50:
-		return clampLabD50(c)
-	case space.LchD50:
-		return clampLchD50(c)
-	case space.LabD65:
-		return clampLabD65(c)
-	case space.LchD65:
-		return clampLchD65(c)
-	case space.LuvD50:
-		return clampLuvD50(c)
-	case space.LchuvD50:
-		return clampLchuvD50(c)
-	case space.LuvD65:
-		return clampLuvD65(c)
-	case space.LchuvD65:
-		return clampLchuvD65(c)
 	case space.Oklab:
-		return clampOklab(c)
+		c.c1 = clamp(c.c1, 0, 1)
+		return c
+	case space.LabD50, space.LabD65, space.LuvD50, space.LuvD65:
+		c.c1 = clamp(c.c1, 0, 100)
+		return c
 	case space.Oklch:
-		return clampOklch(c)
-	case space.Hsl:
-		return clampHsl(c)
-	case space.Hsv:
-		return clampHsv(c)
-	case space.Hwb:
-		return clampHwb(c)
+		c.c1 = clamp(c.c1, 0, 1)
+		c.c3 = wrap(c.c3, 0, 360)
+		return c
+	case space.XyYD50, space.XyYD65:
+		c.c1 = clamp(c.c1, 0, 1)
+		c.c2 = clamp(c.c2, 0, 1)
+		return c
+	case space.LchD50, space.LchD65, space.LchuvD50, space.LchuvD65:
+		c.c1 = clamp(c.c1, 0, 100)
+		c.c3 = wrap(c.c3, 0, 360)
+		return c
+	case space.Hsl, space.Hsv, space.Hwb:
+		c.c1 = wrap(c.c1, 0, 360)
+		c.c2 = clamp(c.c2, 0, 1)
+		c.c3 = clamp(c.c3, 0, 1)
+		return c
+	case space.Srgb, space.LinearSrgb, space.DisplayP3, space.LinearDisplayP3,
+		space.A98, space.LinearA98, space.ProPhoto, space.LinearProPhoto,
+		space.Rec2020, space.Rec2020OETF, space.LinearRec2020, space.XyzD50,
+		space.XyzD65:
+		c.c1 = clamp(c.c1, 0, 1)
+		c.c2 = clamp(c.c2, 0, 1)
+		c.c3 = clamp(c.c3, 0, 1)
+		return c
 	default:
 		return c
 	}
-}
-
-func clampSrgb(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
-}
-
-func clampLinearSrgb(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
-}
-
-func clampDisplayP3(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
-}
-
-func clampLinearDisplayP3(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
-}
-
-func clampA98(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
-}
-
-func clampLinearA98(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
-}
-
-func clampProPhoto(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
-}
-
-func clampLinearProPhoto(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
-}
-
-func clampRec2020(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
-}
-
-func clampLinearRec2020(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
-}
-
-func clampXyzD50(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
-}
-
-func clampXyzD65(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
-}
-
-func clampXyYD50(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c2 = clamp(c.c2, 0, 1)
-	return c
-}
-
-func clampXyYD65(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c2 = clamp(c.c2, 0, 1)
-	return c
-}
-
-func clampLabD50(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 100)
-	return c
-}
-
-func clampLchD50(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 100)
-	c.c3 = wrap(c.c3, 0, 360)
-	return c
-}
-
-func clampLabD65(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 100)
-	return c
-}
-
-func clampLchD65(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 100)
-	c.c3 = wrap(c.c3, 0, 360)
-	return c
-}
-
-func clampLuvD50(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 100)
-	return c
-}
-
-func clampLchuvD50(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 100)
-	c.c3 = wrap(c.c3, 0, 360)
-	return c
-}
-
-func clampLuvD65(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 100)
-	return c
-}
-
-func clampLchuvD65(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 100)
-	c.c3 = wrap(c.c3, 0, 360)
-	return c
-}
-
-func clampOklab(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	return c
-}
-
-func clampOklch(c Color) Color {
-	c.c1 = clamp(c.c1, 0, 1)
-	c.c3 = wrap(c.c3, 0, 360)
-	return c
-}
-
-func clampHsl(c Color) Color {
-	c.c1 = wrap(c.c1, 0, 360)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
-}
-
-func clampHsv(c Color) Color {
-	c.c1 = wrap(c.c1, 0, 360)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
-}
-
-func clampHwb(c Color) Color {
-	c.c1 = wrap(c.c1, 0, 360)
-	c.c2 = clamp(c.c2, 0, 1)
-	c.c3 = clamp(c.c3, 0, 1)
-	return c
 }

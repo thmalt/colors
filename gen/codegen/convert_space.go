@@ -70,6 +70,7 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 
 	funcName := FuncName(from.Name, to.Name)
 
+	w.Separate()
 	w.Comment("Conversion path (", len(path), " steps):")
 	w.Comment()
 	w.Comment("\t", from.DisplayName)

@@ -8,13 +8,13 @@ import (
 
 // Conversion path (4 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> Linear sRGB
 //	-> sRGB
-func Rec2020ToSrgb(r, g, b float64) (float64, float64, float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToSrgb(r, g, b float64) (float64, float64, float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	f1 := 1.6604910021084345*r - 0.5876411387885498*g - 0.07284986331988486*b
 	f2 := -0.12455047452159054*r + 1.13289989712596*g - 0.008349422604369473*b
@@ -25,12 +25,12 @@ func Rec2020ToSrgb(r, g, b float64) (float64, float64, float64) {
 
 // Conversion path (3 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> Linear sRGB
-func Rec2020ToLinearSrgb(r, g, b float64) (float64, float64, float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToLinearSrgb(r, g, b float64) (float64, float64, float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	f1 := 1.6604910021084345*r - 0.5876411387885498*g - 0.07284986331988486*b
 	f2 := -0.12455047452159054*r + 1.13289989712596*g - 0.008349422604369473*b
@@ -41,13 +41,13 @@ func Rec2020ToLinearSrgb(r, g, b float64) (float64, float64, float64) {
 
 // Conversion path (4 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> Linear Display P3
 //	-> Display P3
-func Rec2020ToDisplayP3(r, g, b float64) (float64, float64, float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToDisplayP3(r, g, b float64) (float64, float64, float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	f1 := 1.3435782525843316*r - 0.2821796705261357*g - 0.061398582058196184*b
 	f2 := -0.06529745278911954*r + 1.075787915848574*g - 0.010490463059454965*b
@@ -58,12 +58,12 @@ func Rec2020ToDisplayP3(r, g, b float64) (float64, float64, float64) {
 
 // Conversion path (3 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> Linear Display P3
-func Rec2020ToLinearDisplayP3(r, g, b float64) (float64, float64, float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToLinearDisplayP3(r, g, b float64) (float64, float64, float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	f1 := 1.3435782525843316*r - 0.2821796705261357*g - 0.061398582058196184*b
 	f2 := -0.06529745278911954*r + 1.075787915848574*g - 0.010490463059454965*b
@@ -74,13 +74,13 @@ func Rec2020ToLinearDisplayP3(r, g, b float64) (float64, float64, float64) {
 
 // Conversion path (4 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> Linear Adobe RGB (1998)
 //	-> Adobe RGB (1998)
-func Rec2020ToA98(r, g, b float64) (float64, float64, float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToA98(r, g, b float64) (float64, float64, float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	f1 := 1.1519783947159163*r - 0.09750305530240852*g - 0.05447533941350763*b
 	f2 := -0.12455047452159049*r + 1.13289989712596*g - 0.008349422604369452*b
@@ -91,12 +91,12 @@ func Rec2020ToA98(r, g, b float64) (float64, float64, float64) {
 
 // Conversion path (3 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> Linear Adobe RGB (1998)
-func Rec2020ToLinearA98(r, g, b float64) (float64, float64, float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToLinearA98(r, g, b float64) (float64, float64, float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	f1 := 1.1519783947159163*r - 0.09750305530240852*g - 0.05447533941350763*b
 	f2 := -0.12455047452159049*r + 1.13289989712596*g - 0.008349422604369452*b
@@ -107,14 +107,14 @@ func Rec2020ToLinearA98(r, g, b float64) (float64, float64, float64) {
 
 // Conversion path (5 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 //	-> Linear ProPhoto
 //	-> ProPhoto
-func Rec2020ToProPhoto(r, g, b float64) (float64, float64, float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToProPhoto(r, g, b float64) (float64, float64, float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	f1 := 0.8351932494374541*r + 0.04886530848171695*g + 0.11594144208082868*b
 	f2 := 0.054034572682208695*r + 0.9289098956999433*g + 0.017055531617847765*b
@@ -125,13 +125,13 @@ func Rec2020ToProPhoto(r, g, b float64) (float64, float64, float64) {
 
 // Conversion path (4 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 //	-> Linear ProPhoto
-func Rec2020ToLinearProPhoto(r, g, b float64) (float64, float64, float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToLinearProPhoto(r, g, b float64) (float64, float64, float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	f1 := 0.8351932494374541*r + 0.04886530848171695*g + 0.11594144208082868*b
 	f2 := 0.054034572682208695*r + 0.9289098956999433*g + 0.017055531617847765*b
@@ -142,22 +142,22 @@ func Rec2020ToLinearProPhoto(r, g, b float64) (float64, float64, float64) {
 
 // Conversion path (2 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
-//	-> Rec. 2020 Scene Referred
-func Rec2020ToRec2020OETF(r, g, b float64) (float64, float64, float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
-	return LinearRec2020ToRec2020OETF(r, g, b)
+//	-> Rec. 2020
+func Rec2020OETFToRec2020(r, g, b float64) (float64, float64, float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
+	return LinearRec2020ToRec2020(r, g, b)
 }
 
 // Conversion path (3 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
-func Rec2020ToXyzD50(r, g, b float64) (x, y, z float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToXyzD50(r, g, b float64) (x, y, z float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	x = 0.6735154631882759*r + 0.16569726370390456*g + 0.12508294953738702*b
 	y = 0.27905900514112053*r + 0.6753180057491096*g + 0.04562298910976964*b
@@ -168,11 +168,11 @@ func Rec2020ToXyzD50(r, g, b float64) (x, y, z float64) {
 
 // Conversion path (2 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
-func Rec2020ToXyzD65(r, g, b float64) (x, y, z float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToXyzD65(r, g, b float64) (x, y, z float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	x = 0.6369580483012911*r + 0.14461690358620835*g + 0.16888097516417208*b
 	y = 0.262700212011267*r + 0.6779980715188709*g + 0.05930171646986195*b
@@ -183,13 +183,13 @@ func Rec2020ToXyzD65(r, g, b float64) (x, y, z float64) {
 
 // Conversion path (4 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 //	-> CIE xyY
-func Rec2020ToXyYD50(r, g, b float64) (x, y, luminance float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToXyYD50(r, g, b float64) (x, y, luminance float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	x = 0.6735154631882759*r + 0.16569726370390456*g + 0.12508294953738702*b
 	y = 0.27905900514112053*r + 0.6753180057491096*g + 0.04562298910976964*b
@@ -200,12 +200,12 @@ func Rec2020ToXyYD50(r, g, b float64) (x, y, luminance float64) {
 
 // Conversion path (3 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> CIE xyY
-func Rec2020ToXyYD65(r, g, b float64) (x, y, luminance float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToXyYD65(r, g, b float64) (x, y, luminance float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	x = 0.6369580483012911*r + 0.14461690358620835*g + 0.16888097516417208*b
 	y = 0.262700212011267*r + 0.6779980715188709*g + 0.05930171646986195*b
@@ -216,13 +216,13 @@ func Rec2020ToXyYD65(r, g, b float64) (x, y, luminance float64) {
 
 // Conversion path (4 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 //	-> CIE Lab D50
-func Rec2020ToLabD50(r, g, b float64) (float64, float64, float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToLabD50(r, g, b float64) (float64, float64, float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	x := 0.6735154631882759*r + 0.16569726370390456*g + 0.12508294953738702*b
 	y := 0.27905900514112053*r + 0.6753180057491096*g + 0.04562298910976964*b
@@ -233,14 +233,14 @@ func Rec2020ToLabD50(r, g, b float64) (float64, float64, float64) {
 
 // Conversion path (5 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 //	-> CIE Lab D50
 //	-> CIE LCh D50
-func Rec2020ToLchD50(r, g, b float64) (l, c, h float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToLchD50(r, g, b float64) (l, c, h float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	x := 0.6735154631882759*r + 0.16569726370390456*g + 0.12508294953738702*b
 	y := 0.27905900514112053*r + 0.6753180057491096*g + 0.04562298910976964*b
@@ -252,12 +252,12 @@ func Rec2020ToLchD50(r, g, b float64) (l, c, h float64) {
 
 // Conversion path (3 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> CIE Lab D65
-func Rec2020ToLabD65(r, g, b float64) (float64, float64, float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToLabD65(r, g, b float64) (float64, float64, float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	x := 0.6369580483012911*r + 0.14461690358620835*g + 0.16888097516417208*b
 	y := 0.262700212011267*r + 0.6779980715188709*g + 0.05930171646986195*b
@@ -268,13 +268,13 @@ func Rec2020ToLabD65(r, g, b float64) (float64, float64, float64) {
 
 // Conversion path (4 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> CIE Lab D65
 //	-> CIE LCh D65
-func Rec2020ToLchD65(r, g, b float64) (l, c, h float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToLchD65(r, g, b float64) (l, c, h float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	x := 0.6369580483012911*r + 0.14461690358620835*g + 0.16888097516417208*b
 	y := 0.262700212011267*r + 0.6779980715188709*g + 0.05930171646986195*b
@@ -286,13 +286,13 @@ func Rec2020ToLchD65(r, g, b float64) (l, c, h float64) {
 
 // Conversion path (4 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 //	-> CIE Luv D50
-func Rec2020ToLuvD50(r, g, b float64) (l, u, v float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToLuvD50(r, g, b float64) (l, u, v float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	x := 0.6735154631882759*r + 0.16569726370390456*g + 0.12508294953738702*b
 	y := 0.27905900514112053*r + 0.6753180057491096*g + 0.04562298910976964*b
@@ -303,14 +303,14 @@ func Rec2020ToLuvD50(r, g, b float64) (l, u, v float64) {
 
 // Conversion path (5 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 //	-> CIE Luv D50
 //	-> CIE LChuv D50
-func Rec2020ToLchuvD50(r, g, b float64) (l, c, h float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToLchuvD50(r, g, b float64) (l, c, h float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	x := 0.6735154631882759*r + 0.16569726370390456*g + 0.12508294953738702*b
 	y := 0.27905900514112053*r + 0.6753180057491096*g + 0.04562298910976964*b
@@ -322,12 +322,12 @@ func Rec2020ToLchuvD50(r, g, b float64) (l, c, h float64) {
 
 // Conversion path (3 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> CIE Luv D65
-func Rec2020ToLuvD65(r, g, b float64) (l, u, v float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToLuvD65(r, g, b float64) (l, u, v float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	x := 0.6369580483012911*r + 0.14461690358620835*g + 0.16888097516417208*b
 	y := 0.262700212011267*r + 0.6779980715188709*g + 0.05930171646986195*b
@@ -338,13 +338,13 @@ func Rec2020ToLuvD65(r, g, b float64) (l, u, v float64) {
 
 // Conversion path (4 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> CIE Luv D65
 //	-> CIE LChuv D65
-func Rec2020ToLchuvD65(r, g, b float64) (l, c, h float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToLchuvD65(r, g, b float64) (l, c, h float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	x := 0.6369580483012911*r + 0.14461690358620835*g + 0.16888097516417208*b
 	y := 0.262700212011267*r + 0.6779980715188709*g + 0.05930171646986195*b
@@ -356,12 +356,12 @@ func Rec2020ToLchuvD65(r, g, b float64) (l, c, h float64) {
 
 // Conversion path (3 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> Oklab
-func Rec2020ToOklab(r, g, b float64) (float64, float64, float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToOklab(r, g, b float64) (float64, float64, float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	f1 := 0.6167557848654442*r + 0.36019840122646335*g + 0.023045813908092305*b
 	f2 := 0.2651330593926367*r + 0.6358393720678491*g + 0.09902756853951414*b
@@ -380,13 +380,13 @@ func Rec2020ToOklab(r, g, b float64) (float64, float64, float64) {
 
 // Conversion path (4 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> Oklab
 //	-> Oklch
-func Rec2020ToOklch(r, g, b float64) (l, c, h float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToOklch(r, g, b float64) (l, c, h float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	f1 := 0.6167557848654442*r + 0.36019840122646335*g + 0.023045813908092305*b
 	f2 := 0.2651330593926367*r + 0.6358393720678491*g + 0.09902756853951414*b
@@ -405,14 +405,14 @@ func Rec2020ToOklch(r, g, b float64) (l, c, h float64) {
 
 // Conversion path (5 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> Linear sRGB
 //	-> sRGB
 //	-> HSL
-func Rec2020ToHsl(r, g, b float64) (h, s, l float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToHsl(r, g, b float64) (h, s, l float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	f1 := 1.6604910021084345*r - 0.5876411387885498*g - 0.07284986331988486*b
 	f2 := -0.12455047452159054*r + 1.13289989712596*g - 0.008349422604369473*b
@@ -424,14 +424,14 @@ func Rec2020ToHsl(r, g, b float64) (h, s, l float64) {
 
 // Conversion path (5 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> Linear sRGB
 //	-> sRGB
 //	-> HSV
-func Rec2020ToHsv(r, g, b float64) (h, s, v float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToHsv(r, g, b float64) (h, s, v float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	f1 := 1.6604910021084345*r - 0.5876411387885498*g - 0.07284986331988486*b
 	f2 := -0.12455047452159054*r + 1.13289989712596*g - 0.008349422604369473*b
@@ -443,14 +443,14 @@ func Rec2020ToHsv(r, g, b float64) (h, s, v float64) {
 
 // Conversion path (5 steps):
 //
-//	Rec. 2020
+//	Rec. 2020 Scene Referred
 //	-> Linear Rec. 2020
 //	-> CIE XYZ D65
 //	-> Linear sRGB
 //	-> sRGB
 //	-> HWB
-func Rec2020ToHwb(r, g, b float64) (float64, float64, float64) {
-	r, g, b = Rec2020ToLinearRec2020(r, g, b)
+func Rec2020OETFToHwb(r, g, b float64) (float64, float64, float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
 
 	f1 := 1.6604910021084345*r - 0.5876411387885498*g - 0.07284986331988486*b
 	f2 := -0.12455047452159054*r + 1.13289989712596*g - 0.008349422604369473*b

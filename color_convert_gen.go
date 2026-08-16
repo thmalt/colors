@@ -7,6 +7,109 @@ import (
 	"github.com/thmalt/colors/space"
 )
 
+func (c Color) To(dst space.Space) (Color, error) {
+	if !c.space.IsValid() || !dst.IsValid() {
+		return Color{}, ErrInvalidSpace
+	}
+
+	if c.space == dst {
+		return c, nil
+	}
+
+	return c.to(dst)
+}
+
+func (c Color) to(dst space.Space) (Color, error) {
+	switch dst {
+	case space.Srgb:
+		r, g, b := c.Srgb()
+		return Color{space: space.Srgb, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
+	case space.LinearSrgb:
+		r, g, b := c.LinearSrgb()
+		return Color{space: space.LinearSrgb, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
+	case space.DisplayP3:
+		r, g, b := c.DisplayP3()
+		return Color{space: space.DisplayP3, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
+	case space.LinearDisplayP3:
+		r, g, b := c.LinearDisplayP3()
+		return Color{space: space.LinearDisplayP3, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
+	case space.A98:
+		r, g, b := c.A98()
+		return Color{space: space.A98, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
+	case space.LinearA98:
+		r, g, b := c.LinearA98()
+		return Color{space: space.LinearA98, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
+	case space.ProPhoto:
+		r, g, b := c.ProPhoto()
+		return Color{space: space.ProPhoto, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
+	case space.LinearProPhoto:
+		r, g, b := c.LinearProPhoto()
+		return Color{space: space.LinearProPhoto, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
+	case space.Rec2020:
+		r, g, b := c.Rec2020()
+		return Color{space: space.Rec2020, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
+	case space.Rec2020OETF:
+		r, g, b := c.Rec2020OETF()
+		return Color{space: space.Rec2020OETF, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
+	case space.LinearRec2020:
+		r, g, b := c.LinearRec2020()
+		return Color{space: space.LinearRec2020, c1: r, c2: g, c3: b, alpha: c.alpha}, nil
+	case space.XyzD50:
+		x, y, z := c.XyzD50()
+		return Color{space: space.XyzD50, c1: x, c2: y, c3: z, alpha: c.alpha}, nil
+	case space.XyzD65:
+		x, y, z := c.XyzD65()
+		return Color{space: space.XyzD65, c1: x, c2: y, c3: z, alpha: c.alpha}, nil
+	case space.XyYD50:
+		x, y, luminance := c.XyYD50()
+		return Color{space: space.XyYD50, c1: x, c2: y, c3: luminance, alpha: c.alpha}, nil
+	case space.XyYD65:
+		x, y, luminance := c.XyYD65()
+		return Color{space: space.XyYD65, c1: x, c2: y, c3: luminance, alpha: c.alpha}, nil
+	case space.LabD50:
+		l, a, b := c.LabD50()
+		return Color{space: space.LabD50, c1: l, c2: a, c3: b, alpha: c.alpha}, nil
+	case space.LchD50:
+		l, c1, h := c.LchD50()
+		return Color{space: space.LchD50, c1: l, c2: c1, c3: h, alpha: c.alpha}, nil
+	case space.LabD65:
+		l, a, b := c.LabD65()
+		return Color{space: space.LabD65, c1: l, c2: a, c3: b, alpha: c.alpha}, nil
+	case space.LchD65:
+		l, c1, h := c.LchD65()
+		return Color{space: space.LchD65, c1: l, c2: c1, c3: h, alpha: c.alpha}, nil
+	case space.LuvD50:
+		l, u, v := c.LuvD50()
+		return Color{space: space.LuvD50, c1: l, c2: u, c3: v, alpha: c.alpha}, nil
+	case space.LchuvD50:
+		l, c1, h := c.LchuvD50()
+		return Color{space: space.LchuvD50, c1: l, c2: c1, c3: h, alpha: c.alpha}, nil
+	case space.LuvD65:
+		l, u, v := c.LuvD65()
+		return Color{space: space.LuvD65, c1: l, c2: u, c3: v, alpha: c.alpha}, nil
+	case space.LchuvD65:
+		l, c1, h := c.LchuvD65()
+		return Color{space: space.LchuvD65, c1: l, c2: c1, c3: h, alpha: c.alpha}, nil
+	case space.Oklab:
+		l, a, b := c.Oklab()
+		return Color{space: space.Oklab, c1: l, c2: a, c3: b, alpha: c.alpha}, nil
+	case space.Oklch:
+		l, c1, h := c.Oklch()
+		return Color{space: space.Oklch, c1: l, c2: c1, c3: h, alpha: c.alpha}, nil
+	case space.Hsl:
+		h, s, l := c.Hsl()
+		return Color{space: space.Hsl, c1: h, c2: s, c3: l, alpha: c.alpha}, nil
+	case space.Hsv:
+		h, s, v := c.Hsv()
+		return Color{space: space.Hsv, c1: h, c2: s, c3: v, alpha: c.alpha}, nil
+	case space.Hwb:
+		h, w, b := c.Hwb()
+		return Color{space: space.Hwb, c1: h, c2: w, c3: b, alpha: c.alpha}, nil
+	default:
+		return Color{}, ErrInvalidSpace
+	}
+}
+
 // Srgb returns the color components in the [space.Srgb] color space.
 func (c Color) Srgb() (r, g, b float64) {
 	if c.space == space.Srgb {
@@ -30,6 +133,8 @@ func (c Color) Srgb() (r, g, b float64) {
 		return convert.LinearProPhotoToSrgb(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToSrgb(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToSrgb(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToSrgb(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -94,6 +199,8 @@ func (c Color) LinearSrgb() (r, g, b float64) {
 		return convert.LinearProPhotoToLinearSrgb(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToLinearSrgb(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToLinearSrgb(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -158,6 +265,8 @@ func (c Color) DisplayP3() (r, g, b float64) {
 		return convert.LinearProPhotoToDisplayP3(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToDisplayP3(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToDisplayP3(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToDisplayP3(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -222,6 +331,8 @@ func (c Color) LinearDisplayP3() (r, g, b float64) {
 		return convert.LinearProPhotoToLinearDisplayP3(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToLinearDisplayP3(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToLinearDisplayP3(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -286,6 +397,8 @@ func (c Color) A98() (r, g, b float64) {
 		return convert.LinearProPhotoToA98(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToA98(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToA98(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToA98(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -350,6 +463,8 @@ func (c Color) LinearA98() (r, g, b float64) {
 		return convert.LinearProPhotoToLinearA98(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToLinearA98(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToLinearA98(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToLinearA98(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -414,6 +529,8 @@ func (c Color) ProPhoto() (r, g, b float64) {
 		return convert.LinearProPhotoToProPhoto(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToProPhoto(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToProPhoto(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToProPhoto(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -478,6 +595,8 @@ func (c Color) LinearProPhoto() (r, g, b float64) {
 		return convert.ProPhotoToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -542,6 +661,8 @@ func (c Color) Rec2020() (r, g, b float64) {
 		return convert.ProPhotoToRec2020(c.c1, c.c2, c.c3)
 	case space.LinearProPhoto:
 		return convert.LinearProPhotoToRec2020(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToRec2020(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToRec2020(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -583,6 +704,72 @@ func (c Color) Rec2020() (r, g, b float64) {
 	}
 }
 
+// Rec2020OETF returns the color components in the [space.Rec2020OETF] color space.
+func (c Color) Rec2020OETF() (r, g, b float64) {
+	if c.space == space.Rec2020OETF {
+		return c.c1, c.c2, c.c3
+	}
+
+	switch c.space {
+	case space.Srgb:
+		return convert.SrgbToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return convert.LinearSrgbToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.DisplayP3:
+		return convert.DisplayP3ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return convert.LinearDisplayP3ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.A98:
+		return convert.A98ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return convert.LinearA98ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.ProPhoto:
+		return convert.ProPhotoToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return convert.LinearProPhotoToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.Rec2020:
+		return convert.Rec2020ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.LinearRec2020:
+		return convert.LinearRec2020ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return convert.XyzD50ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return convert.XyzD65ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return convert.XyYD50ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return convert.XyYD65ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.LabD50:
+		return convert.LabD50ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return convert.LchD50ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return convert.LabD65ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return convert.LchD65ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.LuvD50:
+		return convert.LuvD50ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return convert.LchuvD50ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return convert.LuvD65ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return convert.LchuvD65ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.Oklab:
+		return convert.OklabToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return convert.OklchToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.Hsl:
+		return convert.HslToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return convert.HsvToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return convert.HwbToRec2020OETF(c.c1, c.c2, c.c3)
+	default:
+		return
+	}
+}
+
 // LinearRec2020 returns the color components in the [space.LinearRec2020] color space.
 func (c Color) LinearRec2020() (r, g, b float64) {
 	if c.space == space.LinearRec2020 {
@@ -608,6 +795,8 @@ func (c Color) LinearRec2020() (r, g, b float64) {
 		return convert.LinearProPhotoToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.XyzD50:
 		return convert.XyzD50ToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.XyzD65:
@@ -672,6 +861,8 @@ func (c Color) XyzD50() (x, y, z float64) {
 		return convert.LinearProPhotoToXyzD50(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToXyzD50(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToXyzD50(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToXyzD50(c.c1, c.c2, c.c3)
 	case space.XyzD65:
@@ -736,6 +927,8 @@ func (c Color) XyzD65() (x, y, z float64) {
 		return convert.LinearProPhotoToXyzD65(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToXyzD65(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToXyzD65(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToXyzD65(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -800,6 +993,8 @@ func (c Color) XyYD50() (x, y, luminance float64) {
 		return convert.LinearProPhotoToXyYD50(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToXyYD50(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToXyYD50(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToXyYD50(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -864,6 +1059,8 @@ func (c Color) XyYD65() (x, y, luminance float64) {
 		return convert.LinearProPhotoToXyYD65(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToXyYD65(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToXyYD65(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToXyYD65(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -928,6 +1125,8 @@ func (c Color) LabD50() (l, a, b float64) {
 		return convert.LinearProPhotoToLabD50(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToLabD50(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToLabD50(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToLabD50(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -992,6 +1191,8 @@ func (c Color) LchD50() (float64, float64, float64) {
 		return convert.LinearProPhotoToLchD50(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToLchD50(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToLchD50(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToLchD50(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -1056,6 +1257,8 @@ func (c Color) LabD65() (l, a, b float64) {
 		return convert.LinearProPhotoToLabD65(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToLabD65(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToLabD65(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToLabD65(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -1120,6 +1323,8 @@ func (c Color) LchD65() (float64, float64, float64) {
 		return convert.LinearProPhotoToLchD65(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToLchD65(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToLchD65(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToLchD65(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -1184,6 +1389,8 @@ func (c Color) LuvD50() (l, u, v float64) {
 		return convert.LinearProPhotoToLuvD50(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToLuvD50(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToLuvD50(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToLuvD50(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -1248,6 +1455,8 @@ func (c Color) LchuvD50() (float64, float64, float64) {
 		return convert.LinearProPhotoToLchuvD50(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToLchuvD50(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToLchuvD50(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -1312,6 +1521,8 @@ func (c Color) LuvD65() (l, u, v float64) {
 		return convert.LinearProPhotoToLuvD65(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToLuvD65(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToLuvD65(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToLuvD65(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -1376,6 +1587,8 @@ func (c Color) LchuvD65() (float64, float64, float64) {
 		return convert.LinearProPhotoToLchuvD65(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToLchuvD65(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToLchuvD65(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -1440,6 +1653,8 @@ func (c Color) Oklab() (l, a, b float64) {
 		return convert.LinearProPhotoToOklab(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToOklab(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToOklab(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToOklab(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -1504,6 +1719,8 @@ func (c Color) Oklch() (float64, float64, float64) {
 		return convert.LinearProPhotoToOklch(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToOklch(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToOklch(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToOklch(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -1568,6 +1785,8 @@ func (c Color) Hsl() (h, s, l float64) {
 		return convert.LinearProPhotoToHsl(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToHsl(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToHsl(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToHsl(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -1632,6 +1851,8 @@ func (c Color) Hsv() (h, s, v float64) {
 		return convert.LinearProPhotoToHsv(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToHsv(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToHsv(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToHsv(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -1696,6 +1917,8 @@ func (c Color) Hwb() (h, w, b float64) {
 		return convert.LinearProPhotoToHwb(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToHwb(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return convert.Rec2020OETFToHwb(c.c1, c.c2, c.c3)
 	case space.LinearRec2020:
 		return convert.LinearRec2020ToHwb(c.c1, c.c2, c.c3)
 	case space.XyzD50:

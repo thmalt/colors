@@ -129,6 +129,24 @@ func ProPhotoToRec2020(r, g, b float64) (float64, float64, float64) {
 	return LinearRec2020ToRec2020(f1, f2, f3)
 }
 
+// Conversion path (5 steps):
+//
+//	ProPhoto
+//	-> Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+//	-> Rec. 2020 Scene Referred
+func ProPhotoToRec2020OETF(r, g, b float64) (float64, float64, float64) {
+	r, g, b = ProPhotoToLinearProPhoto(r, g, b)
+
+	f1 := 1.20065064757354*r - 0.05756371883832568*g - 0.1430869287352142*b
+	f2 := -0.06994344512182135*r + 1.080627953097656*g - 0.010684507975834796*b
+	f3 := 0.005541523587186888*r - 0.040782560669736234*g + 1.035241037082549*b
+
+	return LinearRec2020ToRec2020OETF(f1, f2, f3)
+}
+
 // Conversion path (4 steps):
 //
 //	ProPhoto

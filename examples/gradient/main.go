@@ -11,12 +11,22 @@ import (
 	"github.com/thmalt/colors/gradient"
 )
 
+const width, height = 512, 256
+
 var (
 	blue   = colors.Oklab(0.42, -0.02, -0.15)
 	purple = colors.Oklab(0.52, 0.08, -0.14)
 	orange = colors.Oklab(0.72, 0.12, 0.12)
 
-	// css: in oklab, #1b469e, #504baa, #784db6, #b56c8a, #f87c3e
+	// CSS:
+	// linear-gradient(
+	//   to bottom right in oklab,
+	//   #1b469e,
+	//   #504baa,
+	//   #784db6,
+	//   #b56c8a,
+	//   #f87c3e
+	// )
 	linearGradient = colors.NewGradientBuilder().
 			AddStop(blue).
 			AddStop(blue.Mix(purple, 0.5), 0.25).
@@ -25,16 +35,15 @@ var (
 			AddStop(orange, 1).
 			Build()
 
-	// css: in oklab, #3f5efb 0%, #00ff88, #ce436d, #0413bf 50%, #fc466b
-	radialGradient = colors.NewGradientBuilder().
-			AddStop(colors.Rgb(63, 94, 251)).
-			AddStop(colors.Rgb(0, 255, 136)).
-			AddStop(colors.Rgb(206, 67, 109)).
-			AddStop(colors.Rgb(4, 19, 191), 0.5).
-			AddStop(colors.Rgb(252, 70, 107)).
-			Build()
-
-	// css: in oklab, #f69d3c, 10deg, #3f87a6, 350deg, #ebf8e1
+	// CSS:
+	// conic-gradient(
+	//   from 0.25turn at 50% 30% in oklab,
+	//   #f69d3c,
+	//   10deg,
+	//   #3f87a6,
+	//   350deg,
+	//   #ebf8e1
+	// )
 	conicGradient = colors.NewGradientBuilder().
 			AddStop(colors.Rgb(0xf6, 0x9d, 0x3c)).
 			AddHint(gradient.DegToTurn(10)).
@@ -42,101 +51,97 @@ var (
 			AddHint(gradient.DegToTurn(350)).
 			AddStop(colors.Rgb(0xeb, 0xf8, 0xe1)).
 			Build()
+
+	// CSS:
+	// radial-gradient(
+	//   farthest-corner in oklab,
+	//   #3f5efb,
+	//   #00ff88,
+	//   #ce436d,
+	//   #0413bf 50%,
+	//   #fc466b
+	// )
+	radialGradient = colors.NewGradientBuilder().
+			AddStop(colors.Rgb(63, 94, 251)).
+			AddStop(colors.Rgb(0, 255, 136)).
+			AddStop(colors.Rgb(206, 67, 109)).
+			AddStop(colors.Rgb(4, 19, 191), 0.5).
+			AddStop(colors.Rgb(252, 70, 107)).
+			Build()
 )
 
-const width, height = 512, 256
-
 func main() {
-	// Create geometric gradients.
-
-	// css: linear-gradient(to bottom right, ...)
+	// CSS: linear-gradient(to bottom right, ...)
 	linearSpec := gradient.NewLinearSpec()
 	linearSpec.SetSize(width, height)
 	linearSpec.SetDirection(gradient.ToBottomRight)
+
 	linear, err := linearSpec.Build()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// css: radial-gradient(farthest-corner ...)
-	radialSpec := gradient.NewRadialSpec()
-	radialSpec.SetSize(width, height)
-	radial, err := radialSpec.Build()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// css: conic-gradient(from 0.25turn at 50% 30%, ...);
+	// CSS: conic-gradient(from 0.25turn at 50% 30%, ...)
 	conicSpec := gradient.NewConicSpec()
 	conicSpec.SetSize(width, height)
-	conicSpec.SetCenter(0.5, 0.3)             // 50% 30%
-	conicSpec.SetStartAngle(gradient.ToRight) // 0.25turn
+	conicSpec.SetCenter(0.5, 0.3)
+	conicSpec.SetStartAngle(gradient.ToRight)
+
 	conic, err := conicSpec.Build()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Render conic gradient.
-	// css: conic-gradient(from 0.25turn at 50% 30% in oklab, #f69d3c, 10deg, #3f87a6, 350deg, #ebf8e1);
-	conicImage := renderImage(width, height, func(x, y float64) colors.Color {
-		t := conic.PositionAt(x, y)
-		return conicGradient.At(t)
-	}, true)
-	saveImage("output/conic.png", conicImage)
+	// CSS: radial-gradient(farthest-corner, ...)
+	radialSpec := gradient.NewRadialSpec()
+	radialSpec.SetSize(width, height)
 
-	// Render linear gradient.
-	// css: linear-gradient(to bottom right in oklab, #1b469e, #504baa, #784db6, #b56c8a, #f87c3e)
-	linearImage := renderImage(width, height, func(x, y float64) colors.Color {
-		t := linear.PositionAt(x, y)
-		return linearGradient.At(t)
-	}, true)
-	saveImage("output/linear.png", linearImage)
-
-	// RadialCircle
+	// CSS: radial-gradient(circle, ...)
 	radialSpec.SetShape(gradient.RadialCircle)
-	radial, err = radialSpec.Build()
+
+	circle, err := radialSpec.Build()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Render circular radial gradient.
-	circleRadialImage := renderImage(width, height, func(x, y float64) colors.Color {
-		t := radial.PositionAt(x, y)
-		return radialGradient.At(t)
-	}, true)
-	saveImage("output/radial-circle.png", circleRadialImage)
-
-	// RadialEllipse
-	// css: radial-gradient(circle in oklab, #3f5efb, #00ff88, #ce436d, #0413bf 50%, #fc466b)
+	// CSS: radial-gradient(ellipse, ...)
 	radialSpec.SetShape(gradient.RadialEllipse)
-	radial, err = radialSpec.Build()
+
+	ellipse, err := radialSpec.Build()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Render elliptical radial gradient.
-	// css: radial-gradient(in oklab, #3f5efb, #00ff88, #ce436d, #0413bf 50%, #fc466b)
-	ellipseRadialImage := renderImage(width, height, func(x, y float64) colors.Color {
-		t := radial.PositionAt(x, y)
-		return radialGradient.At(t)
-	}, true)
-	saveImage("output/radial-ellipse.png", ellipseRadialImage)
+	// Render the examples.
+	saveImage("output/linear.png", renderImage(width, height, func(x, y float64) colors.Color {
+		return linearGradient.At(linear.PositionAt(x, y))
+	}))
+
+	saveImage("output/conic.png", renderImage(width, height, func(x, y float64) colors.Color {
+		return conicGradient.At(conic.PositionAt(x, y))
+	}))
+
+	saveImage("output/radial-circle.png", renderImage(width, height, func(x, y float64) colors.Color {
+		return radialGradient.At(circle.PositionAt(x, y))
+	}))
+
+	saveImage("output/radial-ellipse.png", renderImage(width, height, func(x, y float64) colors.Color {
+		return radialGradient.At(ellipse.PositionAt(x, y))
+	}))
 
 }
 
-func renderImage(width, height float64, fn func(x, y float64) colors.Color, dither bool) *image.RGBA64 {
+func renderImage(width, height float64, fn func(x, y float64) colors.Color) *image.RGBA64 {
 	w, h := int(width), int(height)
 	img := image.NewRGBA64(image.Rect(0, 0, w, h))
 
 	for y := range h {
 		for x := range w {
-			// Sample at pixel centers to avoid sampling at pixel corners. +0.5
+			// Sample the gradient at pixel centers rather than pixel corners.
 			c := fn(float64(x)+0.5, float64(y)+0.5)
 
-			if dither {
-				// Apply ordered dithering to reduce visible banding during quantization.
-				c = c.Dither(x, y)
-			}
+			// Dither before quantizing to RGBA64 to reduce visible banding.
+			c = c.Dither(x, y)
 
 			img.SetRGBA64(x, y, c.ToRGBA64())
 		}
@@ -145,20 +150,18 @@ func renderImage(width, height float64, fn func(x, y float64) colors.Color, dith
 	return img
 }
 
-func saveImage(file string, img image.Image) error {
+func saveImage(file string, img image.Image) {
 	if err := os.MkdirAll(filepath.Dir(file), 0o755); err != nil {
-		return err
+		log.Fatal(err)
 	}
 
 	f, err := os.Create(file)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 	defer f.Close()
 
 	if err := png.Encode(f, img); err != nil {
-		return err
+		log.Fatal(err)
 	}
-
-	return nil
 }

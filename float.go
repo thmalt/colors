@@ -24,6 +24,34 @@ func normalizeFloat(x float64) float64 {
 	return x
 }
 
+func appendFormatFloatPrec(dst []byte, x float64, precision int) []byte {
+	switch x {
+	case 0:
+		return append(dst, '0')
+	case 1:
+		return append(dst, '1')
+	case -1:
+		return append(dst, "-1"...)
+	}
+
+	start := len(dst)
+	dst = strconv.AppendFloat(dst, x, 'f', precision, 64)
+
+	n := len(dst)
+	for n > start && dst[n-1] == '0' {
+		n--
+	}
+	if n > start && dst[n-1] == '.' {
+		n--
+	}
+
+	return dst[:n]
+}
+
+func appendFormatNormalizedFloatPrec(dst []byte, x float64, precision int) []byte {
+	return appendFormatFloatPrec(dst, normalizeFloat(x), precision)
+}
+
 func formatFloatPrec(x float64, precision int) string {
 	switch x {
 	case 0:

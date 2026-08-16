@@ -148,6 +148,22 @@ func XyYD65ToRec2020(x, y, luminance float64) (r, g, b float64) {
 	return LinearRec2020ToRec2020(r, g, b)
 }
 
+// Conversion path (3 steps):
+//
+//	CIE xyY
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+//	-> Rec. 2020 Scene Referred
+func XyYD65ToRec2020OETF(x, y, luminance float64) (r, g, b float64) {
+	x, y, z := XyYToXyz(x, y, luminance)
+
+	r = 1.7166511879712683*x - 0.35567078377639255*y - 0.2533662813736599*z
+	g = -0.6666843518324892*x + 1.6164812366349393*y + 0.015768545813911142*z
+	b = 0.01763985744531079*x - 0.04277061325780853*y + 0.9421031212354739*z
+
+	return LinearRec2020ToRec2020OETF(r, g, b)
+}
+
 // Conversion path (2 steps):
 //
 //	CIE xyY

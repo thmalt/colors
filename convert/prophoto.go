@@ -15,11 +15,9 @@ func LinearProPhotoToProPhoto(r, g, b float64) (float64, float64, float64) {
 // decode
 func proPhotoToLinearProPhoto(x float64) float64 {
 	neg := x < 0
-	if neg {
-		x = -x
-	}
+	x = math.Abs(x)
 
-	if x < 1.0/32 { // old: 0.031248
+	if x < 1/32.0 { // old: 0.031248
 		x /= 16
 	} else {
 		x = math.Pow(x, 1.8)
@@ -28,19 +26,16 @@ func proPhotoToLinearProPhoto(x float64) float64 {
 	if neg {
 		return -x
 	}
-
 	return x
 }
 
 // encode
 func linearProPhotoToProPhoto(x float64) float64 {
 	neg := x < 0
-	if neg {
-		x = -x
-	}
+	x = math.Abs(x)
 
-	if x > 1.0/512 {
-		x = math.Pow(x, 1.0/1.8)
+	if x > 1/512.0 {
+		x = math.Pow(x, 1/1.8)
 	} else {
 		x *= 16
 	}
@@ -48,6 +43,5 @@ func linearProPhotoToProPhoto(x float64) float64 {
 	if neg {
 		return -x
 	}
-
 	return x
 }

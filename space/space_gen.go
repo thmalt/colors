@@ -20,6 +20,7 @@ const (
 	ProPhoto
 	LinearProPhoto
 	Rec2020
+	Rec2020OETF
 	LinearRec2020
 	XyzD50
 	XyzD65
@@ -84,6 +85,8 @@ func (s Space) String() string {
 		return "LinearProPhoto"
 	case Rec2020:
 		return "Rec2020"
+	case Rec2020OETF:
+		return "Rec2020OETF"
 	case LinearRec2020:
 		return "LinearRec2020"
 	case XyzD50:

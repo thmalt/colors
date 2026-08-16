@@ -326,6 +326,42 @@ var rec2020Info = spaceInfo{
 	useColorFunction: true,
 }
 
+var rec2020OETFInfo = spaceInfo{
+	name:        "Rec2020OETF",
+	displayName: "Rec. 2020 Scene Referred",
+	cssName:     "rec2020-oetf",
+	whitePoint:  D65,
+	coordinate:  Cartesian,
+	channels: []Channel{
+		{
+			Name:        "Red",
+			Symbol:      "R",
+			DisplayName: "Red",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+		{
+			Name:        "Green",
+			Symbol:      "G",
+			DisplayName: "Green",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+		{
+			Name:        "Blue",
+			Symbol:      "B",
+			DisplayName: "Blue",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+	},
+	hueIndex:         -1,
+	useColorFunction: true,
+}
+
 var linearRec2020Info = spaceInfo{
 	name:        "LinearRec2020",
 	displayName: "Linear Rec. 2020",

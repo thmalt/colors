@@ -13,6 +13,7 @@ var spaceInfos = [...]*spaceInfo{
 	&proPhotoInfo,
 	&linearProPhotoInfo,
 	&rec2020Info,
+	&rec2020OETFInfo,
 	&linearRec2020Info,
 	&xyzD50Info,
 	&xyzD65Info,
@@ -38,20 +39,20 @@ var spaceChannelCounts = [...]uint8{
 	0, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 3,
+	3, 3, 3, 3, 3,
 }
 
 // spaceHueIndexes is indexed by [Space] for fast hue-index lookup.
 var spaceHueIndexes = [...]int8{
 	-1, -1, -1, -1, -1, -1, -1, -1,
 	-1, -1, -1, -1, -1, -1, -1, -1,
-	2, -1, 2, -1, 2, -1, 2, -1,
-	2, 0, 0, 0,
+	-1, 2, -1, 2, -1, 2, -1, 2,
+	-1, 2, 0, 0, 0,
 }
 
 var spaceCoordinateSystems = [...]CoordinateSystem{
 	Cartesian, Cartesian, Cartesian, Cartesian, Cartesian, Cartesian, Cartesian, Cartesian,
 	Cartesian, Cartesian, Cartesian, Cartesian, Cartesian, Cartesian, Cartesian, Cartesian,
-	Polar, Cartesian, Polar, Polar, Polar, Polar, Polar, Cartesian,
-	Polar, Polar, Polar, Polar,
+	Cartesian, Polar, Cartesian, Polar, Polar, Polar, Polar, Polar,
+	Cartesian, Polar, Polar, Polar, Polar,
 }

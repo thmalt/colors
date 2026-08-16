@@ -285,6 +285,37 @@ func Rec2020Alpha(r, g, b, alpha float64) Color {
 	}
 }
 
+// Rec2020OETF returns a [Color] from Rec. 2020 Scene Referred components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
+func Rec2020OETF(r, g, b float64) Color {
+	return Color{
+		space: space.Rec2020OETF,
+		c1:    r,
+		c2:    g,
+		c3:    b,
+		alpha: 1,
+	}
+}
+
+// Rec2020OETF returns a [Color] from Rec. 2020 Scene Referred components with alpha.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
+//	alpha: [0, 1]
+func Rec2020OETFAlpha(r, g, b, alpha float64) Color {
+	return Color{
+		space: space.Rec2020OETF,
+		c1:    r,
+		c2:    g,
+		c3:    b,
+		alpha: alpha,
+	}
+}
+
 // LinearRec2020 returns a [Color] from Linear Rec. 2020 components.
 //
 //	r: [0, 1]

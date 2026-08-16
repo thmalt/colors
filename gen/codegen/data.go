@@ -183,6 +183,19 @@ var (
 			UseGenericColorFunction: true,
 		},
 		{
+			Name:        "Rec2020OETF",
+			Family:      "RGB",
+			Base:        "LinearRec2020",
+			DisplayName: "Rec. 2020 Scene Referred",
+			CssName:     "rec2020-oetf",
+			WhitePoint:  "D65",
+			Channels:    rgbChannels,
+
+			UseGenericColorFunction: true,
+
+			SnakeName: "rec2020_oetf",
+		},
+		{
 			Name:        "LinearRec2020",
 			Family:      "RGB",
 			Base:        "XyzD65",
@@ -411,6 +424,9 @@ var (
 
 		{Pair: Pair{"Rec2020", "LinearRec2020"}, Implemented: true},
 		{Pair: Pair{"LinearRec2020", "Rec2020"}, Implemented: true},
+
+		{Pair: Pair{"Rec2020OETF", "LinearRec2020"}, Implemented: true},
+		{Pair: Pair{"LinearRec2020", "Rec2020OETF"}, Implemented: true},
 
 		// standard converter
 		{Pair: Pair{"Srgb", "Hsl"}, Implemented: true},

@@ -12,7 +12,6 @@ import (
 func genRootPkgColorConvertMethods(ctx *Context, w *writer.GoWriter) {
 	for _, space := range ctx.BuildSpaces {
 		genRootPkgColorConvertMethod(ctx, w, space)
-		w.Separate()
 	}
 }
 
@@ -20,6 +19,7 @@ func genRootPkgColorConvertMethod(ctx *Context, w *writer.GoWriter, space *model
 	names := space.ChannelIdent()
 	hasNamedReturn := slices.Contains(names, "c")
 
+	w.Separate()
 	w.Comment(space.Name, " returns the color components in the [", ctx.SpacePkg.Join(space.Name), "] color space.")
 	w.Method("c Color", space.Name)
 	if !hasNamedReturn {
@@ -87,6 +87,60 @@ func genRootPkgColorConvertMethod(ctx *Context, w *writer.GoWriter, space *model
 			w.Return(joinRepeatN("0", len(names)))
 		}
 	}
+
+	w.End()
+}
+
+func genRootPkgColorTo(ctx *Context, w *writer.GoWriter) {
+	var spacePkg = ctx.SpacePkg
+	w.Separate()
+	w.Method("c Color", "To")
+	w.FuncParams("dst ", spacePkg.Join("Space"))
+	w.FuncResults("Color, error")
+	w.FuncBody()
+	w.If("!c.space.IsValid() || !dst.IsValid()")
+	w.Return("Color{}, ErrInvalidSpace")
+	w.End()
+	w.Separate()
+	w.If("c.space == dst")
+	w.Return("c, nil")
+	w.End()
+
+	w.Separate()
+	w.Return("c.to(dst)")
+	w.End()
+
+	w.Separate()
+	w.Method("c Color", "to")
+	w.FuncParams("dst ", spacePkg.Join("Space"))
+	w.FuncResults("Color, error")
+	w.FuncBody()
+
+	var scope VariableScope
+
+	w.Switch("dst")
+	for _, space := range ctx.BuildSpaces {
+		scope.Reset()
+		scope.Reserve("c")
+
+		spaceIdent := spacePkg.Join(space.Name)
+
+		w.Case(spaceIdent)
+		names := scope.ReserveUniqueAll(space.ChannelIdent()...)
+		w.LineWriteJoin(names, ", ")
+		w.Writef(" := c.%s()\n", space.Name)
+
+		w.ReturnInline("Color{")
+		w.Write("space: ", ctx.SpacePkg.Join(space.Name), ", ")
+		for i, name := range names {
+			w.Write("c", i+1, ": ", name, ", ")
+		}
+		w.Write("alpha: c.alpha")
+		w.Writeln("}, nil")
+	}
+	w.Default()
+	w.Return("Color{}, ErrInvalidSpace")
+	w.End()
 
 	w.End()
 }

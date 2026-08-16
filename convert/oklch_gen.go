@@ -225,6 +225,31 @@ func OklchToRec2020(l, c, h float64) (r, g, b float64) {
 	return LinearRec2020ToRec2020(r, g, b)
 }
 
+// Conversion path (4 steps):
+//
+//	Oklch
+//	-> Oklab
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+//	-> Rec. 2020 Scene Referred
+func OklchToRec2020OETF(l, c, h float64) (r, g, b float64) {
+	l, a, b := LchToLxy(l, c, h)
+
+	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
+	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
+	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
+
+	f1 *= f1 * f1
+	f2 *= f2 * f2
+	f3 *= f3 * f3
+
+	r = 2.1399067304346517*f1 - 1.2463894937606181*f2 + 0.10648276332596683*f3
+	g = -0.8847358357577675*f1 + 2.1632309383612007*f2 - 0.2784951026034336*f3
+	b = -0.048573746400444075*f1 - 0.454503149714096*f2 + 1.5030768961145398*f3
+
+	return LinearRec2020ToRec2020OETF(r, g, b)
+}
+
 // Conversion path (3 steps):
 //
 //	Oklch

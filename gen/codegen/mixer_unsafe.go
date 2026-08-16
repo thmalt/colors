@@ -24,6 +24,7 @@ func genMixerPkgUnsafeMixMethod(ctx *Context, w *writer.GoWriter, channelCount i
 	b := toVars(nil, "b", channelCount, "a")
 	c := toVars(nil, "c", channelCount, "a")
 
+	w.Separate()
 	w.Method("m UnsafeMixer", "Mix", channelCount)
 	w.FuncParams(
 		joinIdentsWithType(FloatType, a...),

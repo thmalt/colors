@@ -124,6 +124,23 @@ func DisplayP3ToRec2020(r, g, b float64) (float64, float64, float64) {
 	return LinearRec2020ToRec2020(f1, f2, f3)
 }
 
+// Conversion path (4 steps):
+//
+//	Display P3
+//	-> Linear Display P3
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+//	-> Rec. 2020 Scene Referred
+func DisplayP3ToRec2020OETF(r, g, b float64) (float64, float64, float64) {
+	r, g, b = DisplayP3ToLinearDisplayP3(r, g, b)
+
+	f1 := 0.7538330343617219*r + 0.1985973690526164*g + 0.047569596585661844*b
+	f2 := 0.0457438489653583*r + 0.9417772198116937*g + 0.012478931222948117*b
+	f3 := -0.0012103403545183947*r + 0.01760171730108999*g + 0.9836086230534284*b
+
+	return LinearRec2020ToRec2020OETF(f1, f2, f3)
+}
+
 // Conversion path (3 steps):
 //
 //	Display P3

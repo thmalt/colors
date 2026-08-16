@@ -171,6 +171,25 @@ func LchuvD50ToRec2020(l, c, h float64) (r, g, b float64) {
 	return LinearRec2020ToRec2020(r, g, b)
 }
 
+// Conversion path (5 steps):
+//
+//	CIE LChuv D50
+//	-> CIE Luv D50
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+//	-> Rec. 2020 Scene Referred
+func LchuvD50ToRec2020OETF(l, c, h float64) (r, g, b float64) {
+	l, u, v := LchToLxy(l, c, h)
+	x, y, z := LuvD50ToXyzD50(l, u, v)
+
+	r = 1.6471849046717661*x - 0.3936818981316474*y - 0.23595963848828277*z
+	g = -0.6826641074173821*x + 1.6477146127444076*y + 0.01281708338512088*z
+	b = 0.02966887665275662*x - 0.06292589642970013*y + 1.2535578201865771*z
+
+	return LinearRec2020ToRec2020OETF(r, g, b)
+}
+
 // Conversion path (4 steps):
 //
 //	CIE LChuv D50

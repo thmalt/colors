@@ -153,6 +153,23 @@ func LabD50ToRec2020(l, a, b float64) (float64, float64, float64) {
 	return LinearRec2020ToRec2020(r, g, b)
 }
 
+// Conversion path (4 steps):
+//
+//	CIE Lab D50
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+//	-> Rec. 2020 Scene Referred
+func LabD50ToRec2020OETF(l, a, b float64) (float64, float64, float64) {
+	x, y, z := LabD50ToXyzD50(l, a, b)
+
+	r := 1.6471849046717661*x - 0.3936818981316474*y - 0.23595963848828277*z
+	g := -0.6826641074173821*x + 1.6477146127444076*y + 0.01281708338512088*z
+	b = 0.02966887665275662*x - 0.06292589642970013*y + 1.2535578201865771*z
+
+	return LinearRec2020ToRec2020OETF(r, g, b)
+}
+
 // Conversion path (3 steps):
 //
 //	CIE Lab D50

@@ -14,8 +14,8 @@ const (
 	DefaultPrecision = 6
 	AlphaPrecision   = DefaultPrecision
 
-	FloatFormatNormalizedPrecFuncName = "formatNormalizedFloatPrec"
-	FloatFormatPrecFuncName           = "formatFloatPrec"
+	AppendFloatFormatNormalizedPrecFuncName = "appendFormatNormalizedFloatPrec"
+	AppendFloatFormatPrecFuncName           = "appendFormatFloatPrec"
 
 	PanicUnreachable = `panic("unreachable")`
 )

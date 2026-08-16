@@ -148,6 +148,25 @@ func HwbToRec2020(h, w, b float64) (float64, float64, float64) {
 	return LinearRec2020ToRec2020(f1, f2, f3)
 }
 
+// Conversion path (5 steps):
+//
+//	HWB
+//	-> sRGB
+//	-> Linear sRGB
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+//	-> Rec. 2020 Scene Referred
+func HwbToRec2020OETF(h, w, b float64) (float64, float64, float64) {
+	r, g, b := HwbToSrgb(h, w, b)
+	r, g, b = SrgbToLinearSrgb(r, g, b)
+
+	f1 := 0.627403895934699*r + 0.32928303837788375*g + 0.043313065687417225*b
+	f2 := 0.06909728935823199*r + 0.9195403950754589*g + 0.01136231556630916*b
+	f3 := 0.016391438875150228*r + 0.08801330787722578*g + 0.895595253247624*b
+
+	return LinearRec2020ToRec2020OETF(f1, f2, f3)
+}
+
 // Conversion path (4 steps):
 //
 //	HWB

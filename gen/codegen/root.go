@@ -30,13 +30,8 @@ func GenerateRootPkg(ctx *Context) {
 			ctx.SpacePkg.Path,
 		)
 
-		genRootPkgColorConvertMethods(ctx, w)
-	})
-
-	emitGoFile(w, pkg, pkgPath, "color_to", func(w *writer.GoWriter) {
-		w.Import(ctx.SpacePkg.Path)
-
 		genRootPkgColorTo(ctx, w)
+		genRootPkgColorConvertMethods(ctx, w)
 	})
 
 	emitGoFile(w, pkg, pkgPath, "color_constructors", func(w *writer.GoWriter) {
@@ -48,7 +43,7 @@ func GenerateRootPkg(ctx *Context) {
 	emitGoFile(w, pkg, pkgPath, "color_string", func(w *writer.GoWriter) {
 		w.Import(
 			"strconv",
-			"strings",
+			"unsafe",
 			ctx.SpacePkg.Path,
 		)
 
@@ -63,5 +58,11 @@ func GenerateRootPkg(ctx *Context) {
 		w.Import(ctx.SpacePkg.Path)
 
 		genRootPkgClamp(ctx, w)
+	})
+
+	emitGoFile(w, pkg, pkgPath, "gamut", func(w *writer.GoWriter) {
+		w.Import(ctx.SpacePkg.Path)
+
+		genRootPkgGamut(ctx, w)
 	})
 }

@@ -8,13 +8,12 @@ import (
 func genRootPkgColorConstructors(ctx *Context, w *writer.GoWriter) {
 	for _, space := range ctx.BuildSpaces {
 		genRootPkgSpaceColorConstructor(ctx, w, space, false)
-		w.Separate()
 		genRootPkgSpaceColorConstructor(ctx, w, space, true)
-		w.Separate()
 	}
 }
 
 func genRootPkgSpaceColorConstructor(ctx *Context, w *writer.GoWriter, space *model.Space, withAlpha bool) {
+	w.Separate()
 	w.CommentFunc(func(w *writer.GoWriter) {
 		w.Write(space.Name, " returns a [Color] from ", space.DisplayName, " components")
 		if withAlpha {
