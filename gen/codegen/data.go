@@ -450,26 +450,26 @@ var (
 		{Pair: Pair{"XyzD65", "LuvD65"}, Implemented: true},
 
 		// generate with Call Ops
-		{Pair: Pair{"XyYD50", "XyzD50"}, Ops: []Op{{Type: OpCall, Pair: Pair{"XyY", "Xyz"}}}},
-		{Pair: Pair{"XyzD50", "XyYD50"}, Ops: []Op{{Type: OpCall, Pair: Pair{"Xyz", "XyY"}}}},
+		{Pair: Pair{"XyYD50", "XyzD50"}, Ops: []Op{{Type: OpCall, Func: Pair{"XyY", "Xyz"}}}},
+		{Pair: Pair{"XyzD50", "XyYD50"}, Ops: []Op{{Type: OpCall, Func: Pair{"Xyz", "XyY"}}}},
 
-		{Pair: Pair{"XyYD65", "XyzD65"}, Ops: []Op{{Type: OpCall, Pair: Pair{"XyY", "Xyz"}}}},
-		{Pair: Pair{"XyzD65", "XyYD65"}, Ops: []Op{{Type: OpCall, Pair: Pair{"Xyz", "XyY"}}}},
+		{Pair: Pair{"XyYD65", "XyzD65"}, Ops: []Op{{Type: OpCall, Func: Pair{"XyY", "Xyz"}}}},
+		{Pair: Pair{"XyzD65", "XyYD65"}, Ops: []Op{{Type: OpCall, Func: Pair{"Xyz", "XyY"}}}},
 
-		{Pair: Pair{"LabD50", "LchD50"}, Ops: []Op{{Type: OpCall, Pair: Pair{"Lxy", "Lch"}}}},
-		{Pair: Pair{"LchD50", "LabD50"}, Ops: []Op{{Type: OpCall, Pair: Pair{"Lch", "Lxy"}}}},
+		{Pair: Pair{"LabD50", "LchD50"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lxy", "Lch"}}}},
+		{Pair: Pair{"LchD50", "LabD50"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lch", "Lxy"}}}},
 
-		{Pair: Pair{"LabD65", "LchD65"}, Ops: []Op{{Type: OpCall, Pair: Pair{"Lxy", "Lch"}}}},
-		{Pair: Pair{"LchD65", "LabD65"}, Ops: []Op{{Type: OpCall, Pair: Pair{"Lch", "Lxy"}}}},
+		{Pair: Pair{"LabD65", "LchD65"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lxy", "Lch"}}}},
+		{Pair: Pair{"LchD65", "LabD65"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lch", "Lxy"}}}},
 
-		{Pair: Pair{"LuvD50", "LchuvD50"}, Ops: []Op{{Type: OpCall, Pair: Pair{"Lxy", "Lch"}}}},
-		{Pair: Pair{"LchuvD50", "LuvD50"}, Ops: []Op{{Type: OpCall, Pair: Pair{"Lch", "Lxy"}}}},
+		{Pair: Pair{"LuvD50", "LchuvD50"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lxy", "Lch"}}}},
+		{Pair: Pair{"LchuvD50", "LuvD50"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lch", "Lxy"}}}},
 
-		{Pair: Pair{"LuvD65", "LchuvD65"}, Ops: []Op{{Type: OpCall, Pair: Pair{"Lxy", "Lch"}}}},
-		{Pair: Pair{"LchuvD65", "LuvD65"}, Ops: []Op{{Type: OpCall, Pair: Pair{"Lch", "Lxy"}}}},
+		{Pair: Pair{"LuvD65", "LchuvD65"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lxy", "Lch"}}}},
+		{Pair: Pair{"LchuvD65", "LuvD65"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lch", "Lxy"}}}},
 
-		{Pair: Pair{"Oklab", "Oklch"}, Ops: []Op{{Type: OpCall, Pair: Pair{"Lxy", "Lch"}}}},
-		{Pair: Pair{"Oklch", "Oklab"}, Ops: []Op{{Type: OpCall, Pair: Pair{"Lch", "Lxy"}}}},
+		{Pair: Pair{"Oklab", "Oklch"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lxy", "Lch"}}}},
+		{Pair: Pair{"Oklch", "Oklab"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lch", "Lxy"}}}},
 
 		// generate with Matrix Ops
 		// Oklab
@@ -543,21 +543,3 @@ var (
 		},
 	}
 )
-
-func LookupSpace(name string) *model.Space {
-	for _, space := range Spaces {
-		if name == space.Name {
-			return &space
-		}
-	}
-	return nil
-}
-
-func LookupWhitePoint(name string) *model.WhitePoint {
-	for _, whitePoint := range WhitePoints {
-		if name == whitePoint.Name {
-			return &whitePoint
-		}
-	}
-	return nil
-}

@@ -10,7 +10,7 @@ import (
 )
 
 func genRootPkgColorConvertMethods(ctx *Context, w *writer.GoWriter) {
-	for _, space := range ctx.BuildSpaces {
+	for _, space := range ctx.BuiltSpaces {
 		genRootPkgColorConvertMethod(ctx, w, space)
 	}
 }
@@ -46,7 +46,7 @@ func genRootPkgColorConvertMethod(ctx *Context, w *writer.GoWriter, space *model
 	sub.Switch("c.space")
 
 	var foundPath = false
-	for _, src := range ctx.BuildSpaces {
+	for _, src := range ctx.BuiltSpaces {
 		if space == src {
 			continue
 		}
@@ -119,7 +119,7 @@ func genRootPkgColorTo(ctx *Context, w *writer.GoWriter) {
 	var scope VariableScope
 
 	w.Switch("dst")
-	for _, space := range ctx.BuildSpaces {
+	for _, space := range ctx.BuiltSpaces {
 		scope.Reset()
 		scope.Reserve("c")
 

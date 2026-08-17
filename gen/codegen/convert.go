@@ -15,7 +15,7 @@ func GenerateConvertPkg(ctx *Context) {
 
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
-	w.SetFormatSource(ctx.FormatSource)
+	w.SetFormatSource(ctx.Opts.FormatSource)
 
 	pkg := ctx.ConvertPkg.Name
 	pkgPath := filepath.Join(ctx.Directory, ctx.ConvertPkg.Path)
@@ -29,7 +29,7 @@ func GenerateConvertPkg(ctx *Context) {
 
 func genConvertPkgConversionFiles(ctx *Context, w *writer.GoWriter, pkg, pkgPath string) {
 	ctx.TotalConversionGenerated = 0
-	for i, space := range ctx.BuildSpaces {
+	for i, space := range ctx.BuiltSpaces {
 		if space == nil {
 			log.Printf("space at index %d is nil\n", i)
 			continue

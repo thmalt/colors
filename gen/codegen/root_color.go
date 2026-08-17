@@ -9,7 +9,7 @@ import (
 
 func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 	maxChannelCnt := 0
-	for _, space := range ctx.BuildSpaces {
+	for _, space := range ctx.BuiltSpaces {
 		maxChannelCnt = max(maxChannelCnt, space.ChannelCount())
 	}
 

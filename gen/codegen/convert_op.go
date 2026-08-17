@@ -1,6 +1,8 @@
 package codegen
 
-import "github.com/thmalt/colors/gen/codegen/data"
+import (
+	"github.com/thmalt/colors/gen/codegen/data"
+)
 
 type GenOp struct {
 	Op
@@ -33,6 +35,7 @@ func buildNodeGenOps(ctx *Context, node *Node, expand bool) []GenOp {
 			Op: Op{
 				Type: OpCall,
 				Pair: node.Fn.Pair,
+				Func: node.Fn.Pair,
 			},
 			InputVars:  node.From.ChannelIdent(),
 			OutputVars: node.To.ChannelIdent(),
@@ -66,6 +69,14 @@ func buildNodeGenOps(ctx *Context, node *Node, expand bool) []GenOp {
 		}
 
 		ops = append(ops, genOps...)
+	}
+
+	if ops[0].Pair.IsNone() {
+		ops[0].Pair = node.Fn.Pair
+	}
+
+	if n := len(ops) - 1; ops[n].Pair.IsNone() {
+		ops[n].Pair = node.Fn.Pair
 	}
 
 	return ops
@@ -174,11 +185,12 @@ func combineOps(ops []GenOp) []GenOp {
 	out := make([]GenOp, 0, len(ops))
 
 	var (
-		mat      [9]float64
-		hasMat   bool
-		lastPair Pair
-		input    []string
-		output   []string
+		mat       [9]float64
+		hasMat    bool
+		firstPair Pair
+		lastPair  Pair
+		input     []string
+		output    []string
 	)
 
 	flush := func() {
@@ -187,10 +199,14 @@ func combineOps(ops []GenOp) []GenOp {
 		}
 
 		m := mat
+		if lastPair.IsNone() {
+			lastPair = firstPair
+		}
+
 		out = append(out, GenOp{
 			Op: Op{
 				Type:   OpMatrix,
-				Pair:   lastPair,
+				Pair:   Pair{firstPair.From, lastPair.To},
 				Matrix: &m,
 			},
 			InputVars:  input,
@@ -206,7 +222,7 @@ func combineOps(ops []GenOp) []GenOp {
 		if op.Type == OpMatrix {
 			if !hasMat {
 				mat = *op.Matrix
-				lastPair = op.Pair
+				firstPair = op.Pair
 				input = op.InputVars // first matrix
 				output = op.OutputVars
 				hasMat = true
@@ -225,4 +241,79 @@ func combineOps(ops []GenOp) []GenOp {
 	flush()
 
 	return out
+}
+
+func replaceMatrixWithCall(ops []GenOp) []GenOp {
+	var out []GenOp
+	var replaced bool
+
+	n := len(ops)
+	for i := 0; i < n; {
+		op := ops[i]
+		if op.Type == OpCall {
+			replaced = true
+		}
+
+		if i+2 < n &&
+			ops[i].Type == OpMatrix &&
+			(ops[i+1].Type == OpCbrt || ops[i+1].Type == OpCube) &&
+			ops[i+2].Type == OpMatrix {
+			if out == nil {
+				out = make([]GenOp, 0, n)
+				out = append(out, ops[:i]...)
+			}
+
+			pair := Pair{ops[i].Pair.From, ops[i+2].Pair.To}
+			out = append(out, GenOp{
+				Op: Op{
+					Type: OpCall,
+					Func: pair,
+				},
+				InputVars:  op.InputVars,
+				OutputVars: ops[i+2].OutputVars,
+			})
+
+			i += 3
+			continue
+		}
+
+		if op.Type == OpMatrix {
+			if out == nil {
+				out = make([]GenOp, 0, n)
+				out = append(out, ops[:i]...)
+			}
+
+			out = append(out, GenOp{
+				Op: Op{
+					Type: OpCall,
+					Func: op.Pair,
+				},
+				InputVars:  op.InputVars,
+				OutputVars: op.OutputVars,
+			})
+			i++
+			continue
+		}
+
+		if out != nil {
+			out = append(out, op)
+		}
+		i++
+	}
+
+	if replaced && len(out) > 0 {
+		return out
+	}
+	return ops
+}
+
+func isShareableOps(ops []GenOp) bool {
+	switch len(ops) {
+	case 1:
+		return ops[0].Type == OpMatrix
+	case 3:
+		return ops[0].Type == OpMatrix && (ops[1].Type == OpCbrt || ops[1].Type == OpCube) && ops[2].Type == OpMatrix
+	default:
+		return false
+	}
 }

@@ -6,14 +6,14 @@ import (
 )
 
 func genSpacePkgSpaceInfo(ctx *Context, w *writer.GoWriter) {
-	for _, space := range ctx.BuildSpaces {
+	for _, space := range ctx.BuiltSpaces {
 		w.Begin("var ", spaceInfoName(space), " = spaceInfo")
 
 		w.LineWritef("name:        %q,\n", space.Name)
 		w.LineWritef("displayName: %q,\n", space.DisplayName)
 		w.LineWritef("cssName:     %q,\n", space.CssName)
 
-		if whitePoint := LookupWhitePoint(space.WhitePoint); whitePoint != nil {
+		if whitePoint := ctx.WhitePointByName(space.WhitePoint); whitePoint != nil {
 			w.LineWritef("whitePoint: %s,\n", whitePoint.Name)
 		}
 

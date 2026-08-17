@@ -27,7 +27,7 @@ func genRootPkgColorStringMethod(ctx *Context, w *writer.GoWriter) {
 	w.Separate()
 	w.Switch("c.space")
 
-	funcNames := make([]string, len(ctx.BuildSpaces))
+	funcNames := make([]string, len(ctx.BuiltSpaces))
 	for _, group := range groups {
 		for _, index := range group.Indexes {
 			funcNames[index] = "appendFormat" + group.Spaces[0].Name
@@ -35,7 +35,7 @@ func genRootPkgColorStringMethod(ctx *Context, w *writer.GoWriter) {
 	}
 
 	vars := appendVars(nil, "c.c", ctx.MaxChannelCount)
-	for i, space := range ctx.BuildSpaces {
+	for i, space := range ctx.BuiltSpaces {
 		w.Case(ctx.SpacePkg.Join(space.Name))
 
 		if space.UseGenericColorFunction {
@@ -98,7 +98,7 @@ func rootPkgColorStringsSpace(ctx *Context, w *writer.GoWriter) []groupSpaceValu
 	defer w.Reset()
 
 	gs := newGroupSpace()
-	for idx, space := range ctx.BuildSpaces {
+	for idx, space := range ctx.BuiltSpaces {
 		w.Reset()
 		w.In()
 

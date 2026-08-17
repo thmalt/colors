@@ -27,10 +27,8 @@ type pair struct {
 }
 
 func (g *Graph) Build(ctx *Context, funcs []ConvertFunc) error {
-	//if g.Nodes == nil {
 	g.Nodes = make(map[*model.Space][]Node)
 	g.cached = make(map[pair][]*Node)
-	//}
 
 	for _, fn := range funcs {
 		from, to := ctx.ResolveSpacePair(fn.Pair)

@@ -14,7 +14,7 @@ func GenerateSpacePkg(ctx *Context) {
 
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
-	w.SetFormatSource(ctx.FormatSource)
+	w.SetFormatSource(ctx.Opts.FormatSource)
 
 	pkg := ctx.SpacePkg.Name
 	pkgPath := filepath.Join(ctx.Directory, ctx.SpacePkg.Path)
@@ -39,7 +39,7 @@ func GenerateSpacePkg(ctx *Context) {
 }
 
 func genSpacePkgSpace(ctx *Context, w *writer.GoWriter) {
-	w.LineWriteln("type Space uint", smallestUintType(len(ctx.BuildSpaces)))
+	w.LineWriteln("type Space uint", smallestUintType(len(ctx.BuiltSpaces)))
 
 	w.Separate()
 	w.BeginGroup("const ")
@@ -50,13 +50,13 @@ func genSpacePkgSpace(ctx *Context, w *writer.GoWriter) {
 
 	var aliasSpaces []*model.Space
 
-	for i, space := range ctx.BuildSpaces {
+	for i, space := range ctx.BuiltSpaces {
 		if i == 0 {
 			firstSpace = space.Name
 		}
 
 		if space.Description != "" {
-			if ctx.SeparateAfterComment {
+			if ctx.Opts.SeparateAfterComment {
 				w.Separate()
 			}
 
@@ -104,7 +104,7 @@ func genSpacePkgSpace(ctx *Context, w *writer.GoWriter) {
 	w.Case("InvalidSpace")
 	w.Return(`"Invalid"`)
 
-	for _, space := range ctx.BuildSpaces {
+	for _, space := range ctx.BuiltSpaces {
 		w.Case(space.Name)
 		w.Return('"', space.Name, '"')
 	}

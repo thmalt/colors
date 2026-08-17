@@ -6,7 +6,7 @@ import (
 )
 
 func genRootPkgColorConstructors(ctx *Context, w *writer.GoWriter) {
-	for _, space := range ctx.BuildSpaces {
+	for _, space := range ctx.BuiltSpaces {
 		genRootPkgSpaceColorConstructor(ctx, w, space, false)
 		genRootPkgSpaceColorConstructor(ctx, w, space, true)
 	}

@@ -42,12 +42,17 @@ type Op struct {
 	Type OpType
 	Pair Pair
 
+	Func   Pair
 	Matrix *[9]float64
 }
 
 type Pair struct {
 	From string
 	To   string
+}
+
+func (p Pair) IsNone() bool {
+	return p.From == "" && p.To == ""
 }
 
 func (p Pair) FuncName() string {

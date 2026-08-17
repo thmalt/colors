@@ -13,7 +13,7 @@ func GenerateMixerPkg(ctx *Context) {
 
 	var w = writer.NewGoWriter()
 	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
-	w.SetFormatSource(ctx.FormatSource)
+	w.SetFormatSource(ctx.Opts.FormatSource)
 
 	pkg := ctx.MixerPkg.Name
 	pkgPath := filepath.Join(ctx.Directory, ctx.MixerPkg.Path)

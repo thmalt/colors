@@ -43,7 +43,7 @@ func joinIdentsWithType(typ string, vars ...string) string {
 
 func buildChannelCounts(ctx *Context) []bool {
 	counts := make([]bool, ctx.MaxChannelCount+1)
-	for _, space := range ctx.BuildSpaces {
+	for _, space := range ctx.BuiltSpaces {
 		counts[space.ChannelCount()] = true
 	}
 	return counts
@@ -51,7 +51,7 @@ func buildChannelCounts(ctx *Context) []bool {
 
 func buildHueIndexes(ctx *Context) [][]bool {
 	indexes := make([][]bool, ctx.MaxChannelCount+1)
-	for _, space := range ctx.BuildSpaces {
+	for _, space := range ctx.BuiltSpaces {
 		count := space.ChannelCount()
 		if index := space.HueIndex(); index >= 0 {
 			if len(indexes[count]) == 0 {

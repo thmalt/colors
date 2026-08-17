@@ -17,23 +17,25 @@ func (p Pkg) Join(ident string) string {
 	return p.Name + "." + ident
 }
 
-type Optimization int
-
-const (
-	OptimizeSize Optimization = iota
-	OptimizeSpeed
-)
+type Options struct {
+	EmbedMatrix          bool
+	FormatSource         bool
+	SeparateAfterComment bool
+}
 
 type Context struct {
 	Module    string
+	Path      string
 	Directory string
 
 	Spaces      []*model.Space
 	WhitePoints []*model.WhitePoint
+	BuiltSpaces []*model.Space
 
-	BuildSpaces []*model.Space
-	Funcs       []ConvertFunc
-	Graph       Graph
+	Funcs []ConvertFunc
+	Graph Graph
+
+	spaceMap map[string]*model.Space
 
 	MaxChannelCount int
 
@@ -43,12 +45,8 @@ type Context struct {
 	InterpPkg  Pkg
 	MixerPkg   Pkg
 
-	Path string
-
-	FormatSource         bool
-	SeparateAfterComment bool
-
-	Optimization Optimization
+	// Options
+	Opts Options
 
 	impls map[Pair]struct{}
 
@@ -56,51 +54,50 @@ type Context struct {
 	TotalConversionGenerated int
 }
 
+func NewContext(opts Options) *Context {
+	return &Context{
+		Opts:     opts,
+		spaceMap: make(map[string]*model.Space),
+	}
+}
+
 func (ctx *Context) SetModuleByType(a any) {
 	ctx.Module, ctx.Path = ModuleAndPathByType(a)
 }
 
-func (ctx *Context) AddSpaces(spaces []model.Space) error {
-	for _, space := range spaces {
-		err := ctx.AddSpace(&space)
-		if err != nil {
-			return err
+func (ctx *Context) AddSpace(spaces ...model.Space) error {
+	for i := range spaces {
+		if ctx.hasSpace(spaces[i].Name) {
+			return fmt.Errorf("space %q at %d already exists", spaces[i].Name, i)
 		}
+	}
+
+	for i := range spaces {
+		ctx.addSpace(spaces[i])
 	}
 
 	return nil
 }
 
-func (ctx *Context) AddSpace(spaces ...*model.Space) error {
-	if len(spaces) == 0 {
-		return nil
-	}
+func (ctx *Context) addSpace(space model.Space) {
+	ctx.spaceMap[space.Name] = &space
+	ctx.Spaces = append(ctx.Spaces, &space)
+}
 
-	for i, space := range spaces {
-		if space == nil {
-			return fmt.Errorf("space at index %d is nil", i)
-		}
-
-		if ctx.SpaceByName(space.Name) != nil {
-			return fmt.Errorf("space %q at %d already exists", space.Name, i)
-		}
-
-		ctx.Spaces = append(ctx.Spaces, space)
-	}
-
-	return nil
+func (ctx *Context) hasSpace(name string) bool {
+	_, ok := ctx.spaceMap[name]
+	return ok
 }
 
 func (ctx *Context) AddWhitePoint(whitePoints ...model.WhitePoint) error {
-	if len(whitePoints) == 0 {
-		return nil
+	for i := range whitePoints {
+		name := whitePoints[i].Name
+		if ctx.WhitePointByName(name) != nil {
+			return fmt.Errorf("whitePoint %q at %d already exists", name, i)
+		}
 	}
 
-	for i, whitePoint := range whitePoints {
-		if ctx.WhitePointByName(whitePoint.Name) != nil {
-			return fmt.Errorf("whitePoint %q at %d already exists", whitePoint.Name, i)
-		}
-
+	for _, whitePoint := range whitePoints {
 		ctx.WhitePoints = append(ctx.WhitePoints, &whitePoint)
 	}
 
@@ -132,7 +129,8 @@ func (ctx *Context) Build() error {
 
 	ctx.impls = make(map[Pair]struct{})
 
-	for _, fn := range ctx.Funcs {
+	for i := range ctx.Funcs {
+		fn := &ctx.Funcs[i]
 		if fn.Implemented {
 			from, to := ctx.ResolveSpacePair(fn.Pair)
 			if from == nil || to == nil {
@@ -154,10 +152,8 @@ func (ctx *Context) Build() error {
 }
 
 func (ctx *Context) SpaceByName(name string) *model.Space {
-	for _, space := range ctx.Spaces {
-		if space != nil && space.Name == name {
-			return space
-		}
+	if s, ok := ctx.spaceMap[name]; ok {
+		return s
 	}
 
 	return nil
@@ -174,9 +170,10 @@ func (ctx *Context) WhitePointByName(name string) *model.WhitePoint {
 }
 
 func (ctx *Context) ConvertFuncByPair(pair Pair) *ConvertFunc {
-	for _, fn := range ctx.Funcs {
+	for i := range ctx.Funcs {
+		fn := &ctx.Funcs[i]
 		if fn.Pair == pair {
-			return &fn
+			return fn
 		}
 	}
 
@@ -206,5 +203,5 @@ func (ctx *Context) buildSpaces() {
 	}
 
 	ctx.MaxChannelCount = maxChannelCount
-	ctx.BuildSpaces = out
+	ctx.BuiltSpaces = out
 }

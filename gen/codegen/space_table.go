@@ -8,7 +8,7 @@ import (
 func genSpacePkgTables(ctx *Context, w *writer.GoWriter) {
 	w.Begin("var spaceInfos = [...]*spaceInfo")
 	w.LineWriteln("nil,")
-	for _, space := range ctx.BuildSpaces {
+	for _, space := range ctx.BuiltSpaces {
 		w.LineWriteln("&", spaceInfoName(space), ",")
 	}
 	w.End()
@@ -19,7 +19,7 @@ func genSpacePkgTables(ctx *Context, w *writer.GoWriter) {
 	w.Begin("var spaceChannelCounts = [...]uint", smallestUintType(ctx.MaxChannelCount))
 	w.LineWrite("0, ")
 	next()
-	for _, space := range ctx.BuildSpaces {
+	for _, space := range ctx.BuiltSpaces {
 		w.Write(space.ChannelCount(), ", ")
 		next()
 	}
@@ -31,7 +31,7 @@ func genSpacePkgTables(ctx *Context, w *writer.GoWriter) {
 	w.Begin("var spaceHueIndexes = [...]int8")
 	w.LineWrite("-1, ")
 	next()
-	for _, space := range ctx.BuildSpaces {
+	for _, space := range ctx.BuiltSpaces {
 		w.Write(space.HueIndex(), ", ")
 		next()
 	}
@@ -42,7 +42,7 @@ func genSpacePkgTables(ctx *Context, w *writer.GoWriter) {
 	w.Begin("var spaceCoordinateSystems = [...]CoordinateSystem")
 	w.LineWrite(model.CoordinateSystem(0), ", ")
 	next()
-	for _, space := range ctx.BuildSpaces {
+	for _, space := range ctx.BuiltSpaces {
 		w.Write(space.Coordinate, ", ")
 		next()
 	}

@@ -14,13 +14,14 @@ import (
 func main() {
 	var enableDebug = os.Getenv("DEBUG") != ""
 
-	var ctx codegen.Context
-	ctx.Optimization = codegen.OptimizeSpeed
+	ctx := codegen.NewContext(codegen.Options{
+		EmbedMatrix: true,
 
-	// ctx.SeparateAfterComment = true
+		// SeparateAfterComment: true,
+	})
 
 	if !enableDebug {
-		ctx.FormatSource = true
+		ctx.Opts.FormatSource = true
 	}
 
 	ctx.SetModuleByType(ctx)
@@ -41,7 +42,7 @@ func main() {
 	ctx.MixerPkg.Name = "mixer"
 	ctx.MixerPkg.Path = "/mixer"
 
-	ctx.AddSpaces(codegen.Spaces[:])
+	ctx.AddSpace(codegen.Spaces[:]...)
 	ctx.AddConvertFunc(codegen.ConvertFuncs[:]...)
 	ctx.AddWhitePoint(codegen.WhitePoints[:]...)
 
@@ -54,42 +55,42 @@ func main() {
 
 	if enableDebug {
 		fmt.Println("Spaces order:")
-		for i, space := range ctx.BuildSpaces {
+		for i, space := range ctx.BuiltSpaces {
 			fmt.Printf("%d\t%s\n", i, space.Name)
 		}
-		logGraphPaths(&ctx)
+		logGraphPaths(ctx)
 	}
 
 	fmt.Println("Generating convert...")
-	codegen.GenerateConvertPkg(&ctx)
+	codegen.GenerateConvertPkg(ctx)
 
 	fmt.Println("Generating space...")
-	codegen.GenerateSpacePkg(&ctx)
+	codegen.GenerateSpacePkg(ctx)
 
 	fmt.Println("Generating colors...")
-	codegen.GenerateRootPkg(&ctx)
+	codegen.GenerateRootPkg(ctx)
 
 	fmt.Println("Generating mixer...")
-	codegen.GenerateMixerPkg(&ctx)
+	codegen.GenerateMixerPkg(ctx)
 
 	end := time.Now()
 
-	if !ctx.FormatSource {
+	if !ctx.Opts.FormatSource {
 		fmt.Println()
 		fmt.Println("NOTICE: Source formatting is disabled")
 	}
 
 	fmt.Println()
-	fmt.Printf("INFO: Spaces: %d, Conversion: %d\n", len(ctx.BuildSpaces), ctx.TotalConversionGenerated)
+	fmt.Printf("INFO: Spaces: %d, Conversion: %d\n", len(ctx.BuiltSpaces), ctx.TotalConversionGenerated)
 	fmt.Printf("Completed in %v.\n", end.Sub(beg))
 }
 
 func logGraphPaths(ctx *codegen.Context) {
 	fmt.Println()
 	fmt.Println("Conversion path counts:")
-	for i, s := range ctx.BuildSpaces {
-		for j := i + 1; j < len(ctx.BuildSpaces); j++ {
-			to := ctx.BuildSpaces[j]
+	for i, s := range ctx.BuiltSpaces {
+		for j := i + 1; j < len(ctx.BuiltSpaces); j++ {
+			to := ctx.BuiltSpaces[j]
 
 			allPath := ctx.Graph.FindAllPath(s, to)
 			fmt.Println(s.Name, "->", to.Name, len(allPath))

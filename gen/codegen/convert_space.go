@@ -11,7 +11,7 @@ import (
 
 func genConvertPkgSpaceConversions(ctx *Context, w *writer.GoWriter, space *model.Space) int {
 	count := 0
-	for i, to := range ctx.BuildSpaces {
+	for i, to := range ctx.BuiltSpaces {
 		if to == nil {
 			log.Printf("space at index %d is nil\n", i)
 			continue
@@ -50,6 +50,10 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 
 	ops := buildGenOps(ctx, path, true)
 	ops = combineOps(ops)
+
+	if !ctx.Opts.EmbedMatrix {
+		ops = replaceMatrixWithCall(ops)
+	}
 
 	paramsVars := from.ChannelIdent()
 	resultsVars := to.ChannelIdent()
@@ -104,7 +108,7 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 			}
 			separate = false
 
-			fn := op.Pair.FuncName()
+			fn := op.Func.FuncName()
 
 			if isLastOp {
 				sub.ReturnInline()

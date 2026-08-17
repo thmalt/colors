@@ -82,7 +82,7 @@ func rootPkgInGamutGroup(ctx *Context, w *writer.GoWriter) []groupSpaceValue {
 	defer w.Reset()
 
 	gs := newGroupSpace()
-	for i, space := range ctx.BuildSpaces {
+	for i, space := range ctx.BuiltSpaces {
 		w.Reset()
 
 		count := 0
