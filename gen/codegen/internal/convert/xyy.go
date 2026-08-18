@@ -4,14 +4,6 @@ package convert
 // Conversions to color spaces with a different reference white automatically
 // perform chromatic adaptation.
 
-func XyzD65ToXyY(x, y, z float64) (float64, float64, float64) {
-	return XyzToXyY(x, y, z)
-}
-
-func XyYToXyzD65(x, y, Y float64) (float64, float64, float64) {
-	return XyYToXyz(x, y, Y)
-}
-
 func XyzToXyY(x, y, z float64) (float64, float64, float64) {
 	sum := x + y + z
 	if sum == 0 {

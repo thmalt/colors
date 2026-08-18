@@ -5,9 +5,29 @@ package colors
 // Mix converts c1 and c2 to the mixer's color space and linearly interpolates them.
 // The result is returned in the mixer's color space.
 func (m Mixer) Mix(c1, c2 Color, t float64) Color {
-	c1, _ = c1.To(m.space)
-	c2, _ = c2.To(m.space)
+	if c1.space != m.space {
+		c1, _ = c1.To(m.space)
+	}
+	if c2.space != m.space {
+		c2, _ = c2.To(m.space)
+	}
 
+	switch m.channels {
+	case 3:
+		x1, x2, x3, alpha := m.unsafe.Mix3(
+			c1.c1, c1.c2, c1.c3, c1.alpha,
+			c2.c1, c2.c2, c2.c3, c2.alpha,
+			t,
+		)
+		return Color{space: m.space, c1: x1, c2: x2, c3: x3, alpha: alpha}
+	default:
+		return Color{}
+	}
+}
+
+// UnsafeMix linearly interpolates c1 and c2 in the mixer's color space.
+// It assumes both colors are already in the mixer's color space.
+func (m Mixer) UnsafeMix(c1, c2 Color, t float64) Color {
 	switch m.channels {
 	case 3:
 		x1, x2, x3, alpha := m.unsafe.Mix3(

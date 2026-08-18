@@ -7,8 +7,22 @@ import (
 func genRootPkgMixerMethod(ctx *Context, w *writer.GoWriter) {
 	channelCounts := buildChannelCounts(ctx)
 
-	w.Separate()
+	sub := w.SubWriter()
+	sub.In()
+	sub.Switch("m.channels")
+	for channelCount, ok := range channelCounts {
+		if !ok {
+			continue
+		}
 
+		sub.Case(channelCount)
+		genRootPkgMixerMethodCase(sub, "m.unsafe.Mix", "m.space", channelCount)
+	}
+	sub.Default()
+	sub.Return("Color{}")
+	sub.End()
+
+	w.Separate()
 	// func (m Mixer) Mix(c1, c2 Color, t float64) Color
 	w.Comment("Mix converts c1 and c2 to the mixer's color space and linearly interpolates them.")
 	w.Comment("The result is returned in the mixer's color space.")
@@ -17,25 +31,27 @@ func genRootPkgMixerMethod(ctx *Context, w *writer.GoWriter) {
 	w.FuncResults("Color")
 	w.FuncBody()
 
+	w.If("c1.space != m.space")
 	w.LineWriteln("c1, _ = c1.To(m.space)")
+	w.End()
+	w.If("c2.space != m.space")
 	w.LineWriteln("c2, _ = c2.To(m.space)")
-
-	w.Separate()
-	w.Switch("m.channels")
-	for channelCount, ok := range channelCounts {
-		if !ok {
-			continue
-		}
-
-		w.Case(channelCount)
-		genRootPkgMixerMethodCase(w, "m.unsafe.Mix", "m.space", channelCount)
-	}
-	w.Default()
-	w.Return("Color{}")
 	w.End()
 
-	w.End()
 	w.Separate()
+	w.Write(sub.Bytes())
+	w.End()
+
+	w.Separate()
+	// func (m Mixer) UnsafeMix(c1, c2 Color, t float64) Color
+	w.Comment("UnsafeMix linearly interpolates c1 and c2 in the mixer's color space.")
+	w.Comment("It assumes both colors are already in the mixer's color space.")
+	w.Method("m Mixer", "UnsafeMix")
+	w.FuncParams("c1, c2 Color, t ", FloatType)
+	w.FuncResults("Color")
+	w.FuncBody()
+	w.Drain(sub)
+	w.End()
 }
 
 func genRootPkgMixerMethodCase(w *writer.GoWriter, name, space string, channelCount int) {

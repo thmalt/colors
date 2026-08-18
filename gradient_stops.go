@@ -20,7 +20,9 @@ import (
 func resolveStops(stops []GradientStop, mixer Mixer) []GradientStop {
 	resolveStopOffsets(stops)
 	convertStopColors(stops, mixer.Space())
-	return resolveHints(stops, mixer)
+	resolved := resolveHints(stops, mixer)
+	precomputeInvRange(resolved)
+	return resolved
 }
 
 func convertStopColors(stops []GradientStop, dst space.Space) {
@@ -30,6 +32,17 @@ func convertStopColors(stops []GradientStop, dst space.Space) {
 		}
 
 		stops[i].Color, _ = stops[i].Color.To(dst)
+	}
+}
+
+func precomputeInvRange(stops []GradientStop) {
+	for i := 0; i+1 < len(stops); i++ {
+		d := stops[i+1].Offset - stops[i].Offset
+		if d == 0 {
+			stops[i].invRange = 0
+		} else {
+			stops[i].invRange = 1 / d
+		}
 	}
 }
 
@@ -140,8 +153,8 @@ func resolveHint(dst []GradientStop, left, hint, right GradientStop, mixer Mixer
 	var stops [9]GradientStop
 
 	if leftDist > rightDist {
-		for y := 0; y < 7; y++ {
-			stops[y].Offset = offsetLeft + leftDist*(float64(7.0+y)/13.0)
+		for i := range 7 {
+			stops[i].Offset = offsetLeft + leftDist*(float64(7+i)/13.0)
 		}
 
 		stops[7].Offset = offset + rightDist*(1.0/3.0)
@@ -150,8 +163,8 @@ func resolveHint(dst []GradientStop, left, hint, right GradientStop, mixer Mixer
 		stops[0].Offset = offsetLeft + leftDist*(1.0/3.0)
 		stops[1].Offset = offsetLeft + leftDist*(2.0/3.0)
 
-		for y := 0; y < 7; y++ {
-			stops[y+2].Offset = offset + rightDist*(float64(y)/13.0)
+		for i := range 7 {
+			stops[i+2].Offset = offset + rightDist*(float64(i)/13.0)
 		}
 
 	}
