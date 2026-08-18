@@ -14,6 +14,7 @@ type Color struct {
 	c1 float64
 	c2 float64
 	c3 float64
+	c4 float64
 
 	alpha float64
 }
@@ -26,6 +27,8 @@ func (c Color) Channel(index int) (float64, bool) {
 	}
 
 	switch index {
+	case 3:
+		return c.c4, true
 	case 2:
 		return c.c3, true
 	case 1:
@@ -40,6 +43,8 @@ func (c Color) Channel(index int) (float64, bool) {
 // Channels returns the channel values of c in the order defined by its [space.Space].
 func (c Color) Channels() []float64 {
 	switch c.ChannelCount() {
+	case 4:
+		return []float64{c.c1, c.c2, c.c3, c.c4}
 	case 3:
 		return []float64{c.c1, c.c2, c.c3}
 	case 2:
@@ -53,6 +58,8 @@ func (c Color) Channels() []float64 {
 
 func (c Color) AppendChannels(dst []float64) []float64 {
 	switch c.ChannelCount() {
+	case 4:
+		return append(dst, c.c1, c.c2, c.c3, c.c4)
 	case 3:
 		return append(dst, c.c1, c.c2, c.c3)
 	case 2:
@@ -62,4 +69,14 @@ func (c Color) AppendChannels(dst []float64) []float64 {
 	default:
 		return dst
 	}
+}
+
+// Channel3 returns the first 3 channels.
+func (c Color) Channel3() (c1, c2, c3 float64) {
+	return c.c1, c.c2, c.c3
+}
+
+// Channel4 returns the first 4 channels.
+func (c Color) Channel4() (c1, c2, c3, c4 float64) {
+	return c.c1, c.c2, c.c3, c.c4
 }

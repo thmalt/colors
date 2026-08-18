@@ -8,10 +8,7 @@ import (
 )
 
 func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
-	maxChannelCnt := 0
-	for _, space := range ctx.BuiltSpaces {
-		maxChannelCnt = max(maxChannelCnt, space.ChannelCount())
-	}
+	maxChannelCnt := ctx.MaxChannelCount
 
 	// type Color struct{}
 	spaceIdent := ctx.SpacePkg.Join("Space")
@@ -30,7 +27,6 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 	w.End()
 
 	w.Separate()
-
 	// func (c Color) Channel(index int) (float64, bool)
 	w.Comment("Channel returns the channel value at index in the order defined by the")
 	w.Commentf("color's [%s]. The returned boolean reports whether index is valid.", spaceIdent)
@@ -70,9 +66,8 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 	}
 
 	w.Separate()
-
 	// func (c Color) Channels() []float64
-	w.Commentf("Channels returns the channel values of c in the order defined by its [%s].", spaceIdent)
+	w.Commentf("Channels returns the channel values of c in the order defined by its [%s].\n", spaceIdent)
 	w.Method("c Color", "Channels")
 	w.FuncResults("[]", FloatType)
 	w.FuncBody()
@@ -89,7 +84,6 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 	w.End()
 
 	w.Separate()
-
 	// func (c Color) AppendChannels(dst []float64) []float64
 	w.Method("c Color", "AppendChannels")
 	w.FuncParams("dst []", FloatType)
@@ -105,4 +99,25 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 	w.End()
 
 	w.End()
+}
+
+func genRootPkgColorChannel(ctx *Context, w *writer.GoWriter) {
+	channels := buildChannelCounts(ctx)
+
+	vars := appendVars(nil, "c", ctx.MaxChannelCount)
+	fields := appendVars(nil, "c.c", ctx.MaxChannelCount)
+	for count, ok := range channels {
+		if !ok {
+			continue
+		}
+		w.Separate()
+		// func (c Color) Channel?() (c1, c2, ... float64)
+		w.Commentf("Channel%d returns the first %d channels.\n", count, count)
+		w.Method("c Color", "Channel", count)
+		w.FuncResults(joinIdentsWithType(FloatType, vars[:count]...))
+		w.FuncBody()
+		w.ReturnInline()
+		w.Writeln(strings.Join(fields[:count], ", "))
+		w.End()
+	}
 }

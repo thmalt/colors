@@ -22,6 +22,7 @@ func GenerateRootPkg(ctx *Context) {
 		w.Import(ctx.SpacePkg.Path)
 
 		genRootPkgColor(ctx, w)
+		genRootPkgColorChannel(ctx, w)
 	})
 
 	emitGoFile(w, pkg, pkgPath, "color_convert", func(w *writer.GoWriter) {

@@ -20,6 +20,13 @@ func (m Mixer) Mix(c1, c2 Color, t float64) Color {
 			t,
 		)
 		return Color{space: m.space, c1: x1, c2: x2, c3: x3, alpha: alpha}
+	case 4:
+		x1, x2, x3, x4, alpha := m.unsafe.Mix4(
+			c1.c1, c1.c2, c1.c3, c1.c4, c1.alpha,
+			c2.c1, c2.c2, c2.c3, c2.c4, c2.alpha,
+			t,
+		)
+		return Color{space: m.space, c1: x1, c2: x2, c3: x3, c4: x4, alpha: alpha}
 	default:
 		return Color{}
 	}
@@ -36,6 +43,13 @@ func (m Mixer) UnsafeMix(c1, c2 Color, t float64) Color {
 			t,
 		)
 		return Color{space: m.space, c1: x1, c2: x2, c3: x3, alpha: alpha}
+	case 4:
+		x1, x2, x3, x4, alpha := m.unsafe.Mix4(
+			c1.c1, c1.c2, c1.c3, c1.c4, c1.alpha,
+			c2.c1, c2.c2, c2.c3, c2.c4, c2.alpha,
+			t,
+		)
+		return Color{space: m.space, c1: x1, c2: x2, c3: x3, c4: x4, alpha: alpha}
 	default:
 		return Color{}
 	}

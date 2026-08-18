@@ -202,6 +202,6 @@ func (ctx *Context) buildSpaces() {
 		maxChannelCount = max(maxChannelCount, s.ChannelCount())
 	}
 
-	ctx.MaxChannelCount = maxChannelCount
+	ctx.MaxChannelCount = max(MinGeneratedChannelCount, maxChannelCount)
 	ctx.BuiltSpaces = out
 }

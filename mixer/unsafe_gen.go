@@ -37,6 +37,35 @@ func (m UnsafeMixer) Mix3(a1, a2, a3, aa float64, b1, b2, b3, ba float64, t floa
 			c3 = a3 + (b3-a3)*t
 		}
 		return
+	case 1:
+		switch m.hue {
+		case interp.HueLonger:
+			c2 = interp.LerpHueLonger(a2, b2, t)
+		case interp.HueIncreasing:
+			c2 = interp.LerpHueIncreasing(a2, b2, t)
+		case interp.HueDecreasing:
+			c2 = interp.LerpHueDecreasing(a2, b2, t)
+		default:
+			c2 = interp.LerpHueShorter(a2, b2, t)
+		}
+
+		if m.premultiplied {
+			w1, w2 := aa*(1-t), ba*t
+			ca = w1 + w2
+			c1 = a1*w1 + b1*w2
+			c3 = a3*w1 + b3*w2
+
+			if ca != 0 {
+				inv := 1 / ca
+				c1 *= inv
+				c3 *= inv
+			}
+		} else {
+			ca = aa + (ba-aa)*t
+			c1 = a1 + (b1-a1)*t
+			c3 = a3 + (b3-a3)*t
+		}
+		return
 	case 2:
 		switch m.hue {
 		case interp.HueLonger:
@@ -85,6 +114,163 @@ func (m UnsafeMixer) Mix3(a1, a2, a3, aa float64, b1, b2, b3, ba float64, t floa
 			c1 = a1 + (b1-a1)*t
 			c2 = a2 + (b2-a2)*t
 			c3 = a3 + (b3-a3)*t
+		}
+		return
+	}
+}
+
+func (m UnsafeMixer) Mix4(a1, a2, a3, a4, aa float64, b1, b2, b3, b4, ba float64, t float64) (c1, c2, c3, c4, ca float64) {
+	switch m.hueIndex {
+	case 0:
+		switch m.hue {
+		case interp.HueLonger:
+			c1 = interp.LerpHueLonger(a1, b1, t)
+		case interp.HueIncreasing:
+			c1 = interp.LerpHueIncreasing(a1, b1, t)
+		case interp.HueDecreasing:
+			c1 = interp.LerpHueDecreasing(a1, b1, t)
+		default:
+			c1 = interp.LerpHueShorter(a1, b1, t)
+		}
+
+		if m.premultiplied {
+			w1, w2 := aa*(1-t), ba*t
+			ca = w1 + w2
+			c2 = a2*w1 + b2*w2
+			c3 = a3*w1 + b3*w2
+			c4 = a4*w1 + b4*w2
+
+			if ca != 0 {
+				inv := 1 / ca
+				c2 *= inv
+				c3 *= inv
+				c4 *= inv
+			}
+		} else {
+			ca = aa + (ba-aa)*t
+			c2 = a2 + (b2-a2)*t
+			c3 = a3 + (b3-a3)*t
+			c4 = a4 + (b4-a4)*t
+		}
+		return
+	case 1:
+		switch m.hue {
+		case interp.HueLonger:
+			c2 = interp.LerpHueLonger(a2, b2, t)
+		case interp.HueIncreasing:
+			c2 = interp.LerpHueIncreasing(a2, b2, t)
+		case interp.HueDecreasing:
+			c2 = interp.LerpHueDecreasing(a2, b2, t)
+		default:
+			c2 = interp.LerpHueShorter(a2, b2, t)
+		}
+
+		if m.premultiplied {
+			w1, w2 := aa*(1-t), ba*t
+			ca = w1 + w2
+			c1 = a1*w1 + b1*w2
+			c3 = a3*w1 + b3*w2
+			c4 = a4*w1 + b4*w2
+
+			if ca != 0 {
+				inv := 1 / ca
+				c1 *= inv
+				c3 *= inv
+				c4 *= inv
+			}
+		} else {
+			ca = aa + (ba-aa)*t
+			c1 = a1 + (b1-a1)*t
+			c3 = a3 + (b3-a3)*t
+			c4 = a4 + (b4-a4)*t
+		}
+		return
+	case 2:
+		switch m.hue {
+		case interp.HueLonger:
+			c3 = interp.LerpHueLonger(a3, b3, t)
+		case interp.HueIncreasing:
+			c3 = interp.LerpHueIncreasing(a3, b3, t)
+		case interp.HueDecreasing:
+			c3 = interp.LerpHueDecreasing(a3, b3, t)
+		default:
+			c3 = interp.LerpHueShorter(a3, b3, t)
+		}
+
+		if m.premultiplied {
+			w1, w2 := aa*(1-t), ba*t
+			ca = w1 + w2
+			c1 = a1*w1 + b1*w2
+			c2 = a2*w1 + b2*w2
+			c4 = a4*w1 + b4*w2
+
+			if ca != 0 {
+				inv := 1 / ca
+				c1 *= inv
+				c2 *= inv
+				c4 *= inv
+			}
+		} else {
+			ca = aa + (ba-aa)*t
+			c1 = a1 + (b1-a1)*t
+			c2 = a2 + (b2-a2)*t
+			c4 = a4 + (b4-a4)*t
+		}
+		return
+	case 3:
+		switch m.hue {
+		case interp.HueLonger:
+			c4 = interp.LerpHueLonger(a4, b4, t)
+		case interp.HueIncreasing:
+			c4 = interp.LerpHueIncreasing(a4, b4, t)
+		case interp.HueDecreasing:
+			c4 = interp.LerpHueDecreasing(a4, b4, t)
+		default:
+			c4 = interp.LerpHueShorter(a4, b4, t)
+		}
+
+		if m.premultiplied {
+			w1, w2 := aa*(1-t), ba*t
+			ca = w1 + w2
+			c1 = a1*w1 + b1*w2
+			c2 = a2*w1 + b2*w2
+			c3 = a3*w1 + b3*w2
+
+			if ca != 0 {
+				inv := 1 / ca
+				c1 *= inv
+				c2 *= inv
+				c3 *= inv
+			}
+		} else {
+			ca = aa + (ba-aa)*t
+			c1 = a1 + (b1-a1)*t
+			c2 = a2 + (b2-a2)*t
+			c3 = a3 + (b3-a3)*t
+		}
+		return
+	default:
+		if m.premultiplied {
+			w1, w2 := aa*(1-t), ba*t
+			ca = w1 + w2
+			c1 = a1*w1 + b1*w2
+			c2 = a2*w1 + b2*w2
+			c3 = a3*w1 + b3*w2
+			c4 = a4*w1 + b4*w2
+
+			if ca != 0 {
+				inv := 1 / ca
+				c1 *= inv
+				c2 *= inv
+				c3 *= inv
+				c4 *= inv
+			}
+		} else {
+			ca = aa + (ba-aa)*t
+			c1 = a1 + (b1-a1)*t
+			c2 = a2 + (b2-a2)*t
+			c3 = a3 + (b3-a3)*t
+			c4 = a4 + (b4-a4)*t
 		}
 		return
 	}

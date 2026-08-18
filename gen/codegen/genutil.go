@@ -9,6 +9,9 @@ import (
 )
 
 const (
+	// for UnsafeMixer, Color.ChannelX
+	MinGeneratedChannelCount = 4
+
 	FloatType = "float64"
 
 	DefaultPrecision = 6
@@ -46,21 +49,8 @@ func buildChannelCounts(ctx *Context) []bool {
 	for _, space := range ctx.BuiltSpaces {
 		counts[space.ChannelCount()] = true
 	}
+	counts[ctx.MaxChannelCount] = true
 	return counts
-}
-
-func buildHueIndexes(ctx *Context) [][]bool {
-	indexes := make([][]bool, ctx.MaxChannelCount+1)
-	for _, space := range ctx.BuiltSpaces {
-		count := space.ChannelCount()
-		if index := space.HueIndex(); index >= 0 {
-			if len(indexes[count]) == 0 {
-				indexes[count] = make([]bool, count)
-			}
-			indexes[count][index] = true
-		}
-	}
-	return indexes
 }
 
 func ModuleAndPathByType(a any) (module string, path string) {

@@ -8,14 +8,18 @@ import (
 )
 
 func genMixerPkgUnsafe(ctx *Context, w *writer.GoWriter) {
-	hueIndexes := buildHueIndexes(ctx)
+	indexes := make([]bool, ctx.MaxChannelCount)
+	for i := range indexes {
+		indexes[i] = true
+	}
 
-	for channelCount, indexes := range hueIndexes {
-		if len(indexes) == 0 {
+	channels := buildChannelCounts(ctx)
+	for count, ok := range channels {
+		if !ok {
 			continue
 		}
 
-		genMixerPkgUnsafeMixMethod(ctx, w, channelCount, indexes)
+		genMixerPkgUnsafeMixMethod(ctx, w, count, indexes[:count])
 	}
 }
 
@@ -39,9 +43,14 @@ func genMixerPkgUnsafeMixMethod(ctx *Context, w *writer.GoWriter, channelCount i
 	w.Switch("m.hueIndex")
 
 	for index, isHueIndex := range indexes {
+		if index >= channelCount {
+			break
+		}
+
 		if !isHueIndex {
 			continue
 		}
+
 		w.Case(index)
 
 		genMixerPkgUnsafeMixMethodHue(ctx, w, a[index], b[index], c[index])
