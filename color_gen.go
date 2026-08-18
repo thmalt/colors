@@ -22,7 +22,7 @@ type Color struct {
 // Channel returns the channel value at index in the order defined by the
 // color's [space.Space]. The returned boolean reports whether index is valid.
 func (c Color) Channel(index int) (float64, bool) {
-	if index < 0 || index >= c.ChannelCount() {
+	if index >= c.ChannelCount() {
 		return 0, false
 	}
 
@@ -56,6 +56,7 @@ func (c Color) Channels() []float64 {
 	}
 }
 
+// AppendChannels appends the color channels to dst and returns the resulting slice.
 func (c Color) AppendChannels(dst []float64) []float64 {
 	switch c.ChannelCount() {
 	case 4:

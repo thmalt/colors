@@ -1,25 +1,31 @@
 package gradient
 
+// DegToTurn converts an angle from degrees to turns.
 func DegToTurn(deg float64) float64 {
 	return deg / 360
 }
 
+// RadToTurn converts an angle from radians to turns.
 func RadToTurn(rad float64) float64 {
 	return rad * invTau
 }
 
+// GradToTurn converts an angle from gradians to turns.
 func GradToTurn(grad float64) float64 {
 	return grad / 400
 }
 
+// TurnToDeg converts an angle from turns to degrees.
 func TurnToDeg(turn float64) float64 {
 	return turn * 360
 }
 
+// TurnToRad converts an angle from turns to radians.
 func TurnToRad(turn float64) float64 {
 	return turn * tau
 }
 
+// TurnToGrad converts an angle from turns to gradians.
 func TurnToGrad(turn float64) float64 {
 	return turn * 400
 }

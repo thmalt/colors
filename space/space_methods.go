@@ -1,7 +1,8 @@
 package space
 
+// IsValid reports whether s is a valid color space.
 func (s Space) IsValid() bool {
-	return s > InvalidSpace && s < SpaceCount
+	return s >= FirstSpace && s <= LastSpace
 }
 
 // ChannelCount returns the number of channels in the color space.
@@ -12,6 +13,8 @@ func (s Space) ChannelCount() int {
 	return int(spaceChannelCounts[s])
 }
 
+// HueIndex returns the index of the hue channel,
+// or -1 if the color space has no hue channel.
 func (s Space) HueIndex() int {
 	if uint(s) >= uint(len(spaceHueIndexes)) {
 		return -1
@@ -19,6 +22,7 @@ func (s Space) HueIndex() int {
 	return int(spaceHueIndexes[s])
 }
 
+// CoordinateSystem returns the coordinate system of the color space.
 func (s Space) CoordinateSystem() CoordinateSystem {
 	if uint(s) >= uint(len(spaceCoordinateSystems)) {
 		return 0
@@ -26,6 +30,7 @@ func (s Space) CoordinateSystem() CoordinateSystem {
 	return spaceCoordinateSystems[s]
 }
 
+// Info returns information about the color space.
 func (s Space) Info() SpaceInfo {
 	if uint(s) >= uint(len(spaceInfos)) {
 		return nil

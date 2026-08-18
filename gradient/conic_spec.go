@@ -2,6 +2,7 @@ package gradient
 
 import "math"
 
+// ConicSpec specifies the parameters for a conic gradient.
 type ConicSpec struct {
 	Transform
 
@@ -16,6 +17,7 @@ type ConicSpec struct {
 	conic *Conic
 }
 
+// NewConicSpec creates a new conic gradient specification.
 func NewConicSpec() ConicSpec {
 	return ConicSpec{
 		Transform: Identity(),
@@ -24,32 +26,40 @@ func NewConicSpec() ConicSpec {
 	}
 }
 
+// SetSize sets the dimensions of the gradient in pixels.
+// Width and height are clamped to a minimum of 1.
 func (s *ConicSpec) SetSize(width, height float64) {
 	s.width = width
 	s.height = height
 }
 
+// SetCenter sets the normalized center point of the gradient.
 func (s *ConicSpec) SetCenter(x, y float64) {
 	s.centerX = x
 	s.centerY = y
 }
 
+// SetStartAngle sets the starting angle of the gradient in turns.
 func (s *ConicSpec) SetStartAngle(turn float64) {
 	s.startAngle = turn
 }
 
+// Size returns the dimensions of the gradient.
 func (s *ConicSpec) Size() (width, height float64) {
 	return s.width, s.height
 }
 
+// Center returns the center point of the gradient.
 func (s *ConicSpec) Center() (x, y float64) {
 	return s.centerX, s.centerY
 }
 
+// StartAngle returns the starting angle of the gradient in turns.
 func (s *ConicSpec) StartAngle() float64 {
 	return s.startAngle
 }
 
+// Build creates a [Conic] gradient from the specification.
 func (s *ConicSpec) Build() (Conic, error) {
 	if s.conic == nil {
 		s.conic = new(Conic)

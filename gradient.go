@@ -6,6 +6,7 @@ import (
 	"sort"
 )
 
+// GradientStop represents a color and its position within a gradient.
 type GradientStop struct {
 	Color  Color
 	Offset float64
@@ -21,12 +22,15 @@ const (
 	SpreadReflect
 )
 
+// Gradient stores a mixer and color stops for color interpolation.
 type Gradient struct {
 	mixer Mixer
 
 	stops []GradientStop
 }
 
+// NewGradientWithOptions creates a gradient with the
+// specified interpolation options and color stops.
 func NewGradientWithOptions(opts InterpOptions, stops ...GradientStop) Gradient {
 	mixer := NewMixerWithOptions(opts)
 
@@ -72,22 +76,48 @@ func NewStopsAt(color Color, offsets ...float64) []GradientStop {
 	return stops
 }
 
+// HasOffset reports whether the stop has an explicit offset.
 func (s GradientStop) HasOffset() bool {
 	return !math.IsNaN(s.Offset)
 }
 
+// IsHint reports whether the stop is an interpolation hint.
 func (s GradientStop) IsHint() bool {
 	return !s.Color.space.IsValid()
 }
 
+// Stops returns a copy of the gradient's color stops.
 func (g Gradient) Stops() []GradientStop {
 	return slices.Clone(g.stops)
 }
 
-func (g Gradient) findStop(t float64) int {
-	return sort.Search(len(g.stops), func(i int) bool {
-		return g.stops[i].Offset > t
-	})
+// At returns the interpolated color at position t.
+func (g Gradient) At(t float64) Color {
+	return g.at(t)
+}
+
+// AtRepeat returns the interpolated color at position t using repeat spreading.
+func (g Gradient) AtRepeat(t float64) Color {
+	t = spreadRepeat(t)
+	return g.at(t)
+}
+
+// AtReflect returns the interpolated color at position t using reflect spreading.
+func (g Gradient) AtReflect(t float64) Color {
+	t = spreadReflect(t)
+	return g.at(t)
+}
+
+// AtSpread returns the interpolated color at position t using the specified spread method.
+func (g Gradient) AtSpread(t float64, spread Spread) Color {
+	switch spread {
+	case SpreadRepeat:
+		return g.AtRepeat(t)
+	case SpreadReflect:
+		return g.AtReflect(t)
+	default:
+		return g.At(t)
+	}
 }
 
 func (g Gradient) at(t float64) Color {
@@ -109,29 +139,10 @@ func (g Gradient) at(t float64) Color {
 	return g.mixer.UnsafeMix(a.Color, b.Color, seg)
 }
 
-func (g Gradient) At(t float64) Color {
-	return g.at(t)
-}
-
-func (g Gradient) AtRepeat(t float64) Color {
-	t = spreadRepeat(t)
-	return g.at(t)
-}
-
-func (g Gradient) AtReflect(t float64) Color {
-	t = spreadReflect(t)
-	return g.at(t)
-}
-
-func (g Gradient) AtSpread(t float64, spread Spread) Color {
-	switch spread {
-	case SpreadRepeat:
-		return g.AtRepeat(t)
-	case SpreadReflect:
-		return g.AtReflect(t)
-	default:
-		return g.At(t)
-	}
+func (g Gradient) findStop(t float64) int {
+	return sort.Search(len(g.stops), func(i int) bool {
+		return g.stops[i].Offset > t
+	})
 }
 
 func spreadRepeat(t float64) float64 {

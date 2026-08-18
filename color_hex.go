@@ -9,6 +9,7 @@ func encodeHexByte(dst []byte, b byte) {
 	dst[1] = hexDigits[b&0x0f]
 }
 
+// Hex returns the hexadecimal representation of the color.
 func (c Color) Hex() string {
 	const max = 0xff
 

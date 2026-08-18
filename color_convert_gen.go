@@ -7,6 +7,7 @@ import (
 	"github.com/thmalt/colors/space"
 )
 
+// To converts the color to the destination color space.
 func (c Color) To(dst space.Space) (Color, error) {
 	if !c.space.IsValid() || !dst.IsValid() {
 		return Color{}, ErrInvalidSpace
@@ -16,10 +17,6 @@ func (c Color) To(dst space.Space) (Color, error) {
 		return c, nil
 	}
 
-	return c.to(dst)
-}
-
-func (c Color) to(dst space.Space) (Color, error) {
 	switch dst {
 	case space.Srgb:
 		r, g, b := c.Srgb()

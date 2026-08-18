@@ -6,16 +6,13 @@ import (
 
 func genRootPkgClamp(ctx *Context, w *writer.GoWriter) {
 	w.Separate()
+	// func Clamp(c Color) Color
+	w.Comment("Clamp clamps the color channels to the valid range of the color space.")
 	w.Func("Clamp")
 	w.FuncParams("c Color")
 	w.FuncResults("Color")
 	w.FuncBody()
 
-	w.If("!c.space.IsValid()")
-	w.Return("c")
-	w.End()
-
-	w.Separate()
 	w.Switch("c.space")
 
 	sub := w.SubWriter()

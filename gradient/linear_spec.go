@@ -4,6 +4,7 @@ import (
 	"math"
 )
 
+// LinearSpec specifies the parameters for a linear gradient.
 type LinearSpec struct {
 	Transform
 
@@ -16,13 +17,14 @@ type LinearSpec struct {
 	linear *Linear
 }
 
+// NewLinearSpec creates a new linear gradient specification.
 func NewLinearSpec() LinearSpec {
 	return LinearSpec{
 		Transform: Identity(),
 	}
 }
 
-// SetSize sets the gradient bounds in pixels.
+// SetSize sets the dimensions of the gradient in pixels.
 // Width and height are clamped to a minimum of 1.
 func (s *LinearSpec) SetSize(width, height float64) {
 	s.width = max(1, width)
@@ -42,14 +44,17 @@ func (s *LinearSpec) SetDirection(angle float64) {
 	s.direction = true
 }
 
+// Size returns the dimensions of the gradient.
 func (s *LinearSpec) Size() (width, height float64) {
 	return s.width, s.height
 }
 
+// Angle returns the gradient angle in turns.
 func (s *LinearSpec) Angle() (turn float64) {
 	return s.angle
 }
 
+// Build creates a [Linear] gradient from the specification.
 func (s *LinearSpec) Build() (Linear, error) {
 	if s.linear == nil {
 		s.linear = new(Linear)

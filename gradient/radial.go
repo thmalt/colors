@@ -2,6 +2,7 @@ package gradient
 
 import "math"
 
+// Radial represents a radial gradient.
 type Radial struct {
 	dx0, dx1, dx2 float64
 	dy0, dy1, dy2 float64
@@ -12,6 +13,7 @@ type Radial struct {
 	focal bool
 }
 
+// PositionAt returns the normalized gradient position at the specified point.
 func (r *Radial) PositionAt(x, y float64) float64 {
 	dx := r.dx0*x + r.dx1*y + r.dx2
 	dy := r.dy0*x + r.dy1*y + r.dy2
@@ -30,10 +32,12 @@ func (r *Radial) PositionAt(x, y float64) float64 {
 	return a / (-b + math.Sqrt(b*b-a*r.focalC))
 }
 
+// ScaleRadius scales the radius uniformly.
 func (r *Radial) ScaleRadius(s float64) {
 	r.ScaleRadiusXY(s, s)
 }
 
+// ScaleRadiusXY scales the horizontal and vertical radii independently.
 func (r *Radial) ScaleRadiusXY(sx, sy float64) {
 	invX := 1 / sx
 	invY := 1 / sy

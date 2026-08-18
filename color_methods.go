@@ -6,6 +6,7 @@ import (
 	"github.com/thmalt/colors/space"
 )
 
+// MustTo converts the color to the destination color space and panics if the conversion fails.
 func (c Color) MustTo(dst space.Space) Color {
 	to, err := c.To(dst)
 	if err != nil {
@@ -20,10 +21,12 @@ func (c Color) Clamp() Color {
 	return Clamp(c)
 }
 
+// InGamut reports whether the color is within the gamut of its color space.
 func (c Color) InGamut() bool {
 	return InGamut(c)
 }
 
+// InGamutSpace reports whether the color is within the gamut of the specified color space.
 func (c Color) InGamutSpace(dst space.Space) bool {
 	return InGamutSpace(c, dst)
 }

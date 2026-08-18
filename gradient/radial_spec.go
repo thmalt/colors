@@ -4,6 +4,7 @@ import (
 	"math"
 )
 
+// RadialShape specifies the shape of a radial gradient.
 type RadialShape uint8
 
 const (
@@ -11,16 +12,18 @@ const (
 	RadialCircle
 )
 
-type RadialSize uint8
+// RadialSizeMode specifies how the radius of a radial gradient is determined.
+type RadialSizeMode uint8
 
 const (
-	RadialFarthestCorner RadialSize = iota
+	RadialFarthestCorner RadialSizeMode = iota
 	RadialFarthestSide
 	RadialClosestCorner
 	RadialClosestSide
 	RadialExplicit
 )
 
+// RadialSpec specifies the parameters for a radial gradient.
 type RadialSpec struct {
 	Transform
 
@@ -36,8 +39,8 @@ type RadialSpec struct {
 	focalX float64
 	focalY float64
 
-	shape RadialShape
-	size  RadialSize
+	shape    RadialShape
+	sizeMode RadialSizeMode
 
 	radiusFixed bool
 	hasFocal    bool
@@ -45,6 +48,7 @@ type RadialSpec struct {
 	radial *Radial
 }
 
+// NewRadialSpec creates a new radial gradient specification.
 func NewRadialSpec() RadialSpec {
 	return RadialSpec{
 		Transform: Identity(),
@@ -55,34 +59,40 @@ func NewRadialSpec() RadialSpec {
 	}
 }
 
+// SetSize sets the dimensions of the gradient in pixels.
+// Width and height are clamped to a minimum of 1.
 func (s *RadialSpec) SetSize(width, height float64) {
 	s.width = max(1, width)
 	s.height = max(1, height)
 }
 
+// SetCenter sets the normalized center point of the gradient.
 func (s *RadialSpec) SetCenter(x, y float64) {
 	s.centerX = x
 	s.centerY = y
 }
 
+// SetRadius sets the horizontal and vertical radii of the gradient in normalized units.
 func (s *RadialSpec) SetRadius(x, y float64) {
 	s.radiusX = x
 	s.radiusY = y
 	s.radiusFixed = false
 
 	s.shape = RadialEllipse
-	s.size = RadialExplicit
+	s.sizeMode = RadialExplicit
 }
 
+// SetRadiusPixel sets the horizontal and vertical radii of the gradient in pixels.
 func (s *RadialSpec) SetRadiusPixel(rx, ry float64) {
 	s.radiusX = rx
 	s.radiusY = ry
 	s.radiusFixed = true
 
 	s.shape = RadialEllipse
-	s.size = RadialExplicit
+	s.sizeMode = RadialExplicit
 }
 
+// SetCircleRadius sets the radius of a circular gradient in normalized units.
 func (s *RadialSpec) SetCircleRadius(radius float64) {
 	r := radius * min(s.width, s.height) * half
 	s.radiusX = r
@@ -90,48 +100,57 @@ func (s *RadialSpec) SetCircleRadius(radius float64) {
 	s.radiusFixed = true
 
 	s.shape = RadialCircle
-	s.size = RadialExplicit
+	s.sizeMode = RadialExplicit
 }
 
+// SetCircleRadiusPixel sets the radius of a circular gradient in pixels.
 func (s *RadialSpec) SetCircleRadiusPixel(radius float64) {
 	s.radiusX = radius
 	s.radiusY = radius
 	s.radiusFixed = true
 
 	s.shape = RadialCircle
-	s.size = RadialExplicit
+	s.sizeMode = RadialExplicit
 }
 
+// SetShape sets the shape of the gradient.
 func (s *RadialSpec) SetShape(shape RadialShape) {
 	s.shape = shape
 }
 
-func (s *RadialSpec) SetRadiusSize(size RadialSize) {
-	s.size = size
+// SetSizeMode sets the size mode of the gradient.
+func (s *RadialSpec) SetSizeMode(size RadialSizeMode) {
+	s.sizeMode = size
 }
 
+// SetFocal sets the focal point of the gradient.
 func (s *RadialSpec) SetFocal(x, y float64) {
 	s.focalX = x
 	s.focalY = y
 	s.hasFocal = true
 }
 
+// ClearFocal clears the focal point and restores the default focal point.
 func (s *RadialSpec) ClearFocal() {
 	s.hasFocal = false
 }
 
+// Size returns the dimensions of the gradient in pixels.
 func (s *RadialSpec) Size() (width, height float64) {
 	return s.width, s.height
 }
 
+// Center returns the normalized center point of the gradient.
 func (s *RadialSpec) Center() (x, y float64) {
 	return s.centerX, s.centerY
 }
 
+// Radius returns the horizontal and vertical radii of the gradient in normalized units.
 func (s *RadialSpec) Radius() (x, y float64) {
 	return s.radiusX, s.radiusY
 }
 
+// RadiusPixel returns the horizontal and vertical radii of the gradient in pixels.
 func (s *RadialSpec) RadiusPixel() (x, y float64) {
 	if s.radiusFixed {
 		return s.radiusX, s.radiusY
@@ -140,18 +159,22 @@ func (s *RadialSpec) RadiusPixel() (x, y float64) {
 	return s.radiusX * s.width, s.radiusY * s.height
 }
 
-func (s *RadialSpec) RadialShape() RadialShape {
+// Shape returns the shape of the gradient.
+func (s *RadialSpec) Shape() RadialShape {
 	return s.shape
 }
 
-func (s *RadialSpec) RadiusSize() RadialSize {
-	return s.size
+// SizeMode returns the size mode of the gradient.
+func (s *RadialSpec) SizeMode() RadialSizeMode {
+	return s.sizeMode
 }
 
+// Focal returns the focal point of the gradient.
 func (s *RadialSpec) Focal() (x, y float64, ok bool) {
 	return s.focalX, s.focalY, s.hasFocal
 }
 
+// Build creates a [Radial] gradient from the specification.
 func (s *RadialSpec) Build() (Radial, error) {
 	if s.radial == nil {
 		s.radial = new(Radial)
@@ -173,8 +196,8 @@ func (s *RadialSpec) Build() (Radial, error) {
 
 	rx, ry := s.radiusX, s.radiusY
 
-	if s.size != RadialExplicit {
-		rx, ry = resolveRadialRadius(s.size, s.shape, cx, cy, s.width, s.height)
+	if s.sizeMode != RadialExplicit {
+		rx, ry = resolveRadialRadius(s.sizeMode, s.shape, cx, cy, s.width, s.height)
 	} else if !s.radiusFixed {
 		rx *= s.width * half
 		ry *= s.height * half
@@ -243,7 +266,7 @@ func (s *RadialSpec) Build() (Radial, error) {
 
 const focalEpsilon = 1e-12
 
-func resolveRadialRadius(size RadialSize, shape RadialShape, cx, cy float64, width, height float64) (rx, ry float64) {
+func resolveRadialRadius(size RadialSizeMode, shape RadialShape, cx, cy float64, width, height float64) (rx, ry float64) {
 	switch shape {
 	case RadialCircle:
 		radius := circleRadius(size, cx, cy, width, height)
@@ -254,7 +277,7 @@ func resolveRadialRadius(size RadialSize, shape RadialShape, cx, cy float64, wid
 	return
 }
 
-func circleRadius(size RadialSize, cx, cy float64, width, height float64) (radius float64) {
+func circleRadius(size RadialSizeMode, cx, cy float64, width, height float64) (radius float64) {
 	switch size {
 	case RadialFarthestCorner:
 		dx := max(cx, width-cx)
@@ -272,7 +295,7 @@ func circleRadius(size RadialSize, cx, cy float64, width, height float64) (radiu
 	return
 }
 
-func ellipseRadii(size RadialSize, cx, cy float64, width, height float64) (rx, ry float64) {
+func ellipseRadii(size RadialSizeMode, cx, cy float64, width, height float64) (rx, ry float64) {
 	left := cx
 	right := width - cx
 	top := cy

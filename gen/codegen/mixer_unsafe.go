@@ -29,6 +29,8 @@ func genMixerPkgUnsafeMixMethod(ctx *Context, w *writer.GoWriter, channelCount i
 	c := toVars(nil, "c", channelCount, "a")
 
 	w.Separate()
+	w.Comment("Mix", channelCount, " mixes ", channelCount, " color channels and alpha between two colors.")
+	w.Comment("The inputs are assumed to be valid and compatible with the mixer.")
 	w.Method("m UnsafeMixer", "Mix", channelCount)
 	w.FuncParams(
 		joinIdentsWithType(FloatType, a...),

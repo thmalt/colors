@@ -35,7 +35,7 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 	w.FuncResults(FloatType, ", ", "bool")
 	w.FuncBody()
 
-	w.If("index < 0 || index >= c.ChannelCount()")
+	w.If("index >= c.ChannelCount()")
 	w.Return("0, false")
 	w.End()
 
@@ -85,6 +85,7 @@ func genRootPkgColor(ctx *Context, w *writer.GoWriter) {
 
 	w.Separate()
 	// func (c Color) AppendChannels(dst []float64) []float64
+	w.Comment("AppendChannels appends the color channels to dst and returns the resulting slice.")
 	w.Method("c Color", "AppendChannels")
 	w.FuncParams("dst []", FloatType)
 	w.FuncResults("[]", FloatType)

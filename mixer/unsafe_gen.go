@@ -6,6 +6,8 @@ import (
 	"github.com/thmalt/colors/interp"
 )
 
+// Mix3 mixes 3 color channels and alpha between two colors.
+// The inputs are assumed to be valid and compatible with the mixer.
 func (m UnsafeMixer) Mix3(a1, a2, a3, aa float64, b1, b2, b3, ba float64, t float64) (c1, c2, c3, ca float64) {
 	switch m.hueIndex {
 	case 0:
@@ -119,6 +121,8 @@ func (m UnsafeMixer) Mix3(a1, a2, a3, aa float64, b1, b2, b3, ba float64, t floa
 	}
 }
 
+// Mix4 mixes 4 color channels and alpha between two colors.
+// The inputs are assumed to be valid and compatible with the mixer.
 func (m UnsafeMixer) Mix4(a1, a2, a3, a4, aa float64, b1, b2, b3, b4, ba float64, t float64) (c1, c2, c3, c4, ca float64) {
 	switch m.hueIndex {
 	case 0:

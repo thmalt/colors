@@ -8,6 +8,7 @@ import (
 	"strconv"
 )
 
+// HueInterpolation specifies how hue angles are interpolated.
 type HueInterpolation uint8
 
 const (
@@ -32,14 +33,17 @@ func (h HueInterpolation) String() string {
 	}
 }
 
+// Lerp linearly interpolates between a and b by t.
 func Lerp(a, b, t float64) float64 {
 	return a + (b-a)*t // or a*(1-t) + b*t
 }
 
+// LerpFMA linearly interpolates between a and b by t using fused multiply-add.
 func LerpFMA(a, b, t float64) float64 {
 	return math.FMA(b-a, t, a)
 }
 
+// LerpHue interpolates between two hue angles using the specified interpolation method.
 func LerpHue(h1, h2 float64, t float64, hue HueInterpolation) float64 {
 	switch hue {
 	case HueLonger:

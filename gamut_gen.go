@@ -6,11 +6,8 @@ import (
 	"github.com/thmalt/colors/space"
 )
 
+// InGamut reports whether c is within the gamut of its color space.
 func InGamut(c Color) bool {
-	if !c.space.IsValid() {
-		return false
-	}
-
 	switch c.space {
 	case space.Oklab, space.Oklch:
 		return c.c1 >= 0 && c.c1 <= 1
@@ -31,16 +28,13 @@ func InGamut(c Color) bool {
 	}
 }
 
+// InGamutSpace reports whether c is within the gamut of the specified color space.
 func InGamutSpace(c Color, dst space.Space) bool {
-	if !dst.IsValid() {
-		return false
-	}
-
 	if c.space == dst {
 		return InGamut(c)
 	}
 
-	converted, err := c.to(dst)
+	converted, err := c.To(dst)
 	if err != nil {
 		return false
 	}

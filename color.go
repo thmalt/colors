@@ -6,6 +6,7 @@ import (
 	"github.com/thmalt/colors/space"
 )
 
+// Space returns the color space of the color.
 func (c Color) Space() space.Space {
 	return c.space
 }
@@ -33,10 +34,12 @@ func (c Color) WithAlpha8(alpha uint8) Color {
 	return c
 }
 
+// ChannelCount returns the number of color channels.
 func (c Color) ChannelCount() int {
 	return c.space.ChannelCount()
 }
 
+// CoordinateSystem returns the coordinate system of the color space.
 func (c Color) CoordinateSystem() space.CoordinateSystem {
 	return c.space.CoordinateSystem()
 }

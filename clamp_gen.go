@@ -6,11 +6,8 @@ import (
 	"github.com/thmalt/colors/space"
 )
 
+// Clamp clamps the color channels to the valid range of the color space.
 func Clamp(c Color) Color {
-	if !c.space.IsValid() {
-		return c
-	}
-
 	switch c.space {
 	case space.Oklab:
 		c.c1 = clamp(c.c1, 0, 1)
