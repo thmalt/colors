@@ -1,10 +1,10 @@
 package colors
 
 import (
-	"math"
-
 	"github.com/thmalt/colors/space"
 )
+
+const inv255 = 1 / 255.0
 
 // Space returns the color space of the color.
 func (c Color) Space() space.Space {
@@ -18,7 +18,7 @@ func (c Color) Alpha() float64 {
 
 // Alpha8 returns the alpha channel in the range [0, 255].
 func (c Color) Alpha8() uint8 {
-	return uint8(clamp(math.Round(c.alpha*0xff), 0, 0xff))
+	return uint8(clamp(c.alpha*255+0.5, 0, 255))
 }
 
 // WithAlpha returns a copy of [Color] with the specified alpha value.
@@ -30,7 +30,7 @@ func (c Color) WithAlpha(alpha float64) Color {
 // WithAlpha8 returns a copy of [Color] with the specified alpha value
 // in the range [0, 255].
 func (c Color) WithAlpha8(alpha uint8) Color {
-	c.alpha = float64(alpha) / 0xff
+	c.alpha = float64(alpha) * inv255
 	return c
 }
 

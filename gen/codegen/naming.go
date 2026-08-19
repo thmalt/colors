@@ -3,6 +3,7 @@ package codegen
 import (
 	"strings"
 	"unicode"
+	"unicode/utf8"
 )
 
 func toSnakeCase(input string) string {
@@ -42,4 +43,18 @@ func toLowerCaseFirstWord(s string) string {
 	}
 
 	return string(r)
+}
+
+func toUpperCaseFirstChar(s string) string {
+	if s == "" {
+		return ""
+	}
+
+	c, size := utf8.DecodeRuneInString(s)
+
+	if unicode.IsUpper(c) {
+		return s
+	}
+
+	return string(unicode.ToUpper(c)) + s[size:]
 }

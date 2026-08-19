@@ -22,6 +22,10 @@ func GenerateConvertPkg(ctx *Context) {
 
 	genConvertPkgConversionFiles(ctx, w, pkg, pkgPath)
 
+	emitGoFile(w, pkg, pkgPath, "rgb8_lut", func(w *writer.GoWriter) {
+		genConvertPkgLUT(w, "LinearSrgb", "Rgb8", srgbToLinearSrgb)
+	})
+
 	emitGoFile(w, pkg, pkgPath, "whitepoint", func(w *writer.GoWriter) {
 		genConvertPkgWhitePoint(ctx, w)
 	})

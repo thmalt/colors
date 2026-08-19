@@ -75,3 +75,27 @@ func RgbAlpha(r, g, b, alpha float64) Color {
 	r, g, b = convert.RgbToSrgb(r, g, b)
 	return SrgbAlpha(r, g, b, alpha)
 }
+
+// FromRgb8 creates a color from 8-bit sRGB components in linear sRGB.
+func FromRgb8(r, g, b uint8) Color {
+	return LinearSrgb(convert.Rgb8ToLinearSrgb(r, g, b))
+}
+
+// FromRgba8 creates a color from 8-bit sRGB components and alpha in linear sRGB.
+func FromRgba8(r, g, b, a uint8) Color {
+	c := LinearSrgb(convert.Rgb8ToLinearSrgb(r, g, b))
+	c.alpha = float64(a) / 0xff
+	return c
+}
+
+// ToRgb8 converts the color to 8-bit sRGB components.
+func (c Color) ToRgb8() (r, g, b uint8) {
+	return convert.LinearSrgbToRgb8(c.LinearSrgb())
+}
+
+// ToRgba8 converts the color to 8-bit sRGB components with alpha.
+func (c Color) ToRgba8() (r, g, b, a uint8) {
+	r, g, b = convert.LinearSrgbToRgb8(c.LinearSrgb())
+	a = c.Alpha8()
+	return
+}

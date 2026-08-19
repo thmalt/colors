@@ -6,26 +6,25 @@ import (
 
 // RGBA implements the [color.Color] interface
 func (c Color) RGBA() (r, g, b, a uint32) {
-	red, green, blue := c.Srgb()
+	red, green, blue, alpha := c.ToRgba8()
 
-	red = clamp01(red)
-	green = clamp01(green)
-	blue = clamp01(blue)
-	alpha := clamp01(c.alpha)
-
-	const max = 65535.0
-
-	r = uint32(red*alpha*max + 0.5)
-	g = uint32(green*alpha*max + 0.5)
-	b = uint32(blue*alpha*max + 0.5)
-	a = uint32(alpha*max + 0.5)
+	a = uint32(alpha) * 0x101
+	r = uint32(red) * a / 0xff
+	g = uint32(green) * a / 0xff
+	b = uint32(blue) * a / 0xff
 
 	return
 }
 
 // ToRGBA64 converts the color to an sRGB [color.RGBA64].
 func (c Color) ToRGBA64() color.RGBA64 {
-	r, g, b, a := c.RGBA()
+	red, green, blue, alpha := c.ToRgba8()
+
+	a := uint32(alpha) * 0x101
+	r := uint32(red) * a / 0xff
+	g := uint32(green) * a / 0xff
+	b := uint32(blue) * a / 0xff
+
 	return color.RGBA64{
 		R: uint16(r),
 		G: uint16(g),
