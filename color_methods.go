@@ -1,6 +1,8 @@
 package colors
 
 import (
+	"math"
+
 	"github.com/thmalt/colors/convert"
 	"github.com/thmalt/colors/dither"
 	"github.com/thmalt/colors/space"
@@ -45,7 +47,24 @@ func (c Color) MixWith(other Color, t float64, opts InterpOptions) Color {
 // The dithering offset is scaled to the normalized sRGB [0, 1] range;
 // the alpha channel is left unchanged. The returned color is always in [space.Srgb].
 func (c Color) Dither(x, y int) Color {
-	r, g, b := c.Srgb()
+	var r, g, b float64
+
+	switch c.space {
+	case space.Srgb:
+		r, g, b = c.c1, c.c2, c.c3
+	case space.Hsl, space.Hsv, space.Hwb:
+		r, g, b = c.Srgb()
+	case space.LinearSrgb:
+		r = linearSrgbToSrgb(c.c1)
+		g = linearSrgbToSrgb(c.c2)
+		b = linearSrgbToSrgb(c.c3)
+	default:
+		r, g, b = c.LinearSrgb()
+		r = linearSrgbToSrgb(r)
+		g = linearSrgbToSrgb(g)
+		b = linearSrgbToSrgb(b)
+	}
+
 	d := dither.Offset(x, y) * (1 / 255.0)
 	return SrgbAlpha(clamp01(r+d), clamp01(g+d), clamp01(b+d), c.alpha)
 }
@@ -84,18 +103,68 @@ func FromRgb8(r, g, b uint8) Color {
 // FromRgba8 creates a color from 8-bit sRGB components and alpha in linear sRGB.
 func FromRgba8(r, g, b, a uint8) Color {
 	c := LinearSrgb(convert.Rgb8ToLinearSrgb(r, g, b))
-	c.alpha = float64(a) / 0xff
+	c.alpha = float64(a) / 255
 	return c
 }
 
 // ToRgb8 converts the color to 8-bit sRGB components.
 func (c Color) ToRgb8() (r, g, b uint8) {
-	return convert.LinearSrgbToRgb8(c.LinearSrgb())
+	switch c.space {
+	case space.Srgb:
+		r = uint8(clamp01(c.c1)*255 + 0.5)
+		g = uint8(clamp01(c.c2)*255 + 0.5)
+		b = uint8(clamp01(c.c3)*255 + 0.5)
+		return
+	case space.Hsl, space.Hsv, space.Hwb:
+		fr, fg, fb := c.Srgb()
+		r = uint8(clamp01(fr)*255 + 0.5)
+		g = uint8(clamp01(fg)*255 + 0.5)
+		b = uint8(clamp01(fb)*255 + 0.5)
+		return
+	case space.LinearSrgb:
+		return convert.LinearSrgbToRgb8(c.c1, c.c2, c.c3)
+	default:
+		return convert.LinearSrgbToRgb8(c.LinearSrgb())
+	}
 }
 
 // ToRgba8 converts the color to 8-bit sRGB components with alpha.
 func (c Color) ToRgba8() (r, g, b, a uint8) {
-	r, g, b = convert.LinearSrgbToRgb8(c.LinearSrgb())
 	a = c.Alpha8()
+	switch c.space {
+	case space.Srgb:
+		r = uint8(clamp01(c.c1)*255 + 0.5)
+		g = uint8(clamp01(c.c2)*255 + 0.5)
+		b = uint8(clamp01(c.c3)*255 + 0.5)
+	case space.Hsl, space.Hsv, space.Hwb:
+		fr, fg, fb := c.Srgb()
+		r = uint8(clamp01(fr)*255 + 0.5)
+		g = uint8(clamp01(fg)*255 + 0.5)
+		b = uint8(clamp01(fb)*255 + 0.5)
+	case space.LinearSrgb:
+		r, g, b = convert.LinearSrgbToRgb8(c.c1, c.c2, c.c3)
+	default:
+		r, g, b = convert.LinearSrgbToRgb8(c.LinearSrgb())
+	}
 	return
+}
+
+// linearSrgbToSrgb converts a linear sRGB component to sRGB using
+// a Log/Exp power approximation for improved performance.
+func linearSrgbToSrgb(x float64) float64 {
+	const inv24 = 1 / 2.4
+
+	neg := x < 0
+	x = math.Abs(x)
+
+	if x <= 0.0031308 {
+		x *= 12.92
+	} else {
+		x = 1.055*math.Exp(math.Log(x)*inv24) - 0.055
+	}
+
+	if neg {
+		return -x
+	}
+	return x
 }

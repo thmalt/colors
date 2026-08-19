@@ -67,8 +67,7 @@ func genConvertPkgLUT(w *writer.GoWriter, linear, name string, transfer func(flo
 				w.Write(' ')
 			}
 		}
-		w.Write(formatNormalizedFloat(lut[i]))
-		w.Write(',')
+		w.Write(formatNormalizedFloat(lut[i]), ',')
 	}
 	w.End()
 
@@ -83,8 +82,7 @@ func genConvertPkgLUT(w *writer.GoWriter, linear, name string, transfer func(flo
 				w.Write(' ')
 			}
 		}
-		w.Write(formatNormalizedFloat(threshold[i]))
-		w.Write(',')
+		w.Write(formatNormalizedFloat(threshold[i]), ',')
 	}
 	w.End()
 
@@ -92,13 +90,14 @@ func genConvertPkgLUT(w *writer.GoWriter, linear, name string, transfer func(flo
 	w.Begin(privLinearTo, "Coarse = [", len(coarse), "]uint8")
 	w.Indent()
 	for i := range coarse {
-		w.Writef("%d", coarse[i])
-		if i > 0 && i%16 == 0 {
-			w.Write(',')
-			w.Indent()
-		} else {
-			w.Write(", ")
+		if i > 0 {
+			if i%16 == 0 {
+				w.Indent()
+			} else {
+				w.Write(' ')
+			}
 		}
+		w.Writef("%d,", coarse[i])
 	}
 	w.End()
 
@@ -112,8 +111,8 @@ func genConvertPkgLUT(w *writer.GoWriter, linear, name string, transfer func(flo
 	w.FuncResults(joinRepeatN(FloatType, 3))
 	w.FuncBody()
 	w.Return(
-		privToLinear, "LUT[r],",
-		privToLinear, "LUT[g],",
+		privToLinear, "LUT[r], ",
+		privToLinear, "LUT[g], ",
 		privToLinear, "LUT[b]",
 	)
 	w.End()
@@ -126,8 +125,8 @@ func genConvertPkgLUT(w *writer.GoWriter, linear, name string, transfer func(flo
 	w.FuncResults(joinRepeatN("uint8", 3))
 	w.FuncBody()
 	w.Return(
-		privLinearTo, "(r),",
-		privLinearTo, "(g),",
+		privLinearTo, "(r), ",
+		privLinearTo, "(g), ",
 		privLinearTo, "(b)",
 	)
 	w.End()
@@ -144,7 +143,7 @@ func genConvertPkgLUT(w *writer.GoWriter, linear, name string, transfer func(flo
 	w.LineWriteln("n := ", privLinearTo, "Coarse[i]")
 
 	w.Separate()
-	w.Begin("for n < 255 && x >= ", privLinearTo, "Threshold[n+1]")
+	w.Begin("for n < 255 && x >= ", privLinearTo, "Threshold[n+1] ")
 	w.LineWriteln("n++")
 	w.End()
 

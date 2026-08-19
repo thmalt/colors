@@ -83,14 +83,25 @@ func formatNormalizedFloat(x float64) string {
 	return formatNormalizedFloatPrec(x, -1)
 }
 
+func clamp01(x float64) float64 {
+	return min(1, max(0, x))
+}
+
 func clamp(x, lo, hi float64) float64 {
 	return min(hi, max(lo, x))
 }
 
-func clamp01(x float64) float64 {
-	return clamp(x, 0, 1)
+func wrap01(v float64) float64 {
+	return v - math.Floor(v)
 }
 
 func wrap(v, min, max float64) float64 {
+	r := max - min
+	v -= min
+	v -= math.Floor(v/r) * r
+	return v + min
+}
+
+func wrapMod(v, min, max float64) float64 {
 	return math.Mod(v-min, max-min) + (min)
 }

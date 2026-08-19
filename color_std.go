@@ -2,35 +2,74 @@ package colors
 
 import (
 	"image/color"
+	"math"
+
+	"github.com/thmalt/colors/space"
 )
 
 // RGBA implements the [color.Color] interface
 func (c Color) RGBA() (r, g, b, a uint32) {
-	red, green, blue, alpha := c.ToRgba8()
+	const max = 65535
 
-	a = uint32(alpha) * 0x101
-	r = uint32(red) * a / 0xff
-	g = uint32(green) * a / 0xff
-	b = uint32(blue) * a / 0xff
+	alpha := clamp01(c.alpha)
+	alphaMax := alpha * max
+	a = uint32(alphaMax + 0.5)
+
+	switch c.space {
+	case space.Srgb:
+		r = uint32(clamp01(c.c1)*alphaMax + 0.5)
+		g = uint32(clamp01(c.c2)*alphaMax + 0.5)
+		b = uint32(clamp01(c.c3)*alphaMax + 0.5)
+	case space.Hsl, space.Hsv, space.Hwb:
+		fr, fg, fb := c.Srgb()
+		r = uint32(clamp01(fr)*alphaMax + 0.5)
+		g = uint32(clamp01(fg)*alphaMax + 0.5)
+		b = uint32(clamp01(fb)*alphaMax + 0.5)
+	case space.LinearSrgb:
+		r = uint32(linearSrgbToRgb16(c.c1, alphaMax))
+		g = uint32(linearSrgbToRgb16(c.c2, alphaMax))
+		b = uint32(linearSrgbToRgb16(c.c3, alphaMax))
+	default:
+		fr, fg, fb := c.LinearSrgb()
+		r = uint32(linearSrgbToRgb16(fr, alphaMax))
+		g = uint32(linearSrgbToRgb16(fg, alphaMax))
+		b = uint32(linearSrgbToRgb16(fb, alphaMax))
+	}
 
 	return
 }
 
 // ToRGBA64 converts the color to an sRGB [color.RGBA64].
 func (c Color) ToRGBA64() color.RGBA64 {
-	red, green, blue, alpha := c.ToRgba8()
+	const max = 65535
 
-	a := uint32(alpha) * 0x101
-	r := uint32(red) * a / 0xff
-	g := uint32(green) * a / 0xff
-	b := uint32(blue) * a / 0xff
+	var r, g, b uint16
+	alpha := clamp01(c.alpha)
+	alphaMax := alpha * max
+	a := uint16(alphaMax + 0.5)
 
-	return color.RGBA64{
-		R: uint16(r),
-		G: uint16(g),
-		B: uint16(b),
-		A: uint16(a),
+	switch c.space {
+	case space.Srgb:
+		r = uint16(clamp01(c.c1)*alphaMax + 0.5)
+		g = uint16(clamp01(c.c2)*alphaMax + 0.5)
+		b = uint16(clamp01(c.c3)*alphaMax + 0.5)
+	case space.Hsl, space.Hsv, space.Hwb:
+		fr, fg, fb := c.Srgb()
+		r = uint16(clamp01(fr)*alphaMax + 0.5)
+		g = uint16(clamp01(fg)*alphaMax + 0.5)
+		b = uint16(clamp01(fb)*alphaMax + 0.5)
+	case space.LinearSrgb:
+		r = linearSrgbToRgb16(c.c1, alphaMax)
+		g = linearSrgbToRgb16(c.c2, alphaMax)
+		b = linearSrgbToRgb16(c.c3, alphaMax)
+	default:
+		fr, fg, fb := c.LinearSrgb()
+		r = linearSrgbToRgb16(fr, alphaMax)
+		g = linearSrgbToRgb16(fg, alphaMax)
+		b = linearSrgbToRgb16(fb, alphaMax)
 	}
+
+	return color.RGBA64{R: r, G: g, B: b, A: a}
 }
 
 // FromStd converts a [color.Color] to a [Color].
@@ -159,4 +198,20 @@ func fromRGBA64(R, G, B, A uint16) Color {
 	a /= 0xffff
 
 	return SrgbAlpha(r, g, b, a)
+}
+
+// linearSrgbToRgb16 converts a linear sRGB component to a premultiplied
+// 16-bit sRGB value using Log/Exp for the power function.
+func linearSrgbToRgb16(x float64, alphaMax float64) uint16 {
+	const inv24 = 1 / 2.4
+
+	x = clamp01(x)
+
+	if x <= 0.0031308 {
+		x *= 12.92
+	} else {
+		x = 1.055*math.Exp(math.Log(x)*inv24) - 0.055
+	}
+
+	return uint16(x*alphaMax + 0.5)
 }
