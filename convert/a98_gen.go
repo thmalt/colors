@@ -17,10 +17,9 @@ func A98ToSrgb(r, g, b float64) (float64, float64, float64) {
 	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
-	f2 := g
 	f3 := -0.04292898929447317*g + 1.0429289892944729*b
 
-	return LinearSrgbToSrgb(f1, f2, f3)
+	return LinearSrgbToSrgb(f1, g, f3)
 }
 
 // Conversion path (3 steps):
@@ -33,10 +32,9 @@ func A98ToLinearSrgb(r, g, b float64) (float64, float64, float64) {
 	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
-	f2 := g
 	f3 := -0.04292898929447317*g + 1.0429289892944729*b
 
-	return f1, f2, f3
+	return f1, g, f3
 }
 
 // Conversion path (4 steps):
@@ -422,10 +420,9 @@ func A98ToHsl(r, g, b float64) (h, s, l float64) {
 	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
-	f2 := g
 	f3 := -0.04292898929447317*g + 1.0429289892944729*b
 
-	r, g, b = LinearSrgbToSrgb(f1, f2, f3)
+	r, g, b = LinearSrgbToSrgb(f1, g, f3)
 	return SrgbToHsl(r, g, b)
 }
 
@@ -441,10 +438,9 @@ func A98ToHsv(r, g, b float64) (h, s, v float64) {
 	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
-	f2 := g
 	f3 := -0.04292898929447317*g + 1.0429289892944729*b
 
-	r, g, b = LinearSrgbToSrgb(f1, f2, f3)
+	r, g, b = LinearSrgbToSrgb(f1, g, f3)
 	return SrgbToHsv(r, g, b)
 }
 
@@ -460,9 +456,8 @@ func A98ToHwb(r, g, b float64) (float64, float64, float64) {
 	r, g, b = A98ToLinearA98(r, g, b)
 
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
-	f2 := g
 	f3 := -0.04292898929447317*g + 1.0429289892944729*b
 
-	r, g, b = LinearSrgbToSrgb(f1, f2, f3)
+	r, g, b = LinearSrgbToSrgb(f1, g, f3)
 	return SrgbToHwb(r, g, b)
 }

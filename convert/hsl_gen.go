@@ -66,10 +66,9 @@ func HslToA98(h, s, l float64) (r, g, b float64) {
 	r, g, b = SrgbToLinearSrgb(r, g, b)
 
 	f1 := 0.7151256068556247*r + 0.28487439314437574*g
-	f2 := g
 	f3 := 0.04116194845011842*g + 0.9588380515498821*b
 
-	return LinearA98ToA98(f1, f2, f3)
+	return LinearA98ToA98(f1, g, f3)
 }
 
 // Conversion path (4 steps):
@@ -84,10 +83,9 @@ func HslToLinearA98(h, s, l float64) (r, g, b float64) {
 	r, g, b = SrgbToLinearSrgb(r, g, b)
 
 	f1 := 0.7151256068556247*r + 0.28487439314437574*g
-	f2 := g
 	f3 := 0.04116194845011842*g + 0.9588380515498821*b
 
-	return f1, f2, f3
+	return f1, g, f3
 }
 
 // Conversion path (6 steps):
@@ -464,24 +462,4 @@ func HslToOklch(h, s, l float64) (float64, float64, float64) {
 	b = 0.0259040424655478*f1 + 0.7827717124575296*f2 - 0.8086757549230774*f3
 
 	return LxyToLch(l, a, b)
-}
-
-// Conversion path (2 steps):
-//
-//	HSL
-//	-> sRGB
-//	-> HSV
-func HslToHsv(h, s, l float64) (float64, float64, float64) {
-	r, g, b := HslToSrgb(h, s, l)
-	return SrgbToHsv(r, g, b)
-}
-
-// Conversion path (2 steps):
-//
-//	HSL
-//	-> sRGB
-//	-> HWB
-func HslToHwb(h, s, l float64) (float64, float64, float64) {
-	r, g, b := HslToSrgb(h, s, l)
-	return SrgbToHwb(r, g, b)
 }

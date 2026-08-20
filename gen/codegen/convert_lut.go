@@ -2,14 +2,15 @@ package codegen
 
 import (
 	"math"
+	"strconv"
 
 	"github.com/thmalt/colors/gen/codegen/writer"
 )
 
 // makeLUT generates lookup data for a normalized domain [0, 1].
-// size must be in the range [2, math.MaxUint16].
+// size must be in the range [2, math.MaxUint16).
 func makeLUT(size int, fn func(float64) float64) (lut, threshold []float64, coarse []uint16) {
-	if size < 2 || size > math.MaxUint16 {
+	if size < 2 || size > math.MaxUint16+1 {
 		panic("invalid LUT size")
 	}
 
@@ -41,11 +42,14 @@ func makeLUT(size int, fn func(float64) float64) (lut, threshold []float64, coar
 	return
 }
 
-func genConvertPkgLUT(w *writer.GoWriter, linear, name string, transfer func(float64) float64) {
-	lut, threshold, coarse := makeLUT(256, transfer)
+func genConvertPkgLUT(w *writer.GoWriter, size int, linear, name string, transfer func(float64) float64) {
+	lut, threshold, coarse := makeLUT(size+1, transfer)
+
+	bits := strconv.Itoa(smallestUintType(size))
+	uintType := "uint" + bits
 
 	linear = toUpperCaseFirstChar(linear)
-	name = toUpperCaseFirstChar(name)
+	name = toUpperCaseFirstChar(name) + bits
 
 	linearTo := linear + "To" + name
 	toLinear := name + "To" + linear
@@ -87,7 +91,7 @@ func genConvertPkgLUT(w *writer.GoWriter, linear, name string, transfer func(flo
 	w.End()
 
 	w.Separate()
-	w.Begin(privLinearTo, "Coarse = [", len(coarse), "]uint8")
+	w.Begin(privLinearTo, "Coarse = [", len(coarse), "]", uintType)
 	w.Indent()
 	for i := range coarse {
 		if i > 0 {
@@ -104,10 +108,10 @@ func genConvertPkgLUT(w *writer.GoWriter, linear, name string, transfer func(flo
 	w.End()
 
 	w.Separate()
-	// func (r, g, b uint8) (float64, float64, float64)
-	w.Comment(toLinear, " converts 8-bit components to linear components.")
+	// func (r, g, b uint?) (float64, float64, float64)
+	w.Comment(toLinear, " converts ", bits, "-bit components to linear components.")
 	w.Func(toLinear)
-	w.FuncParams("r, g, b uint8")
+	w.FuncParams("r, g, b ", uintType)
 	w.FuncResults(joinRepeatN(FloatType, 3))
 	w.FuncBody()
 	w.Return(
@@ -118,11 +122,11 @@ func genConvertPkgLUT(w *writer.GoWriter, linear, name string, transfer func(flo
 	w.End()
 
 	w.Separate()
-	// func (r, g, b float64) (uint8, uint8, uint8)
-	w.Comment(linearTo, " converts linear components to 8-bit components.")
+	// func (r, g, b float64) (uint?, uint?, uint?)
+	w.Comment(linearTo, " converts linear components to ", bits, "-bit components.")
 	w.Func(linearTo)
 	w.FuncParams("r, g, b ", FloatType)
-	w.FuncResults(joinRepeatN("uint8", 3))
+	w.FuncResults(joinRepeatN(uintType, 3))
 	w.FuncBody()
 	w.Return(
 		privLinearTo, "(r), ",
@@ -134,7 +138,7 @@ func genConvertPkgLUT(w *writer.GoWriter, linear, name string, transfer func(flo
 	w.Separate()
 	w.Func(privLinearTo)
 	w.FuncParams("x ", FloatType)
-	w.FuncResults("uint8")
+	w.FuncResults(uintType)
 	w.FuncBody()
 	w.LineWriteln("x = min(1, max(0, x)) // clamp01")
 
@@ -143,7 +147,7 @@ func genConvertPkgLUT(w *writer.GoWriter, linear, name string, transfer func(flo
 	w.LineWriteln("n := ", privLinearTo, "Coarse[i]")
 
 	w.Separate()
-	w.Begin("for n < 255 && x >= ", privLinearTo, "Threshold[n+1] ")
+	w.Begin("for n < ", size, " && x >= ", privLinearTo, "Threshold[n+1] ")
 	w.LineWriteln("n++")
 	w.End()
 

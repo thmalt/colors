@@ -68,6 +68,14 @@ func (w *GoWriter) Bytes() []byte {
 	return w.buf.Bytes()
 }
 
+func (w *GoWriter) Len() int {
+	return w.buf.Len()
+}
+
+func (w *GoWriter) Truncate(n int) {
+	w.buf.Truncate(n)
+}
+
 func (w *GoWriter) SaveGoFile(filename, pkg string) {
 	err := os.MkdirAll(filepath.Dir(filename), os.ModePerm)
 	if err != nil {

@@ -3,6 +3,7 @@ package codegen
 import (
 	"fmt"
 	"log"
+	"math"
 	"path/filepath"
 
 	"github.com/thmalt/colors/gen/codegen/writer"
@@ -23,7 +24,7 @@ func GenerateConvertPkg(ctx *Context) {
 	genConvertPkgConversionFiles(ctx, w, pkg, pkgPath)
 
 	emitGoFile(w, pkg, pkgPath, "rgb8_lut", func(w *writer.GoWriter) {
-		genConvertPkgLUT(w, "LinearSrgb", "Rgb8", srgbToLinearSrgb)
+		genConvertPkgLUT(w, math.MaxUint8, "LinearSrgb", "Rgb", srgbToLinearSrgb)
 	})
 
 	emitGoFile(w, pkg, pkgPath, "whitepoint", func(w *writer.GoWriter) {

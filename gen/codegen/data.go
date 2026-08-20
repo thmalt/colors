@@ -431,10 +431,21 @@ var (
 		// standard converter
 		{Pair: Pair{"Srgb", "Hsl"}, Implemented: true},
 		{Pair: Pair{"Hsl", "Srgb"}, Implemented: true},
+
 		{Pair: Pair{"Srgb", "Hsv"}, Implemented: true},
 		{Pair: Pair{"Hsv", "Srgb"}, Implemented: true},
+
 		{Pair: Pair{"Srgb", "Hwb"}, Implemented: true},
 		{Pair: Pair{"Hwb", "Srgb"}, Implemented: true},
+
+		{Pair: Pair{"Hsl", "Hsv"}, Implemented: true},
+		{Pair: Pair{"Hsv", "Hsl"}, Implemented: true},
+
+		{Pair: Pair{"Hsl", "Hwb"}, Implemented: true},
+		{Pair: Pair{"Hwb", "Hsl"}, Implemented: true},
+
+		{Pair: Pair{"Hsv", "Hwb"}, Implemented: true},
+		{Pair: Pair{"Hwb", "Hsv"}, Implemented: true},
 
 		// standard converter
 		{Pair: Pair{"LabD50", "XyzD50"}, Implemented: true},

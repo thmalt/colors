@@ -40,10 +40,9 @@ func LinearSrgbToLinearDisplayP3(r, g, b float64) (float64, float64, float64) {
 //	-> Adobe RGB (1998)
 func LinearSrgbToA98(r, g, b float64) (float64, float64, float64) {
 	f1 := 0.7151256068556247*r + 0.28487439314437574*g
-	f2 := g
 	f3 := 0.04116194845011842*g + 0.9588380515498821*b
 
-	return LinearA98ToA98(f1, f2, f3)
+	return LinearA98ToA98(f1, g, f3)
 }
 
 // Conversion path (2 steps):
@@ -53,9 +52,8 @@ func LinearSrgbToA98(r, g, b float64) (float64, float64, float64) {
 //	-> Linear Adobe RGB (1998)
 func LinearSrgbToLinearA98(r, g, b float64) (float64, float64, float64) {
 	f1 := 0.7151256068556247*r + 0.28487439314437574*g
-	f2 := g
 	f3 := 0.04116194845011842*g + 0.9588380515498821*b
-	return f1, f2, f3
+	return f1, g, f3
 }
 
 // Conversion path (4 steps):

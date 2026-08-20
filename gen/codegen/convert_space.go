@@ -63,9 +63,9 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 
 	var retString string
 
-	// variable returnResult of params and results
-	returnResult := scope.ContainsAny(resultsVars...)
-	if returnResult {
+	// variable hasReturnVars of params and results
+	hasReturnVars := scope.ContainsAny(resultsVars...)
+	if hasReturnVars {
 		retString = joinRepeatN(FloatType, len(resultsVars))
 	} else {
 		scope.ReserveAll(resultsVars...)
@@ -174,12 +174,14 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 					outputVars = resultsVars
 				} else {
 					resultsVars = outputVars
-					returnResult = true
+					hasReturnVars = true
 				}
 			}
 
 			l := len(inputVars)
 			for i, out := range outputVars {
+				startLen := sub.Len()
+
 				sub.LineWrite(out)
 
 				if scope.Reserve(out) {
@@ -188,35 +190,45 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 					sub.Write(" = ")
 				}
 
-				first := true
+				varName := ""
+				count := 0
+
 				for j, v := range inputVars {
 					f := normalizeFloat(op.Matrix[i*l+j])
-
-					switch {
-					case f == 0:
-					case math.Signbit(f):
-						if first {
+					if f == 0 {
+						continue
+					}
+					count++
+					neg := math.Signbit(f)
+					if neg {
+						f = -f
+						if count == 1 {
 							sub.Write('-')
 						} else {
 							sub.Write(" - ")
 						}
-						f = -f
-					case !first:
+					} else if count > 1 {
 						sub.Write(" + ")
-
 					}
 
-					switch f {
-					case 0:
-					case 1:
+					if f == 1 {
 						sub.Write(v)
-						first = false
-					default:
+						if count == 1 && !neg {
+							varName = v
+						} else {
+							varName = ""
+						}
+					} else {
 						sub.Write(formatFloat(f), '*', v)
-						first = false
+						varName = ""
 					}
 				}
 				sub.Newline()
+
+				if varName != "" && (!isLastOp && ops[idx+1].Type == OpCall || isLastOp && hasReturnVars) {
+					sub.Truncate(startLen)
+					outputVars[i] = inputVars[i]
+				}
 			}
 			inputVars = outputVars
 		}
@@ -229,7 +241,7 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 			w.Separate()
 		}
 
-		if returnResult {
+		if hasReturnVars {
 			w.Return(strings.Join(inputVars, ", "))
 		} else {
 			w.Return()

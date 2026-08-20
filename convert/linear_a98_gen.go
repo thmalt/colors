@@ -14,10 +14,9 @@ import (
 //	-> sRGB
 func LinearA98ToSrgb(r, g, b float64) (float64, float64, float64) {
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
-	f2 := g
 	f3 := -0.04292898929447317*g + 1.0429289892944729*b
 
-	return LinearSrgbToSrgb(f1, f2, f3)
+	return LinearSrgbToSrgb(f1, g, f3)
 }
 
 // Conversion path (2 steps):
@@ -27,9 +26,8 @@ func LinearA98ToSrgb(r, g, b float64) (float64, float64, float64) {
 //	-> Linear sRGB
 func LinearA98ToLinearSrgb(r, g, b float64) (float64, float64, float64) {
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
-	f2 := g
 	f3 := -0.04292898929447317*g + 1.0429289892944729*b
-	return f1, f2, f3
+	return f1, g, f3
 }
 
 // Conversion path (3 steps):
@@ -344,10 +342,9 @@ func LinearA98ToOklch(r, g, b float64) (l, c, h float64) {
 //	-> HSL
 func LinearA98ToHsl(r, g, b float64) (h, s, l float64) {
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
-	f2 := g
 	f3 := -0.04292898929447317*g + 1.0429289892944729*b
 
-	r, g, b = LinearSrgbToSrgb(f1, f2, f3)
+	r, g, b = LinearSrgbToSrgb(f1, g, f3)
 	return SrgbToHsl(r, g, b)
 }
 
@@ -360,10 +357,9 @@ func LinearA98ToHsl(r, g, b float64) (h, s, l float64) {
 //	-> HSV
 func LinearA98ToHsv(r, g, b float64) (h, s, v float64) {
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
-	f2 := g
 	f3 := -0.04292898929447317*g + 1.0429289892944729*b
 
-	r, g, b = LinearSrgbToSrgb(f1, f2, f3)
+	r, g, b = LinearSrgbToSrgb(f1, g, f3)
 	return SrgbToHsv(r, g, b)
 }
 
@@ -376,9 +372,8 @@ func LinearA98ToHsv(r, g, b float64) (h, s, v float64) {
 //	-> HWB
 func LinearA98ToHwb(r, g, b float64) (float64, float64, float64) {
 	f1 := 1.3983557439607783*r - 0.3983557439607788*g
-	f2 := g
 	f3 := -0.04292898929447317*g + 1.0429289892944729*b
 
-	r, g, b = LinearSrgbToSrgb(f1, f2, f3)
+	r, g, b = LinearSrgbToSrgb(f1, g, f3)
 	return SrgbToHwb(r, g, b)
 }
