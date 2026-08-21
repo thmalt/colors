@@ -65,14 +65,14 @@ func (c Color) Dither(x, y int) Color {
 		b = linearSrgbToSrgb(b)
 	}
 
-	d := dither.Offset(x, y) * (1 / 255.0)
+	d := dither.Offset(x, y) * invMaxUint8
 	return SrgbAlpha(clamp01(r+d), clamp01(g+d), clamp01(b+d), c.alpha)
 }
 
 // Rgb returns the color components in the RGB color space.
 // Components are in the range [0, 255].
 func (c Color) Rgb() (r, g, b float64) {
-	return convert.SrgbToRgb(c.Srgb())
+	return srgbToRgb(c.Srgb())
 }
 
 // Rgb returns a [Color] from 8-bit RGB components in [0, 255].
@@ -81,7 +81,7 @@ func (c Color) Rgb() (r, g, b float64) {
 //	g: [0, 255]
 //	b: [0, 255]
 func Rgb(r, g, b float64) Color {
-	return Srgb(convert.RgbToSrgb(r, g, b))
+	return Srgb(rgbToSrgb(r, g, b))
 }
 
 // Rgb returns a [Color] from 8-bit RGB components in [0, 255] with alpha.
@@ -91,7 +91,7 @@ func Rgb(r, g, b float64) Color {
 //	b: [0, 255]
 //	alpha: [0, 1]
 func RgbAlpha(r, g, b, alpha float64) Color {
-	r, g, b = convert.RgbToSrgb(r, g, b)
+	r, g, b = rgbToSrgb(r, g, b)
 	return SrgbAlpha(r, g, b, alpha)
 }
 
@@ -103,7 +103,7 @@ func FromRgb8(r, g, b uint8) Color {
 // FromRgba8 creates a color from 8-bit sRGB components and alpha in linear sRGB.
 func FromRgba8(r, g, b, a uint8) Color {
 	c := LinearSrgb(convert.Rgb8ToLinearSrgb(r, g, b))
-	c.alpha = float64(a) / 255
+	c.alpha = float64(a) * invMaxUint8
 	return c
 }
 
@@ -111,15 +111,15 @@ func FromRgba8(r, g, b, a uint8) Color {
 func (c Color) ToRgb8() (r, g, b uint8) {
 	switch c.space {
 	case space.Srgb:
-		r = uint8(clamp01(c.c1)*255 + 0.5)
-		g = uint8(clamp01(c.c2)*255 + 0.5)
-		b = uint8(clamp01(c.c3)*255 + 0.5)
+		r = uint8(clamp01(c.c1)*maxUint8 + 0.5)
+		g = uint8(clamp01(c.c2)*maxUint8 + 0.5)
+		b = uint8(clamp01(c.c3)*maxUint8 + 0.5)
 		return
 	case space.Hsl, space.Hsv, space.Hwb:
 		fr, fg, fb := c.Srgb()
-		r = uint8(clamp01(fr)*255 + 0.5)
-		g = uint8(clamp01(fg)*255 + 0.5)
-		b = uint8(clamp01(fb)*255 + 0.5)
+		r = uint8(clamp01(fr)*maxUint8 + 0.5)
+		g = uint8(clamp01(fg)*maxUint8 + 0.5)
+		b = uint8(clamp01(fb)*maxUint8 + 0.5)
 		return
 	case space.LinearSrgb:
 		return convert.LinearSrgbToRgb8(c.c1, c.c2, c.c3)
@@ -130,17 +130,17 @@ func (c Color) ToRgb8() (r, g, b uint8) {
 
 // ToRgba8 converts the color to 8-bit sRGB components with alpha.
 func (c Color) ToRgba8() (r, g, b, a uint8) {
-	a = c.Alpha8()
+	a = uint8(clamp01(c.alpha)*maxUint8 + 0.5)
 	switch c.space {
 	case space.Srgb:
-		r = uint8(clamp01(c.c1)*255 + 0.5)
-		g = uint8(clamp01(c.c2)*255 + 0.5)
-		b = uint8(clamp01(c.c3)*255 + 0.5)
+		r = uint8(clamp01(c.c1)*maxUint8 + 0.5)
+		g = uint8(clamp01(c.c2)*maxUint8 + 0.5)
+		b = uint8(clamp01(c.c3)*maxUint8 + 0.5)
 	case space.Hsl, space.Hsv, space.Hwb:
 		fr, fg, fb := c.Srgb()
-		r = uint8(clamp01(fr)*255 + 0.5)
-		g = uint8(clamp01(fg)*255 + 0.5)
-		b = uint8(clamp01(fb)*255 + 0.5)
+		r = uint8(clamp01(fr)*maxUint8 + 0.5)
+		g = uint8(clamp01(fg)*maxUint8 + 0.5)
+		b = uint8(clamp01(fb)*maxUint8 + 0.5)
 	case space.LinearSrgb:
 		r, g, b = convert.LinearSrgbToRgb8(c.c1, c.c2, c.c3)
 	default:
@@ -167,4 +167,12 @@ func linearSrgbToSrgb(x float64) float64 {
 		return -x
 	}
 	return x
+}
+
+func rgbToSrgb(r, g, b float64) (float64, float64, float64) {
+	return r * invMaxUint8, g * invMaxUint8, b * invMaxUint8
+}
+
+func srgbToRgb(r, g, b float64) (float64, float64, float64) {
+	return r * maxUint8, g * maxUint8, b * maxUint8
 }
