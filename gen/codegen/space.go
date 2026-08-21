@@ -19,21 +19,21 @@ func GenerateSpacePkg(ctx *Context) {
 	pkg := ctx.SpacePkg.Name
 	pkgPath := filepath.Join(ctx.Directory, ctx.SpacePkg.Path)
 
-	emitGoFile(w, pkg, pkgPath, pkg, func(w *writer.GoWriter) {
+	emitGoFile(ctx, w, pkg, pkgPath, pkg, func(w *writer.GoWriter) {
 		w.Import("strconv")
 
 		genSpacePkgSpace(ctx, w)
 	})
 
-	emitGoFile(w, pkg, pkgPath, pkg+"_info", func(w *writer.GoWriter) {
+	emitGoFile(ctx, w, pkg, pkgPath, pkg+"_info", func(w *writer.GoWriter) {
 		genSpacePkgSpaceInfo(ctx, w)
 	})
 
-	emitGoFile(w, pkg, pkgPath, pkg+"_table", func(w *writer.GoWriter) {
+	emitGoFile(ctx, w, pkg, pkgPath, pkg+"_table", func(w *writer.GoWriter) {
 		genSpacePkgTables(ctx, w)
 	})
 
-	emitGoFile(w, pkg, pkgPath, "whitepoint", func(w *writer.GoWriter) {
+	emitGoFile(ctx, w, pkg, pkgPath, "whitepoint", func(w *writer.GoWriter) {
 		genSpacePkgWhitePoint(ctx, w)
 	})
 }

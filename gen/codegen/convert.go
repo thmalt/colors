@@ -23,11 +23,11 @@ func GenerateConvertPkg(ctx *Context) {
 
 	genConvertPkgConversionFiles(ctx, w, pkg, pkgPath)
 
-	emitGoFile(w, pkg, pkgPath, "rgb8_lut", func(w *writer.GoWriter) {
+	emitGoFile(ctx, w, pkg, pkgPath, "rgb8_lut", func(w *writer.GoWriter) {
 		genConvertPkgLUT(w, math.MaxUint8, "LinearSrgb", "Rgb", srgbToLinearSrgb)
 	})
 
-	emitGoFile(w, pkg, pkgPath, "whitepoint", func(w *writer.GoWriter) {
+	emitGoFile(ctx, w, pkg, pkgPath, "whitepoint", func(w *writer.GoWriter) {
 		genConvertPkgWhitePoint(ctx, w)
 	})
 }
@@ -49,7 +49,7 @@ func genConvertPkgConversionFiles(ctx *Context, w *writer.GoWriter, pkg, pkgPath
 			filename = space.SnakeName
 		}
 
-		emitGoFile(w, pkg, pkgPath, toSnakeCase(filename), func(w *writer.GoWriter) {
+		emitGoFile(ctx, w, pkg, pkgPath, toSnakeCase(filename), func(w *writer.GoWriter) {
 			ctx.TotalConversionGenerated += genConvertPkgSpaceConversions(ctx, w, space)
 		})
 	}

@@ -17,6 +17,7 @@ func main() {
 	ctx := codegen.NewContext(codegen.Options{
 		EmbedMatrix: true,
 
+		// ForceWrite:  true,
 		// SeparateAfterComment: true,
 	})
 

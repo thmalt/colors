@@ -18,9 +18,20 @@ func (p Pkg) Join(ident string) string {
 }
 
 type Options struct {
-	EmbedMatrix          bool
-	FormatSource         bool
+	// EmbedMatrix embeds conversion matrices directly into conversion functions
+	// instead of calling generated conversion functions that contain the matrices.
+	EmbedMatrix bool
+
 	SeparateAfterComment bool
+
+	// FormatSource formats generated Go source code with gofmt.
+	FormatSource bool
+
+	// BuildTags specifies the build constraints to add to generated Go files.
+	BuildTags string
+
+	// ForceWrite forces generated files to be written even when their contents have not changed.
+	ForceWrite bool
 }
 
 type Context struct {

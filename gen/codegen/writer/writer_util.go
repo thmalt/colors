@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"go/format"
-	"io"
 	"math"
 	"strings"
 	"unicode"
@@ -44,31 +43,29 @@ const (
 	bracketArray = '['
 )
 
-func WriteGo(w io.Writer, pkg, tags string, b []byte, formatSource bool) (int, error) {
+func formatCode(pkg, tags, header string, b []byte, formatSource bool) ([]byte, error) {
 	var src []byte
-
 	if tags != "" {
 		src = append(src, tagLines(tags)...)
 		src = append(src, '\n')
 	}
+
+	src = append(src, header...)
 
 	src = append(src, fmt.Sprintf("package %s\n\n", pkg)...)
 	src = append(src, b...)
 
 	src = normalizeGoSource(src)
 
-	if !formatSource {
-		return w.Write(src)
+	if formatSource {
+		formatted, err := format.Source(src)
+		if err != nil {
+			return src, err
+		}
+		return formatted, nil
 	}
 
-	formatted, err := format.Source(src)
-
-	if err != nil {
-		n, _ := w.Write(src)
-		return n, err
-	}
-
-	return w.Write(formatted)
+	return src, nil
 }
 
 func tagLines(tags string) string {
@@ -86,7 +83,7 @@ func normalizeGoSource(src []byte) []byte {
 		}
 
 		if !blank {
-			buf.Write(line)
+			buf.Write(bytes.TrimRightFunc(line, unicode.IsSpace))
 		}
 		buf.WriteByte('\n')
 

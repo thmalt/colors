@@ -18,7 +18,7 @@ func GenerateMixerPkg(ctx *Context) {
 	pkg := ctx.MixerPkg.Name
 	pkgPath := filepath.Join(ctx.Directory, ctx.MixerPkg.Path)
 
-	emitGoFile(w, pkg, pkgPath, "unsafe", func(w *writer.GoWriter) {
+	emitGoFile(ctx, w, pkg, pkgPath, "unsafe", func(w *writer.GoWriter) {
 		w.Import(ctx.InterpPkg.Path)
 
 		genMixerPkgUnsafe(ctx, w)
