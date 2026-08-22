@@ -17,10 +17,11 @@ func genRootPkgInGamut(ctx *Context, w *writer.GoWriter) {
 	w.FuncResults("bool")
 	w.FuncBody()
 
+	w.LineWriteln("const eps = ", 1e-07)
 	w.Switch("c.space")
 
 	sub := w.SubWriter()
-	groups := rootPkgInGamutGroup(ctx, sub)
+	groups := rootPkgInGamutGroup(ctx, sub, "eps")
 
 	for _, group := range groups {
 		sub.Reset()
@@ -71,7 +72,7 @@ func genRootPkgInGamutSpace(w *writer.GoWriter) {
 
 }
 
-func rootPkgInGamutGroup(ctx *Context, w *writer.GoWriter) []groupSpaceValue {
+func rootPkgInGamutGroup(ctx *Context, w *writer.GoWriter, eps string) []groupSpaceValue {
 	defer w.Reset()
 
 	gs := newGroupSpace()
@@ -89,8 +90,8 @@ func rootPkgInGamutGroup(ctx *Context, w *writer.GoWriter) []groupSpaceValue {
 			}
 
 			w.Write(
-				"c.c", j+1, " >= ", formatNormalizedFloat(ch.Min), " && ",
-				"c.c", j+1, " <= ", formatNormalizedFloat(ch.Max),
+				"c.c", j+1, " >= ", formatGamutBound(ch.Min, eps, true), " && ",
+				"c.c", j+1, " <= ", formatGamutBound(ch.Max, eps, false),
 			)
 
 			count++
@@ -103,4 +104,19 @@ func rootPkgInGamutGroup(ctx *Context, w *writer.GoWriter) []groupSpaceValue {
 	}
 
 	return gs.SortedSlice()
+}
+
+func formatGamutBound(v float64, eps string, lower bool) string {
+	v = normalizeFloat(v)
+	if v == 0 {
+		if lower {
+			return "-" + eps
+		}
+		return eps
+	}
+
+	if v < 0 {
+		return formatFloat(v) + "-" + eps
+	}
+	return formatFloat(v) + "+" + eps
 }

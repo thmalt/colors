@@ -8,21 +8,22 @@ import (
 
 // InGamut reports whether c is within the gamut of its color space.
 func InGamut(c Color) bool {
+	const eps = 1e-07
 	switch c.space {
 	case space.Oklab, space.Oklch:
-		return c.c1 >= 0 && c.c1 <= 1
+		return c.c1 >= -eps && c.c1 <= 1+eps
 	case space.LabD50, space.LchD50, space.LabD65, space.LchD65,
 		space.LuvD50, space.LchuvD50, space.LuvD65, space.LchuvD65:
-		return c.c1 >= 0 && c.c1 <= 100
+		return c.c1 >= -eps && c.c1 <= 100+eps
 	case space.XyYD50, space.XyYD65:
-		return c.c1 >= 0 && c.c1 <= 1 && c.c2 >= 0 && c.c2 <= 1
+		return c.c1 >= -eps && c.c1 <= 1+eps && c.c2 >= -eps && c.c2 <= 1+eps
 	case space.Hsl, space.Hsv, space.Hwb:
-		return c.c2 >= 0 && c.c2 <= 1 && c.c3 >= 0 && c.c3 <= 1
+		return c.c2 >= -eps && c.c2 <= 1+eps && c.c3 >= -eps && c.c3 <= 1+eps
 	case space.Srgb, space.LinearSrgb, space.DisplayP3, space.LinearDisplayP3,
 		space.A98, space.LinearA98, space.ProPhoto, space.LinearProPhoto,
 		space.Rec2020, space.Rec2020OETF, space.LinearRec2020, space.XyzD50,
 		space.XyzD65:
-		return c.c1 >= 0 && c.c1 <= 1 && c.c2 >= 0 && c.c2 <= 1 && c.c3 >= 0 && c.c3 <= 1
+		return c.c1 >= -eps && c.c1 <= 1+eps && c.c2 >= -eps && c.c2 <= 1+eps && c.c3 >= -eps && c.c3 <= 1+eps
 	default:
 		return false
 	}
