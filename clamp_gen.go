@@ -17,7 +17,7 @@ func Clamp(c Color) Color {
 		return c
 	case space.Oklch:
 		c.c1 = clamp(c.c1, 0, 1)
-		c.c3 = wrap(c.c3, 0, 360)
+		c.c3 = wrap360(c.c3)
 		return c
 	case space.XyYD50, space.XyYD65:
 		c.c1 = clamp(c.c1, 0, 1)
@@ -25,10 +25,10 @@ func Clamp(c Color) Color {
 		return c
 	case space.LchD50, space.LchD65, space.LchuvD50, space.LchuvD65:
 		c.c1 = clamp(c.c1, 0, 100)
-		c.c3 = wrap(c.c3, 0, 360)
+		c.c3 = wrap360(c.c3)
 		return c
 	case space.Hsl, space.Hsv, space.Hwb:
-		c.c1 = wrap(c.c1, 0, 360)
+		c.c1 = wrap360(c.c1)
 		c.c2 = clamp(c.c2, 0, 1)
 		c.c3 = clamp(c.c3, 0, 1)
 		return c

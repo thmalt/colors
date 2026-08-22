@@ -95,6 +95,11 @@ func wrap01(v float64) float64 {
 	return v - math.Floor(v)
 }
 
+func wrap360(x float64) float64 {
+	const inv360 = 1 / 360.0
+	return x - math.Floor(x*inv360)*360
+}
+
 func wrap(v, min, max float64) float64 {
 	r := max - min
 	v -= min

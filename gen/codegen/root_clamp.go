@@ -58,17 +58,26 @@ func rootPkgClampGroup(ctx *Context, w *writer.GoWriter) []groupSpaceValue {
 			}
 
 			w.LineWrite("c.c", j+1, " = ")
-			if ch.Circular {
-				w.Write("wrap")
+
+			min := normalizeFloat(ch.Min)
+			max := normalizeFloat(ch.Max)
+
+			if ch.Circular && min == 0 && max == 360 {
+				w.Writeln("wrap360", '(', "c.c", j+1, ')')
 			} else {
-				w.Write("clamp")
+				fn := "clamp"
+				if ch.Circular {
+					fn = "wrap"
+				}
+
+				w.Writeln(
+					fn, '(',
+					"c.c", j+1,
+					", ", formatFloat(min),
+					", ", formatFloat(max),
+					')',
+				)
 			}
-			w.Writeln('(',
-				"c.c", j+1,
-				", ", formatNormalizedFloat(ch.Min),
-				", ", formatNormalizedFloat(ch.Max),
-				')',
-			)
 
 			count++
 		}
