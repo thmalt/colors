@@ -1,6 +1,8 @@
 package codegen
 
 import (
+	"math"
+
 	"github.com/thmalt/colors/gen/codegen/data"
 	"github.com/thmalt/colors/gen/codegen/model"
 )
@@ -13,66 +15,92 @@ var (
 		"HueDecreasing",
 	}
 
+	xChannelName = channelName("X", "x", "X", "X")
+	yChannelName = channelName("Y", "y", "Y", "Y")
+	zChannelName = channelName("Z", "z", "Z", "Z")
+
+	lightnessChannelName = channelName("Lightness", "l", "L", "Lightness")
+	chromaChannelName    = channelName("Chroma", "c", "C", "Chroma")
+	hueChannelName       = channelName("Hue", "h", "h", "Hue")
+
+	uChannelName = channelName("U", "u", "u", "Green-Red Opponent")
+	vChannelName = channelName("V", "v", "v", "Blue-Yellow Opponent")
+
+	aChannelName = channelName("A", "a", "a", "Green-Red Opponent")
+	bChannelName = channelName("B", "b", "b", "Blue-Yellow Opponent")
+
 	rgbChannels = []model.Channel{
-		{Name: "Red", Ident: "r", Symbol: "R", DisplayName: "Red", Min: 0, Max: 1, Precision: 6},
-		{Name: "Green", Ident: "g", Symbol: "G", DisplayName: "Green", Min: 0, Max: 1, Precision: 6},
-		{Name: "Blue", Ident: "b", Symbol: "B", DisplayName: "Blue", Min: 0, Max: 1, Precision: 6},
+		extendChannel(channelName("Red", "r", "R", "Red"), numberChannel(0, 1, 6)),
+		extendChannel(channelName("Green", "g", "G", "Green"), numberChannel(0, 1, 6)),
+		extendChannel(channelName("Blue", "b", "B", "Blue"), numberChannel(0, 1, 6)),
 	}
 
-	xyzChannels = []model.Channel{
-		{Name: "X", Ident: "x", Symbol: "X", DisplayName: "X", Min: 0, Max: 1, Precision: 8},
-		{Name: "Y", Ident: "y", Symbol: "Y", DisplayName: "Y", Min: 0, Max: 1, Precision: 8},
-		{Name: "Z", Ident: "z", Symbol: "Z", DisplayName: "Z", Min: 0, Max: 1, Precision: 8},
+	xyzD50Channels = []model.Channel{
+		extendChannel(xChannelName, numberChannel(0, data.D50Xyz[0], 8), unrestrictedChannel),
+		extendChannel(yChannelName, numberChannel(0, data.D50Xyz[1], 8), unrestrictedChannel),
+		extendChannel(zChannelName, numberChannel(0, data.D50Xyz[2], 8), unrestrictedChannel),
+	}
+
+	xyzD65Channels = []model.Channel{
+		extendChannel(xChannelName, numberChannel(0, data.D65Xyz[0], 8), unrestrictedChannel),
+		extendChannel(yChannelName, numberChannel(0, data.D65Xyz[1], 8), unrestrictedChannel),
+		extendChannel(zChannelName, numberChannel(0, data.D65Xyz[2], 8), unrestrictedChannel),
+	}
+
+	xyzAbsD65Channels = []model.Channel{
+		extendChannel(xChannelName, numberChannel(0, math.Round(data.D65Xyz[0]*data.XyzAbsD65Scale), 6), unrestrictedChannel),
+		extendChannel(yChannelName, numberChannel(0, math.Round(data.D65Xyz[1]*data.XyzAbsD65Scale), 6), unrestrictedChannel),
+		extendChannel(zChannelName, numberChannel(0, math.Round(data.D65Xyz[2]*data.XyzAbsD65Scale), 6), unrestrictedChannel),
 	}
 
 	xyYChannels = []model.Channel{
-		{Name: "Chromaticity x", Ident: "x", Symbol: "x", DisplayName: "x", Min: 0, Max: 1, Precision: 8},
-		{Name: "Chromaticity y", Ident: "y", Symbol: "y", DisplayName: "y", Min: 0, Max: 1, Precision: 8},
-		{Name: "Luminance", Ident: "luminance", Symbol: "Y", DisplayName: "Y", Min: 0, Max: 1, Unrestricted: true, Precision: 8},
+		extendChannel(channelName("Chromaticity x", "x", "x", "x"), numberChannel(0, 1, 8)),
+		extendChannel(channelName("Chromaticity y", "y", "y", "y"), numberChannel(0, 1, 8)),
+		extendChannel(channelName("Luminance", "luminance", "Y", "Y"), numberChannel(0, 1, 8), unrestrictedChannel),
 	}
 
 	labChannels = []model.Channel{
-		{Name: "Lightness", Ident: "l", Symbol: "L", DisplayName: "Lightness", Min: 0, Max: 100, Precision: 4},
-		{Name: "A", Ident: "a", Symbol: "a", DisplayName: "Green-Red", Min: -125, Max: 125, Unrestricted: true, Precision: 4},
-		{Name: "B", Ident: "b", Symbol: "b", DisplayName: "Blue-Yellow", Min: -125, Max: 125, Unrestricted: true, Precision: 4},
+		extendChannel(lightnessChannelName, numberChannel(0, 100, 4)),
+		extendChannel(aChannelName, numberChannel(-125, 125, 4), unrestrictedChannel),
+		extendChannel(bChannelName, numberChannel(-125, 125, 4), unrestrictedChannel),
 	}
 
 	lchChannels = []model.Channel{
-		{Name: "Lightness", Ident: "l", Symbol: "L", DisplayName: "Lightness", Min: 0, Max: 100, Precision: 4},
-		{Name: "Chroma", Ident: "c", Symbol: "C", DisplayName: "Chroma", Min: 0, Max: 150, Unrestricted: true, Precision: 4},
-		{Name: "Hue", Ident: "h", Symbol: "h", DisplayName: "Hue", Min: 0, Max: 360, Circular: true, Unit: model.UnitDegree, Precision: 4},
+		extendChannel(lightnessChannelName, numberChannel(0, 100, 4)),
+		extendChannel(chromaChannelName, numberChannel(0, 150, 4), unrestrictedChannel),
+		extendChannel(hueChannelName, degreeChannel),
 	}
 
 	luvChannels = []model.Channel{
-		{Name: "Lightness", Ident: "l", Symbol: "L", DisplayName: "Lightness", Min: 0, Max: 100, Precision: 4},
-		{Name: "U", Ident: "u", Symbol: "u", DisplayName: "Green-Red Opponent", Min: -134, Max: 220, Unrestricted: true, Precision: 4},
-		{Name: "V", Ident: "v", Symbol: "v", DisplayName: "Blue-Yellow Opponent", Min: -140, Max: 122, Unrestricted: true, Precision: 4},
+		extendChannel(lightnessChannelName, numberChannel(0, 100, 4)),
+		extendChannel(uChannelName, numberChannel(-134, 220, 4), unrestrictedChannel),
+		extendChannel(vChannelName, numberChannel(-140, 122, 4), unrestrictedChannel),
 	}
 
 	lchuvChannels = []model.Channel{
-		{Name: "Lightness", Ident: "l", Symbol: "L", DisplayName: "Lightness", Min: 0, Max: 100, Precision: 4},
-		{Name: "Chroma", Ident: "c", Symbol: "C", DisplayName: "Chroma", Min: 0, Max: 180, Unrestricted: true, Precision: 4},
-		{Name: "Hue", Ident: "h", Symbol: "h", DisplayName: "Hue", Min: 0, Max: 360, Circular: true, Unit: model.UnitDegree, Precision: 4},
+		extendChannel(lightnessChannelName, numberChannel(0, 100, 4)),
+		extendChannel(chromaChannelName, numberChannel(0, 180, 4), unrestrictedChannel),
+		extendChannel(hueChannelName, degreeChannel),
 	}
 
 	oklabChannels = []model.Channel{
-		{Name: "Lightness", Ident: "l", Symbol: "L", DisplayName: "Lightness", Min: 0, Max: 1, Precision: 6},
-		{Name: "A", Ident: "a", Symbol: "a", DisplayName: "Green-Red Opponent", Min: -0.4, Max: 0.4, Unrestricted: true, Precision: 6},
-		{Name: "B", Ident: "b", Symbol: "b", DisplayName: "Blue-Yellow Opponent", Min: -0.4, Max: 0.4, Unrestricted: true, Precision: 6},
+		extendChannel(lightnessChannelName, numberChannel(0, 1, 6)),
+		extendChannel(aChannelName, numberChannel(-0.4, 0.4, 6), unrestrictedChannel),
+		extendChannel(bChannelName, numberChannel(-0.4, 0.4, 6), unrestrictedChannel),
 	}
 
 	oklchChannels = []model.Channel{
-		{Name: "Lightness", Ident: "l", Symbol: "L", DisplayName: "Lightness", Min: 0, Max: 1, Precision: 6},
-		{Name: "Chroma", Ident: "c", Symbol: "C", DisplayName: "Chroma", Min: 0, Max: 0.4, Unrestricted: true, Precision: 6},
-		{Name: "Hue", Ident: "h", Symbol: "h", DisplayName: "Hue", Min: 0, Max: 360, Circular: true, Unit: model.UnitDegree, Precision: 4},
+		extendChannel(lightnessChannelName, numberChannel(0, 1, 6)),
+		extendChannel(chromaChannelName, numberChannel(0, 0.4, 6), unrestrictedChannel),
+		extendChannel(hueChannelName, degreeChannel),
 	}
 
-	hueChannel        = model.Channel{Name: "Hue", Ident: "h", Symbol: "H", DisplayName: "Hue", Min: 0, Max: 360, Circular: true, Unit: model.UnitDegree, Precision: 2}
-	saturationChannel = model.Channel{Name: "Saturation", Ident: "s", Symbol: "S", DisplayName: "Saturation", Min: 0, Max: 1, Unit: model.UnitPercent, Precision: 4}
-	lightnessChannel  = model.Channel{Name: "Lightness", Ident: "l", Symbol: "L", DisplayName: "Lightness", Min: 0, Max: 1, Unit: model.UnitPercent, Precision: 4}
-	valueChannel      = model.Channel{Name: "Value", Ident: "v", Symbol: "V", DisplayName: "Value", Min: 0, Max: 1, Unit: model.UnitPercent, Precision: 4}
-	whitenessChannel  = model.Channel{Name: "Whiteness", Ident: "w", Symbol: "W", DisplayName: "Whiteness", Min: 0, Max: 1, Unit: model.UnitPercent, Precision: 4}
-	blacknessChannel  = model.Channel{Name: "Blackness", Ident: "b", Symbol: "B", DisplayName: "Blackness", Min: 0, Max: 1, Unit: model.UnitPercent, Precision: 4}
+	hueChannel        = extendChannel(channelName("Hue", "h", "H", "Hue"), degreeChannel, precisionChannel(2))
+	saturationChannel = extendChannel(channelName("Saturation", "s", "S", "Saturation"), percentChannel(0, 1, 4))
+	lightnessChannel  = extendChannel(channelName("Lightness", "l", "L", "Lightness"), percentChannel(0, 1, 4))
+	valueChannel      = extendChannel(channelName("Value", "v", "V", "Value"), percentChannel(0, 1, 4))
+	whitenessChannel  = extendChannel(channelName("Whiteness", "w", "W", "Whiteness"), percentChannel(0, 1, 4))
+	blacknessChannel  = extendChannel(channelName("Blackness", "b", "B", "Blackness"), percentChannel(0, 1, 4))
 
 	hslChannels = []model.Channel{hueChannel, saturationChannel, lightnessChannel}
 	hsvChannels = []model.Channel{hueChannel, saturationChannel, valueChannel}
@@ -213,7 +241,7 @@ var (
 			DisplayName: "CIE XYZ D50",
 			CssName:     "xyz-d50",
 			WhitePoint:  "D50",
-			Channels:    xyzChannels,
+			Channels:    xyzD50Channels,
 
 			UseGenericColorFunction: true,
 		},
@@ -224,9 +252,21 @@ var (
 			DisplayName: "CIE XYZ D65",
 			CssName:     "xyz-d65",
 			WhitePoint:  "D65",
-			Channels:    xyzChannels,
+			Channels:    xyzD65Channels,
 
 			UseGenericColorFunction: true,
+		},
+		{
+			Name:        "XyzAbsD65",
+			Family:      "XYZ",
+			DisplayName: "Absolute XYZ D65",
+			CssName:     "xyz-abs-d65",
+			WhitePoint:  "D65",
+			Channels:    xyzAbsD65Channels,
+
+			UseGenericColorFunction: true,
+
+			SnakeName: "xyz_abs_d65",
 		},
 		{
 			Name:        "XyYD50",
@@ -459,6 +499,9 @@ var (
 
 		{Pair: Pair{"LuvD65", "XyzD65"}, Implemented: true},
 		{Pair: Pair{"XyzD65", "LuvD65"}, Implemented: true},
+
+		{Pair: Pair{"XyzAbsD65", "XyzD65"}, Implemented: true},
+		{Pair: Pair{"XyzD65", "XyzAbsD65"}, Implemented: true},
 
 		// generate with Call Ops
 		{Pair: Pair{"XyYD50", "XyzD50"}, Ops: []Op{{Type: OpCall, Func: Pair{"XyY", "Xyz"}}}},

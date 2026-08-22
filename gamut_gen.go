@@ -10,6 +10,8 @@ import (
 func InGamut(c Color) bool {
 	const eps = 1e-07
 	switch c.space {
+	case space.XyzD50, space.XyzD65, space.XyzAbsD65:
+		return true
 	case space.Oklab, space.Oklch:
 		return c.c1 >= -eps && c.c1 <= 1+eps
 	case space.LabD50, space.LchD50, space.LabD65, space.LchD65,
@@ -21,8 +23,7 @@ func InGamut(c Color) bool {
 		return c.c2 >= -eps && c.c2 <= 1+eps && c.c3 >= -eps && c.c3 <= 1+eps
 	case space.Srgb, space.LinearSrgb, space.DisplayP3, space.LinearDisplayP3,
 		space.A98, space.LinearA98, space.ProPhoto, space.LinearProPhoto,
-		space.Rec2020, space.Rec2020OETF, space.LinearRec2020, space.XyzD50,
-		space.XyzD65:
+		space.Rec2020, space.Rec2020OETF, space.LinearRec2020:
 		return c.c1 >= -eps && c.c1 <= 1+eps && c.c2 >= -eps && c.c2 <= 1+eps && c.c3 >= -eps && c.c3 <= 1+eps
 	default:
 		return false
@@ -35,10 +36,46 @@ func InGamutSpace(c Color, dst space.Space) bool {
 		return InGamut(c)
 	}
 
-	converted, err := c.To(dst)
-	if err != nil {
-		return false
-	}
+	converted, ok := c.To(dst)
+	return ok && InGamut(converted)
+}
 
-	return InGamut(converted)
+// Clamp clamps the color channels to the valid range of the color space.
+func Clamp(c Color) Color {
+	switch c.space {
+	case space.XyzD50, space.XyzD65, space.XyzAbsD65:
+		return c
+	case space.Oklab:
+		c.c1 = clamp(c.c1, 0, 1)
+		return c
+	case space.LabD50, space.LabD65, space.LuvD50, space.LuvD65:
+		c.c1 = clamp(c.c1, 0, 100)
+		return c
+	case space.Oklch:
+		c.c1 = clamp(c.c1, 0, 1)
+		c.c3 = wrap360(c.c3)
+		return c
+	case space.XyYD50, space.XyYD65:
+		c.c1 = clamp(c.c1, 0, 1)
+		c.c2 = clamp(c.c2, 0, 1)
+		return c
+	case space.LchD50, space.LchD65, space.LchuvD50, space.LchuvD65:
+		c.c1 = clamp(c.c1, 0, 100)
+		c.c3 = wrap360(c.c3)
+		return c
+	case space.Hsl, space.Hsv, space.Hwb:
+		c.c1 = wrap360(c.c1)
+		c.c2 = clamp(c.c2, 0, 1)
+		c.c3 = clamp(c.c3, 0, 1)
+		return c
+	case space.Srgb, space.LinearSrgb, space.DisplayP3, space.LinearDisplayP3,
+		space.A98, space.LinearA98, space.ProPhoto, space.LinearProPhoto,
+		space.Rec2020, space.Rec2020OETF, space.LinearRec2020:
+		c.c1 = clamp(c.c1, 0, 1)
+		c.c2 = clamp(c.c2, 0, 1)
+		c.c3 = clamp(c.c3, 0, 1)
+		return c
+	default:
+		return c
+	}
 }

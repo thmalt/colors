@@ -94,18 +94,18 @@ func genRootPkgColorConvertMethod(ctx *Context, w *writer.GoWriter, space *model
 func genRootPkgColorTo(ctx *Context, w *writer.GoWriter) {
 	var spacePkg = ctx.SpacePkg
 	w.Separate()
-	// func (c Color) To(dst space.Space) (Color, error)
+	// func (c Color) To(dst space.Space) (Color, bool)
 	w.Comment("To converts the color to the destination color space.")
 	w.Method("c Color", "To")
 	w.FuncParams("dst ", spacePkg.Join("Space"))
-	w.FuncResults("Color, error")
+	w.FuncResults("Color, bool")
 	w.FuncBody()
-	w.If("!c.space.IsValid() || !dst.IsValid()")
-	w.Return("Color{}, ErrInvalidSpace")
+	w.If("!c.space.IsValid()")
+	w.Return("Color{}, ", false)
 	w.End()
 	w.Separate()
 	w.If("c.space == dst")
-	w.Return("c, nil")
+	w.Return("c, ", true)
 	w.End()
 
 	w.Separate()
@@ -130,10 +130,10 @@ func genRootPkgColorTo(ctx *Context, w *writer.GoWriter) {
 			w.Write("c", i+1, ": ", name, ", ")
 		}
 		w.Write("alpha: c.alpha")
-		w.Writeln("}, nil")
+		w.Writeln("}, ", true)
 	}
 	w.Default()
-	w.Return("Color{}, ErrInvalidSpace")
+	w.Return("Color{}, ", false)
 	w.End()
 
 	w.End()

@@ -202,6 +202,16 @@ func XyYD65ToXyzD65(x, y, luminance float64) (float64, float64, float64) {
 	return XyYToXyz(x, y, luminance)
 }
 
+// Conversion path (2 steps):
+//
+//	CIE xyY
+//	-> CIE XYZ D65
+//	-> Absolute XYZ D65
+func XyYD65ToXyzAbsD65(x, y, luminance float64) (float64, float64, float64) {
+	x, y, z := XyYToXyz(x, y, luminance)
+	return XyzD65ToXyzAbsD65(x, y, z)
+}
+
 // Conversion path (3 steps):
 //
 //	CIE xyY

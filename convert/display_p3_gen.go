@@ -188,6 +188,22 @@ func DisplayP3ToXyzD65(r, g, b float64) (x, y, z float64) {
 	return
 }
 
+// Conversion path (3 steps):
+//
+//	Display P3
+//	-> Linear Display P3
+//	-> CIE XYZ D65
+//	-> Absolute XYZ D65
+func DisplayP3ToXyzAbsD65(r, g, b float64) (x, y, z float64) {
+	r, g, b = DisplayP3ToLinearDisplayP3(r, g, b)
+
+	x = 0.4865709486482162*r + 0.265667693169093*g + 0.19821728523436252*b
+	y = 0.2289745640697488*r + 0.6917385218365062*g + 0.07928691409374501*b
+	z = 0.045113381858902624*g + 1.043944368900976*b
+
+	return XyzD65ToXyzAbsD65(x, y, z)
+}
+
 // Conversion path (4 steps):
 //
 //	Display P3

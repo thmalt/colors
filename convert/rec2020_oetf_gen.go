@@ -181,6 +181,22 @@ func Rec2020OETFToXyzD65(r, g, b float64) (x, y, z float64) {
 	return
 }
 
+// Conversion path (3 steps):
+//
+//	Rec. 2020 Scene Referred
+//	-> Linear Rec. 2020
+//	-> CIE XYZ D65
+//	-> Absolute XYZ D65
+func Rec2020OETFToXyzAbsD65(r, g, b float64) (x, y, z float64) {
+	r, g, b = Rec2020OETFToLinearRec2020(r, g, b)
+
+	x = 0.6369580483012911*r + 0.14461690358620835*g + 0.16888097516417208*b
+	y = 0.262700212011267*r + 0.6779980715188709*g + 0.05930171646986195*b
+	z = 0.028072693049087435*g + 1.0609850577107909*b
+
+	return XyzD65ToXyzAbsD65(x, y, z)
+}
+
 // Conversion path (4 steps):
 //
 //	Rec. 2020 Scene Referred

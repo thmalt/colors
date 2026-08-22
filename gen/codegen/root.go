@@ -55,15 +55,10 @@ func GenerateRootPkg(ctx *Context) {
 		genRootPkgMixerMethod(ctx, w)
 	})
 
-	emitGoFile(ctx, w, pkg, pkgPath, "clamp", func(w *writer.GoWriter) {
-		w.Import(ctx.SpacePkg.Path)
-
-		genRootPkgClamp(ctx, w)
-	})
-
 	emitGoFile(ctx, w, pkg, pkgPath, "gamut", func(w *writer.GoWriter) {
 		w.Import(ctx.SpacePkg.Path)
 
 		genRootPkgGamut(ctx, w)
+		genRootPkgClamp(ctx, w)
 	})
 }

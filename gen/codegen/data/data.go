@@ -1,5 +1,7 @@
 package data
 
+const XyzAbsD65Scale = 203.0
+
 var (
 	D50 = Chromaticity{0.34570, 0.35850} // old: 0.34567, 0.35850, css4: 0.34570, 0.35850
 	D65 = Chromaticity{0.31270, 0.32900}

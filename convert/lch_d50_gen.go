@@ -235,6 +235,24 @@ func LchD50ToXyzD65(l, c, h float64) (x, y, z float64) {
 	return f1, f2, f3
 }
 
+// Conversion path (4 steps):
+//
+//	CIE LCh D50
+//	-> CIE Lab D50
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Absolute XYZ D65
+func LchD50ToXyzAbsD65(l, c, h float64) (x, y, z float64) {
+	l, a, b := LchToLxy(l, c, h)
+	x, y, z = LabD50ToXyzD50(l, a, b)
+
+	f1 := 0.955473421488075*x - 0.023098454948764637*y + 0.06325924320057065*z
+	f2 := -0.028369709333863714*x + 1.009995398081304*y + 0.021041441191917323*z
+	f3 := 0.012314014864481988*x - 0.020507649298898947*y + 1.330365926242124*z
+
+	return XyzD65ToXyzAbsD65(f1, f2, f3)
+}
+
 // Conversion path (3 steps):
 //
 //	CIE LCh D50

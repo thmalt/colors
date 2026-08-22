@@ -218,6 +218,24 @@ func HsvToXyzD65(h, s, v float64) (x, y, z float64) {
 	return
 }
 
+// Conversion path (4 steps):
+//
+//	HSV
+//	-> sRGB
+//	-> Linear sRGB
+//	-> CIE XYZ D65
+//	-> Absolute XYZ D65
+func HsvToXyzAbsD65(h, s, v float64) (x, y, z float64) {
+	r, g, b := HsvToSrgb(h, s, v)
+	r, g, b = SrgbToLinearSrgb(r, g, b)
+
+	x = 0.4123907992659593*r + 0.357584339383878*g + 0.1804807884018343*b
+	y = 0.21263900587151024*r + 0.715168678767756*g + 0.07219231536073371*b
+	z = 0.01933081871559182*r + 0.11919477979462598*g + 0.9505321522496607*b
+
+	return XyzD65ToXyzAbsD65(x, y, z)
+}
+
 // Conversion path (5 steps):
 //
 //	HSV

@@ -296,11 +296,6 @@ func circleRadius(size RadialSizeMode, cx, cy float64, width, height float64) (r
 }
 
 func ellipseRadii(size RadialSizeMode, cx, cy float64, width, height float64) (rx, ry float64) {
-	left := cx
-	right := width - cx
-	top := cy
-	bottom := height - cy
-
 	switch size {
 	case RadialFarthestCorner:
 		aspect := width / height
@@ -319,10 +314,9 @@ func ellipseRadii(size RadialSizeMode, cx, cy float64, width, height float64) (r
 		ry = math.Hypot(dx/aspect, dy)
 		rx = ry * aspect
 	case RadialFarthestSide:
-		rx, ry = max(left, right), max(top, bottom)
+		rx, ry = max(cx, width-cx), max(cy, height-cy)
 	case RadialClosestSide:
-		rx, ry = min(left, right), min(top, bottom)
+		rx, ry = min(cx, width-cx), min(cy, height-cy)
 	}
-
 	return
 }

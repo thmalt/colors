@@ -10,11 +10,10 @@ import (
 
 // MustTo converts the color to the destination color space and panics if the conversion fails.
 func (c Color) MustTo(dst space.Space) Color {
-	to, err := c.To(dst)
-	if err != nil {
-		panic(err)
+	to, ok := c.To(dst)
+	if !ok {
+		panic(ErrInvalidConversion)
 	}
-
 	return to
 }
 
@@ -31,6 +30,16 @@ func (c Color) InGamut() bool {
 // InGamutSpace reports whether the color is within the gamut of the specified color space.
 func (c Color) InGamutSpace(dst space.Space) bool {
 	return InGamutSpace(c, dst)
+}
+
+// MapToGamut maps the color to the gamut of dst.
+// It returns an invalid [Color] if the color cannot be mapped.
+func (c Color) MapToGamut(dst space.Space) Color {
+	mapped, ok := MapToGamut(c, dst)
+	if !ok {
+		return Color{}
+	}
+	return mapped
 }
 
 // Mix is shorthand for [Mix](c, other, t).

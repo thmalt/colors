@@ -8,12 +8,12 @@ import (
 
 // Conversion path (3 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> Linear sRGB
 //	-> sRGB
-func LuvD65ToSrgb(l, u, v float64) (r, g, b float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToSrgb(x, y, z float64) (r, g, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	r = 3.2409699419045226*x - 1.5373831775700944*y - 0.49861076029300344*z
 	g = -0.9692436362808796*x + 1.8759675015077204*y + 0.041555057407175605*z
@@ -24,11 +24,11 @@ func LuvD65ToSrgb(l, u, v float64) (r, g, b float64) {
 
 // Conversion path (2 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> Linear sRGB
-func LuvD65ToLinearSrgb(l, u, v float64) (r, g, b float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToLinearSrgb(x, y, z float64) (r, g, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	r = 3.2409699419045226*x - 1.5373831775700944*y - 0.49861076029300344*z
 	g = -0.9692436362808796*x + 1.8759675015077204*y + 0.041555057407175605*z
@@ -39,12 +39,12 @@ func LuvD65ToLinearSrgb(l, u, v float64) (r, g, b float64) {
 
 // Conversion path (3 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> Linear Display P3
 //	-> Display P3
-func LuvD65ToDisplayP3(l, u, v float64) (r, g, b float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToDisplayP3(x, y, z float64) (r, g, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	r = 2.493496911941425*x - 0.9313836179191237*y - 0.40271078445071684*z
 	g = -0.8294889695615748*x + 1.7626640603183463*y + 0.023624685841943584*z
@@ -55,11 +55,11 @@ func LuvD65ToDisplayP3(l, u, v float64) (r, g, b float64) {
 
 // Conversion path (2 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> Linear Display P3
-func LuvD65ToLinearDisplayP3(l, u, v float64) (r, g, b float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToLinearDisplayP3(x, y, z float64) (r, g, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	r = 2.493496911941425*x - 0.9313836179191237*y - 0.40271078445071684*z
 	g = -0.8294889695615748*x + 1.7626640603183463*y + 0.023624685841943584*z
@@ -70,12 +70,12 @@ func LuvD65ToLinearDisplayP3(l, u, v float64) (r, g, b float64) {
 
 // Conversion path (3 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> Linear Adobe RGB (1998)
 //	-> Adobe RGB (1998)
-func LuvD65ToA98(l, u, v float64) (r, g, b float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToA98(x, y, z float64) (r, g, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	r = 2.041587903810747*x - 0.5650069742788597*y - 0.34473135077832967*z
 	g = -0.9692436362808796*x + 1.8759675015077206*y + 0.04155505740717561*z
@@ -86,11 +86,11 @@ func LuvD65ToA98(l, u, v float64) (r, g, b float64) {
 
 // Conversion path (2 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> Linear Adobe RGB (1998)
-func LuvD65ToLinearA98(l, u, v float64) (r, g, b float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToLinearA98(x, y, z float64) (r, g, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	r = 2.041587903810747*x - 0.5650069742788597*y - 0.34473135077832967*z
 	g = -0.9692436362808796*x + 1.8759675015077206*y + 0.04155505740717561*z
@@ -101,13 +101,13 @@ func LuvD65ToLinearA98(l, u, v float64) (r, g, b float64) {
 
 // Conversion path (4 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 //	-> Linear ProPhoto
 //	-> ProPhoto
-func LuvD65ToProPhoto(l, u, v float64) (r, g, b float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToProPhoto(x, y, z float64) (r, g, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	r = 1.403202937830471*x - 0.2230228699288895*y - 0.10161047851795578*z
 	g = -0.5262303211926755*x + 1.4816174225598397*y + 0.017025089072738666*z
@@ -118,12 +118,12 @@ func LuvD65ToProPhoto(l, u, v float64) (r, g, b float64) {
 
 // Conversion path (3 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 //	-> Linear ProPhoto
-func LuvD65ToLinearProPhoto(l, u, v float64) (r, g, b float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToLinearProPhoto(x, y, z float64) (r, g, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	r = 1.403202937830471*x - 0.2230228699288895*y - 0.10161047851795578*z
 	g = -0.5262303211926755*x + 1.4816174225598397*y + 0.017025089072738666*z
@@ -134,12 +134,12 @@ func LuvD65ToLinearProPhoto(l, u, v float64) (r, g, b float64) {
 
 // Conversion path (3 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> Linear Rec. 2020
 //	-> Rec. 2020
-func LuvD65ToRec2020(l, u, v float64) (r, g, b float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToRec2020(x, y, z float64) (r, g, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	r = 1.7166511879712683*x - 0.35567078377639255*y - 0.2533662813736599*z
 	g = -0.6666843518324892*x + 1.6164812366349393*y + 0.015768545813911142*z
@@ -150,12 +150,12 @@ func LuvD65ToRec2020(l, u, v float64) (r, g, b float64) {
 
 // Conversion path (3 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> Linear Rec. 2020
 //	-> Rec. 2020 Scene Referred
-func LuvD65ToRec2020OETF(l, u, v float64) (r, g, b float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToRec2020OETF(x, y, z float64) (r, g, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	r = 1.7166511879712683*x - 0.35567078377639255*y - 0.2533662813736599*z
 	g = -0.6666843518324892*x + 1.6164812366349393*y + 0.015768545813911142*z
@@ -166,11 +166,11 @@ func LuvD65ToRec2020OETF(l, u, v float64) (r, g, b float64) {
 
 // Conversion path (2 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> Linear Rec. 2020
-func LuvD65ToLinearRec2020(l, u, v float64) (r, g, b float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToLinearRec2020(x, y, z float64) (r, g, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	r = 1.7166511879712683*x - 0.35567078377639255*y - 0.2533662813736599*z
 	g = -0.6666843518324892*x + 1.6164812366349393*y + 0.015768545813911142*z
@@ -181,11 +181,11 @@ func LuvD65ToLinearRec2020(l, u, v float64) (r, g, b float64) {
 
 // Conversion path (2 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
-func LuvD65ToXyzD50(l, u, v float64) (x, y, z float64) {
-	x, y, z = LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToXyzD50(x, y, z float64) (float64, float64, float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	f1 := 1.0479297925449966*x + 0.02294687060160958*y - 0.05019226628920522*z
 	f2 := 0.029627808770055834*x + 0.9904344267538798*y - 0.0170737990634188*z
@@ -194,24 +194,14 @@ func LuvD65ToXyzD50(l, u, v float64) (x, y, z float64) {
 	return f1, f2, f3
 }
 
-// Conversion path (2 steps):
-//
-//	CIE Luv D65
-//	-> CIE XYZ D65
-//	-> Absolute XYZ D65
-func LuvD65ToXyzAbsD65(l, u, v float64) (x, y, z float64) {
-	x, y, z = LuvD65ToXyzD65(l, u, v)
-	return XyzD65ToXyzAbsD65(x, y, z)
-}
-
 // Conversion path (3 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 //	-> CIE xyY
-func LuvD65ToXyYD50(l, u, v float64) (x, y, luminance float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToXyYD50(x, y, z float64) (float64, float64, float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	f1 := 1.0479297925449966*x + 0.02294687060160958*y - 0.05019226628920522*z
 	f2 := 0.029627808770055834*x + 0.9904344267538798*y - 0.0170737990634188*z
@@ -222,22 +212,22 @@ func LuvD65ToXyYD50(l, u, v float64) (x, y, luminance float64) {
 
 // Conversion path (2 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> CIE xyY
-func LuvD65ToXyYD65(l, u, v float64) (x, y, luminance float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToXyYD65(x, y, z float64) (float64, float64, float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 	return XyzToXyY(x, y, z)
 }
 
 // Conversion path (3 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 //	-> CIE Lab D50
-func LuvD65ToLabD50(l, u, v float64) (float64, float64, float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToLabD50(x, y, z float64) (l, a, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	f1 := 1.0479297925449966*x + 0.02294687060160958*y - 0.05019226628920522*z
 	f2 := 0.029627808770055834*x + 0.9904344267538798*y - 0.0170737990634188*z
@@ -248,13 +238,13 @@ func LuvD65ToLabD50(l, u, v float64) (float64, float64, float64) {
 
 // Conversion path (4 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 //	-> CIE Lab D50
 //	-> CIE LCh D50
-func LuvD65ToLchD50(l, u, v float64) (float64, float64, float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToLchD50(x, y, z float64) (l, c, h float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	f1 := 1.0479297925449966*x + 0.02294687060160958*y - 0.05019226628920522*z
 	f2 := 0.029627808770055834*x + 0.9904344267538798*y - 0.0170737990634188*z
@@ -266,34 +256,34 @@ func LuvD65ToLchD50(l, u, v float64) (float64, float64, float64) {
 
 // Conversion path (2 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> CIE Lab D65
-func LuvD65ToLabD65(l, u, v float64) (float64, float64, float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToLabD65(x, y, z float64) (l, a, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 	return XyzD65ToLabD65(x, y, z)
 }
 
 // Conversion path (3 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> CIE Lab D65
 //	-> CIE LCh D65
-func LuvD65ToLchD65(l, u, v float64) (float64, float64, float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToLchD65(x, y, z float64) (l, c, h float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 	l, a, b := XyzD65ToLabD65(x, y, z)
 	return LxyToLch(l, a, b)
 }
 
 // Conversion path (3 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 //	-> CIE Luv D50
-func LuvD65ToLuvD50(l, u, v float64) (float64, float64, float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToLuvD50(x, y, z float64) (l, u, v float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	f1 := 1.0479297925449966*x + 0.02294687060160958*y - 0.05019226628920522*z
 	f2 := 0.029627808770055834*x + 0.9904344267538798*y - 0.0170737990634188*z
@@ -304,37 +294,51 @@ func LuvD65ToLuvD50(l, u, v float64) (float64, float64, float64) {
 
 // Conversion path (4 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 //	-> CIE Luv D50
 //	-> CIE LChuv D50
-func LuvD65ToLchuvD50(l, u, v float64) (float64, float64, float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToLchuvD50(x, y, z float64) (l, c, h float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	f1 := 1.0479297925449966*x + 0.02294687060160958*y - 0.05019226628920522*z
 	f2 := 0.029627808770055834*x + 0.9904344267538798*y - 0.0170737990634188*z
 	f3 := -0.009243040646204511*x + 0.015055191490298162*y + 0.751874281428137*z
 
-	l, u, v = XyzD50ToLuvD50(f1, f2, f3)
-	return LxyToLch(l, u, v)
-}
-
-// Conversion path (1 steps):
-//
-//	CIE Luv D65
-//	-> CIE LChuv D65
-func LuvD65ToLchuvD65(l, u, v float64) (float64, float64, float64) {
+	l, u, v := XyzD50ToLuvD50(f1, f2, f3)
 	return LxyToLch(l, u, v)
 }
 
 // Conversion path (2 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
+//	-> CIE XYZ D65
+//	-> CIE Luv D65
+func XyzAbsD65ToLuvD65(x, y, z float64) (l, u, v float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
+	return XyzD65ToLuvD65(x, y, z)
+}
+
+// Conversion path (3 steps):
+//
+//	Absolute XYZ D65
+//	-> CIE XYZ D65
+//	-> CIE Luv D65
+//	-> CIE LChuv D65
+func XyzAbsD65ToLchuvD65(x, y, z float64) (l, c, h float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
+	l, u, v := XyzD65ToLuvD65(x, y, z)
+	return LxyToLch(l, u, v)
+}
+
+// Conversion path (2 steps):
+//
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> Oklab
-func LuvD65ToOklab(l, u, v float64) (float64, float64, float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToOklab(x, y, z float64) (l, a, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	f1 := 0.819022437996703*x + 0.3619062600528904*y - 0.1288737815209879*z
 	f2 := 0.0329836539323885*x + 0.9292868615863434*y + 0.0361446663506424*z
@@ -345,20 +349,20 @@ func LuvD65ToOklab(l, u, v float64) (float64, float64, float64) {
 	f3 = math.Cbrt(f3)
 
 	l = 0.210454268309314*f1 + 0.7936177747023054*f2 - 0.0040720430116193*f3
-	a := 1.9779985324311684*f1 - 2.42859224204858*f2 + 0.450593709617411*f3
-	b := 0.0259040424655478*f1 + 0.7827717124575296*f2 - 0.8086757549230774*f3
+	a = 1.9779985324311684*f1 - 2.42859224204858*f2 + 0.450593709617411*f3
+	b = 0.0259040424655478*f1 + 0.7827717124575296*f2 - 0.8086757549230774*f3
 
-	return l, a, b
+	return
 }
 
 // Conversion path (3 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> Oklab
 //	-> Oklch
-func LuvD65ToOklch(l, u, v float64) (float64, float64, float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToOklch(x, y, z float64) (l, c, h float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	f1 := 0.819022437996703*x + 0.3619062600528904*y - 0.1288737815209879*z
 	f2 := 0.0329836539323885*x + 0.9292868615863434*y + 0.0361446663506424*z
@@ -377,13 +381,13 @@ func LuvD65ToOklch(l, u, v float64) (float64, float64, float64) {
 
 // Conversion path (4 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> Linear sRGB
 //	-> sRGB
 //	-> HSL
-func LuvD65ToHsl(l, u, v float64) (float64, float64, float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToHsl(x, y, z float64) (h, s, l float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	r := 3.2409699419045226*x - 1.5373831775700944*y - 0.49861076029300344*z
 	g := -0.9692436362808796*x + 1.8759675015077204*y + 0.041555057407175605*z
@@ -395,13 +399,13 @@ func LuvD65ToHsl(l, u, v float64) (float64, float64, float64) {
 
 // Conversion path (4 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> Linear sRGB
 //	-> sRGB
 //	-> HSV
-func LuvD65ToHsv(l, u, v float64) (float64, float64, float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToHsv(x, y, z float64) (h, s, v float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	r := 3.2409699419045226*x - 1.5373831775700944*y - 0.49861076029300344*z
 	g := -0.9692436362808796*x + 1.8759675015077204*y + 0.041555057407175605*z
@@ -413,13 +417,13 @@ func LuvD65ToHsv(l, u, v float64) (float64, float64, float64) {
 
 // Conversion path (4 steps):
 //
-//	CIE Luv D65
+//	Absolute XYZ D65
 //	-> CIE XYZ D65
 //	-> Linear sRGB
 //	-> sRGB
 //	-> HWB
-func LuvD65ToHwb(l, u, v float64) (h, w, b float64) {
-	x, y, z := LuvD65ToXyzD65(l, u, v)
+func XyzAbsD65ToHwb(x, y, z float64) (h, w, b float64) {
+	x, y, z = XyzAbsD65ToXyzD65(x, y, z)
 
 	r := 3.2409699419045226*x - 1.5373831775700944*y - 0.49861076029300344*z
 	g := -0.9692436362808796*x + 1.8759675015077204*y + 0.041555057407175605*z

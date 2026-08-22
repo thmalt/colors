@@ -24,6 +24,7 @@ const (
 	LinearRec2020
 	XyzD50
 	XyzD65
+	XyzAbsD65
 	XyYD50
 	XyYD65
 	LabD50
@@ -93,6 +94,8 @@ func (s Space) String() string {
 		return "XyzD50"
 	case XyzD65:
 		return "XyzD65"
+	case XyzAbsD65:
+		return "XyzAbsD65"
 	case XyYD50:
 		return "XyYD50"
 	case XyYD65:

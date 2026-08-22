@@ -56,6 +56,9 @@ func (c Color) String() string {
 	case space.XyzD65:
 		buf = append(buf, "color(xyz-d65 "...)
 		buf = appendFormatXyzD50(buf, c.c1, c.c2, c.c3)
+	case space.XyzAbsD65:
+		buf = append(buf, "color(xyz-abs-d65 "...)
+		buf = appendFormatSrgb(buf, c.c1, c.c2, c.c3)
 	case space.XyYD50:
 		buf = append(buf, "color(xyy-d50 "...)
 		buf = appendFormatXyzD50(buf, c.c1, c.c2, c.c3)

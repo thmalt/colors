@@ -321,6 +321,30 @@ func OklchToXyzD65(l, c, h float64) (x, y, z float64) {
 	return
 }
 
+// Conversion path (3 steps):
+//
+//	Oklch
+//	-> Oklab
+//	-> CIE XYZ D65
+//	-> Absolute XYZ D65
+func OklchToXyzAbsD65(l, c, h float64) (x, y, z float64) {
+	l, a, b := LchToLxy(l, c, h)
+
+	f1 := l + 0.3963377773761749*a + 0.21580375730991364*b
+	f2 := l - 0.10556134581565854*a - 0.06385417282581334*b
+	f3 := l - 0.0894841775298118*a - 1.2914855480194092*b
+
+	f1 *= f1 * f1
+	f2 *= f2 * f2
+	f3 *= f3 * f3
+
+	x = 1.226879875845924*f1 - 0.557814994460217*f2 + 0.2813910456659646*f3
+	y = -0.040575745214800875*f1 + 1.112286803280317*f2 - 0.07171105806551642*f3
+	z = -0.07637293667466002*f1 - 0.4214933324022431*f2 + 1.5869240198367813*f3
+
+	return XyzD65ToXyzAbsD65(x, y, z)
+}
+
 // Conversion path (4 steps):
 //
 //	Oklch

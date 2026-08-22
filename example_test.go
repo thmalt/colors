@@ -10,15 +10,15 @@ import (
 func ExampleColor_To() {
 	c := colors.RgbAlpha(50, 60, 70, 0.995)
 
-	c1, err := c.To(space.XyzD65)
-	if err != nil {
+	c1, ok := c.To(space.XyzD65)
+	if !ok {
 		return
 	}
 
 	fmt.Println(c1.Space())
 
-	c2, err := c.To(space.Oklab)
-	if err != nil {
+	c2, ok := c.To(space.Oklab)
+	if !ok {
 		return
 	}
 

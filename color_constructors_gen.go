@@ -349,9 +349,9 @@ func LinearRec2020Alpha(r, g, b, alpha float64) Color {
 
 // XyzD50 returns a [Color] from CIE XYZ D50 components.
 //
-//	x: [0, 1]
-//	y: [0, 1]
-//	z: [0, 1]
+//	x: [0, 0.9642956764295677] (typical)
+//	y: [0, 1] (typical)
+//	z: [0, 0.8251046025104602] (typical)
 func XyzD50(x, y, z float64) Color {
 	return Color{
 		space: space.XyzD50,
@@ -364,9 +364,9 @@ func XyzD50(x, y, z float64) Color {
 
 // XyzD50 returns a [Color] from CIE XYZ D50 components with alpha.
 //
-//	x: [0, 1]
-//	y: [0, 1]
-//	z: [0, 1]
+//	x: [0, 0.9642956764295677] (typical)
+//	y: [0, 1] (typical)
+//	z: [0, 0.8251046025104602] (typical)
 //	alpha: [0, 1]
 func XyzD50Alpha(x, y, z, alpha float64) Color {
 	return Color{
@@ -380,9 +380,9 @@ func XyzD50Alpha(x, y, z, alpha float64) Color {
 
 // XyzD65 returns a [Color] from CIE XYZ D65 components.
 //
-//	x: [0, 1]
-//	y: [0, 1]
-//	z: [0, 1]
+//	x: [0, 0.9504559270516716] (typical)
+//	y: [0, 1] (typical)
+//	z: [0, 1.0890577507598784] (typical)
 func XyzD65(x, y, z float64) Color {
 	return Color{
 		space: space.XyzD65,
@@ -395,13 +395,44 @@ func XyzD65(x, y, z float64) Color {
 
 // XyzD65 returns a [Color] from CIE XYZ D65 components with alpha.
 //
-//	x: [0, 1]
-//	y: [0, 1]
-//	z: [0, 1]
+//	x: [0, 0.9504559270516716] (typical)
+//	y: [0, 1] (typical)
+//	z: [0, 1.0890577507598784] (typical)
 //	alpha: [0, 1]
 func XyzD65Alpha(x, y, z, alpha float64) Color {
 	return Color{
 		space: space.XyzD65,
+		c1:    x,
+		c2:    y,
+		c3:    z,
+		alpha: alpha,
+	}
+}
+
+// XyzAbsD65 returns a [Color] from Absolute XYZ D65 components.
+//
+//	x: [0, 193] (typical)
+//	y: [0, 203] (typical)
+//	z: [0, 221] (typical)
+func XyzAbsD65(x, y, z float64) Color {
+	return Color{
+		space: space.XyzAbsD65,
+		c1:    x,
+		c2:    y,
+		c3:    z,
+		alpha: 1,
+	}
+}
+
+// XyzAbsD65 returns a [Color] from Absolute XYZ D65 components with alpha.
+//
+//	x: [0, 193] (typical)
+//	y: [0, 203] (typical)
+//	z: [0, 221] (typical)
+//	alpha: [0, 1]
+func XyzAbsD65Alpha(x, y, z, alpha float64) Color {
+	return Color{
+		space: space.XyzAbsD65,
 		c1:    x,
 		c2:    y,
 		c3:    z,

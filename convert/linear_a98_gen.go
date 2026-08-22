@@ -147,6 +147,19 @@ func LinearA98ToXyzD65(r, g, b float64) (x, y, z float64) {
 	return
 }
 
+// Conversion path (2 steps):
+//
+//	Linear Adobe RGB (1998)
+//	-> CIE XYZ D65
+//	-> Absolute XYZ D65
+func LinearA98ToXyzAbsD65(r, g, b float64) (x, y, z float64) {
+	x = 0.5766690429101305*r + 0.1855582379065463*g + 0.18822864623499466*b
+	y = 0.29734497525053605*r + 0.6273635662554661*g + 0.07529145849399786*b
+	z = 0.02703136138641234*r + 0.07068885253582723*g + 0.9913375368376386*b
+
+	return XyzD65ToXyzAbsD65(x, y, z)
+}
+
 // Conversion path (3 steps):
 //
 //	Linear Adobe RGB (1998)

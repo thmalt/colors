@@ -156,6 +156,20 @@ func LinearProPhotoToXyzD65(r, g, b float64) (x, y, z float64) {
 	return
 }
 
+// Conversion path (3 steps):
+//
+//	Linear ProPhoto
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Absolute XYZ D65
+func LinearProPhotoToXyzAbsD65(r, g, b float64) (x, y, z float64) {
+	x = 0.755584946617753*r + 0.11272399588586414*g + 0.0821469845480544*b
+	y = 0.2683182806216315*r + 0.7151231912368589*g + 0.016558528141509373*b
+	z = 0.003915972857256668*r - 0.012933550658199788*g + 1.0980753285608214*b
+
+	return XyzD65ToXyzAbsD65(x, y, z)
+}
+
 // Conversion path (2 steps):
 //
 //	Linear ProPhoto

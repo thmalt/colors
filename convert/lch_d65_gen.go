@@ -228,6 +228,18 @@ func LchD65ToXyzD65(l, c, h float64) (x, y, z float64) {
 	return LabD65ToXyzD65(l, a, b)
 }
 
+// Conversion path (3 steps):
+//
+//	CIE LCh D65
+//	-> CIE Lab D65
+//	-> CIE XYZ D65
+//	-> Absolute XYZ D65
+func LchD65ToXyzAbsD65(l, c, h float64) (x, y, z float64) {
+	l, a, b := LchToLxy(l, c, h)
+	x, y, z = LabD65ToXyzD65(l, a, b)
+	return XyzD65ToXyzAbsD65(x, y, z)
+}
+
 // Conversion path (4 steps):
 //
 //	CIE LCh D65
