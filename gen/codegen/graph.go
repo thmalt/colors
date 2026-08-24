@@ -45,13 +45,13 @@ func (g *Graph) Build(ctx *Context, funcs []ConvertFunc) error {
 
 func (g *Graph) FindPath(from, to *model.Space) []*Node {
 	if path, ok := g.cached[pair{from, to}]; ok {
-		return path
+		return slices.Clone(path)
 	}
 
 	path := g.findPath(from, to)
 	g.cached[pair{from, to}] = path
 
-	return path
+	return slices.Clone(path)
 }
 
 func (g *Graph) findPath(from, to *model.Space) []*Node {

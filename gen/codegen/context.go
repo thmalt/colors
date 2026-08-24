@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"slices"
 
 	"github.com/thmalt/colors/gen/codegen/model"
 )
@@ -163,6 +164,10 @@ func (ctx *Context) Build() error {
 }
 
 func (ctx *Context) SpaceByName(name string) *model.Space {
+	if name == "" {
+		return nil
+	}
+
 	if s, ok := ctx.spaceMap[name]; ok {
 		return s
 	}
@@ -208,6 +213,12 @@ func (ctx *Context) buildSpaces() {
 			continue
 		}
 
+		if eq := ctx.SpaceByName(s.Equivalent); eq != nil {
+			if slices.Contains(eq.Equivalents, s.Name) {
+				log.Fatalln("duplicate space equivalent:", s.Name, " -> ", eq.Name)
+			}
+			eq.Equivalents = append(eq.Equivalents, s.Name)
+		}
 		out = append(out, s)
 
 		maxChannelCount = max(maxChannelCount, s.ChannelCount())

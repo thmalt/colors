@@ -4,6 +4,7 @@ import (
 	"log"
 	"slices"
 	"strconv"
+	"strings"
 
 	"github.com/thmalt/colors/gen/codegen/model"
 	"github.com/thmalt/colors/gen/codegen/writer"
@@ -29,26 +30,46 @@ func genRootPkgColorConvertMethod(ctx *Context, w *writer.GoWriter, space *model
 	}
 	w.FuncBody()
 
+	if eq := ctx.SpaceByName(space.Equivalent); eq != nil {
+		w.Return("c.", eq.Name, "()")
+		w.End()
+		return
+	}
+
 	var args = make([]string, len(names))
 	for i := range args {
 		args[i] = "c.c" + strconv.FormatInt(int64(i+1), 10)
 	}
 
-	w.If("c.space == ", ctx.SpacePkg.Join(space.Name))
+	sub := w.SubWriter()
+	sub.Write("c.space == ", ctx.SpacePkg.Join(space.Name))
+	for _, name := range space.Equivalents {
+		sub.Write(" || ", "c.space == ", ctx.SpacePkg.Join(name))
+	}
+
+	w.If(sub.Bytes())
 	w.ReturnInline()
 	w.WriteJoin(args, ", ")
 	w.End()
 
 	w.Separate()
 
-	sub := w.SubWriter()
+	sub.Reset()
 
 	sub.Switch("c.space")
 
+	var cases []string
+
 	var foundPath = false
 	for _, src := range ctx.BuiltSpaces {
-		if space == src {
+		eq := ctx.SpaceByName(src.Equivalent)
+		if space == src || eq != nil {
 			continue
+		}
+
+		cases = append(cases[:0], ctx.SpacePkg.Join(src.Name))
+		for _, name := range src.Equivalents {
+			cases = append(cases, ctx.SpacePkg.Join(name))
 		}
 
 		path := ctx.Graph.FindPath(src, space)
@@ -57,7 +78,7 @@ func genRootPkgColorConvertMethod(ctx *Context, w *writer.GoWriter, space *model
 			continue
 		}
 		foundPath = true
-		sub.Case(ctx.SpacePkg.Join(src.Name))
+		sub.Case(strings.Join(cases, ", "))
 
 		sub.ReturnInline()
 

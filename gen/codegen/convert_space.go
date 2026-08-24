@@ -39,8 +39,79 @@ func genConvertPkgSpaceConversions(ctx *Context, w *writer.GoWriter, space *mode
 	return count
 }
 
-func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Space) bool {
+func buildConversion(ctx *Context, from, to *model.Space) ([]*Node, []GenOp) {
 	path := ctx.Graph.FindPath(from, to)
+	ops := buildGenOps(ctx, path, true)
+	ops = combineOps(ops)
+
+	if len(ops) == 0 {
+		return path, ops
+	}
+
+	eqFrom := ctx.SpaceByName(from.Equivalent)
+	eqTo := ctx.SpaceByName(to.Equivalent)
+
+	if from.Equivalent != "" && (eqFrom == nil || eqFrom.Disable) {
+		log.Fatalln("Equivalent space", from.Equivalent, "is unavailable")
+	}
+	if to.Equivalent != "" && (eqTo == nil || eqTo.Disable) {
+		log.Fatalln("Equivalent space", to.Equivalent, "is unavailable")
+	}
+
+	if eqFrom != nil || eqTo != nil {
+		if eqFrom == to || eqTo == from {
+			path = []*Node{{
+				From: from,
+				To:   to,
+			}}
+			ops = nil
+		} else if ops[0].Type != OpTransfer {
+			f := from
+			t := to
+
+			if eqFrom != nil {
+				f = eqFrom
+			}
+			if eqTo != nil {
+				t = eqTo
+			}
+
+			ops = []GenOp{{
+				Op: Op{
+					Type: OpCall,
+					Pair: Pair{from.Name, to.Name},
+					Func: Pair{f.Name, t.Name},
+				},
+			}}
+		}
+	}
+
+	eqFilter := make([]GenOp, 0, len(ops))
+	for i := 0; i < len(ops); i++ {
+		if ops[i].Type == OpCall {
+			pair := ops[i].Pair
+
+			f := ctx.SpaceByName(pair.From)
+			t := ctx.SpaceByName(pair.To)
+			if t != nil && f != nil {
+				eqFrom := ctx.SpaceByName(t.Equivalent)
+				eqTo := ctx.SpaceByName(f.Equivalent)
+				if f == eqFrom || t == eqTo {
+					continue
+				}
+			}
+		}
+
+		eqFilter = append(eqFilter, ops[i])
+	}
+	ops = eqFilter
+
+	return path, ops
+}
+
+func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Space) bool {
+	path, ops := buildConversion(ctx, from, to)
+
 	if len(path) == 0 {
 		log.Printf("Not found conversion path: %q -> %q\n", from.Name, to.Name)
 		return false
@@ -48,8 +119,8 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 
 	ctx.impls[Pair{from.Name, to.Name}] = struct{}{}
 
-	ops := buildGenOps(ctx, path, true)
-	ops = combineOps(ops)
+	// ops := buildGenOps(ctx, path, expand)
+	// ops = combineOps(ops)
 
 	if !ctx.Opts.EmbedMatrix {
 		ops = replaceMatrixWithCall(ops)
@@ -75,6 +146,25 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 	funcName := FuncName(from.Name, to.Name)
 
 	w.Separate()
+
+	eqFrom, eqTo := ctx.ResolveSpacePairName(from.Equivalent, to.Equivalent)
+	if eqFrom != nil || eqTo != nil {
+		f := from
+		t := to
+
+		if eqFrom != nil {
+			f = eqFrom
+		}
+		if eqTo != nil {
+			t = eqTo
+		}
+
+		if f != t && (len(ops) > 0 && ops[0].Type != OpTransfer) {
+			w.Comment("Calls [", Pair{f.Name, t.Name}.FuncName(), ']')
+			w.Comment()
+		}
+	}
+
 	w.Comment("Conversion path (", len(path), " steps):")
 	w.Comment()
 	w.Comment("\t", from.DisplayName)
@@ -130,6 +220,37 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 				sub.WriteCallln(fn, inputVars...)
 
 				scope.ReserveAll(outputVars...)
+				inputVars = outputVars
+			}
+		case OpTransfer:
+			if separate {
+				sub.Separate()
+			}
+			separate = false
+
+			if isLastOp {
+				sub.ReturnInline()
+				for i := range inputVars {
+					if i > 0 {
+						sub.Write(", ")
+					}
+					sub.Write(op.Transfer, '(', inputVars[i], ')')
+				}
+				returned = true
+			} else {
+				outputVars := op.OutputVars
+				sub.LineWriteJoin(outputVars, ", ")
+				if scope.ContainsAll(outputVars...) {
+					sub.Write(" = ")
+				} else {
+					sub.Write(" := ")
+				}
+				for i := range inputVars {
+					if i > 0 {
+						sub.Write(", ")
+					}
+					sub.Write(op.Transfer, '(', inputVars[i], ')')
+				}
 				inputVars = outputVars
 			}
 		case OpCbrt:

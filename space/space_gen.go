@@ -22,6 +22,9 @@ const (
 	Rec2020
 	Rec2020OETF
 	LinearRec2020
+	LinearRec2100
+	Rec2100PQ
+	Rec2100HLG
 	XyzD50
 	XyzD65
 	XyzAbsD65
@@ -90,6 +93,12 @@ func (s Space) String() string {
 		return "Rec2020OETF"
 	case LinearRec2020:
 		return "LinearRec2020"
+	case LinearRec2100:
+		return "LinearRec2100"
+	case Rec2100PQ:
+		return "Rec2100PQ"
+	case Rec2100HLG:
+		return "Rec2100HLG"
 	case XyzD50:
 		return "XyzD50"
 	case XyzD65:

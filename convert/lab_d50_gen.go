@@ -20,7 +20,7 @@ func LabD50ToSrgb(l, a, b float64) (float64, float64, float64) {
 	g := -0.9787954765557776*x + 1.916254377395988*y + 0.03344287339036697*z
 	b = 0.07195539255794736*x - 0.2289767598151819*y + 1.4053860351131178*z
 
-	return LinearSrgbToSrgb(r, g, b)
+	return linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
 }
 
 // Conversion path (3 steps):
@@ -53,7 +53,7 @@ func LabD50ToDisplayP3(l, a, b float64) (float64, float64, float64) {
 	g := -0.8422700161454687*x + 1.7989580161067076*y + 0.016045624770904755*z
 	b = 0.04819381686413314*x - 0.09738519815446052*y + 1.2736713693321269*z
 
-	return LinearDisplayP3ToDisplayP3(r, g, b)
+	return linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
 }
 
 // Conversion path (3 steps):
@@ -86,7 +86,7 @@ func LabD50ToA98(l, a, b float64) (float64, float64, float64) {
 	g := -0.9787954765557776*x + 1.9162543773959881*y + 0.03344287339036699*z
 	b = 0.02870443944957115*x - 0.14067486633170695*y + 1.3489141814137942*z
 
-	return LinearA98ToA98(r, g, b)
+	return linearA98ToA98(r), linearA98ToA98(g), linearA98ToA98(b)
 }
 
 // Conversion path (3 steps):
@@ -118,7 +118,7 @@ func LabD50ToProPhoto(l, a, b float64) (float64, float64, float64) {
 	g := -0.5446224939028346*x + 1.5082327413132781*y + 0.020536032391479723*z
 	b = 1.2119675456389454 * z
 
-	return LinearProPhotoToProPhoto(r, g, b)
+	return linearProPhotoToProPhoto(r), linearProPhotoToProPhoto(g), linearProPhotoToProPhoto(b)
 }
 
 // Conversion path (2 steps):
@@ -150,7 +150,7 @@ func LabD50ToRec2020(l, a, b float64) (float64, float64, float64) {
 	g := -0.6826641074173821*x + 1.6477146127444076*y + 0.01281708338512088*z
 	b = 0.02966887665275662*x - 0.06292589642970013*y + 1.2535578201865771*z
 
-	return LinearRec2020ToRec2020(r, g, b)
+	return linearRec2020ToRec2020(r), linearRec2020ToRec2020(g), linearRec2020ToRec2020(b)
 }
 
 // Conversion path (4 steps):
@@ -167,7 +167,7 @@ func LabD50ToRec2020OETF(l, a, b float64) (float64, float64, float64) {
 	g := -0.6826641074173821*x + 1.6477146127444076*y + 0.01281708338512088*z
 	b = 0.02966887665275662*x - 0.06292589642970013*y + 1.2535578201865771*z
 
-	return LinearRec2020ToRec2020OETF(r, g, b)
+	return linearRec2020ToRec2020OETF(r), linearRec2020ToRec2020OETF(g), linearRec2020ToRec2020OETF(b)
 }
 
 // Conversion path (3 steps):
@@ -184,6 +184,55 @@ func LabD50ToLinearRec2020(l, a, b float64) (float64, float64, float64) {
 	b = 0.02966887665275662*x - 0.06292589642970013*y + 1.2535578201865771*z
 
 	return r, g, b
+}
+
+// Calls [LabD50ToLinearRec2020]
+//
+// Conversion path (4 steps):
+//
+//	CIE Lab D50
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+//	-> Linear Rec. 2100
+func LabD50ToLinearRec2100(l, a, b float64) (float64, float64, float64) {
+	return LabD50ToLinearRec2020(l, a, b)
+}
+
+// Conversion path (5 steps):
+//
+//	CIE Lab D50
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+//	-> Linear Rec. 2100
+//	-> Rec. 2100 PQ
+func LabD50ToRec2100PQ(l, a, b float64) (float64, float64, float64) {
+	x, y, z := LabD50ToXyzD50(l, a, b)
+
+	r := 1.6471849046717661*x - 0.3936818981316474*y - 0.23595963848828277*z
+	g := -0.6826641074173821*x + 1.6477146127444076*y + 0.01281708338512088*z
+	b = 0.02966887665275662*x - 0.06292589642970013*y + 1.2535578201865771*z
+
+	return rec2100PQEncode(r), rec2100PQEncode(g), rec2100PQEncode(b)
+}
+
+// Conversion path (5 steps):
+//
+//	CIE Lab D50
+//	-> CIE XYZ D50
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+//	-> Linear Rec. 2100
+//	-> Rec. 2100 HLG
+func LabD50ToRec2100HLG(l, a, b float64) (float64, float64, float64) {
+	x, y, z := LabD50ToXyzD50(l, a, b)
+
+	r := 1.6471849046717661*x - 0.3936818981316474*y - 0.23595963848828277*z
+	g := -0.6826641074173821*x + 1.6477146127444076*y + 0.01281708338512088*z
+	b = 0.02966887665275662*x - 0.06292589642970013*y + 1.2535578201865771*z
+
+	return rec2100HLGEncode(r), rec2100HLGEncode(g), rec2100HLGEncode(b)
 }
 
 // Conversion path (2 steps):
@@ -405,7 +454,7 @@ func LabD50ToHsl(l, a, b float64) (float64, float64, float64) {
 	g := -0.9787954765557776*x + 1.916254377395988*y + 0.03344287339036697*z
 	b = 0.07195539255794736*x - 0.2289767598151819*y + 1.4053860351131178*z
 
-	r, g, b = LinearSrgbToSrgb(r, g, b)
+	r, g, b = linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
 	return SrgbToHsl(r, g, b)
 }
 
@@ -424,7 +473,7 @@ func LabD50ToHsv(l, a, b float64) (h, s, v float64) {
 	g := -0.9787954765557776*x + 1.916254377395988*y + 0.03344287339036697*z
 	b = 0.07195539255794736*x - 0.2289767598151819*y + 1.4053860351131178*z
 
-	r, g, b = LinearSrgbToSrgb(r, g, b)
+	r, g, b = linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
 	return SrgbToHsv(r, g, b)
 }
 
@@ -443,6 +492,6 @@ func LabD50ToHwb(l, a, b float64) (float64, float64, float64) {
 	g := -0.9787954765557776*x + 1.916254377395988*y + 0.03344287339036697*z
 	b = 0.07195539255794736*x - 0.2289767598151819*y + 1.4053860351131178*z
 
-	r, g, b = LinearSrgbToSrgb(r, g, b)
+	r, g, b = linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
 	return SrgbToHwb(r, g, b)
 }

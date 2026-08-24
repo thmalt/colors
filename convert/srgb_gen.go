@@ -6,6 +6,14 @@ import (
 	"math"
 )
 
+// Conversion path (1 steps):
+//
+//	sRGB
+//	-> Linear sRGB
+func SrgbToLinearSrgb(r, g, b float64) (float64, float64, float64) {
+	return srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
+}
+
 // Conversion path (4 steps):
 //
 //	sRGB
@@ -14,13 +22,13 @@ import (
 //	-> Linear Display P3
 //	-> Display P3
 func SrgbToDisplayP3(r, g, b float64) (float64, float64, float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	f1 := 0.8224619687143618*r + 0.17753803128563775*g
 	f2 := 0.03319419885096157*r + 0.9668058011490382*g
 	f3 := 0.017082630721120033*r + 0.07239744066396339*g + 0.9105199286149164*b
 
-	return LinearDisplayP3ToDisplayP3(f1, f2, f3)
+	return linearSrgbToSrgb(f1), linearSrgbToSrgb(f2), linearSrgbToSrgb(f3)
 }
 
 // Conversion path (3 steps):
@@ -30,7 +38,7 @@ func SrgbToDisplayP3(r, g, b float64) (float64, float64, float64) {
 //	-> CIE XYZ D65
 //	-> Linear Display P3
 func SrgbToLinearDisplayP3(r, g, b float64) (float64, float64, float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	f1 := 0.8224619687143618*r + 0.17753803128563775*g
 	f2 := 0.03319419885096157*r + 0.9668058011490382*g
@@ -47,12 +55,13 @@ func SrgbToLinearDisplayP3(r, g, b float64) (float64, float64, float64) {
 //	-> Linear Adobe RGB (1998)
 //	-> Adobe RGB (1998)
 func SrgbToA98(r, g, b float64) (float64, float64, float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	f1 := 0.7151256068556247*r + 0.28487439314437574*g
+	f2 := g
 	f3 := 0.04116194845011842*g + 0.9588380515498821*b
 
-	return LinearA98ToA98(f1, g, f3)
+	return linearA98ToA98(f1), linearA98ToA98(f2), linearA98ToA98(f3)
 }
 
 // Conversion path (3 steps):
@@ -62,7 +71,7 @@ func SrgbToA98(r, g, b float64) (float64, float64, float64) {
 //	-> CIE XYZ D65
 //	-> Linear Adobe RGB (1998)
 func SrgbToLinearA98(r, g, b float64) (float64, float64, float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	f1 := 0.7151256068556247*r + 0.28487439314437574*g
 	f3 := 0.04116194845011842*g + 0.9588380515498821*b
@@ -79,13 +88,13 @@ func SrgbToLinearA98(r, g, b float64) (float64, float64, float64) {
 //	-> Linear ProPhoto
 //	-> ProPhoto
 func SrgbToProPhoto(r, g, b float64) (float64, float64, float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	f1 := 0.5292804059761246*r + 0.33015298571181445*g + 0.1405666083120607*b
 	f2 := 0.0983662219708857*r + 0.8734639545069689*g + 0.028169823522145324*b
 	f3 := 0.016875340921386824*r + 0.11765941425612084*g + 0.8654652448224925*b
 
-	return LinearProPhotoToProPhoto(f1, f2, f3)
+	return linearProPhotoToProPhoto(f1), linearProPhotoToProPhoto(f2), linearProPhotoToProPhoto(f3)
 }
 
 // Conversion path (4 steps):
@@ -96,7 +105,7 @@ func SrgbToProPhoto(r, g, b float64) (float64, float64, float64) {
 //	-> CIE XYZ D50
 //	-> Linear ProPhoto
 func SrgbToLinearProPhoto(r, g, b float64) (float64, float64, float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	f1 := 0.5292804059761246*r + 0.33015298571181445*g + 0.1405666083120607*b
 	f2 := 0.0983662219708857*r + 0.8734639545069689*g + 0.028169823522145324*b
@@ -113,13 +122,13 @@ func SrgbToLinearProPhoto(r, g, b float64) (float64, float64, float64) {
 //	-> Linear Rec. 2020
 //	-> Rec. 2020
 func SrgbToRec2020(r, g, b float64) (float64, float64, float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	f1 := 0.627403895934699*r + 0.32928303837788375*g + 0.043313065687417225*b
 	f2 := 0.06909728935823199*r + 0.9195403950754589*g + 0.01136231556630916*b
 	f3 := 0.016391438875150228*r + 0.08801330787722578*g + 0.895595253247624*b
 
-	return LinearRec2020ToRec2020(f1, f2, f3)
+	return linearRec2020ToRec2020(f1), linearRec2020ToRec2020(f2), linearRec2020ToRec2020(f3)
 }
 
 // Conversion path (4 steps):
@@ -130,13 +139,13 @@ func SrgbToRec2020(r, g, b float64) (float64, float64, float64) {
 //	-> Linear Rec. 2020
 //	-> Rec. 2020 Scene Referred
 func SrgbToRec2020OETF(r, g, b float64) (float64, float64, float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	f1 := 0.627403895934699*r + 0.32928303837788375*g + 0.043313065687417225*b
 	f2 := 0.06909728935823199*r + 0.9195403950754589*g + 0.01136231556630916*b
 	f3 := 0.016391438875150228*r + 0.08801330787722578*g + 0.895595253247624*b
 
-	return LinearRec2020ToRec2020OETF(f1, f2, f3)
+	return linearRec2020ToRec2020OETF(f1), linearRec2020ToRec2020OETF(f2), linearRec2020ToRec2020OETF(f3)
 }
 
 // Conversion path (3 steps):
@@ -146,13 +155,66 @@ func SrgbToRec2020OETF(r, g, b float64) (float64, float64, float64) {
 //	-> CIE XYZ D65
 //	-> Linear Rec. 2020
 func SrgbToLinearRec2020(r, g, b float64) (float64, float64, float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	f1 := 0.627403895934699*r + 0.32928303837788375*g + 0.043313065687417225*b
 	f2 := 0.06909728935823199*r + 0.9195403950754589*g + 0.01136231556630916*b
 	f3 := 0.016391438875150228*r + 0.08801330787722578*g + 0.895595253247624*b
 
 	return f1, f2, f3
+}
+
+// Conversion path (4 steps):
+//
+//	sRGB
+//	-> Linear sRGB
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+//	-> Linear Rec. 2100
+func SrgbToLinearRec2100(r, g, b float64) (float64, float64, float64) {
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
+
+	f1 := 0.627403895934699*r + 0.32928303837788375*g + 0.043313065687417225*b
+	f2 := 0.06909728935823199*r + 0.9195403950754589*g + 0.01136231556630916*b
+	f3 := 0.016391438875150228*r + 0.08801330787722578*g + 0.895595253247624*b
+
+	return f1, f2, f3
+}
+
+// Conversion path (5 steps):
+//
+//	sRGB
+//	-> Linear sRGB
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+//	-> Linear Rec. 2100
+//	-> Rec. 2100 PQ
+func SrgbToRec2100PQ(r, g, b float64) (float64, float64, float64) {
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
+
+	f1 := 0.627403895934699*r + 0.32928303837788375*g + 0.043313065687417225*b
+	f2 := 0.06909728935823199*r + 0.9195403950754589*g + 0.01136231556630916*b
+	f3 := 0.016391438875150228*r + 0.08801330787722578*g + 0.895595253247624*b
+
+	return rec2100PQEncode(f1), rec2100PQEncode(f2), rec2100PQEncode(f3)
+}
+
+// Conversion path (5 steps):
+//
+//	sRGB
+//	-> Linear sRGB
+//	-> CIE XYZ D65
+//	-> Linear Rec. 2020
+//	-> Linear Rec. 2100
+//	-> Rec. 2100 HLG
+func SrgbToRec2100HLG(r, g, b float64) (float64, float64, float64) {
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
+
+	f1 := 0.627403895934699*r + 0.32928303837788375*g + 0.043313065687417225*b
+	f2 := 0.06909728935823199*r + 0.9195403950754589*g + 0.01136231556630916*b
+	f3 := 0.016391438875150228*r + 0.08801330787722578*g + 0.895595253247624*b
+
+	return rec2100HLGEncode(f1), rec2100HLGEncode(f2), rec2100HLGEncode(f3)
 }
 
 // Conversion path (3 steps):
@@ -162,7 +224,7 @@ func SrgbToLinearRec2020(r, g, b float64) (float64, float64, float64) {
 //	-> CIE XYZ D65
 //	-> CIE XYZ D50
 func SrgbToXyzD50(r, g, b float64) (x, y, z float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	x = 0.43606574687426913*r + 0.3851515095901597*g + 0.14307841996513865*b
 	y = 0.22249317711056507*r + 0.7168870130944824*g + 0.06061980979495235*b
@@ -177,7 +239,7 @@ func SrgbToXyzD50(r, g, b float64) (x, y, z float64) {
 //	-> Linear sRGB
 //	-> CIE XYZ D65
 func SrgbToXyzD65(r, g, b float64) (x, y, z float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	x = 0.4123907992659593*r + 0.357584339383878*g + 0.1804807884018343*b
 	y = 0.21263900587151024*r + 0.715168678767756*g + 0.07219231536073371*b
@@ -193,7 +255,7 @@ func SrgbToXyzD65(r, g, b float64) (x, y, z float64) {
 //	-> CIE XYZ D65
 //	-> Absolute XYZ D65
 func SrgbToXyzAbsD65(r, g, b float64) (x, y, z float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	x = 0.4123907992659593*r + 0.357584339383878*g + 0.1804807884018343*b
 	y = 0.21263900587151024*r + 0.715168678767756*g + 0.07219231536073371*b
@@ -210,7 +272,7 @@ func SrgbToXyzAbsD65(r, g, b float64) (x, y, z float64) {
 //	-> CIE XYZ D50
 //	-> CIE xyY
 func SrgbToXyYD50(r, g, b float64) (x, y, luminance float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	x = 0.43606574687426913*r + 0.3851515095901597*g + 0.14307841996513865*b
 	y = 0.22249317711056507*r + 0.7168870130944824*g + 0.06061980979495235*b
@@ -226,7 +288,7 @@ func SrgbToXyYD50(r, g, b float64) (x, y, luminance float64) {
 //	-> CIE XYZ D65
 //	-> CIE xyY
 func SrgbToXyYD65(r, g, b float64) (x, y, luminance float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	x = 0.4123907992659593*r + 0.357584339383878*g + 0.1804807884018343*b
 	y = 0.21263900587151024*r + 0.715168678767756*g + 0.07219231536073371*b
@@ -243,7 +305,7 @@ func SrgbToXyYD65(r, g, b float64) (x, y, luminance float64) {
 //	-> CIE XYZ D50
 //	-> CIE Lab D50
 func SrgbToLabD50(r, g, b float64) (float64, float64, float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	x := 0.43606574687426913*r + 0.3851515095901597*g + 0.14307841996513865*b
 	y := 0.22249317711056507*r + 0.7168870130944824*g + 0.06061980979495235*b
@@ -261,7 +323,7 @@ func SrgbToLabD50(r, g, b float64) (float64, float64, float64) {
 //	-> CIE Lab D50
 //	-> CIE LCh D50
 func SrgbToLchD50(r, g, b float64) (l, c, h float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	x := 0.43606574687426913*r + 0.3851515095901597*g + 0.14307841996513865*b
 	y := 0.22249317711056507*r + 0.7168870130944824*g + 0.06061980979495235*b
@@ -278,7 +340,7 @@ func SrgbToLchD50(r, g, b float64) (l, c, h float64) {
 //	-> CIE XYZ D65
 //	-> CIE Lab D65
 func SrgbToLabD65(r, g, b float64) (float64, float64, float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	x := 0.4123907992659593*r + 0.357584339383878*g + 0.1804807884018343*b
 	y := 0.21263900587151024*r + 0.715168678767756*g + 0.07219231536073371*b
@@ -295,7 +357,7 @@ func SrgbToLabD65(r, g, b float64) (float64, float64, float64) {
 //	-> CIE Lab D65
 //	-> CIE LCh D65
 func SrgbToLchD65(r, g, b float64) (l, c, h float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	x := 0.4123907992659593*r + 0.357584339383878*g + 0.1804807884018343*b
 	y := 0.21263900587151024*r + 0.715168678767756*g + 0.07219231536073371*b
@@ -313,7 +375,7 @@ func SrgbToLchD65(r, g, b float64) (l, c, h float64) {
 //	-> CIE XYZ D50
 //	-> CIE Luv D50
 func SrgbToLuvD50(r, g, b float64) (l, u, v float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	x := 0.43606574687426913*r + 0.3851515095901597*g + 0.14307841996513865*b
 	y := 0.22249317711056507*r + 0.7168870130944824*g + 0.06061980979495235*b
@@ -331,7 +393,7 @@ func SrgbToLuvD50(r, g, b float64) (l, u, v float64) {
 //	-> CIE Luv D50
 //	-> CIE LChuv D50
 func SrgbToLchuvD50(r, g, b float64) (l, c, h float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	x := 0.43606574687426913*r + 0.3851515095901597*g + 0.14307841996513865*b
 	y := 0.22249317711056507*r + 0.7168870130944824*g + 0.06061980979495235*b
@@ -348,7 +410,7 @@ func SrgbToLchuvD50(r, g, b float64) (l, c, h float64) {
 //	-> CIE XYZ D65
 //	-> CIE Luv D65
 func SrgbToLuvD65(r, g, b float64) (l, u, v float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	x := 0.4123907992659593*r + 0.357584339383878*g + 0.1804807884018343*b
 	y := 0.21263900587151024*r + 0.715168678767756*g + 0.07219231536073371*b
@@ -365,7 +427,7 @@ func SrgbToLuvD65(r, g, b float64) (l, u, v float64) {
 //	-> CIE Luv D65
 //	-> CIE LChuv D65
 func SrgbToLchuvD65(r, g, b float64) (l, c, h float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	x := 0.4123907992659593*r + 0.357584339383878*g + 0.1804807884018343*b
 	y := 0.21263900587151024*r + 0.715168678767756*g + 0.07219231536073371*b
@@ -382,7 +444,7 @@ func SrgbToLchuvD65(r, g, b float64) (l, c, h float64) {
 //	-> CIE XYZ D65
 //	-> Oklab
 func SrgbToOklab(r, g, b float64) (float64, float64, float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	f1 := 0.4122214694707628*r + 0.5363325372617349*g + 0.05144599326750219*b
 	f2 := 0.2119034958178251*r + 0.6806995506452345*g + 0.10739695353694055*b
@@ -407,7 +469,7 @@ func SrgbToOklab(r, g, b float64) (float64, float64, float64) {
 //	-> Oklab
 //	-> Oklch
 func SrgbToOklch(r, g, b float64) (l, c, h float64) {
-	r, g, b = SrgbToLinearSrgb(r, g, b)
+	r, g, b = srgbToLinearSrgb(r), srgbToLinearSrgb(g), srgbToLinearSrgb(b)
 
 	f1 := 0.4122214694707628*r + 0.5363325372617349*g + 0.05144599326750219*b
 	f2 := 0.2119034958178251*r + 0.6806995506452345*g + 0.10739695353694055*b

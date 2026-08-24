@@ -167,7 +167,7 @@ func clearIntermediateVars(ops []GenOp) {
 	}
 
 	for i := range ops {
-		if ops[i].Type == OpCall {
+		if ops[i].Type == OpCall || ops[i].Type == OpTransfer {
 			flush()
 			continue
 		}

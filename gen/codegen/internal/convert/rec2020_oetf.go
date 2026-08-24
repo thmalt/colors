@@ -2,16 +2,6 @@ package convert
 
 import "math"
 
-// Applies the inverse of the Rec. 2020 OETF transfer function.
-func Rec2020OETFToLinearRec2020(r, g, b float64) (float64, float64, float64) {
-	return rec2020OETFToLinearRec2020(r), rec2020OETFToLinearRec2020(g), rec2020OETFToLinearRec2020(b)
-}
-
-// Applies the Rec. 2020 OETF transfer function.
-func LinearRec2020ToRec2020OETF(r, g, b float64) (float64, float64, float64) {
-	return linearRec2020ToRec2020OETF(r), linearRec2020ToRec2020OETF(g), linearRec2020ToRec2020OETF(b)
-}
-
 const (
 	rec2020Alpha = 1.09929682680944
 	rec2020Beta  = 0.018053968510807

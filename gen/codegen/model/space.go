@@ -12,6 +12,9 @@ type Space struct {
 	Name    string   `json:"name"`
 	Aliases []string `json:"aliases,omitempty"`
 
+	Equivalent  string   `json:"equivalent,omitempty"`
+	Equivalents []string `json:"-"`
+
 	Family string `json:"family,omitempty"`
 	Base   string `json:"base,omitempty"`
 

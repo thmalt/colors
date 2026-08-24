@@ -398,6 +398,114 @@ var linearRec2020Info = spaceInfo{
 	useColorFunction: true,
 }
 
+var linearRec2100Info = spaceInfo{
+	name:        "LinearRec2100",
+	displayName: "Linear Rec. 2100",
+	cssName:     "rec2100-linear",
+	whitePoint:  D65,
+	coordinate:  Cartesian,
+	channels: []Channel{
+		{
+			Name:        "Red",
+			Symbol:      "R",
+			DisplayName: "Red",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+		{
+			Name:        "Green",
+			Symbol:      "G",
+			DisplayName: "Green",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+		{
+			Name:        "Blue",
+			Symbol:      "B",
+			DisplayName: "Blue",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+	},
+	hueIndex:         -1,
+	useColorFunction: true,
+}
+
+var rec2100PQInfo = spaceInfo{
+	name:        "Rec2100PQ",
+	displayName: "Rec. 2100 PQ",
+	cssName:     "rec2100-pq",
+	whitePoint:  D65,
+	coordinate:  Cartesian,
+	channels: []Channel{
+		{
+			Name:        "Red",
+			Symbol:      "R",
+			DisplayName: "Red",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+		{
+			Name:        "Green",
+			Symbol:      "G",
+			DisplayName: "Green",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+		{
+			Name:        "Blue",
+			Symbol:      "B",
+			DisplayName: "Blue",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+	},
+	hueIndex:         -1,
+	useColorFunction: true,
+}
+
+var rec2100HLGInfo = spaceInfo{
+	name:        "Rec2100HLG",
+	displayName: "Rec. 2100 HLG",
+	cssName:     "rec2100-hlg",
+	whitePoint:  D65,
+	coordinate:  Cartesian,
+	channels: []Channel{
+		{
+			Name:        "Red",
+			Symbol:      "R",
+			DisplayName: "Red",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+		{
+			Name:        "Green",
+			Symbol:      "G",
+			DisplayName: "Green",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+		{
+			Name:        "Blue",
+			Symbol:      "B",
+			DisplayName: "Blue",
+			Min:         0,
+			Max:         1,
+			Precision:   6,
+		},
+	},
+	hueIndex:         -1,
+	useColorFunction: true,
+}
+
 var xyzD50Info = spaceInfo{
 	name:        "XyzD50",
 	displayName: "CIE XYZ D50",

@@ -23,7 +23,8 @@ func InGamut(c Color) bool {
 		return c.c2 >= -eps && c.c2 <= 1+eps && c.c3 >= -eps && c.c3 <= 1+eps
 	case space.Srgb, space.LinearSrgb, space.DisplayP3, space.LinearDisplayP3,
 		space.A98, space.LinearA98, space.ProPhoto, space.LinearProPhoto,
-		space.Rec2020, space.Rec2020OETF, space.LinearRec2020:
+		space.Rec2020, space.Rec2020OETF, space.LinearRec2020, space.LinearRec2100,
+		space.Rec2100PQ, space.Rec2100HLG:
 		return c.c1 >= -eps && c.c1 <= 1+eps && c.c2 >= -eps && c.c2 <= 1+eps && c.c3 >= -eps && c.c3 <= 1+eps
 	default:
 		return false
@@ -70,7 +71,8 @@ func Clamp(c Color) Color {
 		return c
 	case space.Srgb, space.LinearSrgb, space.DisplayP3, space.LinearDisplayP3,
 		space.A98, space.LinearA98, space.ProPhoto, space.LinearProPhoto,
-		space.Rec2020, space.Rec2020OETF, space.LinearRec2020:
+		space.Rec2020, space.Rec2020OETF, space.LinearRec2020, space.LinearRec2100,
+		space.Rec2100PQ, space.Rec2100HLG:
 		c.c1 = clamp(c.c1, 0, 1)
 		c.c2 = clamp(c.c2, 0, 1)
 		c.c3 = clamp(c.c3, 0, 1)

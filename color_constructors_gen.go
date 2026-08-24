@@ -347,6 +347,99 @@ func LinearRec2020Alpha(r, g, b, alpha float64) Color {
 	}
 }
 
+// LinearRec2100 returns a [Color] from Linear Rec. 2100 components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
+func LinearRec2100(r, g, b float64) Color {
+	return Color{
+		space: space.LinearRec2100,
+		c1:    r,
+		c2:    g,
+		c3:    b,
+		alpha: 1,
+	}
+}
+
+// LinearRec2100 returns a [Color] from Linear Rec. 2100 components with alpha.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
+//	alpha: [0, 1]
+func LinearRec2100Alpha(r, g, b, alpha float64) Color {
+	return Color{
+		space: space.LinearRec2100,
+		c1:    r,
+		c2:    g,
+		c3:    b,
+		alpha: alpha,
+	}
+}
+
+// Rec2100PQ returns a [Color] from Rec. 2100 PQ components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
+func Rec2100PQ(r, g, b float64) Color {
+	return Color{
+		space: space.Rec2100PQ,
+		c1:    r,
+		c2:    g,
+		c3:    b,
+		alpha: 1,
+	}
+}
+
+// Rec2100PQ returns a [Color] from Rec. 2100 PQ components with alpha.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
+//	alpha: [0, 1]
+func Rec2100PQAlpha(r, g, b, alpha float64) Color {
+	return Color{
+		space: space.Rec2100PQ,
+		c1:    r,
+		c2:    g,
+		c3:    b,
+		alpha: alpha,
+	}
+}
+
+// Rec2100HLG returns a [Color] from Rec. 2100 HLG components.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
+func Rec2100HLG(r, g, b float64) Color {
+	return Color{
+		space: space.Rec2100HLG,
+		c1:    r,
+		c2:    g,
+		c3:    b,
+		alpha: 1,
+	}
+}
+
+// Rec2100HLG returns a [Color] from Rec. 2100 HLG components with alpha.
+//
+//	r: [0, 1]
+//	g: [0, 1]
+//	b: [0, 1]
+//	alpha: [0, 1]
+func Rec2100HLGAlpha(r, g, b, alpha float64) Color {
+	return Color{
+		space: space.Rec2100HLG,
+		c1:    r,
+		c2:    g,
+		c3:    b,
+		alpha: alpha,
+	}
+}
+
 // XyzD50 returns a [Color] from CIE XYZ D50 components.
 //
 //	x: [0, 0.9642956764295677] (typical)

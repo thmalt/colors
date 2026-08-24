@@ -50,6 +50,15 @@ func (c Color) String() string {
 	case space.LinearRec2020:
 		buf = append(buf, "color(rec2020-linear "...)
 		buf = appendFormatSrgb(buf, c.c1, c.c2, c.c3)
+	case space.LinearRec2100:
+		buf = append(buf, "color(rec2100-linear "...)
+		buf = appendFormatSrgb(buf, c.c1, c.c2, c.c3)
+	case space.Rec2100PQ:
+		buf = append(buf, "color(rec2100-pq "...)
+		buf = appendFormatSrgb(buf, c.c1, c.c2, c.c3)
+	case space.Rec2100HLG:
+		buf = append(buf, "color(rec2100-hlg "...)
+		buf = appendFormatSrgb(buf, c.c1, c.c2, c.c3)
 	case space.XyzD50:
 		buf = append(buf, "color(xyz-d50 "...)
 		buf = appendFormatXyzD50(buf, c.c1, c.c2, c.c3)

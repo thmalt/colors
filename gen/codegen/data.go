@@ -126,6 +126,7 @@ var (
 			CssName:     "srgb-linear",
 			WhitePoint:  "D65",
 			Channels:    rgbChannels,
+			SnakeName:   "srgb_linear",
 
 			UseGenericColorFunction: true,
 		},
@@ -148,6 +149,7 @@ var (
 			CssName:     "display-p3-linear",
 			WhitePoint:  "D65",
 			Channels:    rgbChannels,
+			SnakeName:   "display_p3_linear",
 
 			UseGenericColorFunction: true,
 		},
@@ -170,6 +172,7 @@ var (
 			CssName:     "a98-rgb-linear",
 			WhitePoint:  "D65",
 			Channels:    rgbChannels,
+			SnakeName:   "a98_linear",
 
 			UseGenericColorFunction: true,
 		},
@@ -181,10 +184,9 @@ var (
 			CssName:     "prophoto-rgb",
 			WhitePoint:  "D50",
 			Channels:    rgbChannels,
+			SnakeName:   "prophoto",
 
 			UseGenericColorFunction: true,
-
-			SnakeName: "prophoto",
 		},
 		{
 			Name:        "LinearProPhoto",
@@ -194,10 +196,9 @@ var (
 			CssName:     "prophoto-rgb-linear",
 			WhitePoint:  "D50",
 			Channels:    rgbChannels,
+			SnakeName:   "prophoto_linear",
 
 			UseGenericColorFunction: true,
-
-			SnakeName: "linear_prophoto",
 		},
 		{
 			Name:        "Rec2020",
@@ -218,10 +219,9 @@ var (
 			CssName:     "rec2020-oetf",
 			WhitePoint:  "D65",
 			Channels:    rgbChannels,
+			SnakeName:   "rec2020_oetf",
 
 			UseGenericColorFunction: true,
-
-			SnakeName: "rec2020_oetf",
 		},
 		{
 			Name:        "LinearRec2020",
@@ -231,6 +231,44 @@ var (
 			CssName:     "rec2020-linear",
 			WhitePoint:  "D65",
 			Channels:    rgbChannels,
+			SnakeName:   "rec2020_linear",
+
+			UseGenericColorFunction: true,
+		},
+		{
+			Name:        "LinearRec2100",
+			Equivalent:  "LinearRec2020",
+			Family:      "RGB",
+			Base:        "XyzD65",
+			DisplayName: "Linear Rec. 2100",
+			CssName:     "rec2100-linear",
+			WhitePoint:  "D65",
+			Channels:    rgbChannels,
+			SnakeName:   "rec2100_linear",
+
+			UseGenericColorFunction: true,
+		},
+		{
+			Name:        "Rec2100PQ",
+			Family:      "RGB",
+			Base:        "XyzD65",
+			DisplayName: "Rec. 2100 PQ",
+			CssName:     "rec2100-pq",
+			WhitePoint:  "D65",
+			Channels:    rgbChannels,
+			SnakeName:   "rec2100_pq",
+
+			UseGenericColorFunction: true,
+		},
+		{
+			Name:        "Rec2100HLG",
+			Family:      "RGB",
+			Base:        "XyzD65",
+			DisplayName: "Rec. 2100 HLG",
+			CssName:     "rec2100-hlg",
+			WhitePoint:  "D65",
+			Channels:    rgbChannels,
+			SnakeName:   "rec2100_hlg",
 
 			UseGenericColorFunction: true,
 		},
@@ -263,10 +301,9 @@ var (
 			CssName:     "xyz-abs-d65",
 			WhitePoint:  "D65",
 			Channels:    xyzAbsD65Channels,
+			SnakeName:   "xyz_abs_d65",
 
 			UseGenericColorFunction: true,
-
-			SnakeName: "xyz_abs_d65",
 		},
 		{
 			Name:        "XyYD50",
@@ -276,10 +313,9 @@ var (
 			CssName:     "xyy-d50",
 			WhitePoint:  "D50",
 			Channels:    xyYChannels,
+			SnakeName:   "xyy_d50",
 
 			UseGenericColorFunction: true,
-
-			SnakeName: "xyy_d50",
 		},
 		{
 			Name:        "XyYD65",
@@ -289,10 +325,9 @@ var (
 			CssName:     "xyy-d65",
 			WhitePoint:  "D65",
 			Channels:    xyYChannels,
+			SnakeName:   "xyy_d65",
 
 			UseGenericColorFunction: true,
-
-			SnakeName: "xyy_d65",
 		},
 		{
 			Name:        "LabD50",
@@ -450,150 +485,114 @@ var (
 
 	ConvertFuncs = [...]ConvertFunc{
 		// standard transfer converter
-		{Pair: Pair{"Srgb", "LinearSrgb"}, Implemented: true},
-		{Pair: Pair{"LinearSrgb", "Srgb"}, Implemented: true},
+		transferFunc("Srgb", "LinearSrgb", "srgbToLinearSrgb"),
+		transferFunc("LinearSrgb", "Srgb", "linearSrgbToSrgb"),
 
-		{Pair: Pair{"A98", "LinearA98"}, Implemented: true},
-		{Pair: Pair{"LinearA98", "A98"}, Implemented: true},
+		transferFunc("A98", "LinearA98", "a98ToLinearA98"),
+		transferFunc("LinearA98", "A98", "linearA98ToA98"),
 
-		{Pair: Pair{"DisplayP3", "LinearDisplayP3"}, Implemented: true},
-		{Pair: Pair{"LinearDisplayP3", "DisplayP3"}, Implemented: true},
+		transferFunc("DisplayP3", "LinearDisplayP3", "srgbToLinearSrgb"),
+		transferFunc("LinearDisplayP3", "DisplayP3", "linearSrgbToSrgb"),
 
-		{Pair: Pair{"ProPhoto", "LinearProPhoto"}, Implemented: true},
-		{Pair: Pair{"LinearProPhoto", "ProPhoto"}, Implemented: true},
+		transferFunc("ProPhoto", "LinearProPhoto", "proPhotoToLinearProPhoto"),
+		transferFunc("LinearProPhoto", "ProPhoto", "linearProPhotoToProPhoto"),
 
-		{Pair: Pair{"Rec2020", "LinearRec2020"}, Implemented: true},
-		{Pair: Pair{"LinearRec2020", "Rec2020"}, Implemented: true},
+		transferFunc("Rec2020", "LinearRec2020", "rec2020ToLinearRec2020"),
+		transferFunc("LinearRec2020", "Rec2020", "linearRec2020ToRec2020"),
 
-		{Pair: Pair{"Rec2020OETF", "LinearRec2020"}, Implemented: true},
-		{Pair: Pair{"LinearRec2020", "Rec2020OETF"}, Implemented: true},
+		transferFunc("Rec2020OETF", "LinearRec2020", "rec2020OETFToLinearRec2020"),
+		transferFunc("LinearRec2020", "Rec2020OETF", "linearRec2020ToRec2020OETF"),
 
-		// standard converter
-		{Pair: Pair{"Srgb", "Hsl"}, Implemented: true},
-		{Pair: Pair{"Hsl", "Srgb"}, Implemented: true},
+		transferFunc("Rec2100HLG", "LinearRec2100", "rec2100HLGDecode"),
+		transferFunc("LinearRec2100", "Rec2100HLG", "rec2100HLGEncode"),
 
-		{Pair: Pair{"Srgb", "Hsv"}, Implemented: true},
-		{Pair: Pair{"Hsv", "Srgb"}, Implemented: true},
+		transferFunc("Rec2100PQ", "LinearRec2100", "rec2100PQDecode"),
+		transferFunc("LinearRec2100", "Rec2100PQ", "rec2100PQEncode"),
 
-		{Pair: Pair{"Srgb", "Hwb"}, Implemented: true},
-		{Pair: Pair{"Hwb", "Srgb"}, Implemented: true},
-
-		{Pair: Pair{"Hsl", "Hsv"}, Implemented: true},
-		{Pair: Pair{"Hsv", "Hsl"}, Implemented: true},
-
-		{Pair: Pair{"Hsl", "Hwb"}, Implemented: true},
-		{Pair: Pair{"Hwb", "Hsl"}, Implemented: true},
-
-		{Pair: Pair{"Hsv", "Hwb"}, Implemented: true},
-		{Pair: Pair{"Hwb", "Hsv"}, Implemented: true},
+		// equivalent
+		convertFunc("LinearRec2100", "LinearRec2020"),
+		convertFunc("LinearRec2020", "LinearRec2100"),
 
 		// standard converter
-		{Pair: Pair{"LabD50", "XyzD50"}, Implemented: true},
-		{Pair: Pair{"XyzD50", "LabD50"}, Implemented: true},
+		implementedFunc("Srgb", "Hsl"),
+		implementedFunc("Hsl", "Srgb"),
 
-		{Pair: Pair{"LabD65", "XyzD65"}, Implemented: true},
-		{Pair: Pair{"XyzD65", "LabD65"}, Implemented: true},
+		implementedFunc("Srgb", "Hsv"),
+		implementedFunc("Hsv", "Srgb"),
 
-		{Pair: Pair{"LuvD50", "XyzD50"}, Implemented: true},
-		{Pair: Pair{"XyzD50", "LuvD50"}, Implemented: true},
+		implementedFunc("Srgb", "Hwb"),
+		implementedFunc("Hwb", "Srgb"),
 
-		{Pair: Pair{"LuvD65", "XyzD65"}, Implemented: true},
-		{Pair: Pair{"XyzD65", "LuvD65"}, Implemented: true},
+		implementedFunc("Hsl", "Hsv"),
+		implementedFunc("Hsv", "Hsl"),
 
-		{Pair: Pair{"XyzAbsD65", "XyzD65"}, Implemented: true},
-		{Pair: Pair{"XyzD65", "XyzAbsD65"}, Implemented: true},
+		implementedFunc("Hsl", "Hwb"),
+		implementedFunc("Hwb", "Hsl"),
+
+		implementedFunc("Hsv", "Hwb"),
+		implementedFunc("Hwb", "Hsv"),
+
+		// standard converter
+		implementedFunc("LabD50", "XyzD50"),
+		implementedFunc("XyzD50", "LabD50"),
+
+		implementedFunc("LabD65", "XyzD65"),
+		implementedFunc("XyzD65", "LabD65"),
+
+		implementedFunc("LuvD50", "XyzD50"),
+		implementedFunc("XyzD50", "LuvD50"),
+
+		implementedFunc("LuvD65", "XyzD65"),
+		implementedFunc("XyzD65", "LuvD65"),
+
+		implementedFunc("XyzAbsD65", "XyzD65"),
+		implementedFunc("XyzD65", "XyzAbsD65"),
 
 		// generate with Call Ops
-		{Pair: Pair{"XyYD50", "XyzD50"}, Ops: []Op{{Type: OpCall, Func: Pair{"XyY", "Xyz"}}}},
-		{Pair: Pair{"XyzD50", "XyYD50"}, Ops: []Op{{Type: OpCall, Func: Pair{"Xyz", "XyY"}}}},
+		convertFunc("XyYD50", "XyzD50", opCall("XyY", "Xyz")),
+		convertFunc("XyzD50", "XyYD50", opCall("Xyz", "XyY")),
 
-		{Pair: Pair{"XyYD65", "XyzD65"}, Ops: []Op{{Type: OpCall, Func: Pair{"XyY", "Xyz"}}}},
-		{Pair: Pair{"XyzD65", "XyYD65"}, Ops: []Op{{Type: OpCall, Func: Pair{"Xyz", "XyY"}}}},
+		convertFunc("XyYD65", "XyzD65", opCall("XyY", "Xyz")),
+		convertFunc("XyzD65", "XyYD65", opCall("Xyz", "XyY")),
 
-		{Pair: Pair{"LabD50", "LchD50"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lxy", "Lch"}}}},
-		{Pair: Pair{"LchD50", "LabD50"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lch", "Lxy"}}}},
+		convertFunc("LabD50", "LchD50", opCall("Lxy", "Lch")),
+		convertFunc("LchD50", "LabD50", opCall("Lch", "Lxy")),
 
-		{Pair: Pair{"LabD65", "LchD65"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lxy", "Lch"}}}},
-		{Pair: Pair{"LchD65", "LabD65"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lch", "Lxy"}}}},
+		convertFunc("LabD65", "LchD65", opCall("Lxy", "Lch")),
+		convertFunc("LchD65", "LabD65", opCall("Lch", "Lxy")),
 
-		{Pair: Pair{"LuvD50", "LchuvD50"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lxy", "Lch"}}}},
-		{Pair: Pair{"LchuvD50", "LuvD50"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lch", "Lxy"}}}},
+		convertFunc("LuvD50", "LchuvD50", opCall("Lxy", "Lch")),
+		convertFunc("LchuvD50", "LuvD50", opCall("Lch", "Lxy")),
 
-		{Pair: Pair{"LuvD65", "LchuvD65"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lxy", "Lch"}}}},
-		{Pair: Pair{"LchuvD65", "LuvD65"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lch", "Lxy"}}}},
+		convertFunc("LuvD65", "LchuvD65", opCall("Lxy", "Lch")),
+		convertFunc("LchuvD65", "LuvD65", opCall("Lch", "Lxy")),
 
-		{Pair: Pair{"Oklab", "Oklch"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lxy", "Lch"}}}},
-		{Pair: Pair{"Oklch", "Oklab"}, Ops: []Op{{Type: OpCall, Func: Pair{"Lch", "Lxy"}}}},
+		convertFunc("Oklab", "Oklch", opCall("Lxy", "Lch")),
+		convertFunc("Oklch", "Oklab", opCall("Lch", "Lxy")),
 
 		// generate with Matrix Ops
 		// Oklab
-		{
-			Pair: Pair{"Oklab", "XyzD65"},
-			Ops: []Op{
-				{Type: OpMatrix, Matrix: &data.OklabLabToLms},
-				{Type: OpCube},
-				{Type: OpMatrix, Matrix: &data.OklabLmsToXyzD65},
-			},
-		},
-		{
-			Pair: Pair{"XyzD65", "Oklab"},
-			Ops: []Op{
-				{Type: OpMatrix, Matrix: &data.OklabXyzD65ToLms},
-				{Type: OpCbrt},
-				{Type: OpMatrix, Matrix: &data.OklabLmsToLab},
-			},
-		},
+		convertFunc("Oklab", "XyzD65", opMatrix(data.OklabLabToLms), opCube(), opMatrix(data.OklabLmsToXyzD65)),
+		convertFunc("XyzD65", "Oklab", opMatrix(data.OklabXyzD65ToLms), opCbrt(), opMatrix(data.OklabLmsToLab)),
 
 		// Xyz
-		{
-			Pair: Pair{"XyzD65", "XyzD50"},
-			Ops:  []Op{{Type: OpMatrix, Matrix: &data.XyzD65ToXyzD50}},
-		},
-		{
-			Pair: Pair{"XyzD50", "XyzD65"},
-			Ops:  []Op{{Type: OpMatrix, Matrix: &data.XyzD50ToXyzD65}},
-		},
+		convertFunc("XyzD65", "XyzD50", opMatrix(data.XyzD65ToXyzD50)),
+		convertFunc("XyzD50", "XyzD65", opMatrix(data.XyzD50ToXyzD65)),
 
 		// Xyz* -> Linear*
-		{
-			Pair: Pair{"XyzD65", "LinearSrgb"},
-			Ops:  []Op{{Type: OpMatrix, Matrix: &data.XyzD65ToLinearSrgb}},
-		},
-		{
-			Pair: Pair{"LinearSrgb", "XyzD65"},
-			Ops:  []Op{{Type: OpMatrix, Matrix: &data.LinearSrgbToXyzD65}},
-		},
-		{
-			Pair: Pair{"XyzD65", "LinearDisplayP3"},
-			Ops:  []Op{{Type: OpMatrix, Matrix: &data.XyzD65ToLinearDisplayP3}},
-		},
-		{
-			Pair: Pair{"LinearDisplayP3", "XyzD65"},
-			Ops:  []Op{{Type: OpMatrix, Matrix: &data.LinearDisplayP3ToXyzD65}},
-		},
-		{
-			Pair: Pair{"XyzD65", "LinearA98"},
-			Ops:  []Op{{Type: OpMatrix, Matrix: &data.XyzD65ToLinearA98}},
-		},
-		{
-			Pair: Pair{"LinearA98", "XyzD65"},
-			Ops:  []Op{{Type: OpMatrix, Matrix: &data.LinearA98ToXyzD65}},
-		},
-		{
-			Pair: Pair{"XyzD50", "LinearProPhoto"},
-			Ops:  []Op{{Type: OpMatrix, Matrix: &data.XyzD50ToLinearProPhoto}},
-		},
-		{
-			Pair: Pair{"LinearProPhoto", "XyzD50"},
-			Ops:  []Op{{Type: OpMatrix, Matrix: &data.LinearProPhotoToXyzD50}},
-		},
-		{
-			Pair: Pair{"XyzD65", "LinearRec2020"},
-			Ops:  []Op{{Type: OpMatrix, Matrix: &data.XyzD65ToLinearRec2020}},
-		},
-		{
-			Pair: Pair{"LinearRec2020", "XyzD65"},
-			Ops:  []Op{{Type: OpMatrix, Matrix: &data.LinearRec2020ToXyzD65}},
-		},
+		convertFunc("XyzD65", "LinearSrgb", opMatrix(data.XyzD65ToLinearSrgb)),
+		convertFunc("LinearSrgb", "XyzD65", opMatrix(data.LinearSrgbToXyzD65)),
+
+		convertFunc("XyzD65", "LinearDisplayP3", opMatrix(data.XyzD65ToLinearDisplayP3)),
+		convertFunc("LinearDisplayP3", "XyzD65", opMatrix(data.LinearDisplayP3ToXyzD65)),
+
+		convertFunc("XyzD65", "LinearA98", opMatrix(data.XyzD65ToLinearA98)),
+		convertFunc("LinearA98", "XyzD65", opMatrix(data.LinearA98ToXyzD65)),
+
+		convertFunc("XyzD50", "LinearProPhoto", opMatrix(data.XyzD50ToLinearProPhoto)),
+		convertFunc("LinearProPhoto", "XyzD50", opMatrix(data.LinearProPhotoToXyzD50)),
+
+		convertFunc("XyzD65", "LinearRec2020", opMatrix(data.XyzD65ToLinearRec2020)),
+		convertFunc("LinearRec2020", "XyzD65", opMatrix(data.LinearRec2020ToXyzD65)),
 	}
 )

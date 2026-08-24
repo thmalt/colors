@@ -2,16 +2,6 @@ package convert
 
 import "math"
 
-// Applies the inverse of the ProPhoto transfer function.
-func ProPhotoToLinearProPhoto(r, g, b float64) (float64, float64, float64) {
-	return proPhotoToLinearProPhoto(r), proPhotoToLinearProPhoto(g), proPhotoToLinearProPhoto(b)
-}
-
-// Applies the ProPhoto transfer function.
-func LinearProPhotoToProPhoto(r, g, b float64) (float64, float64, float64) {
-	return linearProPhotoToProPhoto(r), linearProPhotoToProPhoto(g), linearProPhotoToProPhoto(b)
-}
-
 // decode
 func proPhotoToLinearProPhoto(x float64) float64 {
 	neg := x < 0
