@@ -45,14 +45,23 @@ const (
 
 func formatCode(pkg, tags, header string, b []byte, formatSource bool) ([]byte, error) {
 	var src []byte
-	if tags != "" {
-		src = append(src, tagLines(tags)...)
-		src = append(src, '\n')
+
+	header = strings.TrimSpace(header)
+	if header != "" {
+		src = append(src, header...)
+		src = append(src, '\n', '\n')
 	}
 
-	src = append(src, header...)
+	tags = strings.TrimSpace(tags)
+	if tags != "" {
+		src = append(src, buildTags(tags)...)
+		src = append(src, '\n', '\n')
+	}
 
-	src = append(src, fmt.Sprintf("package %s\n\n", pkg)...)
+	src = append(src, "package "...)
+	src = append(src, pkg...)
+	src = append(src, '\n', '\n')
+
 	src = append(src, b...)
 
 	src = normalizeGoSource(src)
@@ -68,8 +77,8 @@ func formatCode(pkg, tags, header string, b []byte, formatSource bool) ([]byte, 
 	return src, nil
 }
 
-func tagLines(tags string) string {
-	return "//go:build " + strings.ReplaceAll(tags, ",", " && ") + "\n"
+func buildTags(tags string) string {
+	return "//go:build " + strings.ReplaceAll(tags, ",", " && ")
 }
 
 func normalizeGoSource(src []byte) []byte {
