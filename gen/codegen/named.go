@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"encoding/json"
 	"log"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -26,19 +27,21 @@ func GenerateNamedPkg(ctx *Context) {
 
 	w := newWriter(ctx)
 
-	m := make(map[string]struct{})
+	m := make(map[string]string)
 	cssLv4Colors := jsonParseNamedColor(cssLv4NamedColorData)
 	for _, c := range cssLv4Colors {
 		lower := strings.ToLower(c.Name)
 		if _, ok := m[lower]; ok {
 			log.Fatalln("duplicate named color:", lower)
 		}
-		m[lower] = struct{}{}
+		m[lower] = c.Name
 	}
 
-	if _, ok := m["transparent"]; !ok {
-		m["transparent"] = struct{}{}
-		cssLv4Colors = append(cssLv4Colors, namedColor{Name: "Transparent", RGBA: []uint8{0, 0, 0, 0}})
+	name := "Transparent"
+	lower := strings.ToLower(name)
+	if _, ok := m[lower]; !ok {
+		m[lower] = name
+		cssLv4Colors = append(cssLv4Colors, namedColor{Name: name, RGBA: []uint8{0, 0, 0, 0}})
 	}
 
 	emitGoFile(ctx, pkg, w, "css_lv4", func(w *writer.GoWriter) {
@@ -46,11 +49,20 @@ func GenerateNamedPkg(ctx *Context) {
 
 		genNamedPkgNamedVar(ctx, w, cssLv4Colors)
 	})
+
+	emitGoFile(ctx, pkg, w, "lookup", func(w *writer.GoWriter) {
+		w.Import(
+			"strings",
+			ctx.RootPkg.Path,
+		)
+
+		genNamedPkgMap(ctx, w, m)
+	})
 }
 
 func genNamedPkgNamedVar(ctx *Context, w *writer.GoWriter, colors []namedColor) {
 	pkgJoin := func(ident string) string {
-		if ctx.NamedPkg.Name == ctx.RootPkg.Name {
+		if ctx.NamedPkg == ctx.RootPkg {
 			return ident
 		}
 		return ctx.RootPkg.Join(ident)
@@ -83,10 +95,10 @@ func genNamedPkgNamedVar(ctx *Context, w *writer.GoWriter, colors []namedColor) 
 
 		name := color.Name
 		w.Comment(name, " is the CSS named color ", '"', strings.ToLower(name), '"')
-		w.Comment('\t', rgb, "(", strings.Join(temp, ", "), ')')
+		w.Comment('\t', rgb, '(', strings.Join(temp, ", "), ')')
 		w.LineWrite(name, " = ")
 		fn := "Rgb"
-		if len(color.RGBA) > 3 {
+		if len(temp) > 3 {
 			fn += "Alpha"
 		}
 		w.Write(pkgJoin(fn), '(')
@@ -94,6 +106,40 @@ func genNamedPkgNamedVar(ctx *Context, w *writer.GoWriter, colors []namedColor) 
 		w.Writeln(')')
 	}
 
+	w.End()
+}
+
+func genNamedPkgMap(ctx *Context, w *writer.GoWriter, m map[string]string) {
+	pkgJoin := func(ident string) string {
+		if ctx.NamedPkg.Name == ctx.RootPkg.Name {
+			return ident
+		}
+		return ctx.RootPkg.Join(ident)
+	}
+
+	w.Separate()
+	w.Comment("FromName returns the CSS named color with the given name.")
+	w.Comment("The name is case-insensitive.")
+	w.Func("FromName")
+	w.FuncParams("name string")
+	w.FuncResults(pkgJoin("Color"), ", bool")
+	w.FuncBody()
+	w.LineWriteln("c, ok := lookup[strings.ToLower(name)]")
+	w.Return("c, ok")
+	w.End()
+
+	var keys []string
+	for key := range m {
+		keys = append(keys, key)
+	}
+
+	slices.Sort(keys)
+
+	w.Separate()
+	w.Begin("var lookup = map[string]", pkgJoin("Color"))
+	for _, key := range keys {
+		w.LineWriteln('"', key, '"', ": ", m[key], ',')
+	}
 	w.End()
 }
 
