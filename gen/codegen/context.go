@@ -56,6 +56,7 @@ type Context struct {
 	SpacePkg   Pkg
 	InterpPkg  Pkg
 	MixerPkg   Pkg
+	NamedPkg   Pkg
 
 	// Options
 	Opts Options

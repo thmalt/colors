@@ -15,14 +15,14 @@ func main() {
 	var enableDebug = os.Getenv("DEBUG") != ""
 
 	ctx := codegen.NewContext(codegen.Options{
-		EmbedMatrix: true,
-
+		FormatSource: true,
+		EmbedMatrix:  true,
 		// ForceWrite:  true,
 		// SeparateAfterComment: true,
 	})
 
-	if !enableDebug {
-		ctx.Opts.FormatSource = true
+	if enableDebug {
+		ctx.Opts.FormatSource = false
 	}
 
 	ctx.SetModuleByType(ctx)
@@ -43,6 +43,9 @@ func main() {
 	ctx.MixerPkg.Name = "mixer"
 	ctx.MixerPkg.Path = "/mixer"
 
+	ctx.NamedPkg.Name = "named"
+	ctx.NamedPkg.Path = "/named"
+
 	ctx.AddSpace(codegen.Spaces[:]...)
 	ctx.AddConvertFunc(codegen.ConvertFuncs[:]...)
 	ctx.AddWhitePoint(codegen.WhitePoints[:]...)
@@ -62,17 +65,20 @@ func main() {
 		logGraphPaths(ctx)
 	}
 
-	fmt.Println("Generating convert...")
+	fmt.Println("Generating convert package...")
 	codegen.GenerateConvertPkg(ctx)
 
-	fmt.Println("Generating space...")
+	fmt.Println("Generating space package...")
 	codegen.GenerateSpacePkg(ctx)
 
-	fmt.Println("Generating colors...")
+	fmt.Println("Generating colors package...")
 	codegen.GenerateRootPkg(ctx)
 
-	fmt.Println("Generating mixer...")
+	fmt.Println("Generating mixer package...")
 	codegen.GenerateMixerPkg(ctx)
+
+	fmt.Println("Generating named package...")
+	codegen.GenerateNamedPkg(ctx)
 
 	end := time.Now()
 
@@ -83,6 +89,8 @@ func main() {
 
 	fmt.Println()
 	fmt.Printf("INFO: Spaces: %d, Conversion: %d\n", len(ctx.BuiltSpaces), ctx.TotalConversionGenerated)
+
+	fmt.Println()
 	fmt.Printf("Completed in %v.\n", end.Sub(beg))
 }
 
