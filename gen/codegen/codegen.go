@@ -8,14 +8,16 @@ import (
 	"github.com/thmalt/colors/gen/codegen/writer"
 )
 
-func emitGoFile(ctx *Context, w *writer.GoWriter, pkg string, path, filename string, fn func(w *writer.GoWriter)) {
+func emitGoFile(ctx *Context, pkg Pkg, w *writer.GoWriter, filename string, emit func(w *writer.GoWriter)) {
 	w.Reset()
 
-	fn(w)
+	emit(w)
+
+	pkgName, path := pkgInfo(ctx, pkg)
 
 	filename = normalizeGenFilename(filename)
 
-	written := w.SaveGoFile(filepath.Join(path, filename), pkg, ctx.Opts.BuildTags, ctx.Opts.ForceWrite)
+	written := w.SaveGoFile(filepath.Join(path, filename), pkgName, ctx.Opts.BuildTags, ctx.Opts.ForceWrite)
 	if written {
 		fmt.Println("  Generate file", filename)
 	}

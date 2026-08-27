@@ -4,35 +4,30 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"path/filepath"
 
 	"github.com/thmalt/colors/gen/codegen/writer"
 )
 
 func GenerateConvertPkg(ctx *Context) {
-	if ctx.ConvertPkg.Name == "" {
+	pkg := ctx.ConvertPkg
+	if pkg.Name == "" {
 		return
 	}
 
-	var w = writer.NewGoWriter()
-	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
-	w.SetFormatSource(ctx.Opts.FormatSource)
+	w := newWriter(ctx)
 
-	pkg := ctx.ConvertPkg.Name
-	pkgPath := filepath.Join(ctx.Directory, ctx.ConvertPkg.Path)
+	genConvertPkgConversionFiles(ctx, w, pkg)
 
-	genConvertPkgConversionFiles(ctx, w, pkg, pkgPath)
-
-	emitGoFile(ctx, w, pkg, pkgPath, "rgb8_lut", func(w *writer.GoWriter) {
+	emitGoFile(ctx, pkg, w, "rgb8_lut", func(w *writer.GoWriter) {
 		genConvertPkgLUT(w, math.MaxUint8, "LinearSrgb", "Rgb", srgbToLinearSrgb)
 	})
 
-	emitGoFile(ctx, w, pkg, pkgPath, "whitepoint", func(w *writer.GoWriter) {
+	emitGoFile(ctx, pkg, w, "whitepoint", func(w *writer.GoWriter) {
 		genConvertPkgWhitePoint(ctx, w)
 	})
 }
 
-func genConvertPkgConversionFiles(ctx *Context, w *writer.GoWriter, pkg, pkgPath string) {
+func genConvertPkgConversionFiles(ctx *Context, w *writer.GoWriter, pkg Pkg) {
 	ctx.TotalConversionGenerated = 0
 	for i, space := range ctx.BuiltSpaces {
 		if space == nil {
@@ -49,7 +44,7 @@ func genConvertPkgConversionFiles(ctx *Context, w *writer.GoWriter, pkg, pkgPath
 			filename = space.SnakeName
 		}
 
-		emitGoFile(ctx, w, pkg, pkgPath, toSnakeCase(filename), func(w *writer.GoWriter) {
+		emitGoFile(ctx, pkg, w, toSnakeCase(filename), func(w *writer.GoWriter) {
 			ctx.TotalConversionGenerated += genConvertPkgSpaceConversions(ctx, w, space)
 		})
 	}

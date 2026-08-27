@@ -1,31 +1,25 @@
 package codegen
 
 import (
-	"path/filepath"
-
 	"github.com/thmalt/colors/gen/codegen/writer"
 )
 
 func GenerateRootPkg(ctx *Context) {
-	if ctx.RootPkg.Name == "" {
+	pkg := ctx.RootPkg
+	if pkg.Name == "" {
 		return
 	}
 
-	var w = writer.NewGoWriter()
-	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
-	w.SetFormatSource(ctx.Opts.FormatSource)
+	w := newWriter(ctx)
 
-	pkg := ctx.RootPkg.Name
-	pkgPath := filepath.Join(ctx.Directory, ctx.RootPkg.Path)
-
-	emitGoFile(ctx, w, pkg, pkgPath, "color", func(w *writer.GoWriter) {
+	emitGoFile(ctx, pkg, w, "color", func(w *writer.GoWriter) {
 		w.Import(ctx.SpacePkg.Path)
 
 		genRootPkgColor(ctx, w)
 		genRootPkgColorChannel(ctx, w)
 	})
 
-	emitGoFile(ctx, w, pkg, pkgPath, "color_convert", func(w *writer.GoWriter) {
+	emitGoFile(ctx, pkg, w, "color_convert", func(w *writer.GoWriter) {
 		w.Import(
 			ctx.ConvertPkg.Path,
 			ctx.SpacePkg.Path,
@@ -35,13 +29,13 @@ func GenerateRootPkg(ctx *Context) {
 		genRootPkgColorConvertMethods(ctx, w)
 	})
 
-	emitGoFile(ctx, w, pkg, pkgPath, "color_constructors", func(w *writer.GoWriter) {
+	emitGoFile(ctx, pkg, w, "color_constructors", func(w *writer.GoWriter) {
 		w.Import(ctx.SpacePkg.Path)
 
 		genRootPkgColorConstructors(ctx, w)
 	})
 
-	emitGoFile(ctx, w, pkg, pkgPath, "color_string", func(w *writer.GoWriter) {
+	emitGoFile(ctx, pkg, w, "color_string", func(w *writer.GoWriter) {
 		w.Import(
 			"strconv",
 			"unsafe",
@@ -51,11 +45,11 @@ func GenerateRootPkg(ctx *Context) {
 		genRootPkgColorStringMethod(ctx, w)
 	})
 
-	emitGoFile(ctx, w, pkg, pkgPath, "mixer", func(w *writer.GoWriter) {
+	emitGoFile(ctx, pkg, w, "mixer", func(w *writer.GoWriter) {
 		genRootPkgMixerMethod(ctx, w)
 	})
 
-	emitGoFile(ctx, w, pkg, pkgPath, "gamut", func(w *writer.GoWriter) {
+	emitGoFile(ctx, pkg, w, "gamut", func(w *writer.GoWriter) {
 		w.Import(ctx.SpacePkg.Path)
 
 		genRootPkgGamut(ctx, w)

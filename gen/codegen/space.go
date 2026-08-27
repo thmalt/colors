@@ -1,39 +1,33 @@
 package codegen
 
 import (
-	"path/filepath"
-
 	"github.com/thmalt/colors/gen/codegen/model"
 	"github.com/thmalt/colors/gen/codegen/writer"
 )
 
 func GenerateSpacePkg(ctx *Context) {
-	if ctx.SpacePkg.Name == "" {
+	pkg := ctx.SpacePkg
+	if pkg.Name == "" {
 		return
 	}
 
-	var w = writer.NewGoWriter()
-	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
-	w.SetFormatSource(ctx.Opts.FormatSource)
+	w := newWriter(ctx)
 
-	pkg := ctx.SpacePkg.Name
-	pkgPath := filepath.Join(ctx.Directory, ctx.SpacePkg.Path)
-
-	emitGoFile(ctx, w, pkg, pkgPath, pkg, func(w *writer.GoWriter) {
+	emitGoFile(ctx, pkg, w, pkg.Name, func(w *writer.GoWriter) {
 		w.Import("strconv")
 
 		genSpacePkgSpace(ctx, w)
 	})
 
-	emitGoFile(ctx, w, pkg, pkgPath, pkg+"_info", func(w *writer.GoWriter) {
+	emitGoFile(ctx, pkg, w, pkg.Name+"_info", func(w *writer.GoWriter) {
 		genSpacePkgSpaceInfo(ctx, w)
 	})
 
-	emitGoFile(ctx, w, pkg, pkgPath, pkg+"_table", func(w *writer.GoWriter) {
+	emitGoFile(ctx, pkg, w, pkg.Name+"_table", func(w *writer.GoWriter) {
 		genSpacePkgTables(ctx, w)
 	})
 
-	emitGoFile(ctx, w, pkg, pkgPath, "whitepoint", func(w *writer.GoWriter) {
+	emitGoFile(ctx, pkg, w, "whitepoint", func(w *writer.GoWriter) {
 		genSpacePkgWhitePoint(ctx, w)
 	})
 }

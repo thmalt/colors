@@ -1,10 +1,23 @@
 package codegen
 
 import (
+	"path/filepath"
 	"strconv"
 
 	"github.com/thmalt/colors/gen/codegen/writer"
 )
+
+func pkgInfo(ctx *Context, pkg Pkg) (name, path string) {
+	return pkg.Name, filepath.Join(ctx.Directory, pkg.Path)
+}
+
+func newWriter(ctx *Context) *writer.GoWriter {
+	w := writer.NewGoWriter()
+	w.SetGeneratedBy(ctx.Module, "./"+filepath.Dir(ctx.Path))
+	w.SetFormatSource(ctx.Opts.FormatSource)
+
+	return w
+}
 
 func appendVars(dst []string, ident string, count int, extra ...string) []string {
 	for i := 1; i <= count; i++ {
