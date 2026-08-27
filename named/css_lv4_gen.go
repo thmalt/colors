@@ -55,9 +55,9 @@ var (
 	//	rgb(165, 42, 42)
 	Brown = colors.Rgb(165, 42, 42)
 
-	// Burlywood is the CSS named color "burlywood"
+	// BurlyWood is the CSS named color "burlywood"
 	//	rgb(222, 184, 135)
-	Burlywood = colors.Rgb(222, 184, 135)
+	BurlyWood = colors.Rgb(222, 184, 135)
 
 	// CadetBlue is the CSS named color "cadetblue"
 	//	rgb(95, 158, 160)
@@ -515,9 +515,9 @@ var (
 	//	rgb(46, 139, 87)
 	SeaGreen = colors.Rgb(46, 139, 87)
 
-	// Seashell is the CSS named color "seashell"
+	// SeaShell is the CSS named color "seashell"
 	//	rgb(255, 245, 238)
-	Seashell = colors.Rgb(255, 245, 238)
+	SeaShell = colors.Rgb(255, 245, 238)
 
 	// Sienna is the CSS named color "sienna"
 	//	rgb(160, 82, 45)
