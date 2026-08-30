@@ -51,10 +51,10 @@ func buildConversion(ctx *Context, from, to *model.Space) ([]*Node, []GenOp) {
 	eqFrom := ctx.SpaceByName(from.Equivalent)
 	eqTo := ctx.SpaceByName(to.Equivalent)
 
-	if from.Equivalent != "" && (eqFrom == nil || eqFrom.Disable) {
+	if from.Equivalent != "" && eqFrom == nil {
 		log.Fatalln("Equivalent space", from.Equivalent, "is unavailable")
 	}
-	if to.Equivalent != "" && (eqTo == nil || eqTo.Disable) {
+	if to.Equivalent != "" && eqTo == nil {
 		log.Fatalln("Equivalent space", to.Equivalent, "is unavailable")
 	}
 
@@ -118,9 +118,6 @@ func genConvertPkgSpacePair(ctx *Context, w *writer.GoWriter, from, to *model.Sp
 	}
 
 	ctx.impls[Pair{from.Name, to.Name}] = struct{}{}
-
-	// ops := buildGenOps(ctx, path, expand)
-	// ops = combineOps(ops)
 
 	if !ctx.Opts.EmbedMatrix {
 		ops = replaceMatrixWithCall(ops)

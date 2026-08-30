@@ -21,6 +21,9 @@ const (
 	AppendFloatFormatPrecFuncName           = "appendFormatFloatPrec"
 
 	PanicUnreachable = `panic("unreachable")`
+
+	defaultHubD50 = "XyzD50"
+	defaultHubD65 = "XyzD65"
 )
 
 func smallestUintType(n int) int {

@@ -484,7 +484,7 @@ var (
 	}
 
 	ConvertFuncs = [...]ConvertFunc{
-		// standard transfer converter
+		// Standard transfer conversion
 		transferFunc("Srgb", "LinearSrgb", "srgbToLinearSrgb"),
 		transferFunc("LinearSrgb", "Srgb", "linearSrgbToSrgb"),
 
@@ -509,11 +509,11 @@ var (
 		transferFunc("Rec2100PQ", "LinearRec2100", "rec2100PQDecode"),
 		transferFunc("LinearRec2100", "Rec2100PQ", "rec2100PQEncode"),
 
-		// equivalent
+		// Equivalent
 		convertFunc("LinearRec2100", "LinearRec2020"),
 		convertFunc("LinearRec2020", "LinearRec2100"),
 
-		// standard converter
+		// Standard conversion
 		implementedFunc("Srgb", "Hsl"),
 		implementedFunc("Hsl", "Srgb"),
 
@@ -532,7 +532,7 @@ var (
 		implementedFunc("Hsv", "Hwb"),
 		implementedFunc("Hwb", "Hsv"),
 
-		// standard converter
+		// Standard conversion
 		implementedFunc("LabD50", "XyzD50"),
 		implementedFunc("XyzD50", "LabD50"),
 
@@ -548,7 +548,7 @@ var (
 		implementedFunc("XyzAbsD65", "XyzD65"),
 		implementedFunc("XyzD65", "XyzAbsD65"),
 
-		// generate with Call Ops
+		// Generate with Call Ops
 		convertFunc("XyYD50", "XyzD50", opCall("XyY", "Xyz")),
 		convertFunc("XyzD50", "XyYD50", opCall("Xyz", "XyY")),
 
@@ -570,12 +570,12 @@ var (
 		convertFunc("Oklab", "Oklch", opCall("Lxy", "Lch")),
 		convertFunc("Oklch", "Oklab", opCall("Lch", "Lxy")),
 
-		// generate with Matrix Ops
+		// Generate with Matrix Ops
 		// Oklab
 		convertFunc("Oklab", "XyzD65", opMatrix(data.OklabLabToLms), opCube(), opMatrix(data.OklabLmsToXyzD65)),
 		convertFunc("XyzD65", "Oklab", opMatrix(data.OklabXyzD65ToLms), opCbrt(), opMatrix(data.OklabLmsToLab)),
 
-		// Xyz
+		// Xyz*
 		convertFunc("XyzD65", "XyzD50", opMatrix(data.XyzD65ToXyzD50)),
 		convertFunc("XyzD50", "XyzD65", opMatrix(data.XyzD50ToXyzD65)),
 

@@ -78,7 +78,7 @@ func formatCode(pkg, tags, header string, b []byte, formatSource bool) ([]byte, 
 }
 
 func buildTags(tags string) string {
-	return "//go:build " + strings.ReplaceAll(tags, ",", " && ")
+	return "//go:build " + tags
 }
 
 func normalizeGoSource(src []byte) []byte {

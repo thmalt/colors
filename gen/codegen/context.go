@@ -169,6 +169,18 @@ func (ctx *Context) SpaceByName(name string) *model.Space {
 		return nil
 	}
 
+	if s, ok := ctx.spaceMap[name]; ok && !s.Disable {
+		return s
+	}
+
+	return nil
+}
+
+func (ctx *Context) AllSpaceByName(name string) *model.Space {
+	if name == "" {
+		return nil
+	}
+
 	if s, ok := ctx.spaceMap[name]; ok {
 		return s
 	}

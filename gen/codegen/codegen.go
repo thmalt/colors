@@ -11,13 +11,15 @@ import (
 func emitGoFile(ctx *Context, pkg Pkg, w *writer.GoWriter, filename string, emit func(w *writer.GoWriter)) {
 	w.Reset()
 
+	w.SetBuildTags(ctx.Opts.BuildTags)
+
 	emit(w)
 
 	pkgName, path := pkgInfo(ctx, pkg)
 
 	filename = normalizeGenFilename(filename)
 
-	written := w.SaveGoFile(filepath.Join(path, filename), pkgName, ctx.Opts.BuildTags, ctx.Opts.ForceWrite)
+	written := w.SaveGoFile(filepath.Join(path, filename), pkgName, ctx.Opts.ForceWrite)
 	if written {
 		fmt.Println("  Generate file", filename)
 	}

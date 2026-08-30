@@ -1,6 +1,8 @@
 package codegen
 
 import (
+	"fmt"
+
 	"github.com/thmalt/colors/gen/codegen/writer"
 )
 
@@ -19,14 +21,45 @@ func GenerateRootPkg(ctx *Context) {
 		genRootPkgColorChannel(ctx, w)
 	})
 
+	var stats conversionStats
 	emitGoFile(ctx, pkg, w, "color_convert", func(w *writer.GoWriter) {
 		w.Import(
 			ctx.ConvertPkg.Path,
 			ctx.SpacePkg.Path,
 		)
 
+		w.AddBuildTags("!colors_full")
+
+		stats = genRootPkgColorConvertMethods(ctx, w, false)
+	})
+
+	fmt.Printf("    unique conversions: direct=%d, hub=%d\n",
+		stats.DirectCounts(),
+		stats.HubCounts(),
+	)
+
+	emitGoFile(ctx, pkg, w, "color_convert_full", func(w *writer.GoWriter) {
+		w.Import(
+			ctx.ConvertPkg.Path,
+			ctx.SpacePkg.Path,
+		)
+
+		w.AddBuildTags("colors_full")
+
+		stats = genRootPkgColorConvertMethods(ctx, w, true)
+	})
+
+	fmt.Printf("    unique conversions: direct=%d, hub=%d\n",
+		stats.DirectCounts(),
+		stats.HubCounts(),
+	)
+
+	emitGoFile(ctx, pkg, w, "color_to", func(w *writer.GoWriter) {
+		w.Import(
+			ctx.SpacePkg.Path,
+		)
+
 		genRootPkgColorTo(ctx, w)
-		genRootPkgColorConvertMethods(ctx, w)
 	})
 
 	emitGoFile(ctx, pkg, w, "color_constructors", func(w *writer.GoWriter) {

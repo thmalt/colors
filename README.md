@@ -12,6 +12,69 @@ A Go library for color space conversions, interpolation, and gradients.
 import "github.com/thmalt/colors"
 ```
 
+## Color Conversion
+
+The `github.com/thmalt/colors/convert` package provides direct conversion functions between color spaces.
+
+Direct conversion functions are generated for the supported color-space pairs.
+The `convert` package provides low-overhead conversion APIs, but it is
+**not necessarily the fastest possible implementation**.
+
+```go
+l, a, b := convert.SrgbToOklab(r, g, b)
+```
+
+The root `github.com/thmalt/colors` package builds on `github.com/thmalt/colors/convert` and provides two conversion modes.
+
+### `colors` build modes
+
+#### Default build
+
+The default build uses a hub-based conversion strategy to reduce binary size:
+
+```bash
+go build
+```
+
+Cross-family conversions may be routed through the `XyzD50` or `XyzD65` conversion hubs,
+while conversions within the same color-space family remain direct.
+
+#### Full conversion build
+
+For applications where conversion performance is more important than binary size,
+the full direct conversion graph can be enabled with the `colors_full` build tag:
+
+```bash
+go build -tags=colors_full
+```
+
+This generates direct conversion paths between color spaces instead of routing
+cross-family conversions through the XYZ hubs.
+
+| Package / Build tag            | Conversion strategy | Binary size | Performance |
+| ------------------------------ | ------------------- | ----------- | ----------- |
+| `colors/convert`               | Direct conversions  | On demand   | Higher      |
+| `colors` (`-tags=colors_full`) | Direct paths        | Larger      | Medium      |
+| `colors` (default)             | Hub-based paths     | Smaller     | Lower       |
+
+### Binary size
+
+Conversion code is included in the final binary based on how the conversion API is used.
+
+Specific methods such as `Color.Srgb()`, `Color.Oklab()`, and `Color.XyzD50()`
+only reference conversions required for their respective color spaces.
+Unused conversions can be removed by the Go linker.
+
+Generic methods such as `Color.To(dst space.Space)` and `Color.MustTo(dst space.Space)`
+reference the complete generated conversion dispatch for the selected build mode.
+
+For smaller production binaries, use `-s` and `-w` to strip symbol and DWARF information.
+`-trimpath` can also be used to remove local filesystem paths:
+
+```bash
+go build -ldflags="-s -w" -trimpath
+```
+
 ## Examples
 
 For complete, runnable examples, see the [`examples`](./examples) directory.
@@ -101,8 +164,9 @@ linearSpec.SetDirection(gradient.ToBottomRight)
 
 linear, err := linearSpec.Build()
 ```
+
 <p align="center">
-	<img src="./examples/gradient/output/linear.png" alt="Linear">
+ <img src="./examples/gradient/output/linear.png" alt="Linear">
 </p>
 
 ```go
@@ -130,8 +194,9 @@ conicSpec.SetStartAngle(gradient.ToRight)
 
 conic, err := conicSpec.Build()
 ```
+
 <p align="center">
-	<img src="./examples/gradient/output/conic.png" alt="Conic">
+ <img src="./examples/gradient/output/conic.png" alt="Conic">
 </p>
 
 ```go
@@ -161,9 +226,10 @@ circle, err := radialSpec.Build()
 radialSpec.SetShape(gradient.RadialEllipse)
 ellipse, err := radialSpec.Build()
 ```
+
 <p align="center">
-	<img src="./examples/gradient/output/radial-circle.png" alt="Radial circle">
-	<img src="./examples/gradient/output/radial-ellipse.png" alt="Radial ellipse">
+ <img src="./examples/gradient/output/radial-circle.png" alt="Radial circle">
+ <img src="./examples/gradient/output/radial-ellipse.png" alt="Radial ellipse">
 </p>
 
 More examples are available in the [`examples`](./examples) directory.
