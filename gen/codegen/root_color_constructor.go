@@ -13,9 +13,19 @@ func genRootPkgColorConstructors(ctx *Context, w *writer.GoWriter) {
 }
 
 func genRootPkgSpaceColorConstructor(ctx *Context, w *writer.GoWriter, space *model.Space, withAlpha bool) {
+	funcName := space.Name
+	params := space.ChannelIdent()
+	alpha := "1"
+
+	if withAlpha {
+		funcName += "Alpha"
+		alpha = "alpha"
+		params = append(params, alpha)
+	}
+
 	w.Separate()
 	w.CommentFunc(func(w *writer.GoWriter) {
-		w.Write(space.Name, " returns a [Color] from ", space.DisplayName, " components")
+		w.Write(funcName, " returns a [Color] from ", space.DisplayName, " components")
 		if withAlpha {
 			w.Write(" with alpha")
 		}
@@ -43,17 +53,13 @@ func genRootPkgSpaceColorConstructor(ctx *Context, w *writer.GoWriter, space *mo
 				w.Write(" (typical)")
 			}
 		}
+
 		if withAlpha {
 			w.LineWriteln("\talpha: [0, 1]")
 		}
 	})
 
-	params := space.ChannelIdent()
-	w.Func(space.Name)
-	if withAlpha {
-		w.Write("Alpha")
-		params = append(params, "alpha")
-	}
+	w.Func(funcName)
 	w.FuncParams(joinIdentsWithType(FloatType, params...))
 	w.FuncResults("Color")
 	w.FuncBody()
@@ -63,11 +69,7 @@ func genRootPkgSpaceColorConstructor(ctx *Context, w *writer.GoWriter, space *mo
 	for i := range space.ChannelCount() {
 		w.LineWriteln("c", i+1, ": ", params[i], ",")
 	}
-	if withAlpha {
-		w.LineWriteln("alpha: ", params[len(params)-1], ",")
-	} else {
-		w.LineWriteln("alpha: 1,")
-	}
+	w.LineWriteln("alpha: ", alpha, ",")
 	w.End()
 
 	w.End()

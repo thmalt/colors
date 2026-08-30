@@ -1,6 +1,7 @@
 package codegen
 
 import (
+	"bytes"
 	"math"
 	"strconv"
 	"strings"
@@ -37,15 +38,18 @@ func appendFormatFloatPrec(dst []byte, x float64, precision int) []byte {
 	start := len(dst)
 	dst = strconv.AppendFloat(dst, x, 'f', precision, 64)
 
-	n := len(dst)
-	for n > start && dst[n-1] == '0' {
-		n--
-	}
-	if n > start && dst[n-1] == '.' {
-		n--
+	if bytes.IndexByte(dst[start:], '.') >= 0 {
+		n := len(dst)
+		for n > start && dst[n-1] == '0' {
+			n--
+		}
+		if n > start && dst[n-1] == '.' {
+			n--
+		}
+		dst = dst[:n]
 	}
 
-	return dst[:n]
+	return dst
 }
 
 func appendFormatNormalizedFloatPrec(dst []byte, x float64, precision int) []byte {
@@ -63,7 +67,7 @@ func formatFloatPrec(x float64, precision int) string {
 	}
 
 	s := strconv.FormatFloat(x, 'f', precision, 64)
-	if precision >= 0 {
+	if strings.IndexByte(s, '.') >= 0 {
 		s = strings.TrimRight(s, "0")
 		s = strings.TrimRight(s, ".")
 	}

@@ -104,7 +104,11 @@ func rootPkgColorStringsSpace(ctx *Context, w *writer.GoWriter) []groupSpaceValu
 
 		for i, ch := range space.Channels {
 			if i > 0 {
-				w.LineWriteln("dst = append(dst, ' ')")
+				w.LineWrite("dst = append(dst, ")
+				if space.Channels[i-1].Unit == model.UnitPercent {
+					w.Write("'%', ")
+				}
+				w.Writeln("' ')")
 			}
 
 			w.LineWrite("dst = ", AppendFloatFormatNormalizedPrecFuncName, "(dst, ")
@@ -130,7 +134,7 @@ func rootPkgColorStringsSpace(ctx *Context, w *writer.GoWriter) []groupSpaceValu
 
 			w.Writeln(")")
 
-			if percent {
+			if percent && i == len(space.Channels)-1 {
 				w.LineWriteln("dst = append(dst, '%')")
 			}
 		}

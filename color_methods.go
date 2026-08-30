@@ -93,7 +93,7 @@ func Rgb(r, g, b float64) Color {
 	return Srgb(rgbToSrgb(r, g, b))
 }
 
-// Rgb returns a [Color] from 8-bit RGB components in [0, 255] with alpha.
+// RgbAlpha returns a [Color] from 8-bit RGB components with alpha.
 //
 //	r: [0, 255]
 //	g: [0, 255]

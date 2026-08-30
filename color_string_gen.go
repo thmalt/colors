@@ -167,8 +167,7 @@ func appendFormatHsl(dst []byte, c1, c2, c3 float64) []byte {
 	dst = appendFormatNormalizedFloatPrec(dst, c1, 2)
 	dst = append(dst, ' ')
 	dst = appendFormatNormalizedFloatPrec(dst, c2*100, 2)
-	dst = append(dst, '%')
-	dst = append(dst, ' ')
+	dst = append(dst, '%', ' ')
 	dst = appendFormatNormalizedFloatPrec(dst, c3*100, 2)
 	dst = append(dst, '%')
 	return dst

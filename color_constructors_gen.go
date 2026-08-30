@@ -21,7 +21,7 @@ func Srgb(r, g, b float64) Color {
 	}
 }
 
-// Srgb returns a [Color] from sRGB components with alpha.
+// SrgbAlpha returns a [Color] from sRGB components with alpha.
 //
 //	r: [0, 1]
 //	g: [0, 1]
@@ -52,7 +52,7 @@ func LinearSrgb(r, g, b float64) Color {
 	}
 }
 
-// LinearSrgb returns a [Color] from Linear sRGB components with alpha.
+// LinearSrgbAlpha returns a [Color] from Linear sRGB components with alpha.
 //
 //	r: [0, 1]
 //	g: [0, 1]
@@ -83,7 +83,7 @@ func DisplayP3(r, g, b float64) Color {
 	}
 }
 
-// DisplayP3 returns a [Color] from Display P3 components with alpha.
+// DisplayP3Alpha returns a [Color] from Display P3 components with alpha.
 //
 //	r: [0, 1]
 //	g: [0, 1]
@@ -114,7 +114,7 @@ func LinearDisplayP3(r, g, b float64) Color {
 	}
 }
 
-// LinearDisplayP3 returns a [Color] from Linear Display P3 components with alpha.
+// LinearDisplayP3Alpha returns a [Color] from Linear Display P3 components with alpha.
 //
 //	r: [0, 1]
 //	g: [0, 1]
@@ -145,7 +145,7 @@ func A98(r, g, b float64) Color {
 	}
 }
 
-// A98 returns a [Color] from Adobe RGB (1998) components with alpha.
+// A98Alpha returns a [Color] from Adobe RGB (1998) components with alpha.
 //
 //	r: [0, 1]
 //	g: [0, 1]
@@ -176,7 +176,7 @@ func LinearA98(r, g, b float64) Color {
 	}
 }
 
-// LinearA98 returns a [Color] from Linear Adobe RGB (1998) components with alpha.
+// LinearA98Alpha returns a [Color] from Linear Adobe RGB (1998) components with alpha.
 //
 //	r: [0, 1]
 //	g: [0, 1]
@@ -207,7 +207,7 @@ func ProPhoto(r, g, b float64) Color {
 	}
 }
 
-// ProPhoto returns a [Color] from ProPhoto components with alpha.
+// ProPhotoAlpha returns a [Color] from ProPhoto components with alpha.
 //
 //	r: [0, 1]
 //	g: [0, 1]
@@ -238,7 +238,7 @@ func LinearProPhoto(r, g, b float64) Color {
 	}
 }
 
-// LinearProPhoto returns a [Color] from Linear ProPhoto components with alpha.
+// LinearProPhotoAlpha returns a [Color] from Linear ProPhoto components with alpha.
 //
 //	r: [0, 1]
 //	g: [0, 1]
@@ -269,7 +269,7 @@ func Rec2020(r, g, b float64) Color {
 	}
 }
 
-// Rec2020 returns a [Color] from Rec. 2020 components with alpha.
+// Rec2020Alpha returns a [Color] from Rec. 2020 components with alpha.
 //
 //	r: [0, 1]
 //	g: [0, 1]
@@ -300,7 +300,7 @@ func Rec2020OETF(r, g, b float64) Color {
 	}
 }
 
-// Rec2020OETF returns a [Color] from Rec. 2020 Scene Referred components with alpha.
+// Rec2020OETFAlpha returns a [Color] from Rec. 2020 Scene Referred components with alpha.
 //
 //	r: [0, 1]
 //	g: [0, 1]
@@ -331,7 +331,7 @@ func LinearRec2020(r, g, b float64) Color {
 	}
 }
 
-// LinearRec2020 returns a [Color] from Linear Rec. 2020 components with alpha.
+// LinearRec2020Alpha returns a [Color] from Linear Rec. 2020 components with alpha.
 //
 //	r: [0, 1]
 //	g: [0, 1]
@@ -362,7 +362,7 @@ func LinearRec2100(r, g, b float64) Color {
 	}
 }
 
-// LinearRec2100 returns a [Color] from Linear Rec. 2100 components with alpha.
+// LinearRec2100Alpha returns a [Color] from Linear Rec. 2100 components with alpha.
 //
 //	r: [0, 1]
 //	g: [0, 1]
@@ -393,7 +393,7 @@ func Rec2100PQ(r, g, b float64) Color {
 	}
 }
 
-// Rec2100PQ returns a [Color] from Rec. 2100 PQ components with alpha.
+// Rec2100PQAlpha returns a [Color] from Rec. 2100 PQ components with alpha.
 //
 //	r: [0, 1]
 //	g: [0, 1]
@@ -424,7 +424,7 @@ func Rec2100HLG(r, g, b float64) Color {
 	}
 }
 
-// Rec2100HLG returns a [Color] from Rec. 2100 HLG components with alpha.
+// Rec2100HLGAlpha returns a [Color] from Rec. 2100 HLG components with alpha.
 //
 //	r: [0, 1]
 //	g: [0, 1]
@@ -455,7 +455,7 @@ func XyzD50(x, y, z float64) Color {
 	}
 }
 
-// XyzD50 returns a [Color] from CIE XYZ D50 components with alpha.
+// XyzD50Alpha returns a [Color] from CIE XYZ D50 components with alpha.
 //
 //	x: [0, 0.9642956764295677] (typical)
 //	y: [0, 1] (typical)
@@ -486,7 +486,7 @@ func XyzD65(x, y, z float64) Color {
 	}
 }
 
-// XyzD65 returns a [Color] from CIE XYZ D65 components with alpha.
+// XyzD65Alpha returns a [Color] from CIE XYZ D65 components with alpha.
 //
 //	x: [0, 0.9504559270516716] (typical)
 //	y: [0, 1] (typical)
@@ -517,7 +517,7 @@ func XyzAbsD65(x, y, z float64) Color {
 	}
 }
 
-// XyzAbsD65 returns a [Color] from Absolute XYZ D65 components with alpha.
+// XyzAbsD65Alpha returns a [Color] from Absolute XYZ D65 components with alpha.
 //
 //	x: [0, 193] (typical)
 //	y: [0, 203] (typical)
@@ -548,7 +548,7 @@ func XyYD50(x, y, luminance float64) Color {
 	}
 }
 
-// XyYD50 returns a [Color] from CIE xyY components with alpha.
+// XyYD50Alpha returns a [Color] from CIE xyY components with alpha.
 //
 //	x: [0, 1]
 //	y: [0, 1]
@@ -579,7 +579,7 @@ func XyYD65(x, y, luminance float64) Color {
 	}
 }
 
-// XyYD65 returns a [Color] from CIE xyY components with alpha.
+// XyYD65Alpha returns a [Color] from CIE xyY components with alpha.
 //
 //	x: [0, 1]
 //	y: [0, 1]
@@ -610,7 +610,7 @@ func LabD50(l, a, b float64) Color {
 	}
 }
 
-// LabD50 returns a [Color] from CIE Lab D50 components with alpha.
+// LabD50Alpha returns a [Color] from CIE Lab D50 components with alpha.
 //
 //	l: [0, 100]
 //	a: [-125, 125] (typical)
@@ -641,7 +641,7 @@ func LchD50(l, c, h float64) Color {
 	}
 }
 
-// LchD50 returns a [Color] from CIE LCh D50 components with alpha.
+// LchD50Alpha returns a [Color] from CIE LCh D50 components with alpha.
 //
 //	l: [0, 100]
 //	c: [0, 150] (typical)
@@ -672,7 +672,7 @@ func LabD65(l, a, b float64) Color {
 	}
 }
 
-// LabD65 returns a [Color] from CIE Lab D65 components with alpha.
+// LabD65Alpha returns a [Color] from CIE Lab D65 components with alpha.
 //
 //	l: [0, 100]
 //	a: [-125, 125] (typical)
@@ -703,7 +703,7 @@ func LchD65(l, c, h float64) Color {
 	}
 }
 
-// LchD65 returns a [Color] from CIE LCh D65 components with alpha.
+// LchD65Alpha returns a [Color] from CIE LCh D65 components with alpha.
 //
 //	l: [0, 100]
 //	c: [0, 150] (typical)
@@ -734,7 +734,7 @@ func LuvD50(l, u, v float64) Color {
 	}
 }
 
-// LuvD50 returns a [Color] from CIE Luv D50 components with alpha.
+// LuvD50Alpha returns a [Color] from CIE Luv D50 components with alpha.
 //
 //	l: [0, 100]
 //	u: [-134, 220] (typical)
@@ -765,7 +765,7 @@ func LchuvD50(l, c, h float64) Color {
 	}
 }
 
-// LchuvD50 returns a [Color] from CIE LChuv D50 components with alpha.
+// LchuvD50Alpha returns a [Color] from CIE LChuv D50 components with alpha.
 //
 //	l: [0, 100]
 //	c: [0, 180] (typical)
@@ -796,7 +796,7 @@ func LuvD65(l, u, v float64) Color {
 	}
 }
 
-// LuvD65 returns a [Color] from CIE Luv D65 components with alpha.
+// LuvD65Alpha returns a [Color] from CIE Luv D65 components with alpha.
 //
 //	l: [0, 100]
 //	u: [-134, 220] (typical)
@@ -827,7 +827,7 @@ func LchuvD65(l, c, h float64) Color {
 	}
 }
 
-// LchuvD65 returns a [Color] from CIE LChuv D65 components with alpha.
+// LchuvD65Alpha returns a [Color] from CIE LChuv D65 components with alpha.
 //
 //	l: [0, 100]
 //	c: [0, 180] (typical)
@@ -858,7 +858,7 @@ func Oklab(l, a, b float64) Color {
 	}
 }
 
-// Oklab returns a [Color] from Oklab components with alpha.
+// OklabAlpha returns a [Color] from Oklab components with alpha.
 //
 //	l: [0, 1]
 //	a: [-0.4, 0.4] (typical)
@@ -889,7 +889,7 @@ func Oklch(l, c, h float64) Color {
 	}
 }
 
-// Oklch returns a [Color] from Oklch components with alpha.
+// OklchAlpha returns a [Color] from Oklch components with alpha.
 //
 //	l: [0, 1]
 //	c: [0, 0.4] (typical)
@@ -920,7 +920,7 @@ func Hsl(h, s, l float64) Color {
 	}
 }
 
-// Hsl returns a [Color] from HSL components with alpha.
+// HslAlpha returns a [Color] from HSL components with alpha.
 //
 //	h: [0, 360)
 //	s: [0, 1]
@@ -951,7 +951,7 @@ func Hsv(h, s, v float64) Color {
 	}
 }
 
-// Hsv returns a [Color] from HSV components with alpha.
+// HsvAlpha returns a [Color] from HSV components with alpha.
 //
 //	h: [0, 360)
 //	s: [0, 1]
@@ -982,7 +982,7 @@ func Hwb(h, w, b float64) Color {
 	}
 }
 
-// Hwb returns a [Color] from HWB components with alpha.
+// HwbAlpha returns a [Color] from HWB components with alpha.
 //
 //	h: [0, 360)
 //	w: [0, 1]
