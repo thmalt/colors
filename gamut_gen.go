@@ -37,7 +37,7 @@ func InGamutSpace(c Color, dst space.Space) bool {
 		return InGamut(c)
 	}
 
-	converted, ok := c.To(dst)
+	converted, ok := c.to(dst)
 	return ok && InGamut(converted)
 }
 

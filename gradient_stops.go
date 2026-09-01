@@ -31,7 +31,7 @@ func convertStopColors(stops []GradientStop, dst space.Space) {
 			continue
 		}
 
-		stops[i].Color, _ = stops[i].Color.To(dst)
+		stops[i].Color, _ = stops[i].Color.to(dst)
 	}
 }
 

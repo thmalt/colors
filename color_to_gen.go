@@ -6,8 +6,8 @@ import (
 	"github.com/thmalt/colors/space"
 )
 
-// To converts the color to the destination color space.
-func (c Color) To(dst space.Space) (Color, bool) {
+// to converts the color to the destination color space.
+func (c Color) to(dst space.Space) (Color, bool) {
 	if !c.space.IsValid() {
 		return Color{}, false
 	}

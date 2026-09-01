@@ -13,14 +13,14 @@ func mapToGamutOklch(c Color, dst space.Space) (Color, bool) {
 		if c.InGamut() {
 			return c, true
 		}
-	} else if d, ok := c.To(dst); ok && d.InGamut() {
+	} else if d, ok := c.to(dst); ok && d.InGamut() {
 		return d, true
 	}
 
 	lightness, chroma, hue := c.Oklch()
 	alpha := c.alpha
 
-	neutral, ok := OklchAlpha(lightness, 0, hue, alpha).To(dst)
+	neutral, ok := OklchAlpha(lightness, 0, hue, alpha).to(dst)
 	if !ok {
 		return c, false
 	}
@@ -32,7 +32,7 @@ func mapToGamutOklch(c Color, dst space.Space) (Color, bool) {
 	for range 20 {
 		mid := (low + high) * 0.5
 
-		candidate, ok := Oklch(lightness, mid, hue).To(dst)
+		candidate, ok := Oklch(lightness, mid, hue).to(dst)
 		if !ok {
 			return c, false
 		}
@@ -44,7 +44,7 @@ func mapToGamutOklch(c Color, dst space.Space) (Color, bool) {
 		}
 	}
 
-	result, ok := OklchAlpha(lightness, low, hue, alpha).To(dst)
+	result, ok := OklchAlpha(lightness, low, hue, alpha).to(dst)
 	if !ok {
 		return c, false
 	}

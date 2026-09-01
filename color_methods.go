@@ -8,9 +8,20 @@ import (
 	"github.com/thmalt/colors/space"
 )
 
+// To converts the color to the destination color space.
+func (c Color) To(dst space.Space) Color {
+	c, _ = c.to(dst)
+	return c
+}
+
+// TryTo converts the color to destination color space and reports whether the conversion succeeded.
+func (c Color) TryTo(dst space.Space) (Color, bool) {
+	return c.to(dst)
+}
+
 // MustTo converts the color to the destination color space and panics if the conversion fails.
 func (c Color) MustTo(dst space.Space) Color {
-	to, ok := c.To(dst)
+	to, ok := c.to(dst)
 	if !ok {
 		panic(ErrInvalidConversion)
 	}

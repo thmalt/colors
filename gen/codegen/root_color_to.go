@@ -5,9 +5,9 @@ import "github.com/thmalt/colors/gen/codegen/writer"
 func genRootPkgColorTo(ctx *Context, w *writer.GoWriter) {
 	var spacePkg = ctx.SpacePkg
 	w.Separate()
-	// func (c Color) To(dst space.Space) (Color, bool)
-	w.Comment("To converts the color to the destination color space.")
-	w.Method("c Color", "To")
+	// func (c Color) to(dst space.Space) (Color, bool)
+	w.Comment("to converts the color to the destination color space.")
+	w.Method("c Color", "to")
 	w.FuncParams("dst ", spacePkg.Join("Space"))
 	w.FuncResults("Color, bool")
 	w.FuncBody()
