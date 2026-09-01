@@ -6,6 +6,8 @@ import (
 	"reflect"
 	"runtime/debug"
 	"strings"
+
+	"github.com/thmalt/colors/gen/codegen/writer"
 )
 
 const (
@@ -78,4 +80,16 @@ func ModuleAndPathByType(a any) (module string, path string) {
 	path = "." + strings.TrimPrefix(pkgPath, module)
 
 	return module, path
+}
+
+func wrapEvery(w *writer.GoWriter, n int) func() bool {
+	count := 0
+	return func() bool {
+		count++
+		if count%n == 0 {
+			w.Indent()
+			return true
+		}
+		return false
+	}
 }

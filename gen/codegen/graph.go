@@ -7,18 +7,20 @@ import (
 	"github.com/thmalt/colors/gen/codegen/model"
 )
 
-type Graph struct {
-	Nodes map[*model.Space][]Node
-
-	cached map[pair][]*Node
-}
-
 type Node struct {
 	From *model.Space
 	To   *model.Space
 	Fn   *ConvertFunc
 
 	Weight int
+}
+
+type Path = []*Node
+
+type Graph struct {
+	Nodes map[*model.Space][]Node
+
+	cached map[pair]Path
 }
 
 type pair struct {
@@ -28,7 +30,7 @@ type pair struct {
 
 func (g *Graph) Build(ctx *Context, funcs []ConvertFunc) error {
 	g.Nodes = make(map[*model.Space][]Node)
-	g.cached = make(map[pair][]*Node)
+	g.cached = make(map[pair]Path)
 
 	for _, fn := range funcs {
 		from, to := ctx.ResolveSpacePair(fn.Pair)
@@ -43,7 +45,7 @@ func (g *Graph) Build(ctx *Context, funcs []ConvertFunc) error {
 	return nil
 }
 
-func (g *Graph) FindPath(from, to *model.Space) []*Node {
+func (g *Graph) FindPath(from, to *model.Space) Path {
 	if path, ok := g.cached[pair{from, to}]; ok {
 		return slices.Clone(path)
 	}
@@ -54,7 +56,7 @@ func (g *Graph) FindPath(from, to *model.Space) []*Node {
 	return slices.Clone(path)
 }
 
-func (g *Graph) findPath(from, to *model.Space) []*Node {
+func (g *Graph) findPath(from, to *model.Space) Path {
 	if from == to {
 		return nil
 	}
@@ -104,7 +106,7 @@ func (g *Graph) findPath(from, to *model.Space) []*Node {
 		}
 	}
 
-	var path []*Node
+	var path Path
 
 	for space := to; space != from; {
 		node, ok := prev[space]
@@ -121,17 +123,17 @@ func (g *Graph) findPath(from, to *model.Space) []*Node {
 	return path
 }
 
-func (g *Graph) FindAllPath(from, to *model.Space) [][]*Node {
+func (g *Graph) FindAllPath(from, to *model.Space) []Path {
 	var (
-		out     [][]*Node
-		path    []*Node
+		out     []Path
+		path    Path
 		visited = map[*model.Space]bool{}
 	)
 
 	var dfs func(*model.Space)
 	dfs = func(space *model.Space) {
 		if space == to {
-			p := make([]*Node, len(path))
+			p := make(Path, len(path))
 			copy(p, path)
 			out = append(out, p)
 			return

@@ -319,6 +319,7 @@ var (
 		},
 		{
 			Name:        "XyYD65",
+			Aliases:     []string{"XyY"},
 			Family:      "XYZ",
 			Base:        "XyzD65",
 			DisplayName: "CIE xyY",

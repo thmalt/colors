@@ -14,6 +14,11 @@ const (
 	invMaxUint16 = 1.0 / maxUint16
 )
 
+// IsValid reports whether the color's color space is valid.
+func (c Color) IsValid() bool {
+	return c.space.IsValid()
+}
+
 // Space returns the color space of the color.
 func (c Color) Space() space.Space {
 	return c.space

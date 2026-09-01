@@ -11,7 +11,7 @@ type GenOp struct {
 	OutputVars []string
 }
 
-func buildGenOps(ctx *Context, path []*Node, expand bool) []GenOp {
+func buildGenOps(ctx *Context, path Path, expand bool) []GenOp {
 	var ops []GenOp
 
 	if !expand && len(path) == 1 {

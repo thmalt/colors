@@ -57,6 +57,8 @@ const (
 const (
 	// Xyz is an alias for [XyzD65].
 	Xyz = XyzD65
+	// XyY is an alias for [XyYD65].
+	XyY = XyYD65
 	// Lab is an alias for [LabD50].
 	Lab = LabD50
 	// Lch is an alias for [LchD50].

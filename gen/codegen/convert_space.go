@@ -39,7 +39,7 @@ func genConvertPkgSpaceConversions(ctx *Context, w *writer.GoWriter, space *mode
 	return count
 }
 
-func buildConversion(ctx *Context, from, to *model.Space) ([]*Node, []GenOp) {
+func buildConversion(ctx *Context, from, to *model.Space) (Path, []GenOp) {
 	path := ctx.Graph.FindPath(from, to)
 	ops := buildGenOps(ctx, path, true)
 	ops = combineOps(ops)
@@ -60,7 +60,7 @@ func buildConversion(ctx *Context, from, to *model.Space) ([]*Node, []GenOp) {
 
 	if eqFrom != nil || eqTo != nil {
 		if eqFrom == to || eqTo == from {
-			path = []*Node{{
+			path = Path{{
 				From: from,
 				To:   to,
 			}}

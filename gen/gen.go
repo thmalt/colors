@@ -102,15 +102,26 @@ func logGraphPaths(ctx *codegen.Context) {
 			to := ctx.BuiltSpaces[j]
 
 			allPath := ctx.Graph.FindAllPath(s, to)
-			fmt.Println(s.Name, "->", to.Name, len(allPath))
-
+			fmt.Println(len(allPath), s.Name, "->", to.Name)
+			printPaths(allPath)
 			allPath = ctx.Graph.FindAllPath(to, s)
-			fmt.Println(to.Name, "->", s.Name, len(allPath))
+			fmt.Println(len(allPath), to.Name, "->", s.Name)
+			printPaths(allPath)
 
 			fmt.Println()
 		}
 	}
 	fmt.Println()
+}
+
+func printPaths(allPath []codegen.Path) {
+	for _, path := range allPath {
+		fmt.Print("\t", path[0].From.Name)
+		for _, node := range path {
+			fmt.Print(" -> ", node.To.Name)
+		}
+		fmt.Println()
+	}
 }
 
 func findRoot(dir string) string {

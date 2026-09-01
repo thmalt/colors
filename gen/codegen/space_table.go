@@ -48,13 +48,3 @@ func genSpacePkgTables(ctx *Context, w *writer.GoWriter) {
 	}
 	w.End()
 }
-
-func wrapEvery(w *writer.GoWriter, n int) func() {
-	count := 0
-	return func() {
-		count++
-		if count%n == 0 {
-			w.Indent()
-		}
-	}
-}
