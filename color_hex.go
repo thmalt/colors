@@ -52,7 +52,7 @@ func Hex(s string) Color {
 		x1 := hexLUT[s[1]]
 		x2 := hexLUT[s[2]]
 
-		if x0 == maxUint8 || x1 == maxUint8 || x2 == maxUint8 {
+		if x0|x1|x2 == maxUint8 {
 			return Color{}
 		}
 
@@ -67,7 +67,7 @@ func Hex(s string) Color {
 		x2 := hexLUT[s[2]]
 		x3 := hexLUT[s[3]]
 
-		if x0 == maxUint8 || x1 == maxUint8 || x2 == maxUint8 || x3 == maxUint8 {
+		if x0|x1|x2|x3 == maxUint8 {
 			return Color{}
 		}
 
@@ -82,8 +82,7 @@ func Hex(s string) Color {
 		x2, x3 := hexLUT[s[2]], hexLUT[s[3]]
 		x4, x5 := hexLUT[s[4]], hexLUT[s[5]]
 
-		if x0 == maxUint8 || x1 == maxUint8 || x2 == maxUint8 ||
-			x3 == maxUint8 || x4 == maxUint8 || x5 == maxUint8 {
+		if x0|x1|x2|x3|x4|x5 == maxUint8 {
 			return Color{}
 		}
 
@@ -98,8 +97,7 @@ func Hex(s string) Color {
 		x4, x5 := hexLUT[s[4]], hexLUT[s[5]]
 		x6, x7 := hexLUT[s[6]], hexLUT[s[7]]
 
-		if x0 == maxUint8 || x1 == maxUint8 || x2 == maxUint8 || x3 == maxUint8 ||
-			x4 == maxUint8 || x5 == maxUint8 || x6 == maxUint8 || x7 == maxUint8 {
+		if x0|x1|x2|x3|x4|x5|x6|x7 == maxUint8 {
 			return Color{}
 		}
 

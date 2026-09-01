@@ -126,47 +126,46 @@ func genRootPkgColorChannel(ctx *Context, w *writer.GoWriter) {
 
 func genRootPkgHexLUT(_ *Context, w *writer.GoWriter) {
 	count := math.MaxUint8 + 1
+
 	w.Separate()
-	w.Begin("var hexLUT = [", count, "]uint8 ")
+	w.Begin("var hexLUT = [", count, "]uint8")
+	w.Indent()
 
 	next := wrapEvery(w, 8)
-	invalid := true
-	for i := range count {
-		c := uint8(i)
-		if i >= '0' && i <= '9' {
-			if invalid {
-				w.Separate()
-				w.Comment("0 - 9")
-			}
-			invalid = false
-			v := c - '0'
-			w.Write(fmt.Sprintf("0x%02x,", v))
-		} else if i >= 'A' && i <= 'F' {
-			if invalid {
-				w.Separate()
-				w.Comment("A - F")
-			}
-			invalid = false
+	inRange := false
 
-			v := c - 'A' + 10
-			w.Write(fmt.Sprintf("0x%02x,", v))
-		} else if i >= 'a' && i <= 'f' {
-			if invalid {
-				w.Separate()
-				w.Comment("a - f")
-			}
-			invalid = false
-
-			v := c - 'a' + 10
-			w.Write(fmt.Sprintf("0x%02x,", v))
+	fn := func(c uint8, cmt string) {
+		if !inRange {
+			inRange = true
+			w.Separate()
+			w.Comment(cmt)
+			w.Indent()
 		} else {
-			if !invalid {
+			w.Write(' ')
+		}
+
+		w.Write(fmt.Sprintf("0x%02x,", c))
+	}
+
+	for i := range count {
+		switch c := uint8(i); {
+		case c >= '0' && c <= '9':
+			fn(c-'0', "0 - 9")
+		case c >= 'A' && c <= 'F':
+			fn(c-'A'+10, "A - F")
+		case c >= 'a' && c <= 'f':
+			fn(c-'a'+10, "a - f")
+		default:
+			if inRange {
+				inRange = false
 				w.Separate()
+				w.Indent()
 			}
-			invalid = true
 
 			w.Write("maxUint8,")
-			next()
+			if !next() {
+				w.Write(' ')
+			}
 		}
 	}
 	w.End()
