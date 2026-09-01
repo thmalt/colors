@@ -180,11 +180,11 @@ linear, err := linearSpec.Build()
 //   #ebf8e1
 // )
 conicGradient = colors.NewGradientBuilder().
-	AddStop(colors.Rgb(0xf6, 0x9d, 0x3c)).
+	AddStop(colors.Hex("#f69d3c")).
 	AddHint(gradient.DegToTurn(10)).
-	AddStop(colors.Rgb(0x3f, 0x87, 0xa6)).
+	AddStop(colors.Hex("#3f87a6")).
 	AddHint(gradient.DegToTurn(350)).
-	AddStop(colors.Rgb(0xeb, 0xf8, 0xe1)).
+	AddStop(colors.Hex("#ebf8e1")).
 	Build()
 
 conicSpec := gradient.NewConicSpec()
@@ -210,11 +210,11 @@ conic, err := conicSpec.Build()
 //   #fc466b
 // )
 radialGradient = colors.NewGradientBuilder().
-	AddStop(colors.Rgb(63, 94, 251)).
-	AddStop(colors.Rgb(0, 255, 136)).
-	AddStop(colors.Rgb(206, 67, 109)).
-	AddStop(colors.Rgb(4, 19, 191), 0.5).
-	AddStop(colors.Rgb(252, 70, 107)).
+	AddStop(colors.Hex("#3f5efb")).
+	AddStop(colors.Hex("#00ff88")).
+	AddStop(colors.Hex("#ce436d")).
+	AddStop(colors.Hex("#0413bf"), 0.5).
+	AddStop(colors.Hex("#fc466b")).
 	Build()
 
 radialSpec := gradient.NewRadialSpec()

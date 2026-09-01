@@ -2,6 +2,7 @@ package codegen
 
 import (
 	"fmt"
+	"math"
 	"strings"
 
 	"github.com/thmalt/colors/gen/codegen/writer"
@@ -121,4 +122,52 @@ func genRootPkgColorChannel(ctx *Context, w *writer.GoWriter) {
 		w.Writeln(strings.Join(fields[:count], ", "))
 		w.End()
 	}
+}
+
+func genRootPkgHexLUT(_ *Context, w *writer.GoWriter) {
+	count := math.MaxUint8 + 1
+	w.Separate()
+	w.Begin("var hexLUT = [", count, "]uint8 ")
+
+	next := wrapEvery(w, 8)
+	invalid := true
+	for i := range count {
+		c := uint8(i)
+		if i >= '0' && i <= '9' {
+			if invalid {
+				w.Separate()
+				w.Comment("0 - 9")
+			}
+			invalid = false
+			v := c - '0'
+			w.Write(fmt.Sprintf("0x%02x,", v))
+		} else if i >= 'A' && i <= 'F' {
+			if invalid {
+				w.Separate()
+				w.Comment("A - F")
+			}
+			invalid = false
+
+			v := c - 'A' + 10
+			w.Write(fmt.Sprintf("0x%02x,", v))
+		} else if i >= 'a' && i <= 'f' {
+			if invalid {
+				w.Separate()
+				w.Comment("a - f")
+			}
+			invalid = false
+
+			v := c - 'a' + 10
+			w.Write(fmt.Sprintf("0x%02x,", v))
+		} else {
+			if !invalid {
+				w.Separate()
+			}
+			invalid = true
+
+			w.Write("maxUint8,")
+			next()
+		}
+	}
+	w.End()
 }

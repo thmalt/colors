@@ -81,3 +81,50 @@ func (c Color) Channel3() (c1, c2, c3 float64) {
 func (c Color) Channel4() (c1, c2, c3, c4 float64) {
 	return c.c1, c.c2, c.c3, c.c4
 }
+
+var hexLUT = [256]uint8{
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+
+	// 0 - 9
+	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
+
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+
+	// A - F
+	0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+
+	maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8,
+
+	// a - f
+	0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8, maxUint8,
+	maxUint8, maxUint8,
+}

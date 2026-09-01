@@ -19,6 +19,7 @@ func GenerateRootPkg(ctx *Context) {
 
 		genRootPkgColor(ctx, w)
 		genRootPkgColorChannel(ctx, w)
+		genRootPkgHexLUT(ctx, w)
 	})
 
 	var stats conversionStats
