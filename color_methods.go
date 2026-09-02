@@ -17,15 +17,6 @@ func (c Color) TryTo(dst space.Space) (Color, bool) {
 	return c.to(dst)
 }
 
-// MustTo converts the color to the destination color space and panics if the conversion fails.
-func (c Color) MustTo(dst space.Space) Color {
-	to, ok := c.to(dst)
-	if !ok {
-		panic(ErrInvalidConversion)
-	}
-	return to
-}
-
 // Clamp is shorthand for [Clamp](c).
 func (c Color) Clamp() Color {
 	return Clamp(c)
