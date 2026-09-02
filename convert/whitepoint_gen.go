@@ -7,9 +7,9 @@ const (
 	d50Y = 1
 	d50Z = 0.8251046025104602
 
-	invD50X = 1 / d50X
-	invD50Y = 1 / d50Y
-	invD50Z = 1 / d50Z
+	d50InvX = 1 / d50X
+	d50InvY = 1 / d50Y
+	d50InvZ = 1 / d50Z
 )
 
 const (
@@ -17,7 +17,7 @@ const (
 	d65Y = 1
 	d65Z = 1.0890577507598784
 
-	invD65X = 1 / d65X
-	invD65Y = 1 / d65Y
-	invD65Z = 1 / d65Z
+	d65InvX = 1 / d65X
+	d65InvY = 1 / d65Y
+	d65InvZ = 1 / d65Z
 )

@@ -17,7 +17,7 @@ func LinearDisplayP3ToSrgb(r, g, b float64) (float64, float64, float64) {
 	f2 := -0.04205695470968811*r + 1.042056954709688*g
 	f3 := -0.019637554590334446*r - 0.07863604555063179*g + 1.0982736001409663*b
 
-	return linearSrgbToSrgb(f1), linearSrgbToSrgb(f2), linearSrgbToSrgb(f3)
+	return SrgbEncode(f1), SrgbEncode(f2), SrgbEncode(f3)
 }
 
 // Conversion path (2 steps):
@@ -37,7 +37,7 @@ func LinearDisplayP3ToLinearSrgb(r, g, b float64) (float64, float64, float64) {
 //	Linear Display P3
 //	-> Display P3
 func LinearDisplayP3ToDisplayP3(r, g, b float64) (float64, float64, float64) {
-	return linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
+	return SrgbEncode(r), SrgbEncode(g), SrgbEncode(b)
 }
 
 // Conversion path (3 steps):
@@ -51,7 +51,7 @@ func LinearDisplayP3ToA98(r, g, b float64) (float64, float64, float64) {
 	f2 := -0.04205695470968806*r + 1.0420569547096883*g
 	f3 := -0.02056038078232987*r - 0.03250613804550801*g + 1.0530665188278385*b
 
-	return linearA98ToA98(f1), linearA98ToA98(f2), linearA98ToA98(f3)
+	return A98Encode(f1), A98Encode(f2), A98Encode(f3)
 }
 
 // Conversion path (2 steps):
@@ -78,7 +78,7 @@ func LinearDisplayP3ToProPhoto(r, g, b float64) (float64, float64, float64) {
 	f2 := 0.08320431685860853*r + 0.8858575096463889*g + 0.03093817349500224*b
 	f3 := -0.0012727345647388431*r + 0.050755104336657406*g + 0.9505176302280817*b
 
-	return linearProPhotoToProPhoto(f1), linearProPhotoToProPhoto(f2), linearProPhotoToProPhoto(f3)
+	return ProPhotoEncode(f1), ProPhotoEncode(f2), ProPhotoEncode(f3)
 }
 
 // Conversion path (3 steps):
@@ -105,7 +105,7 @@ func LinearDisplayP3ToRec2020(r, g, b float64) (float64, float64, float64) {
 	f2 := 0.0457438489653583*r + 0.9417772198116937*g + 0.012478931222948117*b
 	f3 := -0.0012103403545183947*r + 0.01760171730108999*g + 0.9836086230534284*b
 
-	return linearRec2020ToRec2020(f1), linearRec2020ToRec2020(f2), linearRec2020ToRec2020(f3)
+	return Rec2020Encode(f1), Rec2020Encode(f2), Rec2020Encode(f3)
 }
 
 // Conversion path (3 steps):
@@ -119,7 +119,7 @@ func LinearDisplayP3ToRec2020OETF(r, g, b float64) (float64, float64, float64) {
 	f2 := 0.0457438489653583*r + 0.9417772198116937*g + 0.012478931222948117*b
 	f3 := -0.0012103403545183947*r + 0.01760171730108999*g + 0.9836086230534284*b
 
-	return linearRec2020ToRec2020OETF(f1), linearRec2020ToRec2020OETF(f2), linearRec2020ToRec2020OETF(f3)
+	return Rec2020OETFEncode(f1), Rec2020OETFEncode(f2), Rec2020OETFEncode(f3)
 }
 
 // Conversion path (2 steps):
@@ -158,7 +158,7 @@ func LinearDisplayP3ToRec2100PQ(r, g, b float64) (float64, float64, float64) {
 	f2 := 0.0457438489653583*r + 0.9417772198116937*g + 0.012478931222948117*b
 	f3 := -0.0012103403545183947*r + 0.01760171730108999*g + 0.9836086230534284*b
 
-	return rec2100PQEncode(f1), rec2100PQEncode(f2), rec2100PQEncode(f3)
+	return Rec2100PQEncode(f1), Rec2100PQEncode(f2), Rec2100PQEncode(f3)
 }
 
 // Conversion path (4 steps):
@@ -173,7 +173,7 @@ func LinearDisplayP3ToRec2100HLG(r, g, b float64) (float64, float64, float64) {
 	f2 := 0.0457438489653583*r + 0.9417772198116937*g + 0.012478931222948117*b
 	f3 := -0.0012103403545183947*r + 0.01760171730108999*g + 0.9836086230534284*b
 
-	return rec2100HLGEncode(f1), rec2100HLGEncode(f2), rec2100HLGEncode(f3)
+	return Rec2100HLGEncode(f1), Rec2100HLGEncode(f2), Rec2100HLGEncode(f3)
 }
 
 // Conversion path (2 steps):
@@ -410,7 +410,7 @@ func LinearDisplayP3ToHsl(r, g, b float64) (h, s, l float64) {
 	f2 := -0.04205695470968811*r + 1.042056954709688*g
 	f3 := -0.019637554590334446*r - 0.07863604555063179*g + 1.0982736001409663*b
 
-	r, g, b = linearSrgbToSrgb(f1), linearSrgbToSrgb(f2), linearSrgbToSrgb(f3)
+	r, g, b = SrgbEncode(f1), SrgbEncode(f2), SrgbEncode(f3)
 	return SrgbToHsl(r, g, b)
 }
 
@@ -426,7 +426,7 @@ func LinearDisplayP3ToHsv(r, g, b float64) (h, s, v float64) {
 	f2 := -0.04205695470968811*r + 1.042056954709688*g
 	f3 := -0.019637554590334446*r - 0.07863604555063179*g + 1.0982736001409663*b
 
-	r, g, b = linearSrgbToSrgb(f1), linearSrgbToSrgb(f2), linearSrgbToSrgb(f3)
+	r, g, b = SrgbEncode(f1), SrgbEncode(f2), SrgbEncode(f3)
 	return SrgbToHsv(r, g, b)
 }
 
@@ -442,6 +442,6 @@ func LinearDisplayP3ToHwb(r, g, b float64) (float64, float64, float64) {
 	f2 := -0.04205695470968811*r + 1.042056954709688*g
 	f3 := -0.019637554590334446*r - 0.07863604555063179*g + 1.0982736001409663*b
 
-	r, g, b = linearSrgbToSrgb(f1), linearSrgbToSrgb(f2), linearSrgbToSrgb(f3)
+	r, g, b = SrgbEncode(f1), SrgbEncode(f2), SrgbEncode(f3)
 	return SrgbToHwb(r, g, b)
 }

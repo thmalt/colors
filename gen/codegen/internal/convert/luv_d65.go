@@ -3,13 +3,13 @@ package convert
 import "math"
 
 const (
-	luvD65WhiteDenInv = 1 / (d65X + 15*d65Y + 3*d65Z)
-	luvD65WhiteUPrime = 4 * d65X * luvD65WhiteDenInv
-	luvD65WhiteVPrime = 9 * d65Y * luvD65WhiteDenInv
+	luvD65WhiteInvDen = 1 / (d65X + 15*d65Y + 3*d65Z)
+	luvD65WhiteUPrime = 4 * d65X * luvD65WhiteInvDen
+	luvD65WhiteVPrime = 9 * d65Y * luvD65WhiteInvDen
 )
 
 func XyzD65ToLuvD65(x, y, z float64) (l, u, v float64) {
-	if yr := y * invD65Y; yr > labEpsilon {
+	if yr := y * d65InvY; yr > labEpsilon {
 		l = 116*math.Cbrt(yr) - 16
 	} else {
 		l = labKappa * yr

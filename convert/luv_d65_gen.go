@@ -19,7 +19,7 @@ func LuvD65ToSrgb(l, u, v float64) (r, g, b float64) {
 	g = -0.9692436362808796*x + 1.8759675015077204*y + 0.041555057407175605*z
 	b = 0.05563007969699363*x - 0.2039769588889765*y + 1.0569715142428784*z
 
-	return linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
+	return SrgbEncode(r), SrgbEncode(g), SrgbEncode(b)
 }
 
 // Conversion path (2 steps):
@@ -50,7 +50,7 @@ func LuvD65ToDisplayP3(l, u, v float64) (r, g, b float64) {
 	g = -0.8294889695615748*x + 1.7626640603183463*y + 0.023624685841943584*z
 	b = 0.03584583024378445*x - 0.07617238926804179*y + 0.956884524007687*z
 
-	return linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
+	return SrgbEncode(r), SrgbEncode(g), SrgbEncode(b)
 }
 
 // Conversion path (2 steps):
@@ -81,7 +81,7 @@ func LuvD65ToA98(l, u, v float64) (r, g, b float64) {
 	g = -0.9692436362808796*x + 1.8759675015077206*y + 0.04155505740717561*z
 	b = 0.013444280632031149*x - 0.11836239223101841*y + 1.0151749943912058*z
 
-	return linearA98ToA98(r), linearA98ToA98(g), linearA98ToA98(b)
+	return A98Encode(r), A98Encode(g), A98Encode(b)
 }
 
 // Conversion path (2 steps):
@@ -113,7 +113,7 @@ func LuvD65ToProPhoto(l, u, v float64) (r, g, b float64) {
 	g = -0.5262303211926755*x + 1.4816174225598397*y + 0.017025089072738666*z
 	b = -0.011202265286221492*x + 0.018246403479621*y + 0.9112472274915048*z
 
-	return linearProPhotoToProPhoto(r), linearProPhotoToProPhoto(g), linearProPhotoToProPhoto(b)
+	return ProPhotoEncode(r), ProPhotoEncode(g), ProPhotoEncode(b)
 }
 
 // Conversion path (3 steps):
@@ -145,7 +145,7 @@ func LuvD65ToRec2020(l, u, v float64) (r, g, b float64) {
 	g = -0.6666843518324892*x + 1.6164812366349393*y + 0.015768545813911142*z
 	b = 0.01763985744531079*x - 0.04277061325780853*y + 0.9421031212354739*z
 
-	return linearRec2020ToRec2020(r), linearRec2020ToRec2020(g), linearRec2020ToRec2020(b)
+	return Rec2020Encode(r), Rec2020Encode(g), Rec2020Encode(b)
 }
 
 // Conversion path (3 steps):
@@ -161,7 +161,7 @@ func LuvD65ToRec2020OETF(l, u, v float64) (r, g, b float64) {
 	g = -0.6666843518324892*x + 1.6164812366349393*y + 0.015768545813911142*z
 	b = 0.01763985744531079*x - 0.04277061325780853*y + 0.9421031212354739*z
 
-	return linearRec2020ToRec2020OETF(r), linearRec2020ToRec2020OETF(g), linearRec2020ToRec2020OETF(b)
+	return Rec2020OETFEncode(r), Rec2020OETFEncode(g), Rec2020OETFEncode(b)
 }
 
 // Conversion path (2 steps):
@@ -205,7 +205,7 @@ func LuvD65ToRec2100PQ(l, u, v float64) (r, g, b float64) {
 	g = -0.6666843518324892*x + 1.6164812366349393*y + 0.015768545813911142*z
 	b = 0.01763985744531079*x - 0.04277061325780853*y + 0.9421031212354739*z
 
-	return rec2100PQEncode(r), rec2100PQEncode(g), rec2100PQEncode(b)
+	return Rec2100PQEncode(r), Rec2100PQEncode(g), Rec2100PQEncode(b)
 }
 
 // Conversion path (4 steps):
@@ -222,7 +222,7 @@ func LuvD65ToRec2100HLG(l, u, v float64) (r, g, b float64) {
 	g = -0.6666843518324892*x + 1.6164812366349393*y + 0.015768545813911142*z
 	b = 0.01763985744531079*x - 0.04277061325780853*y + 0.9421031212354739*z
 
-	return rec2100HLGEncode(r), rec2100HLGEncode(g), rec2100HLGEncode(b)
+	return Rec2100HLGEncode(r), Rec2100HLGEncode(g), Rec2100HLGEncode(b)
 }
 
 // Conversion path (2 steps):
@@ -435,7 +435,7 @@ func LuvD65ToHsl(l, u, v float64) (float64, float64, float64) {
 	g := -0.9692436362808796*x + 1.8759675015077204*y + 0.041555057407175605*z
 	b := 0.05563007969699363*x - 0.2039769588889765*y + 1.0569715142428784*z
 
-	r, g, b = linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
+	r, g, b = SrgbEncode(r), SrgbEncode(g), SrgbEncode(b)
 	return SrgbToHsl(r, g, b)
 }
 
@@ -453,7 +453,7 @@ func LuvD65ToHsv(l, u, v float64) (float64, float64, float64) {
 	g := -0.9692436362808796*x + 1.8759675015077204*y + 0.041555057407175605*z
 	b := 0.05563007969699363*x - 0.2039769588889765*y + 1.0569715142428784*z
 
-	r, g, b = linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
+	r, g, b = SrgbEncode(r), SrgbEncode(g), SrgbEncode(b)
 	return SrgbToHsv(r, g, b)
 }
 
@@ -471,6 +471,6 @@ func LuvD65ToHwb(l, u, v float64) (h, w, b float64) {
 	g := -0.9692436362808796*x + 1.8759675015077204*y + 0.041555057407175605*z
 	b = 0.05563007969699363*x - 0.2039769588889765*y + 1.0569715142428784*z
 
-	r, g, b = linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
+	r, g, b = SrgbEncode(r), SrgbEncode(g), SrgbEncode(b)
 	return SrgbToHwb(r, g, b)
 }

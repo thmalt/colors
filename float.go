@@ -38,15 +38,24 @@ func appendFormatFloatPrec(dst []byte, x float64, precision int) []byte {
 	start := len(dst)
 	dst = strconv.AppendFloat(dst, x, 'f', precision, 64)
 
+	n := len(dst)
+
+	// Trim trailing zeros and the decimal point.
 	if bytes.IndexByte(dst[start:], '.') >= 0 {
-		n := len(dst)
 		for n > start && dst[n-1] == '0' {
 			n--
 		}
 		if n > start && dst[n-1] == '.' {
 			n--
 		}
+
 		dst = dst[:n]
+	}
+
+	// Normalize negative zero.
+	if n-start == 2 && dst[start+1] == '0' && dst[start] == '-' {
+		dst[start] = '0'
+		dst = dst[:start+1]
 	}
 
 	return dst
@@ -67,9 +76,16 @@ func formatFloatPrec(x float64, precision int) string {
 	}
 
 	s := strconv.FormatFloat(x, 'f', precision, 64)
+
+	// Trim trailing zeros and the decimal point.
 	if strings.IndexByte(s, '.') >= 0 {
 		s = strings.TrimRight(s, "0")
 		s = strings.TrimRight(s, ".")
+	}
+
+	// Normalize negative zero.
+	if len(s) == 2 && s[1] == '0' && s[0] == '-' {
+		return "0"
 	}
 
 	return s

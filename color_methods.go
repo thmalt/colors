@@ -1,8 +1,6 @@
 package colors
 
 import (
-	"math"
-
 	"github.com/thmalt/colors/convert"
 	"github.com/thmalt/colors/dither"
 	"github.com/thmalt/colors/space"
@@ -75,14 +73,14 @@ func (c Color) Dither(x, y int) Color {
 	case space.Hsl, space.Hsv, space.Hwb:
 		r, g, b = c.Srgb()
 	case space.LinearSrgb:
-		r = linearSrgbToSrgb(c.c1)
-		g = linearSrgbToSrgb(c.c2)
-		b = linearSrgbToSrgb(c.c3)
+		r = convert.SrgbEncodeExp(c.c1)
+		g = convert.SrgbEncodeExp(c.c2)
+		b = convert.SrgbEncodeExp(c.c3)
 	default:
 		r, g, b = c.LinearSrgb()
-		r = linearSrgbToSrgb(r)
-		g = linearSrgbToSrgb(g)
-		b = linearSrgbToSrgb(b)
+		r = convert.SrgbEncodeExp(r)
+		g = convert.SrgbEncodeExp(g)
+		b = convert.SrgbEncodeExp(b)
 	}
 
 	d := dither.Offset(x, y) * invMaxUint8
@@ -167,26 +165,6 @@ func (c Color) ToRgba8() (r, g, b, a uint8) {
 		r, g, b = convert.LinearSrgbToRgb8(c.LinearSrgb())
 	}
 	return
-}
-
-// linearSrgbToSrgb converts a linear sRGB component to sRGB using
-// a Log/Exp power approximation for improved performance.
-func linearSrgbToSrgb(x float64) float64 {
-	const inv24 = 1 / 2.4
-
-	neg := x < 0
-	x = math.Abs(x)
-
-	if x <= 0.0031308 {
-		x *= 12.92
-	} else {
-		x = 1.055*math.Exp(math.Log(x)*inv24) - 0.055
-	}
-
-	if neg {
-		return -x
-	}
-	return x
 }
 
 func rgbToSrgb(r, g, b float64) (float64, float64, float64) {

@@ -23,9 +23,9 @@ func genConvertPkgWhitePoint(ctx *Context, w *writer.GoWriter) bool {
 
 		w.Separate()
 
-		w.LineWriteln("inv", name, "X = 1 / ", privateName, "X")
-		w.LineWriteln("inv", name, "Y = 1 / ", privateName, "Y")
-		w.LineWriteln("inv", name, "Z = 1 / ", privateName, "Z")
+		w.LineWriteln(privateName, "InvX = 1 / ", privateName, "X")
+		w.LineWriteln(privateName, "InvY = 1 / ", privateName, "Y")
+		w.LineWriteln(privateName, "InvZ = 1 / ", privateName, "Z")
 
 		w.End()
 

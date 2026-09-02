@@ -3,13 +3,13 @@ package convert
 import "math"
 
 const (
-	luvD50WhiteDenInv = 1 / (d50X + 15*d50Y + 3*d50Z)
-	luvD50WhiteUPrime = 4 * d50X * luvD50WhiteDenInv
-	luvD50WhiteVPrime = 9 * d50Y * luvD50WhiteDenInv
+	luvD50WhiteInvDen = 1 / (d50X + 15*d50Y + 3*d50Z)
+	luvD50WhiteUPrime = 4 * d50X * luvD50WhiteInvDen
+	luvD50WhiteVPrime = 9 * d50Y * luvD50WhiteInvDen
 )
 
 func XyzD50ToLuvD50(x, y, z float64) (l, u, v float64) {
-	if yr := y * invD50Y; yr > labEpsilon {
+	if yr := y * d50InvY; yr > labEpsilon {
 		l = 116*math.Cbrt(yr) - 16
 	} else {
 		l = labKappa * yr

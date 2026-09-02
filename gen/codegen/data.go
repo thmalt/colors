@@ -486,29 +486,29 @@ var (
 
 	ConvertFuncs = [...]ConvertFunc{
 		// Standard transfer conversion
-		transferFunc("Srgb", "LinearSrgb", "srgbToLinearSrgb"),
-		transferFunc("LinearSrgb", "Srgb", "linearSrgbToSrgb"),
+		transferFunc("Srgb", "LinearSrgb", "SrgbDecode"),
+		transferFunc("LinearSrgb", "Srgb", "SrgbEncode"),
 
-		transferFunc("A98", "LinearA98", "a98ToLinearA98"),
-		transferFunc("LinearA98", "A98", "linearA98ToA98"),
+		transferFunc("A98", "LinearA98", "A98Decode"),
+		transferFunc("LinearA98", "A98", "A98Encode"),
 
-		transferFunc("DisplayP3", "LinearDisplayP3", "srgbToLinearSrgb"),
-		transferFunc("LinearDisplayP3", "DisplayP3", "linearSrgbToSrgb"),
+		transferFunc("DisplayP3", "LinearDisplayP3", "SrgbDecode"),
+		transferFunc("LinearDisplayP3", "DisplayP3", "SrgbEncode"),
 
-		transferFunc("ProPhoto", "LinearProPhoto", "proPhotoToLinearProPhoto"),
-		transferFunc("LinearProPhoto", "ProPhoto", "linearProPhotoToProPhoto"),
+		transferFunc("ProPhoto", "LinearProPhoto", "ProPhotoDecode"),
+		transferFunc("LinearProPhoto", "ProPhoto", "ProPhotoEncode"),
 
-		transferFunc("Rec2020", "LinearRec2020", "rec2020ToLinearRec2020"),
-		transferFunc("LinearRec2020", "Rec2020", "linearRec2020ToRec2020"),
+		transferFunc("Rec2020", "LinearRec2020", "Rec2020Decode"),
+		transferFunc("LinearRec2020", "Rec2020", "Rec2020Encode"),
 
-		transferFunc("Rec2020OETF", "LinearRec2020", "rec2020OETFToLinearRec2020"),
-		transferFunc("LinearRec2020", "Rec2020OETF", "linearRec2020ToRec2020OETF"),
+		transferFunc("Rec2020OETF", "LinearRec2020", "Rec2020OETFDecode"),
+		transferFunc("LinearRec2020", "Rec2020OETF", "Rec2020OETFEncode"),
 
-		transferFunc("Rec2100HLG", "LinearRec2100", "rec2100HLGDecode"),
-		transferFunc("LinearRec2100", "Rec2100HLG", "rec2100HLGEncode"),
+		transferFunc("Rec2100HLG", "LinearRec2100", "Rec2100HLGDecode"),
+		transferFunc("LinearRec2100", "Rec2100HLG", "Rec2100HLGEncode"),
 
-		transferFunc("Rec2100PQ", "LinearRec2100", "rec2100PQDecode"),
-		transferFunc("LinearRec2100", "Rec2100PQ", "rec2100PQEncode"),
+		transferFunc("Rec2100PQ", "LinearRec2100", "Rec2100PQDecode"),
+		transferFunc("LinearRec2100", "Rec2100PQ", "Rec2100PQEncode"),
 
 		// Equivalent
 		convertFunc("LinearRec2100", "LinearRec2020"),

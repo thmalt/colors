@@ -139,7 +139,7 @@ func LinearRec2100ToLinearRec2020(r, g, b float64) (float64, float64, float64) {
 //	Linear Rec. 2100
 //	-> Rec. 2100 PQ
 func LinearRec2100ToRec2100PQ(r, g, b float64) (float64, float64, float64) {
-	return rec2100PQEncode(r), rec2100PQEncode(g), rec2100PQEncode(b)
+	return Rec2100PQEncode(r), Rec2100PQEncode(g), Rec2100PQEncode(b)
 }
 
 // Conversion path (1 steps):
@@ -147,7 +147,7 @@ func LinearRec2100ToRec2100PQ(r, g, b float64) (float64, float64, float64) {
 //	Linear Rec. 2100
 //	-> Rec. 2100 HLG
 func LinearRec2100ToRec2100HLG(r, g, b float64) (float64, float64, float64) {
-	return rec2100HLGEncode(r), rec2100HLGEncode(g), rec2100HLGEncode(b)
+	return Rec2100HLGEncode(r), Rec2100HLGEncode(g), Rec2100HLGEncode(b)
 }
 
 // Calls [LinearRec2020ToXyzD50]

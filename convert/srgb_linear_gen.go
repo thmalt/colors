@@ -11,7 +11,7 @@ import (
 //	Linear sRGB
 //	-> sRGB
 func LinearSrgbToSrgb(r, g, b float64) (float64, float64, float64) {
-	return linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
+	return SrgbEncode(r), SrgbEncode(g), SrgbEncode(b)
 }
 
 // Conversion path (3 steps):
@@ -25,7 +25,7 @@ func LinearSrgbToDisplayP3(r, g, b float64) (float64, float64, float64) {
 	f2 := 0.03319419885096157*r + 0.9668058011490382*g
 	f3 := 0.017082630721120033*r + 0.07239744066396339*g + 0.9105199286149164*b
 
-	return linearSrgbToSrgb(f1), linearSrgbToSrgb(f2), linearSrgbToSrgb(f3)
+	return SrgbEncode(f1), SrgbEncode(f2), SrgbEncode(f3)
 }
 
 // Conversion path (2 steps):
@@ -51,7 +51,7 @@ func LinearSrgbToA98(r, g, b float64) (float64, float64, float64) {
 	f2 := g
 	f3 := 0.04116194845011842*g + 0.9588380515498821*b
 
-	return linearA98ToA98(f1), linearA98ToA98(f2), linearA98ToA98(f3)
+	return A98Encode(f1), A98Encode(f2), A98Encode(f3)
 }
 
 // Conversion path (2 steps):
@@ -77,7 +77,7 @@ func LinearSrgbToProPhoto(r, g, b float64) (float64, float64, float64) {
 	f2 := 0.0983662219708857*r + 0.8734639545069689*g + 0.028169823522145324*b
 	f3 := 0.016875340921386824*r + 0.11765941425612084*g + 0.8654652448224925*b
 
-	return linearProPhotoToProPhoto(f1), linearProPhotoToProPhoto(f2), linearProPhotoToProPhoto(f3)
+	return ProPhotoEncode(f1), ProPhotoEncode(f2), ProPhotoEncode(f3)
 }
 
 // Conversion path (3 steps):
@@ -104,7 +104,7 @@ func LinearSrgbToRec2020(r, g, b float64) (float64, float64, float64) {
 	f2 := 0.06909728935823199*r + 0.9195403950754589*g + 0.01136231556630916*b
 	f3 := 0.016391438875150228*r + 0.08801330787722578*g + 0.895595253247624*b
 
-	return linearRec2020ToRec2020(f1), linearRec2020ToRec2020(f2), linearRec2020ToRec2020(f3)
+	return Rec2020Encode(f1), Rec2020Encode(f2), Rec2020Encode(f3)
 }
 
 // Conversion path (3 steps):
@@ -118,7 +118,7 @@ func LinearSrgbToRec2020OETF(r, g, b float64) (float64, float64, float64) {
 	f2 := 0.06909728935823199*r + 0.9195403950754589*g + 0.01136231556630916*b
 	f3 := 0.016391438875150228*r + 0.08801330787722578*g + 0.895595253247624*b
 
-	return linearRec2020ToRec2020OETF(f1), linearRec2020ToRec2020OETF(f2), linearRec2020ToRec2020OETF(f3)
+	return Rec2020OETFEncode(f1), Rec2020OETFEncode(f2), Rec2020OETFEncode(f3)
 }
 
 // Conversion path (2 steps):
@@ -157,7 +157,7 @@ func LinearSrgbToRec2100PQ(r, g, b float64) (float64, float64, float64) {
 	f2 := 0.06909728935823199*r + 0.9195403950754589*g + 0.01136231556630916*b
 	f3 := 0.016391438875150228*r + 0.08801330787722578*g + 0.895595253247624*b
 
-	return rec2100PQEncode(f1), rec2100PQEncode(f2), rec2100PQEncode(f3)
+	return Rec2100PQEncode(f1), Rec2100PQEncode(f2), Rec2100PQEncode(f3)
 }
 
 // Conversion path (4 steps):
@@ -172,7 +172,7 @@ func LinearSrgbToRec2100HLG(r, g, b float64) (float64, float64, float64) {
 	f2 := 0.06909728935823199*r + 0.9195403950754589*g + 0.01136231556630916*b
 	f3 := 0.016391438875150228*r + 0.08801330787722578*g + 0.895595253247624*b
 
-	return rec2100HLGEncode(f1), rec2100HLGEncode(f2), rec2100HLGEncode(f3)
+	return Rec2100HLGEncode(f1), Rec2100HLGEncode(f2), Rec2100HLGEncode(f3)
 }
 
 // Conversion path (2 steps):
@@ -403,7 +403,7 @@ func LinearSrgbToOklch(r, g, b float64) (l, c, h float64) {
 //	-> sRGB
 //	-> HSL
 func LinearSrgbToHsl(r, g, b float64) (h, s, l float64) {
-	r, g, b = linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
+	r, g, b = SrgbEncode(r), SrgbEncode(g), SrgbEncode(b)
 	return SrgbToHsl(r, g, b)
 }
 
@@ -413,7 +413,7 @@ func LinearSrgbToHsl(r, g, b float64) (h, s, l float64) {
 //	-> sRGB
 //	-> HSV
 func LinearSrgbToHsv(r, g, b float64) (h, s, v float64) {
-	r, g, b = linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
+	r, g, b = SrgbEncode(r), SrgbEncode(g), SrgbEncode(b)
 	return SrgbToHsv(r, g, b)
 }
 
@@ -423,6 +423,6 @@ func LinearSrgbToHsv(r, g, b float64) (h, s, v float64) {
 //	-> sRGB
 //	-> HWB
 func LinearSrgbToHwb(r, g, b float64) (float64, float64, float64) {
-	r, g, b = linearSrgbToSrgb(r), linearSrgbToSrgb(g), linearSrgbToSrgb(b)
+	r, g, b = SrgbEncode(r), SrgbEncode(g), SrgbEncode(b)
 	return SrgbToHwb(r, g, b)
 }

@@ -17,7 +17,7 @@ func LinearRec2020ToSrgb(r, g, b float64) (float64, float64, float64) {
 	f2 := -0.12455047452159054*r + 1.13289989712596*g - 0.008349422604369473*b
 	f3 := -0.01815076335490522*r - 0.10057889800800737*g + 1.1187296613629125*b
 
-	return linearSrgbToSrgb(f1), linearSrgbToSrgb(f2), linearSrgbToSrgb(f3)
+	return SrgbEncode(f1), SrgbEncode(f2), SrgbEncode(f3)
 }
 
 // Conversion path (2 steps):
@@ -43,7 +43,7 @@ func LinearRec2020ToDisplayP3(r, g, b float64) (float64, float64, float64) {
 	f2 := -0.06529745278911954*r + 1.075787915848574*g - 0.010490463059454965*b
 	f3 := 0.0028217872617010515*r - 0.019598494524494175*g + 1.0167767072627927*b
 
-	return linearSrgbToSrgb(f1), linearSrgbToSrgb(f2), linearSrgbToSrgb(f3)
+	return SrgbEncode(f1), SrgbEncode(f2), SrgbEncode(f3)
 }
 
 // Conversion path (2 steps):
@@ -69,7 +69,7 @@ func LinearRec2020ToA98(r, g, b float64) (float64, float64, float64) {
 	f2 := -0.12455047452159049*r + 1.13289989712596*g - 0.008349422604369452*b
 	f3 := -0.022530382781055815*r - 0.049806507428388914*g + 1.072336890209445*b
 
-	return linearA98ToA98(f1), linearA98ToA98(f2), linearA98ToA98(f3)
+	return A98Encode(f1), A98Encode(f2), A98Encode(f3)
 }
 
 // Conversion path (2 steps):
@@ -96,7 +96,7 @@ func LinearRec2020ToProPhoto(r, g, b float64) (float64, float64, float64) {
 	f2 := 0.054034572682208695*r + 0.9289098956999433*g + 0.017055531617847765*b
 	f3 := -0.002342038970725345*r + 0.036332153161694594*g + 0.9660098858090308*b
 
-	return linearProPhotoToProPhoto(f1), linearProPhotoToProPhoto(f2), linearProPhotoToProPhoto(f3)
+	return ProPhotoEncode(f1), ProPhotoEncode(f2), ProPhotoEncode(f3)
 }
 
 // Conversion path (3 steps):
@@ -117,7 +117,7 @@ func LinearRec2020ToLinearProPhoto(r, g, b float64) (float64, float64, float64) 
 //	Linear Rec. 2020
 //	-> Rec. 2020
 func LinearRec2020ToRec2020(r, g, b float64) (float64, float64, float64) {
-	return linearRec2020ToRec2020(r), linearRec2020ToRec2020(g), linearRec2020ToRec2020(b)
+	return Rec2020Encode(r), Rec2020Encode(g), Rec2020Encode(b)
 }
 
 // Conversion path (1 steps):
@@ -125,7 +125,7 @@ func LinearRec2020ToRec2020(r, g, b float64) (float64, float64, float64) {
 //	Linear Rec. 2020
 //	-> Rec. 2020 Scene Referred
 func LinearRec2020ToRec2020OETF(r, g, b float64) (float64, float64, float64) {
-	return linearRec2020ToRec2020OETF(r), linearRec2020ToRec2020OETF(g), linearRec2020ToRec2020OETF(b)
+	return Rec2020OETFEncode(r), Rec2020OETFEncode(g), Rec2020OETFEncode(b)
 }
 
 // Conversion path (1 steps):
@@ -142,7 +142,7 @@ func LinearRec2020ToLinearRec2100(r, g, b float64) (float64, float64, float64) {
 //	-> Linear Rec. 2100
 //	-> Rec. 2100 PQ
 func LinearRec2020ToRec2100PQ(r, g, b float64) (float64, float64, float64) {
-	return rec2100PQEncode(r), rec2100PQEncode(g), rec2100PQEncode(b)
+	return Rec2100PQEncode(r), Rec2100PQEncode(g), Rec2100PQEncode(b)
 }
 
 // Conversion path (2 steps):
@@ -151,7 +151,7 @@ func LinearRec2020ToRec2100PQ(r, g, b float64) (float64, float64, float64) {
 //	-> Linear Rec. 2100
 //	-> Rec. 2100 HLG
 func LinearRec2020ToRec2100HLG(r, g, b float64) (float64, float64, float64) {
-	return rec2100HLGEncode(r), rec2100HLGEncode(g), rec2100HLGEncode(b)
+	return Rec2100HLGEncode(r), Rec2100HLGEncode(g), Rec2100HLGEncode(b)
 }
 
 // Conversion path (2 steps):
@@ -388,7 +388,7 @@ func LinearRec2020ToHsl(r, g, b float64) (h, s, l float64) {
 	f2 := -0.12455047452159054*r + 1.13289989712596*g - 0.008349422604369473*b
 	f3 := -0.01815076335490522*r - 0.10057889800800737*g + 1.1187296613629125*b
 
-	r, g, b = linearSrgbToSrgb(f1), linearSrgbToSrgb(f2), linearSrgbToSrgb(f3)
+	r, g, b = SrgbEncode(f1), SrgbEncode(f2), SrgbEncode(f3)
 	return SrgbToHsl(r, g, b)
 }
 
@@ -404,7 +404,7 @@ func LinearRec2020ToHsv(r, g, b float64) (h, s, v float64) {
 	f2 := -0.12455047452159054*r + 1.13289989712596*g - 0.008349422604369473*b
 	f3 := -0.01815076335490522*r - 0.10057889800800737*g + 1.1187296613629125*b
 
-	r, g, b = linearSrgbToSrgb(f1), linearSrgbToSrgb(f2), linearSrgbToSrgb(f3)
+	r, g, b = SrgbEncode(f1), SrgbEncode(f2), SrgbEncode(f3)
 	return SrgbToHsv(r, g, b)
 }
 
@@ -420,6 +420,6 @@ func LinearRec2020ToHwb(r, g, b float64) (float64, float64, float64) {
 	f2 := -0.12455047452159054*r + 1.13289989712596*g - 0.008349422604369473*b
 	f3 := -0.01815076335490522*r - 0.10057889800800737*g + 1.1187296613629125*b
 
-	r, g, b = linearSrgbToSrgb(f1), linearSrgbToSrgb(f2), linearSrgbToSrgb(f3)
+	r, g, b = SrgbEncode(f1), SrgbEncode(f2), SrgbEncode(f3)
 	return SrgbToHwb(r, g, b)
 }

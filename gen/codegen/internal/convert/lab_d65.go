@@ -13,9 +13,9 @@ func LabD65ToXyzD65(l, a, b float64) (x, y, z float64) {
 }
 
 func XyzD65ToLabD65(x, y, z float64) (l, a, b float64) {
-	fx := labF(x * invD65X)
-	fy := labF(y * invD65Y)
-	fz := labF(z * invD65Z)
+	fx := labF(x * d65InvX)
+	fy := labF(y * d65InvY)
+	fz := labF(z * d65InvZ)
 
 	l = 116*fy - 16
 	a = 500 * (fx - fy)
