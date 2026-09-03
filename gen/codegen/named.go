@@ -56,7 +56,7 @@ func GenerateNamedPkg(ctx *Context) {
 			ctx.RootPkg.Path,
 		)
 
-		genNamedPkgMap(ctx, w, m)
+		genNamedPkgLookup(ctx, w, m)
 	})
 }
 
@@ -109,7 +109,7 @@ func genNamedPkgNamedVar(ctx *Context, w *writer.GoWriter, colors []namedColor) 
 	w.End()
 }
 
-func genNamedPkgMap(ctx *Context, w *writer.GoWriter, m map[string]string) {
+func genNamedPkgLookup(ctx *Context, w *writer.GoWriter, m map[string]string) {
 	pkgJoin := func(ident string) string {
 		if ctx.NamedPkg.Name == ctx.RootPkg.Name {
 			return ident
@@ -118,9 +118,10 @@ func genNamedPkgMap(ctx *Context, w *writer.GoWriter, m map[string]string) {
 	}
 
 	w.Separate()
-	w.Comment("FromName returns the CSS named color with the given name.")
+	w.Comment("Lookup returns the named color with the given name.")
+	w.Comment()
 	w.Comment("The name is case-insensitive.")
-	w.Func("FromName")
+	w.Func("Lookup")
 	w.FuncParams("name string")
 	w.FuncResults(pkgJoin("Color"), ", bool")
 	w.FuncBody()

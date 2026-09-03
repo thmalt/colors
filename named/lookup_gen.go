@@ -8,9 +8,10 @@ import (
 	"github.com/thmalt/colors"
 )
 
-// FromName returns the CSS named color with the given name.
+// Lookup returns the named color with the given name.
+//
 // The name is case-insensitive.
-func FromName(name string) (colors.Color, bool) {
+func Lookup(name string) (colors.Color, bool) {
 	c, ok := lookup[strings.ToLower(name)]
 	return c, ok
 }
