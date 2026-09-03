@@ -165,6 +165,11 @@ func FromStd(c color.Color) Color {
 	case *color.Alpha16:
 		return fromAlpha16(c.A)
 
+	case color.CMYK:
+		return fromCMYK(c.C, c.M, c.Y, c.K)
+	case *color.CMYK:
+		return fromCMYK(c.C, c.M, c.Y, c.K)
+
 	case color.Gray:
 		return fromGray(c.Y)
 	case *color.Gray:
@@ -224,6 +229,16 @@ func fromAlpha(A uint8) Color {
 func fromAlpha16(A uint16) Color {
 	a := float64(A) * invMaxUint16
 	return SrgbAlpha(1, 1, 1, a)
+}
+
+func fromCMYK(C, M, Y, K uint8) Color {
+	w := 1 - float64(K)*invMaxUint8
+
+	r := (1 - float64(C)*invMaxUint8) * w
+	g := (1 - float64(M)*invMaxUint8) * w
+	b := (1 - float64(Y)*invMaxUint8) * w
+
+	return Srgb(r, g, b)
 }
 
 func fromGray(Y uint8) Color {
@@ -290,12 +305,14 @@ func fromRGBA64(R, G, B, A uint16) Color {
 // x must be clamped to [0, 1], and the result is in [0, 1].
 // It uses Log/Exp instead of Pow for better performance.
 func lsrgb(x float64) float64 {
-	const inv24 = 1 / 2.4
+	const invGamma = 1 / 2.4
 
 	if x <= 0.0031308 {
 		return x * 12.92
+	} else if x == 1 {
+		return 1
 	} else {
 		// Use Log/Exp instead of Pow for better performance.
-		return 1.055*math.Exp(math.Log(x)*inv24) - 0.055
+		return 1.055*math.Exp(math.Log(x)*invGamma) - 0.055
 	}
 }

@@ -55,7 +55,7 @@ func genRootPkgMixerMethod(ctx *Context, w *writer.GoWriter) {
 }
 
 func genRootPkgMixerMethodCase(w *writer.GoWriter, name, space string, channelCount int) {
-	var temp []string
+	temp := make([]string, channelCount+1)
 
 	w.LineWriteJoin(appendVars(temp[:0], "x", channelCount, "alpha"), ", ")
 	w.Write(" := ", name, channelCount, "(")

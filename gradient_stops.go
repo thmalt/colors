@@ -31,17 +31,17 @@ func convertStopColors(stops []GradientStop, dst space.Space) {
 			continue
 		}
 
-		stops[i].Color, _ = stops[i].Color.to(dst)
+		stops[i].Color.MutTo(dst)
 	}
 }
 
 func precomputeInvRange(stops []GradientStop) {
-	for i := 0; i+1 < len(stops); i++ {
-		d := stops[i+1].Offset - stops[i].Offset
+	for i := 1; i < len(stops); i++ {
+		d := stops[i].Offset - stops[i-1].Offset
 		if d == 0 {
-			stops[i].invRange = 0
+			stops[i-1].invRange = 0
 		} else {
-			stops[i].invRange = 1 / d
+			stops[i-1].invRange = 1 / d
 		}
 	}
 }

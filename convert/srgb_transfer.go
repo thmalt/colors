@@ -66,7 +66,7 @@ func SrgbDecodeExp(x float64) float64 {
 // SrgbEncodeExp converts a linear sRGB component to sRGB component
 // using a Log/Exp power approximation for improved performance.
 func SrgbEncodeExp(x float64) float64 {
-	const inv24 = 1 / 2.4
+	const invGamma = 1 / 2.4
 
 	abs := math.Abs(x)
 
@@ -75,7 +75,7 @@ func SrgbEncodeExp(x float64) float64 {
 	} else if abs == 1 {
 		return x
 	} else {
-		abs = 1.055*math.Exp(math.Log(abs)*inv24) - 0.055
+		abs = 1.055*math.Exp(math.Log(abs)*invGamma) - 0.055
 	}
 
 	if x < 0 {

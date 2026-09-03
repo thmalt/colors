@@ -3,6 +3,7 @@ package codegen
 import (
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/thmalt/colors/gen/codegen/writer"
 )
@@ -17,6 +18,26 @@ func newWriter(ctx *Context) *writer.GoWriter {
 	w.SetFormatSource(ctx.Opts.FormatSource)
 
 	return w
+}
+
+func wrapEvery(w *writer.GoWriter, n int) func() bool {
+	count := 0
+	return func() bool {
+		count++
+		if count%n == 0 {
+			w.Indent()
+			return true
+		}
+		return false
+	}
+}
+
+func joinRepeatN(v string, n int) string {
+	return strings.Repeat(v+", ", n-1) + v
+}
+
+func joinIdentsWithType(typ string, vars ...string) string {
+	return strings.Join(vars, ", ") + " " + typ
 }
 
 func appendVars(dst []string, ident string, count int, extra ...string) []string {

@@ -6,12 +6,10 @@ import (
 	"reflect"
 	"runtime/debug"
 	"strings"
-
-	"github.com/thmalt/colors/gen/codegen/writer"
 )
 
 const (
-	// for UnsafeMixer, Color.ChannelX
+	// for UnsafeMixer, Color.Channel[N]
 	MinGeneratedChannelCount = 4
 
 	FloatType = "float64"
@@ -39,14 +37,6 @@ func smallestUintType(n int) int {
 	default:
 		return 64
 	}
-}
-
-func joinRepeatN(v string, n int) string {
-	return strings.Repeat(v+", ", n-1) + v
-}
-
-func joinIdentsWithType(typ string, vars ...string) string {
-	return strings.Join(vars, ", ") + " " + typ
 }
 
 func buildChannelCounts(ctx *Context) []bool {
@@ -80,16 +70,4 @@ func ModuleAndPathByType(a any) (module string, path string) {
 	path = "." + strings.TrimPrefix(pkgPath, module)
 
 	return module, path
-}
-
-func wrapEvery(w *writer.GoWriter, n int) func() bool {
-	count := 0
-	return func() bool {
-		count++
-		if count%n == 0 {
-			w.Indent()
-			return true
-		}
-		return false
-	}
 }
