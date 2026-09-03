@@ -36,9 +36,7 @@ func InGamutSpace(c Color, dst space.Space) bool {
 	if c.space == dst {
 		return InGamut(c)
 	}
-
-	converted, ok := c.to(dst)
-	return ok && InGamut(converted)
+	return c.mutTo(dst) && InGamut(c)
 }
 
 // Clamp clamps the color channels to the valid range of the color space.

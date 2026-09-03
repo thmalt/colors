@@ -51,6 +51,7 @@ func genConvertPkgLUT(w *writer.GoWriter, size int, linear, name string, transfe
 	linear = toUpperCaseFirstChar(linear)
 	name = toUpperCaseFirstChar(name) + bits
 
+	linearToUbits := linear + "ToU" + bits
 	linearTo := linear + "To" + name
 	toLinear := name + "To" + linear
 
@@ -129,14 +130,15 @@ func genConvertPkgLUT(w *writer.GoWriter, size int, linear, name string, transfe
 	w.FuncResults(joinRepeatN(uintType, 3))
 	w.FuncBody()
 	w.Return(
-		privLinearTo, "(r), ",
-		privLinearTo, "(g), ",
-		privLinearTo, "(b)",
+		linearToUbits, "(r), ",
+		linearToUbits, "(g), ",
+		linearToUbits, "(b)",
 	)
 	w.End()
 
 	w.Separate()
-	w.Func(privLinearTo)
+	w.Comment(linearToUbits, " converts a linear color component to an unsigned integer value.")
+	w.Func(linearToUbits)
 	w.FuncParams("x ", FloatType)
 	w.FuncResults(uintType)
 	w.FuncBody()

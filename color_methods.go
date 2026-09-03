@@ -8,38 +8,15 @@ import (
 
 // To converts the color to the destination color space.
 func (c Color) To(dst space.Space) Color {
-	c, _ = c.to(dst)
+	c.mutTo(dst)
 	return c
 }
 
-// TryTo converts the color to destination color space and reports whether the conversion succeeded.
+// TryTo converts the color to destination color space
+// and reports whether the conversion succeeded.
 func (c Color) TryTo(dst space.Space) (Color, bool) {
-	return c.to(dst)
-}
-
-// Clamp is shorthand for [Clamp](c).
-func (c Color) Clamp() Color {
-	return Clamp(c)
-}
-
-// InGamut reports whether the color is within the gamut of its color space.
-func (c Color) InGamut() bool {
-	return InGamut(c)
-}
-
-// InGamutSpace reports whether the color is within the gamut of the specified color space.
-func (c Color) InGamutSpace(dst space.Space) bool {
-	return InGamutSpace(c, dst)
-}
-
-// MapToGamut maps the color to the gamut of dst.
-// It returns an invalid [Color] if the color cannot be mapped.
-func (c Color) MapToGamut(dst space.Space) Color {
-	mapped, ok := MapToGamut(c, dst)
-	if !ok {
-		return Color{}
-	}
-	return mapped
+	ok := c.mutTo(dst)
+	return c, ok
 }
 
 // Mix is shorthand for [Mix](c, other, t).
@@ -131,9 +108,16 @@ func (c Color) ToRgb8() (r, g, b uint8) {
 		b = uint8(clamp01(fb)*maxUint8 + 0.5)
 		return
 	case space.LinearSrgb:
-		return convert.LinearSrgbToRgb8(c.c1, c.c2, c.c3)
+		r = convert.LinearSrgbToU8(c.c1)
+		g = convert.LinearSrgbToU8(c.c2)
+		b = convert.LinearSrgbToU8(c.c3)
+		return
 	default:
-		return convert.LinearSrgbToRgb8(c.LinearSrgb())
+		fr, fg, fb := c.LinearSrgb()
+		r = convert.LinearSrgbToU8(fr)
+		g = convert.LinearSrgbToU8(fg)
+		b = convert.LinearSrgbToU8(fb)
+		return
 	}
 }
 
@@ -145,17 +129,25 @@ func (c Color) ToRgba8() (r, g, b, a uint8) {
 		r = uint8(clamp01(c.c1)*maxUint8 + 0.5)
 		g = uint8(clamp01(c.c2)*maxUint8 + 0.5)
 		b = uint8(clamp01(c.c3)*maxUint8 + 0.5)
+		return
 	case space.Hsl, space.Hsv, space.Hwb:
 		fr, fg, fb := c.Srgb()
 		r = uint8(clamp01(fr)*maxUint8 + 0.5)
 		g = uint8(clamp01(fg)*maxUint8 + 0.5)
 		b = uint8(clamp01(fb)*maxUint8 + 0.5)
+		return
 	case space.LinearSrgb:
-		r, g, b = convert.LinearSrgbToRgb8(c.c1, c.c2, c.c3)
+		r = convert.LinearSrgbToU8(c.c1)
+		g = convert.LinearSrgbToU8(c.c2)
+		b = convert.LinearSrgbToU8(c.c3)
+		return
 	default:
-		r, g, b = convert.LinearSrgbToRgb8(c.LinearSrgb())
+		fr, fg, fb := c.LinearSrgb()
+		r = convert.LinearSrgbToU8(fr)
+		g = convert.LinearSrgbToU8(fg)
+		b = convert.LinearSrgbToU8(fb)
+		return
 	}
-	return
 }
 
 func rgbToSrgb(r, g, b float64) (float64, float64, float64) {

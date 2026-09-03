@@ -103,10 +103,11 @@ func Rgb8ToLinearSrgb(r, g, b uint8) (float64, float64, float64) {
 
 // LinearSrgbToRgb8 converts linear components to 8-bit components.
 func LinearSrgbToRgb8(r, g, b float64) (uint8, uint8, uint8) {
-	return linearSrgbToRgb8(r), linearSrgbToRgb8(g), linearSrgbToRgb8(b)
+	return LinearSrgbToU8(r), LinearSrgbToU8(g), LinearSrgbToU8(b)
 }
 
-func linearSrgbToRgb8(x float64) uint8 {
+// LinearSrgbToU8 converts a linear color component to an unsigned integer value.
+func LinearSrgbToU8(x float64) uint8 {
 	x = min(1, max(0, x)) // clamp01
 
 	i := int(x * linearSrgbToRgb8CoarseSize)

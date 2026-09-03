@@ -59,10 +59,7 @@ func genRootPkgInGamutSpace(w *writer.GoWriter) {
 	w.If("c.space == dst")
 	w.Return("InGamut(c)")
 	w.End()
-
-	w.Separate()
-	w.LineWriteln("converted, ok := c.to(dst)")
-	w.Return("ok && InGamut(converted)")
+	w.Return("c.mutTo(dst) && InGamut(c)")
 	w.End()
 
 }

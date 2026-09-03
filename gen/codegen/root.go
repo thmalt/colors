@@ -55,12 +55,12 @@ func GenerateRootPkg(ctx *Context) {
 		stats.HubCounts(),
 	)
 
-	emitGoFile(ctx, pkg, w, "color_to", func(w *writer.GoWriter) {
+	emitGoFile(ctx, pkg, w, "color_mutable", func(w *writer.GoWriter) {
 		w.Import(
 			ctx.SpacePkg.Path,
 		)
 
-		genRootPkgColorTo(ctx, w)
+		genRootPkgColorMutTo(ctx, w)
 	})
 
 	emitGoFile(ctx, pkg, w, "color_constructors", func(w *writer.GoWriter) {

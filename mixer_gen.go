@@ -6,10 +6,10 @@ package colors
 // The result is returned in the mixer's color space.
 func (m Mixer) Mix(c1, c2 Color, t float64) Color {
 	if c1.space != m.space {
-		c1, _ = c1.to(m.space)
+		c1.mutTo(m.space)
 	}
 	if c2.space != m.space {
-		c2, _ = c2.to(m.space)
+		c2.mutTo(m.space)
 	}
 
 	switch m.channels {

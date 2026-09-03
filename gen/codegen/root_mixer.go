@@ -32,10 +32,10 @@ func genRootPkgMixerMethod(ctx *Context, w *writer.GoWriter) {
 	w.FuncBody()
 
 	w.If("c1.space != m.space")
-	w.LineWriteln("c1, _ = c1.to(m.space)")
+	w.LineWriteln("c1.mutTo(m.space)")
 	w.End()
 	w.If("c2.space != m.space")
-	w.LineWriteln("c2, _ = c2.to(m.space)")
+	w.LineWriteln("c2.mutTo(m.space)")
 	w.End()
 
 	w.Separate()
