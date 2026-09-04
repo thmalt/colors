@@ -74,13 +74,12 @@ func (t *Transform) ScaleUniform(s float64) {
 
 // Rotate rotates the transformation by the specified angle in radians.
 func (t *Transform) Rotate(angle float64) {
-	c := math.Cos(angle)
-	s := math.Sin(angle)
+	sin, cos := math.Sincos(angle)
 
-	m00 := t.m00*c + t.m01*s
-	m01 := -t.m00*s + t.m01*c
-	m10 := t.m10*c + t.m11*s
-	m11 := -t.m10*s + t.m11*c
+	m00 := t.m00*cos + t.m01*sin
+	m01 := -t.m00*sin + t.m01*cos
+	m10 := t.m10*cos + t.m11*sin
+	m11 := -t.m10*sin + t.m11*cos
 
 	t.m00 = m00
 	t.m01 = m01

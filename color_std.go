@@ -18,23 +18,25 @@ func (c Color) RGBA() (r, g, b, a uint32) {
 		r = uint32(clamp01(c.c1)*alpha16 + 0.5)
 		g = uint32(clamp01(c.c2)*alpha16 + 0.5)
 		b = uint32(clamp01(c.c3)*alpha16 + 0.5)
+		return
 	case space.Hsl, space.Hsv, space.Hwb:
 		fr, fg, fb := c.Srgb()
 		r = uint32(clamp01(fr)*alpha16 + 0.5)
 		g = uint32(clamp01(fg)*alpha16 + 0.5)
 		b = uint32(clamp01(fb)*alpha16 + 0.5)
+		return
 	case space.LinearSrgb:
 		r = uint32(lsrgb(clamp01(c.c1))*alpha16 + 0.5)
 		g = uint32(lsrgb(clamp01(c.c2))*alpha16 + 0.5)
 		b = uint32(lsrgb(clamp01(c.c3))*alpha16 + 0.5)
+		return
 	default:
 		fr, fg, fb := c.LinearSrgb()
 		r = uint32(lsrgb(clamp01(fr))*alpha16 + 0.5)
 		g = uint32(lsrgb(clamp01(fg))*alpha16 + 0.5)
 		b = uint32(lsrgb(clamp01(fb))*alpha16 + 0.5)
+		return
 	}
-
-	return
 }
 
 // ToRGBA64 converts the color to an sRGB [color.RGBA64].
