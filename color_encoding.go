@@ -1,7 +1,7 @@
 package colors
 
 import (
-	"fmt"
+	"errors"
 	"unsafe"
 )
 
@@ -13,9 +13,11 @@ func (c Color) MarshalText() ([]byte, error) {
 
 // UnmarshalText decodes a color from its hexadecimal text representation.
 func (c *Color) UnmarshalText(text []byte) error {
-	v := Hex(unsafe.String(unsafe.SliceData(text), len(text)))
-	if !v.IsValid() {
-		return fmt.Errorf("invalid color %q", text)
+	s := unsafe.String(unsafe.SliceData(text), len(text))
+
+	v, ok := TryHex(s)
+	if !ok {
+		return errors.New("invalid color: " + s)
 	}
 
 	*c = v

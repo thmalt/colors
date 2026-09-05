@@ -42,6 +42,13 @@ func (c Color) Hex() string {
 
 // Hex returns an sRGB color from a hexadecimal color string.
 func Hex(s string) Color {
+	c, _ := TryHex(s)
+	return c
+}
+
+// TryHex returns an sRGB color from a hexadecimal color string
+// and reports whether the string was successfully parsed.
+func TryHex(s string) (Color, bool) {
 	if len(s) > 0 && s[0] == '#' {
 		s = s[1:]
 	}
@@ -53,14 +60,14 @@ func Hex(s string) Color {
 		x2 := hexLUT[s[2]]
 
 		if x0|x1|x2 == maxUint8 {
-			return Color{}
+			return Color{}, false
 		}
 
 		r := float64(x0<<4|x0) * invMaxUint8
 		g := float64(x1<<4|x1) * invMaxUint8
 		b := float64(x2<<4|x2) * invMaxUint8
 
-		return Srgb(r, g, b)
+		return Srgb(r, g, b), true
 	case 4:
 		x0 := hexLUT[s[0]]
 		x1 := hexLUT[s[1]]
@@ -68,7 +75,7 @@ func Hex(s string) Color {
 		x3 := hexLUT[s[3]]
 
 		if x0|x1|x2|x3 == maxUint8 {
-			return Color{}
+			return Color{}, false
 		}
 
 		r := float64(x0<<4|x0) * invMaxUint8
@@ -76,21 +83,21 @@ func Hex(s string) Color {
 		b := float64(x2<<4|x2) * invMaxUint8
 		alpha := float64(x3<<4|x3) * invMaxUint8
 
-		return SrgbAlpha(r, g, b, alpha)
+		return SrgbAlpha(r, g, b, alpha), true
 	case 6:
 		x0, x1 := hexLUT[s[0]], hexLUT[s[1]]
 		x2, x3 := hexLUT[s[2]], hexLUT[s[3]]
 		x4, x5 := hexLUT[s[4]], hexLUT[s[5]]
 
 		if x0|x1|x2|x3|x4|x5 == maxUint8 {
-			return Color{}
+			return Color{}, false
 		}
 
 		r := float64(x0<<4|x1) * invMaxUint8
 		g := float64(x2<<4|x3) * invMaxUint8
 		b := float64(x4<<4|x5) * invMaxUint8
 
-		return Srgb(r, g, b)
+		return Srgb(r, g, b), true
 	case 8:
 		x0, x1 := hexLUT[s[0]], hexLUT[s[1]]
 		x2, x3 := hexLUT[s[2]], hexLUT[s[3]]
@@ -98,7 +105,7 @@ func Hex(s string) Color {
 		x6, x7 := hexLUT[s[6]], hexLUT[s[7]]
 
 		if x0|x1|x2|x3|x4|x5|x6|x7 == maxUint8 {
-			return Color{}
+			return Color{}, false
 		}
 
 		r := float64(x0<<4|x1) * invMaxUint8
@@ -106,8 +113,8 @@ func Hex(s string) Color {
 		b := float64(x4<<4|x5) * invMaxUint8
 		alpha := float64(x6<<4|x7) * invMaxUint8
 
-		return SrgbAlpha(r, g, b, alpha)
+		return SrgbAlpha(r, g, b, alpha), true
 	default:
-		return Color{}
+		return Color{}, false
 	}
 }

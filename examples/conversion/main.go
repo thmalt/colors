@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	c := colors.RgbAlpha(50, 60, 70, 0.995)
+	c := colors.Hex("#323c46fe")
 
 	// Convert a color to different color spaces.
 	fmt.Println("sRGB: ", c)
