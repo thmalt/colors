@@ -76,27 +76,9 @@ func (c Color) Space() space.Space {
 	return c.space
 }
 
-// Alpha returns the alpha channel value without clamping.
-func (c Color) Alpha() float64 {
-	return c.alpha
-}
-
-// Alpha8 returns the alpha channel in the range [0, 255].
-func (c Color) Alpha8() uint8 {
-	return uint8(clamp01(c.alpha)*maxUint8 + 0.5)
-}
-
-// WithAlpha returns a copy of [Color] with the specified alpha value.
-func (c Color) WithAlpha(alpha float64) Color {
-	c.alpha = alpha
-	return c
-}
-
-// WithAlpha8 returns a copy of [Color] with the specified alpha value
-// in the range [0, 255].
-func (c Color) WithAlpha8(alpha uint8) Color {
-	c.alpha = float64(alpha) * invMaxUint8
-	return c
+// CoordinateSystem returns the coordinate system of the color space.
+func (c Color) CoordinateSystem() space.CoordinateSystem {
+	return c.space.CoordinateSystem()
 }
 
 // ChannelCount returns the number of color channels.
@@ -104,7 +86,37 @@ func (c Color) ChannelCount() int {
 	return c.space.ChannelCount()
 }
 
-// CoordinateSystem returns the coordinate system of the color space.
-func (c Color) CoordinateSystem() space.CoordinateSystem {
-	return c.space.CoordinateSystem()
+// Alpha returns the alpha channel value without clamping.
+func (c Color) Alpha() float64 {
+	return c.alpha
+}
+
+// Alpha8 returns the alpha value as an 8-bit value in the range [0, 255].
+func (c Color) Alpha8() uint8 {
+	return uint8(clamp01(c.alpha)*maxUint8 + 0.5)
+}
+
+// WithAlpha returns a copy of [Color] with the specified alpha value.
+// Alpha values in the range [0, 1] are typical.
+func (c Color) WithAlpha(alpha float64) Color {
+	c.alpha = alpha
+	return c
+}
+
+// WithAlpha8 returns a copy of [Color] with the specified 8-bit alpha value
+// in the range [0, 255].
+func (c Color) WithAlpha8(alpha uint8) Color {
+	c.alpha = float64(alpha) * invMaxUint8
+	return c
+}
+
+// IsOpaque reports whether the color has an alpha value of at least 1.
+func (c Color) IsOpaque() bool {
+	return c.alpha >= 1
+}
+
+// Opaque returns a copy of [Color] with its alpha set to 1.
+func (c Color) Opaque() Color {
+	c.alpha = 1
+	return c
 }
