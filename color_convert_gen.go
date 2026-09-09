@@ -11,6 +11,11 @@ import (
 
 // Srgb returns the color components in the [space.Srgb] color space.
 func (c Color) Srgb() (r, g, b float64) {
+	return c.srgb()
+}
+
+// srgb returns the color components in the [space.Srgb] color space.
+func (c *Color) srgb() (r, g, b float64) {
 	if c.space == space.Srgb {
 		return c.c1, c.c2, c.c3
 	}
@@ -83,6 +88,11 @@ func (c Color) Srgb() (r, g, b float64) {
 
 // LinearSrgb returns the color components in the [space.LinearSrgb] color space.
 func (c Color) LinearSrgb() (r, g, b float64) {
+	return c.linearSrgb()
+}
+
+// linearSrgb returns the color components in the [space.LinearSrgb] color space.
+func (c *Color) linearSrgb() (r, g, b float64) {
 	if c.space == space.LinearSrgb {
 		return c.c1, c.c2, c.c3
 	}
@@ -155,6 +165,11 @@ func (c Color) LinearSrgb() (r, g, b float64) {
 
 // DisplayP3 returns the color components in the [space.DisplayP3] color space.
 func (c Color) DisplayP3() (r, g, b float64) {
+	return c.displayP3()
+}
+
+// displayP3 returns the color components in the [space.DisplayP3] color space.
+func (c *Color) displayP3() (r, g, b float64) {
 	if c.space == space.DisplayP3 {
 		return c.c1, c.c2, c.c3
 	}
@@ -227,6 +242,11 @@ func (c Color) DisplayP3() (r, g, b float64) {
 
 // LinearDisplayP3 returns the color components in the [space.LinearDisplayP3] color space.
 func (c Color) LinearDisplayP3() (r, g, b float64) {
+	return c.linearDisplayP3()
+}
+
+// linearDisplayP3 returns the color components in the [space.LinearDisplayP3] color space.
+func (c *Color) linearDisplayP3() (r, g, b float64) {
 	if c.space == space.LinearDisplayP3 {
 		return c.c1, c.c2, c.c3
 	}
@@ -299,6 +319,11 @@ func (c Color) LinearDisplayP3() (r, g, b float64) {
 
 // A98 returns the color components in the [space.A98] color space.
 func (c Color) A98() (r, g, b float64) {
+	return c.a98()
+}
+
+// a98 returns the color components in the [space.A98] color space.
+func (c *Color) a98() (r, g, b float64) {
 	if c.space == space.A98 {
 		return c.c1, c.c2, c.c3
 	}
@@ -371,6 +396,11 @@ func (c Color) A98() (r, g, b float64) {
 
 // LinearA98 returns the color components in the [space.LinearA98] color space.
 func (c Color) LinearA98() (r, g, b float64) {
+	return c.linearA98()
+}
+
+// linearA98 returns the color components in the [space.LinearA98] color space.
+func (c *Color) linearA98() (r, g, b float64) {
 	if c.space == space.LinearA98 {
 		return c.c1, c.c2, c.c3
 	}
@@ -443,6 +473,11 @@ func (c Color) LinearA98() (r, g, b float64) {
 
 // ProPhoto returns the color components in the [space.ProPhoto] color space.
 func (c Color) ProPhoto() (r, g, b float64) {
+	return c.proPhoto()
+}
+
+// proPhoto returns the color components in the [space.ProPhoto] color space.
+func (c *Color) proPhoto() (r, g, b float64) {
 	if c.space == space.ProPhoto {
 		return c.c1, c.c2, c.c3
 	}
@@ -515,6 +550,11 @@ func (c Color) ProPhoto() (r, g, b float64) {
 
 // LinearProPhoto returns the color components in the [space.LinearProPhoto] color space.
 func (c Color) LinearProPhoto() (r, g, b float64) {
+	return c.linearProPhoto()
+}
+
+// linearProPhoto returns the color components in the [space.LinearProPhoto] color space.
+func (c *Color) linearProPhoto() (r, g, b float64) {
 	if c.space == space.LinearProPhoto {
 		return c.c1, c.c2, c.c3
 	}
@@ -587,6 +627,11 @@ func (c Color) LinearProPhoto() (r, g, b float64) {
 
 // Rec2020 returns the color components in the [space.Rec2020] color space.
 func (c Color) Rec2020() (r, g, b float64) {
+	return c.rec2020()
+}
+
+// rec2020 returns the color components in the [space.Rec2020] color space.
+func (c *Color) rec2020() (r, g, b float64) {
 	if c.space == space.Rec2020 {
 		return c.c1, c.c2, c.c3
 	}
@@ -659,6 +704,11 @@ func (c Color) Rec2020() (r, g, b float64) {
 
 // Rec2020OETF returns the color components in the [space.Rec2020OETF] color space.
 func (c Color) Rec2020OETF() (r, g, b float64) {
+	return c.rec2020OETF()
+}
+
+// rec2020OETF returns the color components in the [space.Rec2020OETF] color space.
+func (c *Color) rec2020OETF() (r, g, b float64) {
 	if c.space == space.Rec2020OETF {
 		return c.c1, c.c2, c.c3
 	}
@@ -731,6 +781,11 @@ func (c Color) Rec2020OETF() (r, g, b float64) {
 
 // LinearRec2020 returns the color components in the [space.LinearRec2020] color space.
 func (c Color) LinearRec2020() (r, g, b float64) {
+	return c.linearRec2020()
+}
+
+// linearRec2020 returns the color components in the [space.LinearRec2020] color space.
+func (c *Color) linearRec2020() (r, g, b float64) {
 	if c.space == space.LinearRec2020 || c.space == space.LinearRec2100 {
 		return c.c1, c.c2, c.c3
 	}
@@ -803,11 +858,21 @@ func (c Color) LinearRec2020() (r, g, b float64) {
 
 // LinearRec2100 returns the color components in the [space.LinearRec2100] color space.
 func (c Color) LinearRec2100() (r, g, b float64) {
+	return c.linearRec2100()
+}
+
+// linearRec2100 returns the color components in the [space.LinearRec2100] color space.
+func (c *Color) linearRec2100() (r, g, b float64) {
 	return c.LinearRec2020()
 }
 
 // Rec2100PQ returns the color components in the [space.Rec2100PQ] color space.
 func (c Color) Rec2100PQ() (r, g, b float64) {
+	return c.rec2100PQ()
+}
+
+// rec2100PQ returns the color components in the [space.Rec2100PQ] color space.
+func (c *Color) rec2100PQ() (r, g, b float64) {
 	if c.space == space.Rec2100PQ {
 		return c.c1, c.c2, c.c3
 	}
@@ -880,6 +945,11 @@ func (c Color) Rec2100PQ() (r, g, b float64) {
 
 // Rec2100HLG returns the color components in the [space.Rec2100HLG] color space.
 func (c Color) Rec2100HLG() (r, g, b float64) {
+	return c.rec2100HLG()
+}
+
+// rec2100HLG returns the color components in the [space.Rec2100HLG] color space.
+func (c *Color) rec2100HLG() (r, g, b float64) {
 	if c.space == space.Rec2100HLG {
 		return c.c1, c.c2, c.c3
 	}
@@ -952,6 +1022,11 @@ func (c Color) Rec2100HLG() (r, g, b float64) {
 
 // XyzD50 returns the color components in the [space.XyzD50] color space.
 func (c Color) XyzD50() (x, y, z float64) {
+	return c.xyzD50()
+}
+
+// xyzD50 returns the color components in the [space.XyzD50] color space.
+func (c *Color) xyzD50() (x, y, z float64) {
 	if c.space == space.XyzD50 {
 		return c.c1, c.c2, c.c3
 	}
@@ -1024,6 +1099,11 @@ func (c Color) XyzD50() (x, y, z float64) {
 
 // XyzD65 returns the color components in the [space.XyzD65] color space.
 func (c Color) XyzD65() (x, y, z float64) {
+	return c.xyzD65()
+}
+
+// xyzD65 returns the color components in the [space.XyzD65] color space.
+func (c *Color) xyzD65() (x, y, z float64) {
 	if c.space == space.XyzD65 {
 		return c.c1, c.c2, c.c3
 	}
@@ -1096,6 +1176,11 @@ func (c Color) XyzD65() (x, y, z float64) {
 
 // XyzAbsD65 returns the color components in the [space.XyzAbsD65] color space.
 func (c Color) XyzAbsD65() (x, y, z float64) {
+	return c.xyzAbsD65()
+}
+
+// xyzAbsD65 returns the color components in the [space.XyzAbsD65] color space.
+func (c *Color) xyzAbsD65() (x, y, z float64) {
 	if c.space == space.XyzAbsD65 {
 		return c.c1, c.c2, c.c3
 	}
@@ -1168,6 +1253,11 @@ func (c Color) XyzAbsD65() (x, y, z float64) {
 
 // XyYD50 returns the color components in the [space.XyYD50] color space.
 func (c Color) XyYD50() (x, y, luminance float64) {
+	return c.xyYD50()
+}
+
+// xyYD50 returns the color components in the [space.XyYD50] color space.
+func (c *Color) xyYD50() (x, y, luminance float64) {
 	if c.space == space.XyYD50 {
 		return c.c1, c.c2, c.c3
 	}
@@ -1240,6 +1330,11 @@ func (c Color) XyYD50() (x, y, luminance float64) {
 
 // XyYD65 returns the color components in the [space.XyYD65] color space.
 func (c Color) XyYD65() (x, y, luminance float64) {
+	return c.xyYD65()
+}
+
+// xyYD65 returns the color components in the [space.XyYD65] color space.
+func (c *Color) xyYD65() (x, y, luminance float64) {
 	if c.space == space.XyYD65 {
 		return c.c1, c.c2, c.c3
 	}
@@ -1312,6 +1407,11 @@ func (c Color) XyYD65() (x, y, luminance float64) {
 
 // LabD50 returns the color components in the [space.LabD50] color space.
 func (c Color) LabD50() (l, a, b float64) {
+	return c.labD50()
+}
+
+// labD50 returns the color components in the [space.LabD50] color space.
+func (c *Color) labD50() (l, a, b float64) {
 	if c.space == space.LabD50 {
 		return c.c1, c.c2, c.c3
 	}
@@ -1384,6 +1484,11 @@ func (c Color) LabD50() (l, a, b float64) {
 
 // LchD50 returns the color components in the [space.LchD50] color space.
 func (c Color) LchD50() (float64, float64, float64) {
+	return c.lchD50()
+}
+
+// lchD50 returns the color components in the [space.LchD50] color space.
+func (c *Color) lchD50() (float64, float64, float64) {
 	if c.space == space.LchD50 {
 		return c.c1, c.c2, c.c3
 	}
@@ -1456,6 +1561,11 @@ func (c Color) LchD50() (float64, float64, float64) {
 
 // LabD65 returns the color components in the [space.LabD65] color space.
 func (c Color) LabD65() (l, a, b float64) {
+	return c.labD65()
+}
+
+// labD65 returns the color components in the [space.LabD65] color space.
+func (c *Color) labD65() (l, a, b float64) {
 	if c.space == space.LabD65 {
 		return c.c1, c.c2, c.c3
 	}
@@ -1528,6 +1638,11 @@ func (c Color) LabD65() (l, a, b float64) {
 
 // LchD65 returns the color components in the [space.LchD65] color space.
 func (c Color) LchD65() (float64, float64, float64) {
+	return c.lchD65()
+}
+
+// lchD65 returns the color components in the [space.LchD65] color space.
+func (c *Color) lchD65() (float64, float64, float64) {
 	if c.space == space.LchD65 {
 		return c.c1, c.c2, c.c3
 	}
@@ -1600,6 +1715,11 @@ func (c Color) LchD65() (float64, float64, float64) {
 
 // LuvD50 returns the color components in the [space.LuvD50] color space.
 func (c Color) LuvD50() (l, u, v float64) {
+	return c.luvD50()
+}
+
+// luvD50 returns the color components in the [space.LuvD50] color space.
+func (c *Color) luvD50() (l, u, v float64) {
 	if c.space == space.LuvD50 {
 		return c.c1, c.c2, c.c3
 	}
@@ -1672,6 +1792,11 @@ func (c Color) LuvD50() (l, u, v float64) {
 
 // LchuvD50 returns the color components in the [space.LchuvD50] color space.
 func (c Color) LchuvD50() (float64, float64, float64) {
+	return c.lchuvD50()
+}
+
+// lchuvD50 returns the color components in the [space.LchuvD50] color space.
+func (c *Color) lchuvD50() (float64, float64, float64) {
 	if c.space == space.LchuvD50 {
 		return c.c1, c.c2, c.c3
 	}
@@ -1744,6 +1869,11 @@ func (c Color) LchuvD50() (float64, float64, float64) {
 
 // LuvD65 returns the color components in the [space.LuvD65] color space.
 func (c Color) LuvD65() (l, u, v float64) {
+	return c.luvD65()
+}
+
+// luvD65 returns the color components in the [space.LuvD65] color space.
+func (c *Color) luvD65() (l, u, v float64) {
 	if c.space == space.LuvD65 {
 		return c.c1, c.c2, c.c3
 	}
@@ -1816,6 +1946,11 @@ func (c Color) LuvD65() (l, u, v float64) {
 
 // LchuvD65 returns the color components in the [space.LchuvD65] color space.
 func (c Color) LchuvD65() (float64, float64, float64) {
+	return c.lchuvD65()
+}
+
+// lchuvD65 returns the color components in the [space.LchuvD65] color space.
+func (c *Color) lchuvD65() (float64, float64, float64) {
 	if c.space == space.LchuvD65 {
 		return c.c1, c.c2, c.c3
 	}
@@ -1888,6 +2023,11 @@ func (c Color) LchuvD65() (float64, float64, float64) {
 
 // Oklab returns the color components in the [space.Oklab] color space.
 func (c Color) Oklab() (l, a, b float64) {
+	return c.oklab()
+}
+
+// oklab returns the color components in the [space.Oklab] color space.
+func (c *Color) oklab() (l, a, b float64) {
 	if c.space == space.Oklab {
 		return c.c1, c.c2, c.c3
 	}
@@ -1960,6 +2100,11 @@ func (c Color) Oklab() (l, a, b float64) {
 
 // Oklch returns the color components in the [space.Oklch] color space.
 func (c Color) Oklch() (float64, float64, float64) {
+	return c.oklch()
+}
+
+// oklch returns the color components in the [space.Oklch] color space.
+func (c *Color) oklch() (float64, float64, float64) {
 	if c.space == space.Oklch {
 		return c.c1, c.c2, c.c3
 	}
@@ -2032,6 +2177,11 @@ func (c Color) Oklch() (float64, float64, float64) {
 
 // Hsl returns the color components in the [space.Hsl] color space.
 func (c Color) Hsl() (h, s, l float64) {
+	return c.hsl()
+}
+
+// hsl returns the color components in the [space.Hsl] color space.
+func (c *Color) hsl() (h, s, l float64) {
 	if c.space == space.Hsl {
 		return c.c1, c.c2, c.c3
 	}
@@ -2104,6 +2254,11 @@ func (c Color) Hsl() (h, s, l float64) {
 
 // Hsv returns the color components in the [space.Hsv] color space.
 func (c Color) Hsv() (h, s, v float64) {
+	return c.hsv()
+}
+
+// hsv returns the color components in the [space.Hsv] color space.
+func (c *Color) hsv() (h, s, v float64) {
 	if c.space == space.Hsv {
 		return c.c1, c.c2, c.c3
 	}
@@ -2176,6 +2331,11 @@ func (c Color) Hsv() (h, s, v float64) {
 
 // Hwb returns the color components in the [space.Hwb] color space.
 func (c Color) Hwb() (h, w, b float64) {
+	return c.hwb()
+}
+
+// hwb returns the color components in the [space.Hwb] color space.
+func (c *Color) hwb() (h, w, b float64) {
 	if c.space == space.Hwb {
 		return c.c1, c.c2, c.c3
 	}

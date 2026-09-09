@@ -37,14 +37,28 @@ func genRootPkgColorConvertMethod(ctx *Context, w *writer.GoWriter, dst *model.S
 	names := dst.ChannelIdent()
 	hasNamedReturn := slices.Contains(names, "c")
 
-	w.Separate()
-	w.Comment(dst.Name, " returns the color components in the [", ctx.SpacePkg.Join(dst.Name), "] color space.")
-	w.Method("c Color", dst.Name)
+	lowerFnName := toLowerCaseFirstWord(dst.Name)
+	dstIdent := ctx.SpacePkg.Join(dst.Name)
+
+	var retList string
 	if !hasNamedReturn {
-		w.FuncResults(joinIdentsWithType(FloatType, names...))
+		retList = joinIdentsWithType(FloatType, names...)
 	} else {
-		w.FuncResults(joinRepeatN(FloatType, len(names)))
+		retList = joinRepeatN(FloatType, len(names))
 	}
+
+	w.Separate()
+	w.Comment(dst.Name, " returns the color components in the [", dstIdent, "] color space.")
+	w.Method("c Color", dst.Name)
+	w.FuncResults(retList)
+	w.FuncBody()
+	w.Return("c.", lowerFnName, "()")
+	w.End()
+
+	w.Separate()
+	w.Comment(lowerFnName, " returns the color components in the [", dstIdent, "] color space.")
+	w.Method("c *Color", lowerFnName)
+	w.FuncResults(retList)
 	w.FuncBody()
 
 	if eq := ctx.SpaceByName(dst.Equivalent); eq != nil {
@@ -59,7 +73,7 @@ func genRootPkgColorConvertMethod(ctx *Context, w *writer.GoWriter, dst *model.S
 	}
 
 	sub := w.SubWriter()
-	sub.Write("c.space == ", ctx.SpacePkg.Join(dst.Name))
+	sub.Write("c.space == ", dstIdent)
 	for _, name := range dst.Equivalents {
 		sub.Write(" || ", "c.space == ", ctx.SpacePkg.Join(name))
 	}

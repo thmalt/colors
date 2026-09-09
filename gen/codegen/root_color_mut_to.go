@@ -32,7 +32,7 @@ func genRootPkgColorMutTo(ctx *Context, w *writer.GoWriter) {
 
 		w.LineWriteJoin(appendVars(temp[:0], "c.c", channelCount), ", ")
 
-		w.Writeln(" = c.", space.Name, "()")
+		w.Writeln(" = c.", toLowerCaseFirstWord(space.Name), "()")
 		for i := channelCount; i < ctx.MaxChannelCount; i++ {
 			w.LineWriteln("c.c", i+1, " = 0")
 		}
