@@ -45,13 +45,13 @@ func luminance(c Color) float64 {
 	case space.LinearSrgb:
 		r, g, b = c.c1, c.c2, c.c3
 	case space.Hsl, space.Hsv, space.Hwb:
-		r, g, b = c.LinearSrgb()
+		r, g, b = c.linearSrgb()
 	case space.Srgb:
 		r = convert.SrgbDecodeExp(c.c1)
 		g = convert.SrgbDecodeExp(c.c2)
 		b = convert.SrgbDecodeExp(c.c3)
 	default:
-		_, y, _ := c.XyzD65()
+		_, y, _ := c.xyzD65()
 		return y
 	}
 

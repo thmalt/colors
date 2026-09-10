@@ -20,7 +20,7 @@ func (c Color) RGBA() (r, g, b, a uint32) {
 		b = uint32(clamp01(c.c3)*alpha16 + 0.5)
 		return
 	case space.Hsl, space.Hsv, space.Hwb:
-		fr, fg, fb := c.Srgb()
+		fr, fg, fb := c.srgb()
 		r = uint32(clamp01(fr)*alpha16 + 0.5)
 		g = uint32(clamp01(fg)*alpha16 + 0.5)
 		b = uint32(clamp01(fb)*alpha16 + 0.5)
@@ -31,7 +31,7 @@ func (c Color) RGBA() (r, g, b, a uint32) {
 		b = uint32(lsrgb(clamp01(c.c3))*alpha16 + 0.5)
 		return
 	default:
-		fr, fg, fb := c.LinearSrgb()
+		fr, fg, fb := c.linearSrgb()
 		r = uint32(lsrgb(clamp01(fr))*alpha16 + 0.5)
 		g = uint32(lsrgb(clamp01(fg))*alpha16 + 0.5)
 		b = uint32(lsrgb(clamp01(fb))*alpha16 + 0.5)
@@ -52,7 +52,7 @@ func (c Color) ToRGBA64() color.RGBA64 {
 		b = uint16(clamp01(c.c3)*alpha16 + 0.5)
 		return color.RGBA64{R: r, G: g, B: b, A: a}
 	case space.Hsl, space.Hsv, space.Hwb:
-		fr, fg, fb := c.Srgb()
+		fr, fg, fb := c.srgb()
 		r = uint16(clamp01(fr)*alpha16 + 0.5)
 		g = uint16(clamp01(fg)*alpha16 + 0.5)
 		b = uint16(clamp01(fb)*alpha16 + 0.5)
@@ -63,7 +63,7 @@ func (c Color) ToRGBA64() color.RGBA64 {
 		b = uint16(lsrgb(clamp01(c.c3))*alpha16 + 0.5)
 		return color.RGBA64{R: r, G: g, B: b, A: a}
 	default:
-		fr, fg, fb := c.LinearSrgb()
+		fr, fg, fb := c.linearSrgb()
 		r = uint16(lsrgb(clamp01(fr))*alpha16 + 0.5)
 		g = uint16(lsrgb(clamp01(fg))*alpha16 + 0.5)
 		b = uint16(lsrgb(clamp01(fb))*alpha16 + 0.5)
@@ -83,7 +83,7 @@ func (c Color) ToNRGBA64() color.NRGBA64 {
 		b = uint16(clamp01(c.c3)*maxUint16 + 0.5)
 		return color.NRGBA64{R: r, G: g, B: b, A: a}
 	case space.Hsl, space.Hsv, space.Hwb:
-		fr, fg, fb := c.Srgb()
+		fr, fg, fb := c.srgb()
 		r = uint16(clamp01(fr)*maxUint16 + 0.5)
 		g = uint16(clamp01(fg)*maxUint16 + 0.5)
 		b = uint16(clamp01(fb)*maxUint16 + 0.5)
@@ -94,7 +94,7 @@ func (c Color) ToNRGBA64() color.NRGBA64 {
 		b = uint16(lsrgb(clamp01(c.c3))*maxUint16 + 0.5)
 		return color.NRGBA64{R: r, G: g, B: b, A: a}
 	default:
-		fr, fg, fb := c.LinearSrgb()
+		fr, fg, fb := c.linearSrgb()
 		r = uint16(lsrgb(clamp01(fr))*maxUint16 + 0.5)
 		g = uint16(lsrgb(clamp01(fg))*maxUint16 + 0.5)
 		b = uint16(lsrgb(clamp01(fb))*maxUint16 + 0.5)
@@ -116,7 +116,7 @@ func (c Color) ToRGBA() color.RGBA {
 		b = uint8(clamp01(c.c3)*alpha8 + 0.5)
 		return color.RGBA{R: r, G: g, B: b, A: a}
 	case space.Hsl, space.Hsv, space.Hwb:
-		fr, fg, fb := c.Srgb()
+		fr, fg, fb := c.srgb()
 		r = uint8(clamp01(fr)*alpha8 + 0.5)
 		g = uint8(clamp01(fg)*alpha8 + 0.5)
 		b = uint8(clamp01(fb)*alpha8 + 0.5)
@@ -133,7 +133,7 @@ func (c Color) ToRGBA() color.RGBA {
 		}
 		return color.RGBA{R: r, G: g, B: b, A: a}
 	default:
-		fr, fg, fb := c.LinearSrgb()
+		fr, fg, fb := c.linearSrgb()
 		r = convert.LinearSrgbToU8(fr)
 		g = convert.LinearSrgbToU8(fg)
 		b = convert.LinearSrgbToU8(fb)
@@ -159,7 +159,7 @@ func (c Color) ToNRGBA() color.NRGBA {
 		b = uint8(clamp01(c.c3)*maxUint8 + 0.5)
 		return color.NRGBA{R: r, G: g, B: b, A: a}
 	case space.Hsl, space.Hsv, space.Hwb:
-		fr, fg, fb := c.Srgb()
+		fr, fg, fb := c.srgb()
 		r = uint8(clamp01(fr)*maxUint8 + 0.5)
 		g = uint8(clamp01(fg)*maxUint8 + 0.5)
 		b = uint8(clamp01(fb)*maxUint8 + 0.5)
@@ -170,7 +170,7 @@ func (c Color) ToNRGBA() color.NRGBA {
 		b = convert.LinearSrgbToU8(c.c3)
 		return color.NRGBA{R: r, G: g, B: b, A: a}
 	default:
-		fr, fg, fb := c.LinearSrgb()
+		fr, fg, fb := c.linearSrgb()
 		r = convert.LinearSrgbToU8(fr)
 		g = convert.LinearSrgbToU8(fg)
 		b = convert.LinearSrgbToU8(fb)

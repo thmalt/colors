@@ -19,7 +19,6 @@ func GenerateRootPkg(ctx *Context) {
 
 		genRootPkgColor(ctx, w)
 		genRootPkgColorChannel(ctx, w)
-		genRootPkgHexLUT(ctx, w)
 	})
 
 	var stats conversionStats
@@ -72,7 +71,6 @@ func GenerateRootPkg(ctx *Context) {
 	emitGoFile(ctx, pkg, w, "color_string", func(w *writer.GoWriter) {
 		w.Import(
 			"strconv",
-			"unsafe",
 			ctx.SpacePkg.Path,
 		)
 

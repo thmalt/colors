@@ -14,13 +14,13 @@ func DeltaEOK(c1, c2 Color) float64 {
 	if c1.space == space.Oklab {
 		l1, a1, b1 = c1.c1, c1.c2, c1.c3
 	} else {
-		l1, a1, b1 = c1.Oklab()
+		l1, a1, b1 = c1.oklab()
 	}
 
 	if c2.space == space.Oklab {
 		l2, a2, b2 = c2.c1, c2.c2, c2.c3
 	} else {
-		l2, a2, b2 = c2.Oklab()
+		l2, a2, b2 = c2.oklab()
 	}
 
 	dL := l1 - l2
@@ -39,13 +39,13 @@ func DeltaEOK2(c1, c2 Color) float64 {
 	if c1.space == space.Oklab {
 		l1, a1, b1 = c1.c1, c1.c2, c1.c3
 	} else {
-		l1, a1, b1 = c1.Oklab()
+		l1, a1, b1 = c1.oklab()
 	}
 
 	if c2.space == space.Oklab {
 		l2, a2, b2 = c2.c1, c2.c2, c2.c3
 	} else {
-		l2, a2, b2 = c2.Oklab()
+		l2, a2, b2 = c2.oklab()
 	}
 
 	const scale = 2
@@ -77,25 +77,25 @@ func deltaE76(c1, c2 Color, d65 bool) float64 {
 		if c1.space == space.LabD65 {
 			l1, a1, b1 = c1.c1, c1.c2, c1.c3
 		} else {
-			l1, a1, b1 = c1.LabD65()
+			l1, a1, b1 = c1.labD65()
 		}
 
 		if c2.space == space.LabD65 {
 			l2, a2, b2 = c2.c1, c2.c2, c2.c3
 		} else {
-			l2, a2, b2 = c2.LabD65()
+			l2, a2, b2 = c2.labD65()
 		}
 	} else {
 		if c1.space == space.LabD50 {
 			l1, a1, b1 = c1.c1, c1.c2, c1.c3
 		} else {
-			l1, a1, b1 = c1.LabD50()
+			l1, a1, b1 = c1.labD50()
 		}
 
 		if c2.space == space.LabD50 {
 			l2, a2, b2 = c2.c1, c2.c2, c2.c3
 		} else {
-			l2, a2, b2 = c2.LabD50()
+			l2, a2, b2 = c2.labD50()
 		}
 	}
 
@@ -132,25 +132,25 @@ func deltaE94(c1, c2 Color, d65 bool) float64 {
 		if c1.space == space.LabD65 {
 			l1, a1, b1 = c1.c1, c1.c2, c1.c3
 		} else {
-			l1, a1, b1 = c1.LabD65()
+			l1, a1, b1 = c1.labD65()
 		}
 
 		if c2.space == space.LabD65 {
 			l2, a2, b2 = c2.c1, c2.c2, c2.c3
 		} else {
-			l2, a2, b2 = c2.LabD65()
+			l2, a2, b2 = c2.labD65()
 		}
 	} else {
 		if c1.space == space.LabD50 {
 			l1, a1, b1 = c1.c1, c1.c2, c1.c3
 		} else {
-			l1, a1, b1 = c1.LabD50()
+			l1, a1, b1 = c1.labD50()
 		}
 
 		if c2.space == space.LabD50 {
 			l2, a2, b2 = c2.c1, c2.c2, c2.c3
 		} else {
-			l2, a2, b2 = c2.LabD50()
+			l2, a2, b2 = c2.labD50()
 		}
 	}
 
@@ -206,25 +206,25 @@ func deltaE2000(c1, c2 Color, d65 bool) float64 {
 		if c1.space == space.LabD65 {
 			l1, a1, b1 = c1.c1, c1.c2, c1.c3
 		} else {
-			l1, a1, b1 = c1.LabD65()
+			l1, a1, b1 = c1.labD65()
 		}
 
 		if c2.space == space.LabD65 {
 			l2, a2, b2 = c2.c1, c2.c2, c2.c3
 		} else {
-			l2, a2, b2 = c2.LabD65()
+			l2, a2, b2 = c2.labD65()
 		}
 	} else {
 		if c1.space == space.LabD50 {
 			l1, a1, b1 = c1.c1, c1.c2, c1.c3
 		} else {
-			l1, a1, b1 = c1.LabD50()
+			l1, a1, b1 = c1.labD50()
 		}
 
 		if c2.space == space.LabD50 {
 			l2, a2, b2 = c2.c1, c2.c2, c2.c3
 		} else {
-			l2, a2, b2 = c2.LabD50()
+			l2, a2, b2 = c2.labD50()
 		}
 	}
 

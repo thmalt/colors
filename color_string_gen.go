@@ -4,17 +4,20 @@ package colors
 
 import (
 	"strconv"
-	"unsafe"
 
 	"github.com/thmalt/colors/space"
 )
 
 func (c Color) String() string {
-	if !c.space.IsValid() {
-		return "Color(<invalid space: " + strconv.FormatUint(uint64(c.space), 10) + ">)"
-	}
+	var arr [128]byte
+	buf := arr[:0]
 
-	buf := make([]byte, 0, 64)
+	if !c.space.IsValid() {
+		buf = append(buf, "Color(<invalid space: "...)
+		buf = strconv.AppendUint(buf, uint64(c.space), 10)
+		buf = append(buf, '>', ')')
+		return string(buf)
+	}
 
 	switch c.space {
 	case space.Srgb:
@@ -114,17 +117,20 @@ func (c Color) String() string {
 		buf = append(buf, "hwb("...)
 		buf = appendFormatHsl(buf, c.c1, c.c2, c.c3)
 	default:
-		return "Color(<unhandled space: " + strconv.FormatUint(uint64(c.space), 10) + ">)"
+		buf = append(buf, "Color(<unhandled space: "...)
+		buf = strconv.AppendUint(buf, uint64(c.space), 10)
+		buf = append(buf, '>', ')')
+		return string(buf)
 	}
 
 	if alpha := normalizeFloat(c.alpha); alpha != 1 {
-		buf = append(buf, " / "...)
+		buf = append(buf, ' ', '/', ' ')
 		buf = appendFormatFloatPrec(buf, alpha, 6)
 	}
 
 	buf = append(buf, ')')
 
-	return unsafe.String(unsafe.SliceData(buf), len(buf))
+	return string(buf)
 }
 
 func appendFormatSrgb(dst []byte, c1, c2, c3 float64) []byte {

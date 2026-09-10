@@ -51,7 +51,7 @@ func tryMapToGamutOklch(c Color, dst space.Space) (Color, bool) {
 		return d, true
 	}
 
-	lightness, chroma, hue := c.Oklch()
+	lightness, chroma, hue := c.oklch()
 
 	color := OklchAlpha(lightness, 0, hue, c.alpha)
 

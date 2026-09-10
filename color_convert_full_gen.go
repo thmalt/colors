@@ -858,12 +858,12 @@ func (c *Color) linearRec2020() (r, g, b float64) {
 
 // LinearRec2100 returns the color components in the [space.LinearRec2100] color space.
 func (c Color) LinearRec2100() (r, g, b float64) {
-	return c.linearRec2100()
+	return c.linearRec2020()
 }
 
 // linearRec2100 returns the color components in the [space.LinearRec2100] color space.
 func (c *Color) linearRec2100() (r, g, b float64) {
-	return c.LinearRec2020()
+	return c.linearRec2020()
 }
 
 // Rec2100PQ returns the color components in the [space.Rec2100PQ] color space.

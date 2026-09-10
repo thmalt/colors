@@ -14,15 +14,16 @@ func genRootPkgColorStringMethod(ctx *Context, w *writer.GoWriter) {
 	w.FuncResults("string")
 	w.FuncBody()
 
-	invalidReturn := `"Color(<invalid space: " + strconv.FormatUint(uint64(c.space), 10) + ">)"`
-	unhandledReturn := `"Color(<unhandled space: " + strconv.FormatUint(uint64(c.space), 10) + ">)"`
-
-	w.If("!c.space.IsValid()")
-	w.Return(invalidReturn)
-	w.End()
+	w.LineWriteln("var arr [128]byte")
+	w.LineWriteln("buf := arr[:0]")
 
 	w.Separate()
-	w.LineWriteln("buf := make([]byte, 0, 64)")
+	w.If("!c.space.IsValid()")
+	w.LineWriteln(`buf = append(buf, "Color(<invalid space: "...)`)
+	w.LineWriteln("buf = strconv.AppendUint(buf, uint64(c.space), 10)")
+	w.LineWriteln("buf = append(buf, '>', ')')")
+	w.Return("string(buf)")
+	w.End()
 
 	w.Separate()
 	w.Switch("c.space")
@@ -52,13 +53,16 @@ func genRootPkgColorStringMethod(ctx *Context, w *writer.GoWriter) {
 	}
 
 	w.Default()
-	w.Return(unhandledReturn)
+	w.LineWriteln(`buf = append(buf, "Color(<unhandled space: "...)`)
+	w.LineWriteln("buf = strconv.AppendUint(buf, uint64(c.space), 10)")
+	w.LineWriteln("buf = append(buf, '>', ')')")
+	w.Return("string(buf)")
 	w.End()
 
 	w.Separate()
 
 	w.If("alpha := normalizeFloat(c.alpha); alpha != 1")
-	w.LineWriteln(`buf = append(buf, " / "...)`)
+	w.LineWriteln("buf = append(buf, ' ', '/', ' ')")
 	w.LineWrite("buf = ")
 	w.Write(AppendFloatFormatPrecFuncName, "(buf, ")
 	w.Write("alpha, ", AlphaPrecision)
@@ -69,7 +73,7 @@ func genRootPkgColorStringMethod(ctx *Context, w *writer.GoWriter) {
 	w.LineWriteln("buf = append(buf, ')')")
 
 	w.Separate()
-	w.Return("unsafe.String(unsafe.SliceData(buf), len(buf))")
+	w.Return("string(buf)")
 
 	w.End()
 

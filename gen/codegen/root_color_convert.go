@@ -52,7 +52,11 @@ func genRootPkgColorConvertMethod(ctx *Context, w *writer.GoWriter, dst *model.S
 	w.Method("c Color", dst.Name)
 	w.FuncResults(retList)
 	w.FuncBody()
-	w.Return("c.", lowerFnName, "()")
+	if eq := ctx.SpaceByName(dst.Equivalent); eq != nil {
+		w.Return("c.", toLowerCaseFirstWord(eq.Name), "()")
+	} else {
+		w.Return("c.", lowerFnName, "()")
+	}
 	w.End()
 
 	w.Separate()
@@ -62,7 +66,7 @@ func genRootPkgColorConvertMethod(ctx *Context, w *writer.GoWriter, dst *model.S
 	w.FuncBody()
 
 	if eq := ctx.SpaceByName(dst.Equivalent); eq != nil {
-		w.Return("c.", eq.Name, "()")
+		w.Return("c.", toLowerCaseFirstWord(eq.Name), "()")
 		w.End()
 		return
 	}

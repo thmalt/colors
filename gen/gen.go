@@ -80,6 +80,9 @@ func main() {
 	fmt.Println("Generating named package...")
 	codegen.GenerateNamedPkg(ctx)
 
+	fmt.Println("Generating internal packages...")
+	codegen.GenerateInternalPkgs(ctx)
+
 	end := time.Now()
 
 	if !ctx.Opts.FormatSource {
