@@ -571,6 +571,10 @@ var (
 	//	rgb(255, 99, 71)
 	Tomato = colors.Rgb(255, 99, 71)
 
+	// Transparent is the CSS named color "transparent"
+	//	rgba(0, 0, 0, 0)
+	Transparent = colors.RgbAlpha(0, 0, 0, 0)
+
 	// Turquoise is the CSS named color "turquoise"
 	//	rgb(64, 224, 208)
 	Turquoise = colors.Rgb(64, 224, 208)
@@ -598,8 +602,4 @@ var (
 	// YellowGreen is the CSS named color "yellowgreen"
 	//	rgb(154, 205, 50)
 	YellowGreen = colors.Rgb(154, 205, 50)
-
-	// Transparent is the CSS named color "transparent"
-	//	rgba(0, 0, 0, 0)
-	Transparent = colors.RgbAlpha(0, 0, 0, 0)
 )

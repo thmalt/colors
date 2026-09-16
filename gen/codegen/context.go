@@ -6,6 +6,7 @@ import (
 	"log"
 	"slices"
 
+	"github.com/thmalt/colors/gen/codegen/data"
 	"github.com/thmalt/colors/gen/codegen/model"
 )
 
@@ -43,6 +44,7 @@ type Context struct {
 	Spaces      []*model.Space
 	WhitePoints []*model.WhitePoint
 	BuiltSpaces []*model.Space
+	NamedColors []data.NamedColor
 
 	Funcs []ConvertFunc
 	Graph Graph
@@ -69,8 +71,9 @@ type Context struct {
 
 func NewContext(opts Options) *Context {
 	return &Context{
-		Opts:     opts,
-		spaceMap: make(map[string]*model.Space),
+		Opts:        opts,
+		spaceMap:    make(map[string]*model.Space),
+		NamedColors: data.NamedColors,
 	}
 }
 
