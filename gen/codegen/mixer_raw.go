@@ -7,7 +7,7 @@ import (
 	"github.com/thmalt/colors/gen/codegen/writer"
 )
 
-func genMixerPkgUnsafe(ctx *Context, w *writer.GoWriter) {
+func genMixerPkgRawMixer(ctx *Context, w *writer.GoWriter) {
 	indexes := make([]bool, ctx.MaxChannelCount)
 	for i := range indexes {
 		indexes[i] = true
@@ -19,19 +19,19 @@ func genMixerPkgUnsafe(ctx *Context, w *writer.GoWriter) {
 			continue
 		}
 
-		genMixerPkgUnsafeMixMethod(ctx, w, count, indexes[:count])
+		genMixerPkgRawMixerMethod(ctx, w, count, indexes[:count])
 	}
 }
 
-func genMixerPkgUnsafeMixMethod(ctx *Context, w *writer.GoWriter, channelCount int, indexes []bool) {
+func genMixerPkgRawMixerMethod(ctx *Context, w *writer.GoWriter, channelCount int, indexes []bool) {
 	a := toVars(nil, "a", channelCount, "a")
 	b := toVars(nil, "b", channelCount, "a")
 	c := toVars(nil, "c", channelCount, "a")
 
 	w.Separate()
-	w.Comment("Mix", channelCount, " mixes ", channelCount, " color channels and alpha between two colors.")
-	w.Comment("The inputs are assumed to be valid and compatible with the mixer.")
-	w.Method("m UnsafeMixer", "Mix", channelCount)
+	w.Comment("Mix", channelCount, " interpolates ", channelCount, " color channels and alpha between two colors.")
+	w.Comment("The channel values must match the mixer's channel configuration.")
+	w.Method("m RawMixer", "Mix", channelCount)
 	w.FuncParams(
 		joinIdentsWithType(FloatType, a...),
 		", ",
@@ -55,16 +55,16 @@ func genMixerPkgUnsafeMixMethod(ctx *Context, w *writer.GoWriter, channelCount i
 
 		w.Case(index)
 
-		genMixerPkgUnsafeMixMethodHue(ctx, w, a[index], b[index], c[index])
+		genMixerPkgRawMixMethodHue(ctx, w, a[index], b[index], c[index])
 
 		w.Separate()
-		genMixerPkgUnsafeMixMethodLinear(w, a, b, c, channelCount, index)
+		genMixerPkgRawMixMethodLinear(w, a, b, c, channelCount, index)
 
 		w.Return()
 	}
 	w.Default()
 
-	genMixerPkgUnsafeMixMethodLinear(w, a, b, c, channelCount, -1)
+	genMixerPkgRawMixMethodLinear(w, a, b, c, channelCount, -1)
 
 	w.Return()
 
@@ -73,9 +73,9 @@ func genMixerPkgUnsafeMixMethod(ctx *Context, w *writer.GoWriter, channelCount i
 	w.End()
 }
 
-func genMixerPkgUnsafeMixMethodHue(ctx *Context, w *writer.GoWriter, a, b, c string) {
+func genMixerPkgRawMixMethodHue(ctx *Context, w *writer.GoWriter, a, b, c string) {
 	lerpHue := ctx.InterpPkg.Join("LerpHue")
-	w.Switch("m.hue")
+	w.Switch("m.hueInterp")
 	for i := range interp.HueDecreasing {
 		name := (i + 1).String()
 
@@ -89,7 +89,7 @@ func genMixerPkgUnsafeMixMethodHue(ctx *Context, w *writer.GoWriter, a, b, c str
 	w.End()
 }
 
-func genMixerPkgUnsafeMixMethodLinear(w *writer.GoWriter, a, b, c []string, count, hueIndex int) {
+func genMixerPkgRawMixMethodLinear(w *writer.GoWriter, a, b, c []string, count, hueIndex int) {
 	w.If("m.premultiplied")
 
 	w.LineWriteln("w1, w2 := ", a[count], "*(1-t), ", b[count], "*t") // w1, w2 := a*(1-t), b*t

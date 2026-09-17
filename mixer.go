@@ -8,7 +8,7 @@ import (
 type Mixer struct {
 	space    space.Space
 	channels uint8
-	unsafe   mixer.UnsafeMixer
+	raw      mixer.RawMixer
 }
 
 // NewMixerWithOptions creates a [Mixer] that interpolates colors in opts.Space.
@@ -21,7 +21,7 @@ func NewMixerWithOptions(opts InterpOptions) Mixer {
 	return Mixer{
 		space:    opts.Space,
 		channels: uint8(opts.Space.ChannelCount()),
-		unsafe:   mixer.NewUnsafeMixer(opts.Space.HueIndex(), opts.Premultiplied, opts.Hue),
+		raw:      mixer.NewRawMixer(opts.Premultiplied, opts.Space.HueIndex(), opts.Hue),
 	}
 }
 
@@ -37,24 +37,20 @@ func (m Mixer) Space() space.Space {
 	return m.space
 }
 
-// Unsafe returns the mixer without safety checks.
-func (m Mixer) Unsafe() mixer.UnsafeMixer {
-	return m.unsafe
+// Raw returns the [mixer.RawMixer].
+func (m Mixer) Raw() mixer.RawMixer {
+	return m.raw
 }
 
-// Mix linearly interpolates c1 and c2 using the default mixer.
+// Mix interpolates between two colors using the default mix options.
 // See [NewMixer] for the default mix options.
 func Mix(c1, c2 Color, t float64) Color {
 	return defaultMixer.Mix(c1, c2, t)
 }
 
-// MixWith returns the [Color] interpolation of c1 and c2.
-//
-// The interpolation is performed in opts.Space. If opts.Space is
-// [space.InvalidSpace], [space.Oklab] is used.
-//
-// The interpolation behavior can be customized through opts, including
-// premultiplied alpha and hue interpolation for polar color spaces.
+// MixWith interpolates between two colors using the specified interpolation options.
+// The interpolation is performed in opts.Space.
+// An invalid space defaults to [space.Oklab].
 func MixWith(c1, c2 Color, t float64, opts InterpOptions) Color {
 	return NewMixerWithOptions(opts).Mix(c1, c2, t)
 }

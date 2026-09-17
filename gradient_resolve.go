@@ -126,8 +126,8 @@ func resolveHints(stops []GradientStop, mixer Mixer) []GradientStop {
 // resolveHints resolves color hints according to the CSS gradient
 // color-hint resolution algorithm.
 //
-// The algorithm is based on WebKit/Blink's CSSGradientValue
-// implementation. See third_party/licenses/blink.txt.
+// The algorithm is based on WebKit/Blink's CSSGradientValue implementation.
+// See third_party/LICENSES, section "WebKit/Blink - CSSGradientValue".
 func resolveHint(dst []GradientStop, left, hint, right GradientStop, mixer Mixer) []GradientStop {
 	offsetLeft := left.Offset
 	offset := hint.Offset

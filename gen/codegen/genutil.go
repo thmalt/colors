@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	// for UnsafeMixer, Color.Channel[N]
+	// for RawMixer, Color.Channel[N]
 	MinGeneratedChannelCount = 4
 
 	FloatType = "float64"

@@ -6,14 +6,6 @@ import (
 	"sort"
 )
 
-// GradientStop represents a color and its position within a gradient.
-type GradientStop struct {
-	Color  Color
-	Offset float64
-
-	invRange float64
-}
-
 type Spread uint8
 
 const (
@@ -29,9 +21,7 @@ type Gradient struct {
 	stops []GradientStop
 }
 
-// NewGradientWithOptions creates a gradient with the
-// specified interpolation options and color stops.
-func NewGradientWithOptions(opts InterpOptions, stops ...GradientStop) Gradient {
+func newGradientWithOptions(opts InterpOptions, stops []GradientStop) Gradient {
 	mixer := NewMixerWithOptions(opts)
 
 	resolved := resolveStops(slices.Clone(stops), mixer)
@@ -42,9 +32,19 @@ func NewGradientWithOptions(opts InterpOptions, stops ...GradientStop) Gradient 
 	}
 }
 
+func newGradient(stops []GradientStop) Gradient {
+	return newGradientWithOptions(DefaultInterpOptions(), stops)
+}
+
+// NewGradientWithOptions creates a gradient with the
+// specified interpolation options and color stops.
+func NewGradientWithOptions(opts InterpOptions, stops ...GradientStop) Gradient {
+	return newGradientWithOptions(opts, stops)
+}
+
 // NewGradient returns a new [Gradient] using [DefaultInterpOptions].
 func NewGradient(stops ...GradientStop) Gradient {
-	return NewGradientWithOptions(DefaultInterpOptions(), stops...)
+	return newGradient(stops)
 }
 
 func NewHint(offset float64) GradientStop {
@@ -74,16 +74,6 @@ func NewStopsAt(color Color, offsets ...float64) []GradientStop {
 		stops[i] = GradientStop{Color: color, Offset: offset}
 	}
 	return stops
-}
-
-// HasOffset reports whether the stop has an explicit offset.
-func (s GradientStop) HasOffset() bool {
-	return !math.IsNaN(s.Offset)
-}
-
-// IsHint reports whether the stop is an interpolation hint.
-func (s GradientStop) IsHint() bool {
-	return !s.Color.space.IsValid()
 }
 
 // Stops returns a copy of the gradient's color stops.

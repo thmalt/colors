@@ -12,9 +12,9 @@ func GenerateMixerPkg(ctx *Context) {
 
 	w := newWriter(ctx)
 
-	emitGoFile(ctx, pkg, w, "unsafe", func(w *writer.GoWriter) {
+	emitGoFile(ctx, pkg, w, "raw", func(w *writer.GoWriter) {
 		w.Import(ctx.InterpPkg.Path)
 
-		genMixerPkgUnsafe(ctx, w)
+		genMixerPkgRawMixer(ctx, w)
 	})
 }

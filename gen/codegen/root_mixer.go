@@ -16,7 +16,7 @@ func genRootPkgMixerMethod(ctx *Context, w *writer.GoWriter) {
 		}
 
 		sub.Case(channelCount)
-		genRootPkgMixerMethodCase(sub, "m.unsafe.Mix", "m.space", channelCount)
+		genRootPkgMixerMethodCase(sub, "m.raw.Mix", "m.space", channelCount)
 	}
 	sub.Default()
 	sub.Return("Color{}")
@@ -24,8 +24,7 @@ func genRootPkgMixerMethod(ctx *Context, w *writer.GoWriter) {
 
 	w.Separate()
 	// func (m Mixer) Mix(c1, c2 Color, t float64) Color
-	w.Comment("Mix converts c1 and c2 to the mixer's color space and linearly interpolates them.")
-	w.Comment("The result is returned in the mixer's color space.")
+	w.Comment("Mix interpolates between two colors in the mixer's color space.")
 	w.Method("m Mixer", "Mix")
 	w.FuncParams("c1, c2 Color, t ", FloatType)
 	w.FuncResults("Color")
@@ -44,8 +43,8 @@ func genRootPkgMixerMethod(ctx *Context, w *writer.GoWriter) {
 
 	w.Separate()
 	// func (m Mixer) UnsafeMix(c1, c2 Color, t float64) Color
-	w.Comment("UnsafeMix linearly interpolates c1 and c2 in the mixer's color space.")
-	w.Comment("It assumes both colors are already in the mixer's color space.")
+	w.Comment("UnsafeMix interpolates between two colors in the mixer's color space.")
+	w.Comment("The input colors must already be in the mixer's color space.")
 	w.Method("m Mixer", "UnsafeMix")
 	w.FuncParams("c1, c2 Color, t ", FloatType)
 	w.FuncResults("Color")
@@ -58,18 +57,18 @@ func genRootPkgMixerMethodCase(w *writer.GoWriter, name, space string, channelCo
 	temp := make([]string, channelCount+1)
 
 	w.LineWriteJoin(appendVars(temp[:0], "x", channelCount, "alpha"), ", ")
-	w.Write(" := ", name, channelCount, "(")
+	w.Write(" := ", name, channelCount, '(')
 	w.In()
 
 	w.LineWriteJoin(appendVars(temp[:0], "c1.c", channelCount, "c1.alpha"), ", ")
-	w.Write(",")
+	w.Write(',')
 	w.LineWriteJoin(appendVars(temp[:0], "c2.c", channelCount, "c2.alpha"), ", ")
-	w.Write(",")
+	w.Write(',')
 
 	w.LineWriteln("t,")
 
 	w.Out()
-	w.LineWriteln(")")
+	w.LineWriteln(')')
 
 	w.ReturnInline()
 	writeColorLiteral(w, space, channelCount, appendVars(temp[:0], "x", channelCount, "alpha")...)

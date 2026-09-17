@@ -6,12 +6,12 @@ import (
 	"github.com/thmalt/colors/interp"
 )
 
-// Mix3 mixes 3 color channels and alpha between two colors.
-// The inputs are assumed to be valid and compatible with the mixer.
-func (m UnsafeMixer) Mix3(a1, a2, a3, aa float64, b1, b2, b3, ba float64, t float64) (c1, c2, c3, ca float64) {
+// Mix3 interpolates 3 color channels and alpha between two colors.
+// The channel values must match the mixer's channel configuration.
+func (m RawMixer) Mix3(a1, a2, a3, aa float64, b1, b2, b3, ba float64, t float64) (c1, c2, c3, ca float64) {
 	switch m.hueIndex {
 	case 0:
-		switch m.hue {
+		switch m.hueInterp {
 		case interp.HueLonger:
 			c1 = interp.LerpHueLonger(a1, b1, t)
 		case interp.HueIncreasing:
@@ -40,7 +40,7 @@ func (m UnsafeMixer) Mix3(a1, a2, a3, aa float64, b1, b2, b3, ba float64, t floa
 		}
 		return
 	case 1:
-		switch m.hue {
+		switch m.hueInterp {
 		case interp.HueLonger:
 			c2 = interp.LerpHueLonger(a2, b2, t)
 		case interp.HueIncreasing:
@@ -69,7 +69,7 @@ func (m UnsafeMixer) Mix3(a1, a2, a3, aa float64, b1, b2, b3, ba float64, t floa
 		}
 		return
 	case 2:
-		switch m.hue {
+		switch m.hueInterp {
 		case interp.HueLonger:
 			c3 = interp.LerpHueLonger(a3, b3, t)
 		case interp.HueIncreasing:
@@ -121,12 +121,12 @@ func (m UnsafeMixer) Mix3(a1, a2, a3, aa float64, b1, b2, b3, ba float64, t floa
 	}
 }
 
-// Mix4 mixes 4 color channels and alpha between two colors.
-// The inputs are assumed to be valid and compatible with the mixer.
-func (m UnsafeMixer) Mix4(a1, a2, a3, a4, aa float64, b1, b2, b3, b4, ba float64, t float64) (c1, c2, c3, c4, ca float64) {
+// Mix4 interpolates 4 color channels and alpha between two colors.
+// The channel values must match the mixer's channel configuration.
+func (m RawMixer) Mix4(a1, a2, a3, a4, aa float64, b1, b2, b3, b4, ba float64, t float64) (c1, c2, c3, c4, ca float64) {
 	switch m.hueIndex {
 	case 0:
-		switch m.hue {
+		switch m.hueInterp {
 		case interp.HueLonger:
 			c1 = interp.LerpHueLonger(a1, b1, t)
 		case interp.HueIncreasing:
@@ -158,7 +158,7 @@ func (m UnsafeMixer) Mix4(a1, a2, a3, a4, aa float64, b1, b2, b3, b4, ba float64
 		}
 		return
 	case 1:
-		switch m.hue {
+		switch m.hueInterp {
 		case interp.HueLonger:
 			c2 = interp.LerpHueLonger(a2, b2, t)
 		case interp.HueIncreasing:
@@ -190,7 +190,7 @@ func (m UnsafeMixer) Mix4(a1, a2, a3, a4, aa float64, b1, b2, b3, b4, ba float64
 		}
 		return
 	case 2:
-		switch m.hue {
+		switch m.hueInterp {
 		case interp.HueLonger:
 			c3 = interp.LerpHueLonger(a3, b3, t)
 		case interp.HueIncreasing:
@@ -222,7 +222,7 @@ func (m UnsafeMixer) Mix4(a1, a2, a3, a4, aa float64, b1, b2, b3, b4, ba float64
 		}
 		return
 	case 3:
-		switch m.hue {
+		switch m.hueInterp {
 		case interp.HueLonger:
 			c4 = interp.LerpHueLonger(a4, b4, t)
 		case interp.HueIncreasing:
