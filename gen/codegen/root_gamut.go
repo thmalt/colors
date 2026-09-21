@@ -11,6 +11,7 @@ func genRootPkgGamut(ctx *Context, w *writer.GoWriter) {
 
 func genRootPkgInGamut(ctx *Context, w *writer.GoWriter) {
 	w.Separate()
+	// func InGamut(c Color) bool
 	w.Comment("InGamut reports whether c is within the gamut of its color space.")
 	w.Func("InGamut")
 	w.FuncParams("c Color")
@@ -50,6 +51,7 @@ func genRootPkgInGamut(ctx *Context, w *writer.GoWriter) {
 
 func genRootPkgInGamutSpace(w *writer.GoWriter) {
 	w.Separate()
+	// func InGamutSpace(c Color, dst space.Space) bool
 	w.Comment("InGamutSpace reports whether c is within the gamut of the specified color space.")
 	w.Func("InGamutSpace")
 	w.FuncParams("c Color, dst space.Space")

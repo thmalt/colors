@@ -7,12 +7,15 @@ import (
 func genRootPkgClamp(ctx *Context, w *writer.GoWriter) {
 	w.Separate()
 	// func Clamp(c Color) Color
-	w.Comment("Clamp clamps the color channels to the valid range of the color space.")
+	w.Comment("Clamp clamps the color channels to their valid ranges and alpha to [0, 1].")
 	w.Func("Clamp")
 	w.FuncParams("c Color")
 	w.FuncResults("Color")
 	w.FuncBody()
 
+	w.LineWriteln("c.alpha = clamp01(c.alpha)")
+
+	w.Separate()
 	w.Switch("c.space")
 
 	sub := w.SubWriter()
@@ -62,16 +65,23 @@ func rootPkgClampGroup(ctx *Context, w *writer.GoWriter) []groupSpaceValue {
 			min := normalizeFloat(ch.Min)
 			max := normalizeFloat(ch.Max)
 
-			if ch.Circular && min == 0 && max == 360 {
-				w.Writeln("wrap360", '(', "c.c", j+1, ')')
-			} else {
-				fn := "clamp"
-				if ch.Circular {
-					fn = "wrap"
+			if ch.Circular {
+				if min == 0 && max == 360 {
+					w.Writeln("wrap360", '(', "c.c", j+1, ')')
+				} else {
+					w.Writeln(
+						"wrap", '(',
+						"c.c", j+1,
+						", ", formatFloat(min),
+						", ", formatFloat(max),
+						')',
+					)
 				}
-
+			} else if min == 0 && max == 1 {
+				w.Writeln("clamp01", '(', "c.c", j+1, ')')
+			} else {
 				w.Writeln(
-					fn, '(',
+					"clamp", '(',
 					"c.c", j+1,
 					", ", formatFloat(min),
 					", ", formatFloat(max),

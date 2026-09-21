@@ -39,24 +39,26 @@ func InGamutSpace(c Color, dst space.Space) bool {
 	return c.mutTo(dst) && InGamut(c)
 }
 
-// Clamp clamps the color channels to the valid range of the color space.
+// Clamp clamps the color channels to their valid ranges and alpha to [0, 1].
 func Clamp(c Color) Color {
+	c.alpha = clamp01(c.alpha)
+
 	switch c.space {
 	case space.XyzD50, space.XyzD65, space.XyzAbsD65:
 		return c
 	case space.Oklab:
-		c.c1 = clamp(c.c1, 0, 1)
+		c.c1 = clamp01(c.c1)
 		return c
 	case space.LabD50, space.LabD65, space.LuvD50, space.LuvD65:
 		c.c1 = clamp(c.c1, 0, 100)
 		return c
 	case space.Oklch:
-		c.c1 = clamp(c.c1, 0, 1)
+		c.c1 = clamp01(c.c1)
 		c.c3 = wrap360(c.c3)
 		return c
 	case space.XyYD50, space.XyYD65:
-		c.c1 = clamp(c.c1, 0, 1)
-		c.c2 = clamp(c.c2, 0, 1)
+		c.c1 = clamp01(c.c1)
+		c.c2 = clamp01(c.c2)
 		return c
 	case space.LchD50, space.LchD65, space.LchuvD50, space.LchuvD65:
 		c.c1 = clamp(c.c1, 0, 100)
@@ -64,16 +66,16 @@ func Clamp(c Color) Color {
 		return c
 	case space.Hsl, space.Hsv, space.Hwb:
 		c.c1 = wrap360(c.c1)
-		c.c2 = clamp(c.c2, 0, 1)
-		c.c3 = clamp(c.c3, 0, 1)
+		c.c2 = clamp01(c.c2)
+		c.c3 = clamp01(c.c3)
 		return c
 	case space.Srgb, space.LinearSrgb, space.DisplayP3, space.LinearDisplayP3,
 		space.A98, space.LinearA98, space.ProPhoto, space.LinearProPhoto,
 		space.Rec2020, space.Rec2020OETF, space.LinearRec2020, space.LinearRec2100,
 		space.Rec2100PQ, space.Rec2100HLG:
-		c.c1 = clamp(c.c1, 0, 1)
-		c.c2 = clamp(c.c2, 0, 1)
-		c.c3 = clamp(c.c3, 0, 1)
+		c.c1 = clamp01(c.c1)
+		c.c2 = clamp01(c.c2)
+		c.c3 = clamp01(c.c3)
 		return c
 	default:
 		return c
