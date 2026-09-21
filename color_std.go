@@ -2,7 +2,7 @@ package colors
 
 import (
 	"image/color"
-	"math"
+	"reflect"
 
 	"github.com/thmalt/colors/convert"
 	"github.com/thmalt/colors/space"
@@ -12,6 +12,10 @@ import (
 func (c Color) RGBA() (r, g, b, a uint32) {
 	alpha16 := clamp01(c.alpha) * maxUint16
 	a = uint32(alpha16 + 0.5)
+
+	if a == 0 {
+		return 0, 0, 0, 0
+	}
 
 	switch c.space {
 	case space.Srgb:
@@ -26,212 +30,256 @@ func (c Color) RGBA() (r, g, b, a uint32) {
 		b = uint32(clamp01(fb)*alpha16 + 0.5)
 		return
 	case space.LinearSrgb:
-		r = uint32(lsrgb(clamp01(c.c1))*alpha16 + 0.5)
-		g = uint32(lsrgb(clamp01(c.c2))*alpha16 + 0.5)
-		b = uint32(lsrgb(clamp01(c.c3))*alpha16 + 0.5)
+		r = uint32(convert.Srgb16Encode(c.c1)) * a / maxUint16
+		g = uint32(convert.Srgb16Encode(c.c2)) * a / maxUint16
+		b = uint32(convert.Srgb16Encode(c.c3)) * a / maxUint16
 		return
 	default:
 		fr, fg, fb := c.linearSrgb()
-		r = uint32(lsrgb(clamp01(fr))*alpha16 + 0.5)
-		g = uint32(lsrgb(clamp01(fg))*alpha16 + 0.5)
-		b = uint32(lsrgb(clamp01(fb))*alpha16 + 0.5)
+		r = uint32(convert.Srgb16Encode(fr)) * a / maxUint16
+		g = uint32(convert.Srgb16Encode(fg)) * a / maxUint16
+		b = uint32(convert.Srgb16Encode(fb)) * a / maxUint16
 		return
 	}
 }
 
 // ToRGBA64 converts the color to an sRGB [color.RGBA64].
 func (c Color) ToRGBA64() color.RGBA64 {
-	var r, g, b uint16
 	alpha16 := clamp01(c.alpha) * maxUint16
 	a := uint16(alpha16 + 0.5)
 
+	if a == 0 {
+		return color.RGBA64{}
+	}
+
 	switch c.space {
 	case space.Srgb:
-		r = uint16(clamp01(c.c1)*alpha16 + 0.5)
-		g = uint16(clamp01(c.c2)*alpha16 + 0.5)
-		b = uint16(clamp01(c.c3)*alpha16 + 0.5)
+		r := uint16(clamp01(c.c1)*alpha16 + 0.5)
+		g := uint16(clamp01(c.c2)*alpha16 + 0.5)
+		b := uint16(clamp01(c.c3)*alpha16 + 0.5)
 		return color.RGBA64{R: r, G: g, B: b, A: a}
 	case space.Hsl, space.Hsv, space.Hwb:
 		fr, fg, fb := c.srgb()
-		r = uint16(clamp01(fr)*alpha16 + 0.5)
-		g = uint16(clamp01(fg)*alpha16 + 0.5)
-		b = uint16(clamp01(fb)*alpha16 + 0.5)
+		r := uint16(clamp01(fr)*alpha16 + 0.5)
+		g := uint16(clamp01(fg)*alpha16 + 0.5)
+		b := uint16(clamp01(fb)*alpha16 + 0.5)
 		return color.RGBA64{R: r, G: g, B: b, A: a}
 	case space.LinearSrgb:
-		r = uint16(lsrgb(clamp01(c.c1))*alpha16 + 0.5)
-		g = uint16(lsrgb(clamp01(c.c2))*alpha16 + 0.5)
-		b = uint16(lsrgb(clamp01(c.c3))*alpha16 + 0.5)
+		r := uint16(uint32(convert.Srgb16Encode(c.c1)) * uint32(a) / maxUint16)
+		g := uint16(uint32(convert.Srgb16Encode(c.c2)) * uint32(a) / maxUint16)
+		b := uint16(uint32(convert.Srgb16Encode(c.c3)) * uint32(a) / maxUint16)
 		return color.RGBA64{R: r, G: g, B: b, A: a}
 	default:
 		fr, fg, fb := c.linearSrgb()
-		r = uint16(lsrgb(clamp01(fr))*alpha16 + 0.5)
-		g = uint16(lsrgb(clamp01(fg))*alpha16 + 0.5)
-		b = uint16(lsrgb(clamp01(fb))*alpha16 + 0.5)
+		r := uint16(uint32(convert.Srgb16Encode(fr)) * uint32(a) / maxUint16)
+		g := uint16(uint32(convert.Srgb16Encode(fg)) * uint32(a) / maxUint16)
+		b := uint16(uint32(convert.Srgb16Encode(fb)) * uint32(a) / maxUint16)
 		return color.RGBA64{R: r, G: g, B: b, A: a}
 	}
 }
 
 // ToNRGBA64 converts the color to an sRGB [color.NRGBA64].
 func (c Color) ToNRGBA64() color.NRGBA64 {
-	var r, g, b, a uint16
-	a = uint16(clamp01(c.alpha)*maxUint16 + 0.5)
+	a := uint16(clamp01(c.alpha)*maxUint16 + 0.5)
 
 	switch c.space {
 	case space.Srgb:
-		r = uint16(clamp01(c.c1)*maxUint16 + 0.5)
-		g = uint16(clamp01(c.c2)*maxUint16 + 0.5)
-		b = uint16(clamp01(c.c3)*maxUint16 + 0.5)
+		r := uint16(clamp01(c.c1)*maxUint16 + 0.5)
+		g := uint16(clamp01(c.c2)*maxUint16 + 0.5)
+		b := uint16(clamp01(c.c3)*maxUint16 + 0.5)
 		return color.NRGBA64{R: r, G: g, B: b, A: a}
 	case space.Hsl, space.Hsv, space.Hwb:
 		fr, fg, fb := c.srgb()
-		r = uint16(clamp01(fr)*maxUint16 + 0.5)
-		g = uint16(clamp01(fg)*maxUint16 + 0.5)
-		b = uint16(clamp01(fb)*maxUint16 + 0.5)
+		r := uint16(clamp01(fr)*maxUint16 + 0.5)
+		g := uint16(clamp01(fg)*maxUint16 + 0.5)
+		b := uint16(clamp01(fb)*maxUint16 + 0.5)
 		return color.NRGBA64{R: r, G: g, B: b, A: a}
 	case space.LinearSrgb:
-		r = uint16(lsrgb(clamp01(c.c1))*maxUint16 + 0.5)
-		g = uint16(lsrgb(clamp01(c.c2))*maxUint16 + 0.5)
-		b = uint16(lsrgb(clamp01(c.c3))*maxUint16 + 0.5)
+		r := convert.Srgb16Encode(c.c1)
+		g := convert.Srgb16Encode(c.c2)
+		b := convert.Srgb16Encode(c.c3)
 		return color.NRGBA64{R: r, G: g, B: b, A: a}
 	default:
 		fr, fg, fb := c.linearSrgb()
-		r = uint16(lsrgb(clamp01(fr))*maxUint16 + 0.5)
-		g = uint16(lsrgb(clamp01(fg))*maxUint16 + 0.5)
-		b = uint16(lsrgb(clamp01(fb))*maxUint16 + 0.5)
+		r := convert.Srgb16Encode(fr)
+		g := convert.Srgb16Encode(fg)
+		b := convert.Srgb16Encode(fb)
 		return color.NRGBA64{R: r, G: g, B: b, A: a}
 	}
 }
 
 // ToRGBA converts the color to an sRGB [color.RGBA].
 func (c Color) ToRGBA() color.RGBA {
-	var r, g, b, a uint8
-	alpha := clamp01(c.alpha)
-	alpha8 := alpha * maxUint8
-	a = uint8(alpha8 + 0.5)
+	alpha8 := clamp01(c.alpha) * maxUint8
+	a := uint8(alpha8 + 0.5)
+
+	if a == 0 {
+		return color.RGBA{}
+	}
 
 	switch c.space {
 	case space.Srgb:
-		r = uint8(clamp01(c.c1)*alpha8 + 0.5)
-		g = uint8(clamp01(c.c2)*alpha8 + 0.5)
-		b = uint8(clamp01(c.c3)*alpha8 + 0.5)
+		r := uint8(clamp01(c.c1)*alpha8 + 0.5)
+		g := uint8(clamp01(c.c2)*alpha8 + 0.5)
+		b := uint8(clamp01(c.c3)*alpha8 + 0.5)
 		return color.RGBA{R: r, G: g, B: b, A: a}
 	case space.Hsl, space.Hsv, space.Hwb:
 		fr, fg, fb := c.srgb()
-		r = uint8(clamp01(fr)*alpha8 + 0.5)
-		g = uint8(clamp01(fg)*alpha8 + 0.5)
-		b = uint8(clamp01(fb)*alpha8 + 0.5)
+		r := uint8(clamp01(fr)*alpha8 + 0.5)
+		g := uint8(clamp01(fg)*alpha8 + 0.5)
+		b := uint8(clamp01(fb)*alpha8 + 0.5)
 		return color.RGBA{R: r, G: g, B: b, A: a}
 	case space.LinearSrgb:
-		r = convert.LinearSrgbToU8(c.c1)
-		g = convert.LinearSrgbToU8(c.c2)
-		b = convert.LinearSrgbToU8(c.c3)
-
-		if alpha != 1 {
-			r = uint8(float64(r)*alpha + 0.5)
-			g = uint8(float64(g)*alpha + 0.5)
-			b = uint8(float64(b)*alpha + 0.5)
-		}
+		r := uint8(uint16(convert.Srgb8Encode(c.c1)) * uint16(a) / maxUint8)
+		g := uint8(uint16(convert.Srgb8Encode(c.c2)) * uint16(a) / maxUint8)
+		b := uint8(uint16(convert.Srgb8Encode(c.c3)) * uint16(a) / maxUint8)
 		return color.RGBA{R: r, G: g, B: b, A: a}
 	default:
 		fr, fg, fb := c.linearSrgb()
-		r = convert.LinearSrgbToU8(fr)
-		g = convert.LinearSrgbToU8(fg)
-		b = convert.LinearSrgbToU8(fb)
-
-		if alpha != 1 {
-			r = uint8(float64(r)*alpha + 0.5)
-			g = uint8(float64(g)*alpha + 0.5)
-			b = uint8(float64(b)*alpha + 0.5)
-		}
+		r := uint8(uint16(convert.Srgb8Encode(fr)) * uint16(a) / maxUint8)
+		g := uint8(uint16(convert.Srgb8Encode(fg)) * uint16(a) / maxUint8)
+		b := uint8(uint16(convert.Srgb8Encode(fb)) * uint16(a) / maxUint8)
 		return color.RGBA{R: r, G: g, B: b, A: a}
 	}
 }
 
 // ToNRGBA converts the color to an sRGB [color.NRGBA].
 func (c Color) ToNRGBA() color.NRGBA {
-	var r, g, b, a uint8
-	a = uint8(clamp01(c.alpha)*maxUint8 + 0.5)
+	a := uint8(clamp01(c.alpha)*maxUint8 + 0.5)
 
 	switch c.space {
 	case space.Srgb:
-		r = uint8(clamp01(c.c1)*maxUint8 + 0.5)
-		g = uint8(clamp01(c.c2)*maxUint8 + 0.5)
-		b = uint8(clamp01(c.c3)*maxUint8 + 0.5)
+		r := uint8(clamp01(c.c1)*maxUint8 + 0.5)
+		g := uint8(clamp01(c.c2)*maxUint8 + 0.5)
+		b := uint8(clamp01(c.c3)*maxUint8 + 0.5)
 		return color.NRGBA{R: r, G: g, B: b, A: a}
 	case space.Hsl, space.Hsv, space.Hwb:
 		fr, fg, fb := c.srgb()
-		r = uint8(clamp01(fr)*maxUint8 + 0.5)
-		g = uint8(clamp01(fg)*maxUint8 + 0.5)
-		b = uint8(clamp01(fb)*maxUint8 + 0.5)
+		r := uint8(clamp01(fr)*maxUint8 + 0.5)
+		g := uint8(clamp01(fg)*maxUint8 + 0.5)
+		b := uint8(clamp01(fb)*maxUint8 + 0.5)
 		return color.NRGBA{R: r, G: g, B: b, A: a}
 	case space.LinearSrgb:
-		r = convert.LinearSrgbToU8(c.c1)
-		g = convert.LinearSrgbToU8(c.c2)
-		b = convert.LinearSrgbToU8(c.c3)
+		r := convert.Srgb8Encode(c.c1)
+		g := convert.Srgb8Encode(c.c2)
+		b := convert.Srgb8Encode(c.c3)
 		return color.NRGBA{R: r, G: g, B: b, A: a}
 	default:
 		fr, fg, fb := c.linearSrgb()
-		r = convert.LinearSrgbToU8(fr)
-		g = convert.LinearSrgbToU8(fg)
-		b = convert.LinearSrgbToU8(fb)
+		r := convert.Srgb8Encode(fr)
+		g := convert.Srgb8Encode(fg)
+		b := convert.Srgb8Encode(fb)
 		return color.NRGBA{R: r, G: g, B: b, A: a}
 	}
 }
 
-// FromStd converts a [color.Color] to a [Color].
-func FromStd(c color.Color) Color {
-	switch c := c.(type) {
+// FromStd converts a [color.Color] to a [Color] in [space.Srgb].
+// A nil input returns an invalid [Color].
+func FromStd[T color.Color](c T) Color {
+	switch c := any(c).(type) {
+	case Color:
+		c.mutTo(space.Srgb)
+		return c
+	case *Color:
+		if c == nil {
+			return Color{}
+		}
+		return c.To(space.Srgb)
+
 	case color.Alpha:
-		return fromAlpha(c.A)
+		return stdAlpha(c.A)
 	case *color.Alpha:
-		return fromAlpha(c.A)
+		if c == nil {
+			return Color{}
+		}
+		return stdAlpha(c.A)
 
 	case color.Alpha16:
-		return fromAlpha16(c.A)
+		return stdAlpha16(c.A)
 	case *color.Alpha16:
-		return fromAlpha16(c.A)
+		if c == nil {
+			return Color{}
+		}
+		return stdAlpha16(c.A)
 
 	case color.CMYK:
-		return fromCMYK(c.C, c.M, c.Y, c.K)
+		return stdCMYK(c.C, c.M, c.Y, c.K)
 	case *color.CMYK:
-		return fromCMYK(c.C, c.M, c.Y, c.K)
+		if c == nil {
+			return Color{}
+		}
+		return stdCMYK(c.C, c.M, c.Y, c.K)
 
 	case color.Gray:
-		return fromGray(c.Y)
+		return stdGray(c.Y)
 	case *color.Gray:
-		return fromGray(c.Y)
+		if c == nil {
+			return Color{}
+		}
+		return stdGray(c.Y)
 
 	case color.Gray16:
-		return fromGray16(c.Y)
+		return stdGray16(c.Y)
 	case *color.Gray16:
-		return fromGray16(c.Y)
+		if c == nil {
+			return Color{}
+		}
+		return stdGray16(c.Y)
 
 	case color.NRGBA:
-		return fromNRGBA(c.R, c.G, c.B, c.A)
+		return stdNRGBA(c.R, c.G, c.B, c.A)
 	case *color.NRGBA:
-		return fromNRGBA(c.R, c.G, c.B, c.A)
+		if c == nil {
+			return Color{}
+		}
+		return stdNRGBA(c.R, c.G, c.B, c.A)
 
 	case color.NRGBA64:
-		return fromNRGBA64(c.R, c.G, c.B, c.A)
+		return stdNRGBA64(c.R, c.G, c.B, c.A)
 	case *color.NRGBA64:
-		return fromNRGBA64(c.R, c.G, c.B, c.A)
+		if c == nil {
+			return Color{}
+		}
+		return stdNRGBA64(c.R, c.G, c.B, c.A)
 
 	case color.RGBA:
-		return fromRGBA(c.R, c.G, c.B, c.A)
+		return stdRGBA(c.R, c.G, c.B, c.A)
 	case *color.RGBA:
-		return fromRGBA(c.R, c.G, c.B, c.A)
+		if c == nil {
+			return Color{}
+		}
+		return stdRGBA(c.R, c.G, c.B, c.A)
 
 	case color.RGBA64:
-		return fromRGBA64(c.R, c.G, c.B, c.A)
+		return stdRGBA64(c.R, c.G, c.B, c.A)
 	case *color.RGBA64:
-		return fromRGBA64(c.R, c.G, c.B, c.A)
+		if c == nil {
+			return Color{}
+		}
+		return stdRGBA64(c.R, c.G, c.B, c.A)
 
-	default:
-		return fromColorRGBA(c.RGBA())
+	case color.YCbCr:
+		return stdYCbCr(c.Y, c.Cb, c.Cr)
+	case *color.YCbCr:
+		if c == nil {
+			return Color{}
+		}
+		return stdYCbCr(c.Y, c.Cb, c.Cr)
+
+	case color.NYCbCrA:
+		return stdNYCbCrA(c.Y, c.Cb, c.Cr, c.A)
+	case *color.NYCbCrA:
+		if c == nil {
+			return Color{}
+		}
+		return stdNYCbCrA(c.Y, c.Cb, c.Cr, c.A)
 	}
-}
 
-func fromColorRGBA(R, G, B, A uint32) Color {
+	if isNil(c) {
+		return Color{}
+	}
+
+	R, G, B, A := c.RGBA()
 	if A == 0 {
 		return SrgbAlpha(0, 0, 0, 0)
 	}
@@ -247,17 +295,88 @@ func fromColorRGBA(R, G, B, A uint32) Color {
 	return SrgbAlpha(r, g, b, a)
 }
 
-func fromAlpha(A uint8) Color {
+// StdAlpha returns a sRGB [Color] from a [color.Alpha].
+func StdAlpha(c color.Alpha) Color {
+	return stdAlpha(c.A)
+}
+
+// StdAlpha16 returns a sRGB [Color] from a [color.Alpha16].
+func StdAlpha16(c color.Alpha16) Color {
+	return stdAlpha16(c.A)
+}
+
+// StdCMYK returns a sRGB [Color] from a [color.CMYK].
+func StdCMYK(c color.CMYK) Color {
+	return stdCMYK(c.C, c.M, c.Y, c.K)
+}
+
+// StdGray returns a sRGB [Color] from a [color.Gray].
+func StdGray(c color.Gray) Color {
+	return stdGray(c.Y)
+}
+
+// StdGray16 returns a sRGB [Color] from a [color.Gray16].
+func StdGray16(c color.Gray16) Color {
+	return stdGray16(c.Y)
+}
+
+// StdNRGBA returns a sRGB [Color] from a [color.NRGBA].
+func StdNRGBA(c color.NRGBA) Color {
+	return stdNRGBA(c.R, c.G, c.B, c.A)
+}
+
+// StdNRGBA64 returns a sRGB [Color] from a [color.NRGBA64].
+func StdNRGBA64(c color.NRGBA64) Color {
+	return stdNRGBA64(c.R, c.G, c.B, c.A)
+}
+
+// StdRGBA returns a sRGB [Color] from a [color.RGBA].
+func StdRGBA(c color.RGBA) Color {
+	return stdRGBA(c.R, c.G, c.B, c.A)
+}
+
+// StdRGBA64 returns a sRGB [Color] from a [color.RGBA64].
+func StdRGBA64(c color.RGBA64) Color {
+	return stdRGBA64(c.R, c.G, c.B, c.A)
+}
+
+// StdYCbCr returns a sRGB [Color] from a [color.YCbCr].
+func StdYCbCr(c color.YCbCr) Color {
+	return stdYCbCr(c.Y, c.Cb, c.Cr)
+}
+
+// StdNYCbCrA returns a sRGB [Color] from a [color.NYCbCrA].
+func StdNYCbCrA(c color.NYCbCrA) Color {
+	return stdNYCbCrA(c.Y, c.Cb, c.Cr, c.A)
+}
+
+func stdColor(R, G, B, A uint32) Color {
+	if A == 0 {
+		return SrgbAlpha(0, 0, 0, 0)
+	}
+
+	a := float64(A)
+	invA := 1 / a
+
+	r := float64(R) * invA
+	g := float64(G) * invA
+	b := float64(B) * invA
+	a *= invMaxUint16
+
+	return SrgbAlpha(r, g, b, a)
+}
+
+func stdAlpha(A uint8) Color {
 	a := float64(A) * invMaxUint8
 	return SrgbAlpha(1, 1, 1, a)
 }
 
-func fromAlpha16(A uint16) Color {
+func stdAlpha16(A uint16) Color {
 	a := float64(A) * invMaxUint16
 	return SrgbAlpha(1, 1, 1, a)
 }
 
-func fromCMYK(C, M, Y, K uint8) Color {
+func stdCMYK(C, M, Y, K uint8) Color {
 	w := 1 - float64(K)*invMaxUint8
 
 	r := (1 - float64(C)*invMaxUint8) * w
@@ -267,17 +386,17 @@ func fromCMYK(C, M, Y, K uint8) Color {
 	return Srgb(r, g, b)
 }
 
-func fromGray(Y uint8) Color {
+func stdGray(Y uint8) Color {
 	y := float64(Y) * invMaxUint8
-	return SrgbAlpha(y, y, y, 1)
+	return Srgb(y, y, y)
 }
 
-func fromGray16(Y uint16) Color {
+func stdGray16(Y uint16) Color {
 	y := float64(Y) * invMaxUint16
-	return SrgbAlpha(y, y, y, 1)
+	return Srgb(y, y, y)
 }
 
-func fromNRGBA(R, G, B, A uint8) Color {
+func stdNRGBA(R, G, B, A uint8) Color {
 	r := float64(R) * invMaxUint8
 	g := float64(G) * invMaxUint8
 	b := float64(B) * invMaxUint8
@@ -286,7 +405,7 @@ func fromNRGBA(R, G, B, A uint8) Color {
 	return SrgbAlpha(r, g, b, a)
 }
 
-func fromNRGBA64(R, G, B, A uint16) Color {
+func stdNRGBA64(R, G, B, A uint16) Color {
 	r := float64(R) * invMaxUint16
 	g := float64(G) * invMaxUint16
 	b := float64(B) * invMaxUint16
@@ -295,7 +414,7 @@ func fromNRGBA64(R, G, B, A uint16) Color {
 	return SrgbAlpha(r, g, b, a)
 }
 
-func fromRGBA(R, G, B, A uint8) Color {
+func stdRGBA(R, G, B, A uint8) Color {
 	if A == 0 {
 		return SrgbAlpha(0, 0, 0, 0)
 	}
@@ -311,7 +430,7 @@ func fromRGBA(R, G, B, A uint8) Color {
 	return SrgbAlpha(r, g, b, a)
 }
 
-func fromRGBA64(R, G, B, A uint16) Color {
+func stdRGBA64(R, G, B, A uint16) Color {
 	if A == 0 {
 		return SrgbAlpha(0, 0, 0, 0)
 	}
@@ -327,18 +446,44 @@ func fromRGBA64(R, G, B, A uint16) Color {
 	return SrgbAlpha(r, g, b, a)
 }
 
-// lsrgb converts a clamped linear sRGB component to sRGB.
-// x must be clamped to [0, 1], and the result is in [0, 1].
-// It uses Log/Exp instead of Pow for better performance.
-func lsrgb(x float64) float64 {
-	const invGamma = 1 / 2.4
+func stdYCbCr(Y, Cb, Cr uint8) Color {
+	y := float64(Y)
+	cb := float64(Cb) - 128
+	cr := float64(Cr) - 128
 
-	if x <= 0.0031308 {
-		return x * 12.92
-	} else if x == 1 {
-		return 1
-	} else {
-		// Use Log/Exp instead of Pow for better performance.
-		return 1.055*math.Exp(math.Log(x)*invGamma) - 0.055
+	r := y + 1.40200*cr
+	g := y - 0.34414*cb - 0.71414*cr
+	b := y + 1.77200*cb
+
+	return Srgb(
+		r*invMaxUint8,
+		g*invMaxUint8,
+		b*invMaxUint8,
+	)
+}
+
+func stdNYCbCrA(Y, Cb, Cr, A uint8) Color {
+	y := float64(Y)
+	cb := float64(Cb) - 128
+	cr := float64(Cr) - 128
+
+	r := y + 1.40200*cr
+	g := y - 0.34414*cb - 0.71414*cr
+	b := y + 1.77200*cb
+
+	return SrgbAlpha(
+		r*invMaxUint8,
+		g*invMaxUint8,
+		b*invMaxUint8,
+		float64(A)*invMaxUint8,
+	)
+}
+
+func isNil(v any) bool {
+	if v == nil {
+		return true
 	}
+
+	rv := reflect.ValueOf(v)
+	return rv.Kind() == reflect.Pointer && rv.IsNil()
 }

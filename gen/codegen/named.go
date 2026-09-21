@@ -61,7 +61,7 @@ func genNamedPkgNamedVar(ctx *Context, w *writer.GoWriter) {
 			fn = "Rgb"
 		} else {
 			rgb = "rgba"
-			fn = "RgbAlpha"
+			fn = "Rgba"
 
 			temp = append(temp, ',', ' ')
 			temp = appendFormatFloatPrec(temp, float64(nc.RGBA[3])/math.MaxUint8, AlphaPrecision)

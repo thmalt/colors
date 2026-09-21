@@ -1,17 +1,7 @@
 package colors
 
 import (
-	"math"
-
 	"github.com/thmalt/colors/space"
-)
-
-const (
-	maxUint8  = math.MaxUint8
-	maxUint16 = math.MaxUint16
-
-	invMaxUint8  = 1.0 / maxUint8
-	invMaxUint16 = 1.0 / maxUint16
 )
 
 // New creates a [Color] from a color space and its channel values.
@@ -86,7 +76,7 @@ func (c Color) ChannelCount() int {
 	return c.space.ChannelCount()
 }
 
-// Alpha returns the alpha channel value without clamping.
+// Alpha returns the alpha value.
 func (c Color) Alpha() float64 {
 	return c.alpha
 }
@@ -119,4 +109,40 @@ func (c Color) IsOpaque() bool {
 func (c Color) Opaque() Color {
 	c.alpha = 1
 	return c
+}
+
+// Rgb returns an sRGB [Color] from RGB components.
+//
+//	r, g, b: [0, 255]
+func Rgb(r, g, b float64) Color {
+	return Srgb(
+		r*invMaxUint8,
+		g*invMaxUint8,
+		b*invMaxUint8,
+	)
+}
+
+// Rgb returns an sRGB [Color] from RGB components and alpha.
+//
+//	r, g, b: [0, 255]
+//	a:       [0, 1]
+func Rgba(r, g, b, a float64) Color {
+	return SrgbAlpha(
+		r*invMaxUint8,
+		g*invMaxUint8,
+		b*invMaxUint8,
+		a,
+	)
+}
+
+// Rgb returns the sRGB components scaled by 255.
+func (c Color) Rgb() (r, g, b float64) {
+	r, g, b = c.srgb()
+	return r * maxUint8, g * maxUint8, b * maxUint8
+}
+
+// Rgba returns the sRGB components scaled by 255 and alpha in [0, 1].
+func (c Color) Rgba() (r, g, b, a float64) {
+	r, g, b = c.srgb()
+	return r * maxUint8, g * maxUint8, b * maxUint8, c.alpha
 }

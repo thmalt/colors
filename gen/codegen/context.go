@@ -26,6 +26,8 @@ type Options struct {
 
 	SeparateAfterComment bool
 
+	LUT bool
+
 	// FormatSource formats generated Go source code with gofmt.
 	FormatSource bool
 
@@ -34,6 +36,10 @@ type Options struct {
 
 	// ForceWrite forces generated files to be written even when their contents have not changed.
 	ForceWrite bool
+}
+
+func (o Options) genLUT() bool {
+	return o.ForceWrite || o.LUT
 }
 
 type Context struct {

@@ -16,7 +16,7 @@ func genSpacePkgTables(ctx *Context, w *writer.GoWriter) {
 	next := wrapEvery(w, 8)
 	w.Separate()
 	w.Comment("spaceChannelCounts is indexed by [Space] for fast channel-count lookup.")
-	w.Begin("var spaceChannelCounts = [...]uint", smallestUintType(ctx.MaxChannelCount))
+	w.Begin("var spaceChannelCounts = [...]uint", uintBitsForValue(ctx.MaxChannelCount))
 	w.LineWrite("0, ")
 	next()
 	for _, space := range ctx.BuiltSpaces {

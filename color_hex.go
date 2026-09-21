@@ -24,7 +24,7 @@ func (c Color) Hex() string {
 		b = uint8(clamp01(c.c3)*maxUint8 + 0.5)
 		a = uint8(clamp01(c.alpha)*maxUint8 + 0.5)
 	} else {
-		r, g, b, a = c.toRgba8()
+		r, g, b, a = c.srgba8()
 	}
 
 	var out [9]byte

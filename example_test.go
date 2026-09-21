@@ -8,7 +8,7 @@ import (
 )
 
 func ExampleColor_To() {
-	c := colors.RgbAlpha(50, 60, 70, 0.995)
+	c := colors.Rgba(50, 60, 70, 0.995)
 
 	c1 := c.To(space.XyzD65)
 	if !c1.IsValid() {
@@ -30,7 +30,7 @@ func ExampleColor_To() {
 }
 
 func ExampleColor_Space() {
-	c := colors.RgbAlpha(50, 60, 70, 0.995)
+	c := colors.Rgba(50, 60, 70, 0.995)
 
 	// color space info
 	inf := c.Space().Info()

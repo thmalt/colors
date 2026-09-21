@@ -1,70 +1,60 @@
 package codegen
 
 import (
-	"math"
-	"strconv"
-
+	"github.com/thmalt/colors/gen/codegen/internal/convert"
 	"github.com/thmalt/colors/gen/codegen/writer"
 )
 
-// makeLUT generates lookup data for a normalized domain [0, 1].
-// size must be in the range [2, math.MaxUint16).
-func makeLUT(size int, fn func(float64) float64) (lut, threshold []float64, coarse []uint16) {
-	if size < 2 || size > math.MaxUint16+1 {
-		panic("invalid LUT size")
+func genSrgbLUT(bits int) (dec, encThreshold []float64, encCoarse []uint16) {
+	if bits > 16 {
+		panic("colors: LUT supports at most 16 bits")
 	}
 
-	lut = make([]float64, size)
-	threshold = make([]float64, size)
-	coarse = make([]uint16, size+1)
+	size := 1 << bits
 
-	div := float64(size - 1)
-	coarseDiv := float64(size)
+	dec = make([]float64, size)
+	encThreshold = make([]float64, size)
+	encCoarse = make([]uint16, size+1)
+
+	scale := float64(size - 1)
+	coarseScale := float64(size)
 
 	for i := 1; i < size; i++ {
 		x := float64(i)
 
-		lut[i] = fn(x / div)
-		threshold[i] = fn((x - 0.5) / div)
+		dec[i] = convert.SrgbDecode(x / scale)
+		encThreshold[i] = convert.SrgbDecode((x - 0.5) / scale)
 	}
 
-	for i := range coarse {
-		x := float64(i) / coarseDiv
+	var n uint16
+	for i := range encCoarse {
+		x := float64(i) / coarseScale
 
-		n := uint16(0)
-		for n < uint16(size-1) && x > threshold[n+1] {
+		for n < uint16(size-1) && x > encThreshold[n+1] {
 			n++
 		}
 
-		coarse[i] = n
+		encCoarse[i] = n
 	}
-
 	return
 }
 
-func genConvertPkgLUT(w *writer.GoWriter, size int, linear, name string, transfer func(float64) float64) {
-	lut, threshold, coarse := makeLUT(size+1, transfer)
+func genConvertPkgPrecomputedLUT(w *writer.GoWriter, bits int) {
+	bitsSize := uintBits(bits)
 
-	bits := strconv.Itoa(smallestUintType(size))
-	uintType := "uint" + bits
+	dec, encT, encC := genSrgbLUT(bitsSize)
 
-	linear = toUpperCaseFirstChar(linear)
-	name = toUpperCaseFirstChar(name) + bits
-
-	linearToUbits := linear + "ToU" + bits
-	linearTo := linear + "To" + name
-	toLinear := name + "To" + linear
-
-	privLinearTo := toLowerCaseFirstWord(linearTo)
-	privToLinear := toLowerCaseFirstWord(toLinear)
-
-	w.LineWrite("const ", privLinearTo, "CoarseSize = ", len(threshold))
 	w.Separate()
-	w.BeginGroup("var ")
+	w.Comment(
+		len(dec)*8+len(encT)*8+len(encC)*(bitsSize/8),
+		" bytes",
+	)
 
-	w.Begin(privToLinear, "LUT = [", len(lut), "]", FloatType)
+	w.Separate()
+	w.BeginGroup("var")
+	w.Begin("srgb", bitsSize, "DecLUT = [", len(dec), "]", FloatType)
 	w.Indent()
-	for i := range lut {
+	for i, v := range dec {
 		if i > 0 {
 			if i%8 == 0 {
 				w.Indent()
@@ -72,14 +62,13 @@ func genConvertPkgLUT(w *writer.GoWriter, size int, linear, name string, transfe
 				w.Write(' ')
 			}
 		}
-		w.Write(formatNormalizedFloat(lut[i]), ',')
+		w.Write(formatFloat(v), ',')
 	}
 	w.End()
 
-	w.Separate()
-	w.Begin(privLinearTo, "Threshold = [", len(threshold), "]", FloatType)
+	w.Begin("srgb", bitsSize, "EncTLUT = [", len(encT), "]", FloatType)
 	w.Indent()
-	for i := range threshold {
+	for i, v := range encT {
 		if i > 0 {
 			if i%8 == 0 {
 				w.Indent()
@@ -87,14 +76,13 @@ func genConvertPkgLUT(w *writer.GoWriter, size int, linear, name string, transfe
 				w.Write(' ')
 			}
 		}
-		w.Write(formatNormalizedFloat(threshold[i]), ',')
+		w.Write(formatFloat(v), ',')
 	}
 	w.End()
 
-	w.Separate()
-	w.Begin(privLinearTo, "Coarse = [", len(coarse), "]", uintType)
+	w.Begin("srgb", bitsSize, "EncCLUT = [", len(encC), "]uint", bitsSize)
 	w.Indent()
-	for i := range coarse {
+	for i, v := range encC {
 		if i > 0 {
 			if i%16 == 0 {
 				w.Indent()
@@ -102,58 +90,58 @@ func genConvertPkgLUT(w *writer.GoWriter, size int, linear, name string, transfe
 				w.Write(' ')
 			}
 		}
-		w.Writef("%d,", coarse[i])
+		w.Write(v, ',')
 	}
 	w.End()
 
+	w.Separate()
+	w.End()
+}
+
+func genConvertPkgRuntimeInitLUT(w *writer.GoWriter, bits int) {
+	if bits > 16 {
+		panic("colors: LUT supports at most 16 bits")
+	}
+
+	bitsSize := uintBits(bits)
+	size := 1 << bitsSize
+
+	w.Separate()
+	w.BeginGroup("var")
+	w.LineWriteln("srgb", bitsSize, "DecLUT[", size, "]", FloatType)
+	w.LineWriteln("srgb", bitsSize, "EncTLUT[", size, "]", FloatType)
+	w.LineWriteln("srgb", bitsSize, "EncCLUT[", size+1, "]uint", bitsSize)
 	w.End()
 
 	w.Separate()
-	// func (r, g, b uint?) (float64, float64, float64)
-	w.Comment(toLinear, " converts ", bits, "-bit components to linear components.")
-	w.Func(toLinear)
-	w.FuncParams("r, g, b ", uintType)
-	w.FuncResults(joinRepeatN(FloatType, 3))
+	w.Func("init")
 	w.FuncBody()
-	w.Return(
-		privToLinear, "LUT[r], ",
-		privToLinear, "LUT[g], ",
-		privToLinear, "LUT[b]",
-	)
+	w.BeginGroup("const")
+	w.LineWriteln("size        = 1 << ", bitsSize)
+	w.LineWriteln("scale       = size - 1")
+	w.LineWriteln("coarseScale = size")
 	w.End()
 
 	w.Separate()
-	// func (r, g, b float64) (uint?, uint?, uint?)
-	w.Comment(linearTo, " converts linear components to ", bits, "-bit components.")
-	w.Func(linearTo)
-	w.FuncParams("r, g, b ", FloatType)
-	w.FuncResults(joinRepeatN(uintType, 3))
-	w.FuncBody()
-	w.Return(
-		linearToUbits, "(r), ",
-		linearToUbits, "(g), ",
-		linearToUbits, "(b)",
-	)
+	w.Begin("for i := 1; i < size; i++")
+	w.LineWriteln("x := float64(i)")
+	w.Separate()
+	w.LineWriteln("srgb", bitsSize, "DecLUT[i] = SrgbDecode(x / scale)")
+	w.LineWriteln("srgb", bitsSize, "EncTLUT[i] = SrgbDecode((x - 0.5) / scale)")
 	w.End()
 
 	w.Separate()
-	w.Comment(linearToUbits, " converts a linear color component to an unsigned integer value.")
-	w.Func(linearToUbits)
-	w.FuncParams("x ", FloatType)
-	w.FuncResults(uintType)
-	w.FuncBody()
-	w.LineWriteln("x = min(1, max(0, x)) // clamp01")
-
+	w.LineWriteln("var n uint", bitsSize)
+	w.Begin("for i := range ", "srgb", bitsSize, "EncCLUT")
+	w.LineWriteln("x := float64(i) / coarseScale")
 	w.Separate()
-	w.LineWriteln("i := int(x * ", privLinearTo, "CoarseSize)")
-	w.LineWriteln("n := ", privLinearTo, "Coarse[i]")
-
-	w.Separate()
-	w.Begin("for n < ", size, " && x >= ", privLinearTo, "Threshold[n+1] ")
+	w.Begin("for n < scale && x > ", "srgb", bitsSize, "EncTLUT[n+1]")
 	w.LineWriteln("n++")
 	w.End()
 
 	w.Separate()
-	w.Return("n")
+	w.LineWriteln("srgb", bitsSize, "EncCLUT[i] = n")
+	w.End()
+
 	w.End()
 }

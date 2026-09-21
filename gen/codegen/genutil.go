@@ -26,7 +26,20 @@ const (
 	defaultHubD65 = "XyzD65"
 )
 
-func smallestUintType(n int) int {
+func uintBits(bits int) int {
+	switch {
+	case bits <= 8:
+		return 8
+	case bits <= 16:
+		return 16
+	case bits <= 32:
+		return 32
+	default:
+		return 64
+	}
+}
+
+func uintBitsForValue(n int) int {
 	switch {
 	case n <= math.MaxUint8:
 		return 8

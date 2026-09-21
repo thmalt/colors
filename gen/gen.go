@@ -14,10 +14,12 @@ import (
 func main() {
 	var enableDebug = os.Getenv("DEBUG") != ""
 
+	lut := os.Getenv("GEN_LUT") != ""
 	ctx := codegen.NewContext(codegen.Options{
 		FormatSource: true,
 		EmbedMatrix:  true,
-		// ForceWrite:  true,
+		LUT:          lut,
+		// ForceWrite:   true,
 		// SeparateAfterComment: true,
 	})
 
@@ -95,6 +97,8 @@ func main() {
 
 	fmt.Println()
 	fmt.Printf("Completed in %v.\n", end.Sub(beg))
+
+	fmt.Scanln()
 }
 
 func logGraphPaths(ctx *codegen.Context) {

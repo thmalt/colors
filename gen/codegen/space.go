@@ -33,7 +33,7 @@ func GenerateSpacePkg(ctx *Context) {
 }
 
 func genSpacePkgSpace(ctx *Context, w *writer.GoWriter) {
-	w.LineWriteln("type Space uint", smallestUintType(len(ctx.BuiltSpaces)))
+	w.LineWriteln("type Space uint", uintBitsForValue(len(ctx.BuiltSpaces)))
 
 	w.Separate()
 	w.BeginGroup("const ")

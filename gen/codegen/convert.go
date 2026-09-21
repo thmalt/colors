@@ -3,9 +3,7 @@ package codegen
 import (
 	"fmt"
 	"log"
-	"math"
 
-	"github.com/thmalt/colors/gen/codegen/internal/convert"
 	"github.com/thmalt/colors/gen/codegen/writer"
 )
 
@@ -19,9 +17,21 @@ func GenerateConvertPkg(ctx *Context) {
 
 	genConvertPkgConversionFiles(ctx, w, pkg)
 
-	emitGoFile(ctx, pkg, w, "rgb8_lut", func(w *writer.GoWriter) {
-		genConvertPkgLUT(w, math.MaxUint8, "LinearSrgb", "Rgb", convert.SrgbDecode)
-	})
+	if ctx.Opts.genLUT() {
+		emitGoFile(ctx, pkg, w, "srgb_lut_static", func(w *writer.GoWriter) {
+			w.AddBuildTags("static || st || colors_full")
+
+			genConvertPkgPrecomputedLUT(w, 8)
+			genConvertPkgPrecomputedLUT(w, 16)
+		})
+
+		emitGoFile(ctx, pkg, w, "srgb_lut_init", func(w *writer.GoWriter) {
+			w.AddBuildTags("!static && !st && !colors_full")
+
+			genConvertPkgRuntimeInitLUT(w, 8)
+			genConvertPkgRuntimeInitLUT(w, 16)
+		})
+	}
 
 	emitGoFile(ctx, pkg, w, "whitepoint", func(w *writer.GoWriter) {
 		genConvertPkgWhitePoint(ctx, w)

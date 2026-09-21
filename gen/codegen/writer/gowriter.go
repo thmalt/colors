@@ -65,7 +65,6 @@ func (w *GoWriter) Reset() {
 	w.buildTags = w.buildTags[:0]
 	w.imports = w.imports[:0]
 	w.indent = w.minIndent
-
 }
 
 func (w *GoWriter) Bytes() []byte {

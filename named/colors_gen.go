@@ -573,7 +573,7 @@ var (
 
 	// Transparent is the CSS named color "transparent"
 	//	rgba(0, 0, 0, 0)
-	Transparent = colors.RgbAlpha(0, 0, 0, 0)
+	Transparent = colors.Rgba(0, 0, 0, 0)
 
 	// Turquoise is the CSS named color "turquoise"
 	//	rgb(64, 224, 208)

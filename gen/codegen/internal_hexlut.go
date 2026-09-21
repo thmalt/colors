@@ -9,6 +9,10 @@ import (
 const hexEnc = "0123456789abcdef"
 
 func generateHexLUTPkg(ctx *Context) {
+	if !ctx.Opts.genLUT() {
+		return
+	}
+
 	pkg := Pkg{Name: "hexlut", Path: "internal/hexlut"}
 
 	w := newWriter(ctx)
