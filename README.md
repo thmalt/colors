@@ -6,10 +6,37 @@
 
 A Go library for color space conversions, interpolation, and gradients.
 
+## Installation
+
+```sh
+go get github.com/thmalt/colors
+```
+
 ## Usage
 
 ```go
 import "github.com/thmalt/colors"
+```
+
+### Example
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/thmalt/colors"
+	"github.com/thmalt/colors/space"
+)
+
+func main() {
+	c := colors.Rgba(255, 0, 0, .5)
+
+	fmt.Println(c.Hex())
+	fmt.Println(c.To(space.Oklab))
+	fmt.Println(c.Oklab())
+}
 ```
 
 ## Color Conversion
