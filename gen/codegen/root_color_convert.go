@@ -77,19 +77,6 @@ func genRootPkgColorConvertMethod(ctx *Context, w *writer.GoWriter, dst *model.S
 	}
 
 	sub := w.SubWriter()
-	sub.Write("c.space == ", dstIdent)
-	for _, name := range dst.Equivalents {
-		sub.Write(" || ", "c.space == ", ctx.SpacePkg.Join(name))
-	}
-
-	w.If(sub.Bytes())
-	w.ReturnInline()
-	w.WriteJoin(args, ", ")
-	w.End()
-
-	w.Separate()
-
-	sub.Reset()
 
 	sub.Switch("c.space")
 
@@ -112,13 +99,20 @@ func genRootPkgColorConvertMethod(ctx *Context, w *writer.GoWriter, dst *model.S
 
 	for _, src := range ctx.BuiltSpaces {
 		eq := ctx.SpaceByName(src.Equivalent)
-		if dst == src || eq != nil {
+		if eq != nil {
 			continue
 		}
 
 		cases = append(cases[:0], ctx.SpacePkg.Join(src.Name))
 		for _, name := range src.Equivalents {
 			cases = append(cases, ctx.SpacePkg.Join(name))
+		}
+
+		if dst == src {
+			sub.Case(strings.Join(cases, ", "))
+			sub.ReturnInline()
+			sub.WriteJoin(args, ", ")
+			continue
 		}
 
 		path := ctx.Graph.FindPath(src, dst)

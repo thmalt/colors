@@ -16,11 +16,9 @@ func (c Color) Srgb() (r, g, b float64) {
 
 // srgb returns the color components in the [space.Srgb] color space.
 func (c *Color) srgb() (r, g, b float64) {
-	if c.space == space.Srgb {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
+	case space.Srgb:
+		return c.c1, c.c2, c.c3
 	case space.LinearSrgb:
 		return convert.LinearSrgbToSrgb(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
@@ -93,13 +91,11 @@ func (c Color) LinearSrgb() (r, g, b float64) {
 
 // linearSrgb returns the color components in the [space.LinearSrgb] color space.
 func (c *Color) linearSrgb() (r, g, b float64) {
-	if c.space == space.LinearSrgb {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToLinearSrgb(c.c1, c.c2, c.c3)
+	case space.LinearSrgb:
+		return c.c1, c.c2, c.c3
 	case space.DisplayP3:
 		return convert.DisplayP3ToLinearSrgb(c.c1, c.c2, c.c3)
 	case space.LinearDisplayP3:
@@ -170,15 +166,13 @@ func (c Color) DisplayP3() (r, g, b float64) {
 
 // displayP3 returns the color components in the [space.DisplayP3] color space.
 func (c *Color) displayP3() (r, g, b float64) {
-	if c.space == space.DisplayP3 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToDisplayP3(c.c1, c.c2, c.c3)
 	case space.LinearSrgb:
 		return convert.LinearSrgbToDisplayP3(c.c1, c.c2, c.c3)
+	case space.DisplayP3:
+		return c.c1, c.c2, c.c3
 	case space.LinearDisplayP3:
 		return convert.LinearDisplayP3ToDisplayP3(c.c1, c.c2, c.c3)
 	case space.A98:
@@ -247,10 +241,6 @@ func (c Color) LinearDisplayP3() (r, g, b float64) {
 
 // linearDisplayP3 returns the color components in the [space.LinearDisplayP3] color space.
 func (c *Color) linearDisplayP3() (r, g, b float64) {
-	if c.space == space.LinearDisplayP3 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToLinearDisplayP3(c.c1, c.c2, c.c3)
@@ -258,6 +248,8 @@ func (c *Color) linearDisplayP3() (r, g, b float64) {
 		return convert.LinearSrgbToLinearDisplayP3(c.c1, c.c2, c.c3)
 	case space.DisplayP3:
 		return convert.DisplayP3ToLinearDisplayP3(c.c1, c.c2, c.c3)
+	case space.LinearDisplayP3:
+		return c.c1, c.c2, c.c3
 	case space.A98:
 		return convert.A98ToLinearDisplayP3(c.c1, c.c2, c.c3)
 	case space.LinearA98:
@@ -324,10 +316,6 @@ func (c Color) A98() (r, g, b float64) {
 
 // a98 returns the color components in the [space.A98] color space.
 func (c *Color) a98() (r, g, b float64) {
-	if c.space == space.A98 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToA98(c.c1, c.c2, c.c3)
@@ -337,6 +325,8 @@ func (c *Color) a98() (r, g, b float64) {
 		return convert.DisplayP3ToA98(c.c1, c.c2, c.c3)
 	case space.LinearDisplayP3:
 		return convert.LinearDisplayP3ToA98(c.c1, c.c2, c.c3)
+	case space.A98:
+		return c.c1, c.c2, c.c3
 	case space.LinearA98:
 		return convert.LinearA98ToA98(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
@@ -401,10 +391,6 @@ func (c Color) LinearA98() (r, g, b float64) {
 
 // linearA98 returns the color components in the [space.LinearA98] color space.
 func (c *Color) linearA98() (r, g, b float64) {
-	if c.space == space.LinearA98 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToLinearA98(c.c1, c.c2, c.c3)
@@ -416,6 +402,8 @@ func (c *Color) linearA98() (r, g, b float64) {
 		return convert.LinearDisplayP3ToLinearA98(c.c1, c.c2, c.c3)
 	case space.A98:
 		return convert.A98ToLinearA98(c.c1, c.c2, c.c3)
+	case space.LinearA98:
+		return c.c1, c.c2, c.c3
 	case space.ProPhoto:
 		return convert.ProPhotoToLinearA98(c.c1, c.c2, c.c3)
 	case space.LinearProPhoto:
@@ -478,10 +466,6 @@ func (c Color) ProPhoto() (r, g, b float64) {
 
 // proPhoto returns the color components in the [space.ProPhoto] color space.
 func (c *Color) proPhoto() (r, g, b float64) {
-	if c.space == space.ProPhoto {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToProPhoto(c.c1, c.c2, c.c3)
@@ -495,6 +479,8 @@ func (c *Color) proPhoto() (r, g, b float64) {
 		return convert.A98ToProPhoto(c.c1, c.c2, c.c3)
 	case space.LinearA98:
 		return convert.LinearA98ToProPhoto(c.c1, c.c2, c.c3)
+	case space.ProPhoto:
+		return c.c1, c.c2, c.c3
 	case space.LinearProPhoto:
 		return convert.LinearProPhotoToProPhoto(c.c1, c.c2, c.c3)
 	case space.Rec2020:
@@ -555,10 +541,6 @@ func (c Color) LinearProPhoto() (r, g, b float64) {
 
 // linearProPhoto returns the color components in the [space.LinearProPhoto] color space.
 func (c *Color) linearProPhoto() (r, g, b float64) {
-	if c.space == space.LinearProPhoto {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToLinearProPhoto(c.c1, c.c2, c.c3)
@@ -574,6 +556,8 @@ func (c *Color) linearProPhoto() (r, g, b float64) {
 		return convert.LinearA98ToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.ProPhoto:
 		return convert.ProPhotoToLinearProPhoto(c.c1, c.c2, c.c3)
+	case space.LinearProPhoto:
+		return c.c1, c.c2, c.c3
 	case space.Rec2020:
 		return convert.Rec2020ToLinearProPhoto(c.c1, c.c2, c.c3)
 	case space.Rec2020OETF:
@@ -632,10 +616,6 @@ func (c Color) Rec2020() (r, g, b float64) {
 
 // rec2020 returns the color components in the [space.Rec2020] color space.
 func (c *Color) rec2020() (r, g, b float64) {
-	if c.space == space.Rec2020 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToRec2020(c.c1, c.c2, c.c3)
@@ -653,6 +633,8 @@ func (c *Color) rec2020() (r, g, b float64) {
 		return convert.ProPhotoToRec2020(c.c1, c.c2, c.c3)
 	case space.LinearProPhoto:
 		return convert.LinearProPhotoToRec2020(c.c1, c.c2, c.c3)
+	case space.Rec2020:
+		return c.c1, c.c2, c.c3
 	case space.Rec2020OETF:
 		return convert.Rec2020OETFToRec2020(c.c1, c.c2, c.c3)
 	case space.LinearRec2020, space.LinearRec2100:
@@ -709,10 +691,6 @@ func (c Color) Rec2020OETF() (r, g, b float64) {
 
 // rec2020OETF returns the color components in the [space.Rec2020OETF] color space.
 func (c *Color) rec2020OETF() (r, g, b float64) {
-	if c.space == space.Rec2020OETF {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToRec2020OETF(c.c1, c.c2, c.c3)
@@ -732,6 +710,8 @@ func (c *Color) rec2020OETF() (r, g, b float64) {
 		return convert.LinearProPhotoToRec2020OETF(c.c1, c.c2, c.c3)
 	case space.Rec2020:
 		return convert.Rec2020ToRec2020OETF(c.c1, c.c2, c.c3)
+	case space.Rec2020OETF:
+		return c.c1, c.c2, c.c3
 	case space.LinearRec2020, space.LinearRec2100:
 		return convert.LinearRec2020ToRec2020OETF(c.c1, c.c2, c.c3)
 	case space.Rec2100PQ:
@@ -786,10 +766,6 @@ func (c Color) LinearRec2020() (r, g, b float64) {
 
 // linearRec2020 returns the color components in the [space.LinearRec2020] color space.
 func (c *Color) linearRec2020() (r, g, b float64) {
-	if c.space == space.LinearRec2020 || c.space == space.LinearRec2100 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToLinearRec2020(c.c1, c.c2, c.c3)
@@ -811,6 +787,8 @@ func (c *Color) linearRec2020() (r, g, b float64) {
 		return convert.Rec2020ToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.Rec2020OETF:
 		return convert.Rec2020OETFToLinearRec2020(c.c1, c.c2, c.c3)
+	case space.LinearRec2020, space.LinearRec2100:
+		return c.c1, c.c2, c.c3
 	case space.Rec2100PQ:
 		return convert.Rec2100PQToLinearRec2020(c.c1, c.c2, c.c3)
 	case space.Rec2100HLG:
@@ -873,10 +851,6 @@ func (c Color) Rec2100PQ() (r, g, b float64) {
 
 // rec2100PQ returns the color components in the [space.Rec2100PQ] color space.
 func (c *Color) rec2100PQ() (r, g, b float64) {
-	if c.space == space.Rec2100PQ {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToRec2100PQ(c.c1, c.c2, c.c3)
@@ -900,6 +874,8 @@ func (c *Color) rec2100PQ() (r, g, b float64) {
 		return convert.Rec2020OETFToRec2100PQ(c.c1, c.c2, c.c3)
 	case space.LinearRec2020, space.LinearRec2100:
 		return convert.LinearRec2020ToRec2100PQ(c.c1, c.c2, c.c3)
+	case space.Rec2100PQ:
+		return c.c1, c.c2, c.c3
 	case space.Rec2100HLG:
 		return convert.Rec2100HLGToRec2100PQ(c.c1, c.c2, c.c3)
 	case space.XyzD50:
@@ -950,10 +926,6 @@ func (c Color) Rec2100HLG() (r, g, b float64) {
 
 // rec2100HLG returns the color components in the [space.Rec2100HLG] color space.
 func (c *Color) rec2100HLG() (r, g, b float64) {
-	if c.space == space.Rec2100HLG {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToRec2100HLG(c.c1, c.c2, c.c3)
@@ -979,6 +951,8 @@ func (c *Color) rec2100HLG() (r, g, b float64) {
 		return convert.LinearRec2020ToRec2100HLG(c.c1, c.c2, c.c3)
 	case space.Rec2100PQ:
 		return convert.Rec2100PQToRec2100HLG(c.c1, c.c2, c.c3)
+	case space.Rec2100HLG:
+		return c.c1, c.c2, c.c3
 	case space.XyzD50:
 		return convert.XyzD50ToRec2100HLG(c.c1, c.c2, c.c3)
 	case space.XyzD65:
@@ -1027,10 +1001,6 @@ func (c Color) XyzD50() (x, y, z float64) {
 
 // xyzD50 returns the color components in the [space.XyzD50] color space.
 func (c *Color) xyzD50() (x, y, z float64) {
-	if c.space == space.XyzD50 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToXyzD50(c.c1, c.c2, c.c3)
@@ -1058,6 +1028,8 @@ func (c *Color) xyzD50() (x, y, z float64) {
 		return convert.Rec2100PQToXyzD50(c.c1, c.c2, c.c3)
 	case space.Rec2100HLG:
 		return convert.Rec2100HLGToXyzD50(c.c1, c.c2, c.c3)
+	case space.XyzD50:
+		return c.c1, c.c2, c.c3
 	case space.XyzD65:
 		return convert.XyzD65ToXyzD50(c.c1, c.c2, c.c3)
 	case space.XyzAbsD65:
@@ -1104,10 +1076,6 @@ func (c Color) XyzD65() (x, y, z float64) {
 
 // xyzD65 returns the color components in the [space.XyzD65] color space.
 func (c *Color) xyzD65() (x, y, z float64) {
-	if c.space == space.XyzD65 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToXyzD65(c.c1, c.c2, c.c3)
@@ -1137,6 +1105,8 @@ func (c *Color) xyzD65() (x, y, z float64) {
 		return convert.Rec2100HLGToXyzD65(c.c1, c.c2, c.c3)
 	case space.XyzD50:
 		return convert.XyzD50ToXyzD65(c.c1, c.c2, c.c3)
+	case space.XyzD65:
+		return c.c1, c.c2, c.c3
 	case space.XyzAbsD65:
 		return convert.XyzAbsD65ToXyzD65(c.c1, c.c2, c.c3)
 	case space.XyYD50:
@@ -1181,10 +1151,6 @@ func (c Color) XyzAbsD65() (x, y, z float64) {
 
 // xyzAbsD65 returns the color components in the [space.XyzAbsD65] color space.
 func (c *Color) xyzAbsD65() (x, y, z float64) {
-	if c.space == space.XyzAbsD65 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.XyzD65ToXyzAbsD65(convert.SrgbToXyzD65(c.c1, c.c2, c.c3))
@@ -1216,6 +1182,8 @@ func (c *Color) xyzAbsD65() (x, y, z float64) {
 		return convert.XyzD50ToXyzAbsD65(c.c1, c.c2, c.c3)
 	case space.XyzD65:
 		return convert.XyzD65ToXyzAbsD65(c.c1, c.c2, c.c3)
+	case space.XyzAbsD65:
+		return c.c1, c.c2, c.c3
 	case space.XyYD50:
 		return convert.XyYD50ToXyzAbsD65(c.c1, c.c2, c.c3)
 	case space.XyYD65:
@@ -1258,10 +1226,6 @@ func (c Color) XyYD50() (x, y, luminance float64) {
 
 // xyYD50 returns the color components in the [space.XyYD50] color space.
 func (c *Color) xyYD50() (x, y, luminance float64) {
-	if c.space == space.XyYD50 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.XyzD65ToXyYD50(convert.SrgbToXyzD65(c.c1, c.c2, c.c3))
@@ -1295,6 +1259,8 @@ func (c *Color) xyYD50() (x, y, luminance float64) {
 		return convert.XyzD65ToXyYD50(c.c1, c.c2, c.c3)
 	case space.XyzAbsD65:
 		return convert.XyzAbsD65ToXyYD50(c.c1, c.c2, c.c3)
+	case space.XyYD50:
+		return c.c1, c.c2, c.c3
 	case space.XyYD65:
 		return convert.XyYD65ToXyYD50(c.c1, c.c2, c.c3)
 	case space.LabD50:
@@ -1335,10 +1301,6 @@ func (c Color) XyYD65() (x, y, luminance float64) {
 
 // xyYD65 returns the color components in the [space.XyYD65] color space.
 func (c *Color) xyYD65() (x, y, luminance float64) {
-	if c.space == space.XyYD65 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.XyzD65ToXyYD65(convert.SrgbToXyzD65(c.c1, c.c2, c.c3))
@@ -1374,6 +1336,8 @@ func (c *Color) xyYD65() (x, y, luminance float64) {
 		return convert.XyzAbsD65ToXyYD65(c.c1, c.c2, c.c3)
 	case space.XyYD50:
 		return convert.XyYD50ToXyYD65(c.c1, c.c2, c.c3)
+	case space.XyYD65:
+		return c.c1, c.c2, c.c3
 	case space.LabD50:
 		return convert.XyzD50ToXyYD65(convert.LabD50ToXyzD50(c.c1, c.c2, c.c3))
 	case space.LchD50:
@@ -1412,10 +1376,6 @@ func (c Color) LabD50() (l, a, b float64) {
 
 // labD50 returns the color components in the [space.LabD50] color space.
 func (c *Color) labD50() (l, a, b float64) {
-	if c.space == space.LabD50 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.XyzD65ToLabD50(convert.SrgbToXyzD65(c.c1, c.c2, c.c3))
@@ -1453,6 +1413,8 @@ func (c *Color) labD50() (l, a, b float64) {
 		return convert.XyzD50ToLabD50(convert.XyYD50ToXyzD50(c.c1, c.c2, c.c3))
 	case space.XyYD65:
 		return convert.XyzD65ToLabD50(convert.XyYD65ToXyzD65(c.c1, c.c2, c.c3))
+	case space.LabD50:
+		return c.c1, c.c2, c.c3
 	case space.LchD50:
 		return convert.LchD50ToLabD50(c.c1, c.c2, c.c3)
 	case space.LabD65:
@@ -1489,10 +1451,6 @@ func (c Color) LchD50() (float64, float64, float64) {
 
 // lchD50 returns the color components in the [space.LchD50] color space.
 func (c *Color) lchD50() (float64, float64, float64) {
-	if c.space == space.LchD50 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.XyzD65ToLchD50(convert.SrgbToXyzD65(c.c1, c.c2, c.c3))
@@ -1532,6 +1490,8 @@ func (c *Color) lchD50() (float64, float64, float64) {
 		return convert.XyzD65ToLchD50(convert.XyYD65ToXyzD65(c.c1, c.c2, c.c3))
 	case space.LabD50:
 		return convert.LabD50ToLchD50(c.c1, c.c2, c.c3)
+	case space.LchD50:
+		return c.c1, c.c2, c.c3
 	case space.LabD65:
 		return convert.LabD65ToLchD50(c.c1, c.c2, c.c3)
 	case space.LchD65:
@@ -1566,10 +1526,6 @@ func (c Color) LabD65() (l, a, b float64) {
 
 // labD65 returns the color components in the [space.LabD65] color space.
 func (c *Color) labD65() (l, a, b float64) {
-	if c.space == space.LabD65 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.XyzD65ToLabD65(convert.SrgbToXyzD65(c.c1, c.c2, c.c3))
@@ -1611,6 +1567,8 @@ func (c *Color) labD65() (l, a, b float64) {
 		return convert.LabD50ToLabD65(c.c1, c.c2, c.c3)
 	case space.LchD50:
 		return convert.LchD50ToLabD65(c.c1, c.c2, c.c3)
+	case space.LabD65:
+		return c.c1, c.c2, c.c3
 	case space.LchD65:
 		return convert.LchD65ToLabD65(c.c1, c.c2, c.c3)
 	case space.LuvD50:
@@ -1643,10 +1601,6 @@ func (c Color) LchD65() (float64, float64, float64) {
 
 // lchD65 returns the color components in the [space.LchD65] color space.
 func (c *Color) lchD65() (float64, float64, float64) {
-	if c.space == space.LchD65 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.XyzD65ToLchD65(convert.SrgbToXyzD65(c.c1, c.c2, c.c3))
@@ -1690,6 +1644,8 @@ func (c *Color) lchD65() (float64, float64, float64) {
 		return convert.LchD50ToLchD65(c.c1, c.c2, c.c3)
 	case space.LabD65:
 		return convert.LabD65ToLchD65(c.c1, c.c2, c.c3)
+	case space.LchD65:
+		return c.c1, c.c2, c.c3
 	case space.LuvD50:
 		return convert.XyzD50ToLchD65(convert.LuvD50ToXyzD50(c.c1, c.c2, c.c3))
 	case space.LchuvD50:
@@ -1720,10 +1676,6 @@ func (c Color) LuvD50() (l, u, v float64) {
 
 // luvD50 returns the color components in the [space.LuvD50] color space.
 func (c *Color) luvD50() (l, u, v float64) {
-	if c.space == space.LuvD50 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.XyzD65ToLuvD50(convert.SrgbToXyzD65(c.c1, c.c2, c.c3))
@@ -1769,6 +1721,8 @@ func (c *Color) luvD50() (l, u, v float64) {
 		return convert.XyzD65ToLuvD50(convert.LabD65ToXyzD65(c.c1, c.c2, c.c3))
 	case space.LchD65:
 		return convert.XyzD65ToLuvD50(convert.LchD65ToXyzD65(c.c1, c.c2, c.c3))
+	case space.LuvD50:
+		return c.c1, c.c2, c.c3
 	case space.LchuvD50:
 		return convert.LchuvD50ToLuvD50(c.c1, c.c2, c.c3)
 	case space.LuvD65:
@@ -1797,10 +1751,6 @@ func (c Color) LchuvD50() (float64, float64, float64) {
 
 // lchuvD50 returns the color components in the [space.LchuvD50] color space.
 func (c *Color) lchuvD50() (float64, float64, float64) {
-	if c.space == space.LchuvD50 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.XyzD65ToLchuvD50(convert.SrgbToXyzD65(c.c1, c.c2, c.c3))
@@ -1848,6 +1798,8 @@ func (c *Color) lchuvD50() (float64, float64, float64) {
 		return convert.XyzD65ToLchuvD50(convert.LchD65ToXyzD65(c.c1, c.c2, c.c3))
 	case space.LuvD50:
 		return convert.LuvD50ToLchuvD50(c.c1, c.c2, c.c3)
+	case space.LchuvD50:
+		return c.c1, c.c2, c.c3
 	case space.LuvD65:
 		return convert.LuvD65ToLchuvD50(c.c1, c.c2, c.c3)
 	case space.LchuvD65:
@@ -1874,10 +1826,6 @@ func (c Color) LuvD65() (l, u, v float64) {
 
 // luvD65 returns the color components in the [space.LuvD65] color space.
 func (c *Color) luvD65() (l, u, v float64) {
-	if c.space == space.LuvD65 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.XyzD65ToLuvD65(convert.SrgbToXyzD65(c.c1, c.c2, c.c3))
@@ -1927,6 +1875,8 @@ func (c *Color) luvD65() (l, u, v float64) {
 		return convert.LuvD50ToLuvD65(c.c1, c.c2, c.c3)
 	case space.LchuvD50:
 		return convert.LchuvD50ToLuvD65(c.c1, c.c2, c.c3)
+	case space.LuvD65:
+		return c.c1, c.c2, c.c3
 	case space.LchuvD65:
 		return convert.LchuvD65ToLuvD65(c.c1, c.c2, c.c3)
 	case space.Oklab:
@@ -1951,10 +1901,6 @@ func (c Color) LchuvD65() (float64, float64, float64) {
 
 // lchuvD65 returns the color components in the [space.LchuvD65] color space.
 func (c *Color) lchuvD65() (float64, float64, float64) {
-	if c.space == space.LchuvD65 {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.XyzD65ToLchuvD65(convert.SrgbToXyzD65(c.c1, c.c2, c.c3))
@@ -2006,6 +1952,8 @@ func (c *Color) lchuvD65() (float64, float64, float64) {
 		return convert.LchuvD50ToLchuvD65(c.c1, c.c2, c.c3)
 	case space.LuvD65:
 		return convert.LuvD65ToLchuvD65(c.c1, c.c2, c.c3)
+	case space.LchuvD65:
+		return c.c1, c.c2, c.c3
 	case space.Oklab:
 		return convert.XyzD65ToLchuvD65(convert.OklabToXyzD65(c.c1, c.c2, c.c3))
 	case space.Oklch:
@@ -2028,10 +1976,6 @@ func (c Color) Oklab() (l, a, b float64) {
 
 // oklab returns the color components in the [space.Oklab] color space.
 func (c *Color) oklab() (l, a, b float64) {
-	if c.space == space.Oklab {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.XyzD65ToOklab(convert.SrgbToXyzD65(c.c1, c.c2, c.c3))
@@ -2085,6 +2029,8 @@ func (c *Color) oklab() (l, a, b float64) {
 		return convert.XyzD65ToOklab(convert.LuvD65ToXyzD65(c.c1, c.c2, c.c3))
 	case space.LchuvD65:
 		return convert.XyzD65ToOklab(convert.LchuvD65ToXyzD65(c.c1, c.c2, c.c3))
+	case space.Oklab:
+		return c.c1, c.c2, c.c3
 	case space.Oklch:
 		return convert.OklchToOklab(c.c1, c.c2, c.c3)
 	case space.Hsl:
@@ -2105,10 +2051,6 @@ func (c Color) Oklch() (float64, float64, float64) {
 
 // oklch returns the color components in the [space.Oklch] color space.
 func (c *Color) oklch() (float64, float64, float64) {
-	if c.space == space.Oklch {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.XyzD65ToOklch(convert.SrgbToXyzD65(c.c1, c.c2, c.c3))
@@ -2164,6 +2106,8 @@ func (c *Color) oklch() (float64, float64, float64) {
 		return convert.XyzD65ToOklch(convert.LchuvD65ToXyzD65(c.c1, c.c2, c.c3))
 	case space.Oklab:
 		return convert.OklabToOklch(c.c1, c.c2, c.c3)
+	case space.Oklch:
+		return c.c1, c.c2, c.c3
 	case space.Hsl:
 		return convert.XyzD65ToOklch(convert.HslToXyzD65(c.c1, c.c2, c.c3))
 	case space.Hsv:
@@ -2182,10 +2126,6 @@ func (c Color) Hsl() (h, s, l float64) {
 
 // hsl returns the color components in the [space.Hsl] color space.
 func (c *Color) hsl() (h, s, l float64) {
-	if c.space == space.Hsl {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToHsl(c.c1, c.c2, c.c3)
@@ -2243,6 +2183,8 @@ func (c *Color) hsl() (h, s, l float64) {
 		return convert.XyzD65ToHsl(convert.OklabToXyzD65(c.c1, c.c2, c.c3))
 	case space.Oklch:
 		return convert.XyzD65ToHsl(convert.OklchToXyzD65(c.c1, c.c2, c.c3))
+	case space.Hsl:
+		return c.c1, c.c2, c.c3
 	case space.Hsv:
 		return convert.HsvToHsl(c.c1, c.c2, c.c3)
 	case space.Hwb:
@@ -2259,10 +2201,6 @@ func (c Color) Hsv() (h, s, v float64) {
 
 // hsv returns the color components in the [space.Hsv] color space.
 func (c *Color) hsv() (h, s, v float64) {
-	if c.space == space.Hsv {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToHsv(c.c1, c.c2, c.c3)
@@ -2322,6 +2260,8 @@ func (c *Color) hsv() (h, s, v float64) {
 		return convert.XyzD65ToHsv(convert.OklchToXyzD65(c.c1, c.c2, c.c3))
 	case space.Hsl:
 		return convert.HslToHsv(c.c1, c.c2, c.c3)
+	case space.Hsv:
+		return c.c1, c.c2, c.c3
 	case space.Hwb:
 		return convert.HwbToHsv(c.c1, c.c2, c.c3)
 	default:
@@ -2336,10 +2276,6 @@ func (c Color) Hwb() (h, w, b float64) {
 
 // hwb returns the color components in the [space.Hwb] color space.
 func (c *Color) hwb() (h, w, b float64) {
-	if c.space == space.Hwb {
-		return c.c1, c.c2, c.c3
-	}
-
 	switch c.space {
 	case space.Srgb:
 		return convert.SrgbToHwb(c.c1, c.c2, c.c3)
@@ -2401,6 +2337,8 @@ func (c *Color) hwb() (h, w, b float64) {
 		return convert.HslToHwb(c.c1, c.c2, c.c3)
 	case space.Hsv:
 		return convert.HsvToHwb(c.c1, c.c2, c.c3)
+	case space.Hwb:
+		return c.c1, c.c2, c.c3
 	default:
 		return
 	}
