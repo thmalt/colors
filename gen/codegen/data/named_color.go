@@ -28,6 +28,8 @@ const namedColorFilePrefix = "named-color"
 
 var NamedColors = loadNamedColors()
 
+var MaxNamedColorLength = 0
+
 func loadNamedColors() []NamedColor {
 	entries, err := namedColorFS.ReadDir(".")
 	if err != nil {
@@ -38,6 +40,7 @@ func loadNamedColors() []NamedColor {
 		result []NamedColor
 		temp   []NamedColor
 		m      = map[string][4]uint8{}
+		maxLen int
 	)
 
 	for _, entry := range entries {
@@ -67,8 +70,12 @@ func loadNamedColors() []NamedColor {
 			// nc.Name = naming.PascalCase(nc.Name)
 			m[lower] = nc.RGBA
 			result = append(result, nc)
+
+			maxLen = max(maxLen, len(lower))
 		}
 	}
+
+	MaxNamedColorLength = maxLen
 
 	slices.SortFunc(result, func(a, b NamedColor) int {
 		return strings.Compare(a.lower, b.lower)

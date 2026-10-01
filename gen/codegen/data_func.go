@@ -59,3 +59,9 @@ func precisionChannel(prec int) func(ch *model.Channel) {
 		ch.Precision = prec
 	}
 }
+
+func percentScaleChannel(scale float64) func(ch *model.Channel) {
+	return func(ch *model.Channel) {
+		ch.PercentScale = scale
+	}
+}

@@ -57,7 +57,8 @@ type Context struct {
 
 	spaceMap map[string]*model.Space
 
-	MaxChannelCount int
+	MaxChannelCount  int
+	MaxCssNameLength int
 
 	ConvertPkg Pkg
 	RootPkg    Pkg
@@ -228,6 +229,7 @@ func (ctx *Context) ResolveSpacePair(pair Pair) (from, to *model.Space) {
 
 func (ctx *Context) buildSpaces() {
 	maxChannelCount := 0
+	maxCssNameLength := 0
 	var out []*model.Space
 
 	for _, s := range ctx.Spaces {
@@ -243,9 +245,15 @@ func (ctx *Context) buildSpaces() {
 		}
 		out = append(out, s)
 
+		for _, alias := range s.CssAliases {
+			maxCssNameLength = max(maxCssNameLength, len(alias))
+		}
+
 		maxChannelCount = max(maxChannelCount, s.ChannelCount())
+		maxCssNameLength = max(maxCssNameLength, len(s.CssName))
 	}
 
 	ctx.MaxChannelCount = max(MinGeneratedChannelCount, maxChannelCount)
+	ctx.MaxCssNameLength = maxCssNameLength
 	ctx.BuiltSpaces = out
 }

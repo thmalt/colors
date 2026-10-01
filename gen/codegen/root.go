@@ -87,4 +87,18 @@ func GenerateRootPkg(ctx *Context) {
 		genRootPkgGamut(ctx, w)
 		genRootPkgClamp(ctx, w)
 	})
+
+	emitGoFile(ctx, pkg, w, "parser", func(w *writer.GoWriter) {
+		w.Import(ctx.SpacePkg.Path)
+		w.Import("/internal/ascii")
+
+		genRootPkgParser(ctx, w)
+	})
+
+	emitGoFile(ctx, pkg, w, "named", func(w *writer.GoWriter) {
+		w.Import(ctx.SpacePkg.Path)
+		w.Import("/internal/ascii")
+
+		genRootPkgNamedColor(ctx, w)
+	})
 }

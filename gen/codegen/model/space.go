@@ -5,6 +5,8 @@ import (
 	"math"
 	"strconv"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 )
 
 type Space struct {
@@ -18,8 +20,9 @@ type Space struct {
 	Family string `json:"family,omitempty"`
 	Base   string `json:"base,omitempty"`
 
-	DisplayName string `json:"displayName"`
-	CssName     string `json:"cssName"`
+	DisplayName string   `json:"displayName"`
+	CssName     string   `json:"cssName"`
+	CssAliases  []string `json:"cssAliases,omitempty"`
 
 	WhitePoint string           `json:"whitePoint"`
 	Coordinate CoordinateSystem `json:"coordinate,omitempty"`
@@ -29,8 +32,9 @@ type Space struct {
 	Disable                 bool `json:"disable,omitempty"`
 
 	// for generator
-	SnakeName   string `json:"snakeName,omitempty"`
-	Description string `json:"description,omitempty"`
+	SnakeName   string    `json:"snakeName,omitempty"`
+	Description string    `json:"description,omitempty"`
+	ParseKind   ParseKind `json:"parseKind,omitempty"`
 }
 
 type Channel struct {
@@ -41,6 +45,7 @@ type Channel struct {
 
 	Min          float64 `json:"min"`
 	Max          float64 `json:"max"`
+	PercentScale float64 `json:"percentScale,omitempty"`
 	Circular     bool    `json:"circular,omitempty"`
 	Unrestricted bool    `json:"unrestricted,omitempty"`
 
@@ -65,6 +70,14 @@ const (
 	UnitRadian
 	UnitGradian
 	UnitTurn
+)
+
+type ParseKind uint8
+
+const (
+	Parse01 ParseKind = iota
+	ParseLabLike
+	ParseLchLike
 )
 
 func (c CoordinateSystem) String() string {
@@ -194,4 +207,16 @@ func (s Space) HueIndex() int8 {
 	}
 
 	return -1
+}
+
+func (s Space) ChannelIdentFlagsName() string {
+	var buf []byte
+	for _, c := range s.Channels {
+		ls := strings.ToLower(c.Ident)
+		r, size := utf8.DecodeRuneInString(ls)
+		buf = utf8.AppendRune(buf, unicode.ToUpper(r))
+		buf = append(buf, ls[size:]...)
+	}
+
+	return string(buf)
 }

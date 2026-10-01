@@ -8,6 +8,7 @@ import (
 
 type groupSpaceValue struct {
 	Key     string
+	Extra   string
 	Count   int
 	Indexes []int
 	Spaces  []*model.Space
@@ -21,6 +22,22 @@ func newGroupSpace() groupSpace {
 	return groupSpace{
 		M: make(map[string]groupSpaceValue),
 	}
+}
+
+func (g groupSpace) Reset() {
+	clear(g.M)
+}
+
+func (g groupSpace) AppendExtra(key string, count int, index int, space *model.Space, extra string) {
+	v := g.M[key]
+
+	v.Key = key
+	v.Extra = extra
+	v.Count = count
+
+	v.Spaces = append(v.Spaces, space)
+	v.Indexes = append(v.Indexes, index)
+	g.M[key] = v
 }
 
 func (g groupSpace) Append(key string, count int, index int, space *model.Space) {

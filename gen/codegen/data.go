@@ -73,13 +73,13 @@ var (
 
 	luvChannels = []model.Channel{
 		extendChannel(lightnessChannelName, numberChannel(0, 100, 4)),
-		extendChannel(uChannelName, numberChannel(-134, 220, 4), unrestrictedChannel),
-		extendChannel(vChannelName, numberChannel(-140, 122, 4), unrestrictedChannel),
+		extendChannel(uChannelName, numberChannel(-134, 220, 4), percentScaleChannel(215), unrestrictedChannel),
+		extendChannel(vChannelName, numberChannel(-140, 122, 4), percentScaleChannel(215), unrestrictedChannel),
 	}
 
 	lchuvChannels = []model.Channel{
 		extendChannel(lightnessChannelName, numberChannel(0, 100, 4)),
-		extendChannel(chromaChannelName, numberChannel(0, 180, 4), unrestrictedChannel),
+		extendChannel(chromaChannelName, numberChannel(0, 180, 4), percentScaleChannel(220), unrestrictedChannel),
 		extendChannel(hueChannelName, degreeChannel),
 	}
 
@@ -289,6 +289,7 @@ var (
 			Family:      "XYZ",
 			DisplayName: "CIE XYZ D65",
 			CssName:     "xyz-d65",
+			CssAliases:  []string{"xyz"},
 			WhitePoint:  "D65",
 			Channels:    xyzD65Channels,
 
@@ -324,6 +325,7 @@ var (
 			Base:        "XyzD65",
 			DisplayName: "CIE xyY",
 			CssName:     "xyy-d65",
+			CssAliases:  []string{"xyy"},
 			WhitePoint:  "D65",
 			Channels:    xyYChannels,
 			SnakeName:   "xyy_d65",
@@ -337,8 +339,10 @@ var (
 			Base:        "XyzD50",
 			DisplayName: "CIE Lab D50",
 			CssName:     "lab",
+			CssAliases:  []string{"lab-d50"},
 			WhitePoint:  "D50",
 			Channels:    labChannels,
+			ParseKind:   model.ParseLabLike,
 		},
 		{
 			Name:        "LchD50",
@@ -347,9 +351,11 @@ var (
 			Base:        "LabD50",
 			DisplayName: "CIE LCh D50",
 			CssName:     "lch",
+			CssAliases:  []string{"lch-d50"},
 			WhitePoint:  "D50",
 			Coordinate:  model.Polar,
 			Channels:    lchChannels,
+			ParseKind:   model.ParseLchLike,
 		},
 		{
 			Name:        "LabD65",
@@ -359,6 +365,7 @@ var (
 			CssName:     "lab-d65",
 			WhitePoint:  "D65",
 			Channels:    labChannels,
+			ParseKind:   model.ParseLabLike,
 
 			UseGenericColorFunction: true,
 		},
@@ -371,6 +378,7 @@ var (
 			WhitePoint:  "D65",
 			Coordinate:  model.Polar,
 			Channels:    lchChannels,
+			ParseKind:   model.ParseLchLike,
 
 			UseGenericColorFunction: true,
 		},
@@ -381,9 +389,11 @@ var (
 			Base:        "XyzD50",
 			DisplayName: "CIE Luv D50",
 			CssName:     "luv",
+			CssAliases:  []string{"luv-d50"},
 			WhitePoint:  "D50",
 			Coordinate:  model.Polar,
 			Channels:    luvChannels,
+			ParseKind:   model.ParseLabLike,
 		},
 		{
 			Name:        "LchuvD50",
@@ -392,9 +402,11 @@ var (
 			Base:        "LuvD50",
 			DisplayName: "CIE LChuv D50",
 			CssName:     "lchuv",
+			CssAliases:  []string{"lchuv-d50"},
 			WhitePoint:  "D50",
 			Coordinate:  model.Polar,
 			Channels:    lchuvChannels,
+			ParseKind:   model.ParseLchLike,
 		},
 		{
 			Name:        "LuvD65",
@@ -405,6 +417,7 @@ var (
 			WhitePoint:  "D65",
 			Coordinate:  model.Polar,
 			Channels:    luvChannels,
+			ParseKind:   model.ParseLabLike,
 
 			UseGenericColorFunction: true,
 		},
@@ -417,6 +430,7 @@ var (
 			WhitePoint:  "D65",
 			Coordinate:  model.Polar,
 			Channels:    lchuvChannels,
+			ParseKind:   model.ParseLchLike,
 
 			UseGenericColorFunction: true,
 		},
@@ -428,6 +442,7 @@ var (
 			CssName:     "oklab",
 			WhitePoint:  "D65",
 			Channels:    oklabChannels,
+			ParseKind:   model.ParseLabLike,
 		},
 		{
 			Name:        "Oklch",
@@ -438,6 +453,7 @@ var (
 			WhitePoint:  "D65",
 			Coordinate:  model.Polar,
 			Channels:    oklchChannels,
+			ParseKind:   model.ParseLchLike,
 		},
 		{
 			Name:        "Hsl",

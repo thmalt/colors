@@ -27,6 +27,11 @@ func GenerateSpacePkg(ctx *Context) {
 		genSpacePkgTables(ctx, w)
 	})
 
+	emitGoFile(ctx, pkg, w, "channel", func(w *writer.GoWriter) {
+		w.Import("/internal/ascii")
+		genSpacePkgChannelIdent(ctx, w)
+	})
+
 	emitGoFile(ctx, pkg, w, "whitepoint", func(w *writer.GoWriter) {
 		genSpacePkgWhitePoint(ctx, w)
 	})
