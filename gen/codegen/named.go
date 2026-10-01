@@ -5,6 +5,7 @@ import (
 	"math"
 	"strconv"
 
+	"github.com/thmalt/colors/gen/codegen/data"
 	"github.com/thmalt/colors/gen/codegen/writer"
 )
 
@@ -24,8 +25,8 @@ func GenerateNamedPkg(ctx *Context) {
 
 	emitGoFile(ctx, pkg, w, "lookup", func(w *writer.GoWriter) {
 		w.Import(
-			"strings",
 			ctx.RootPkg.Path,
+			"/internal/ascii",
 		)
 
 		genNamedPkgLookup(ctx, w)
@@ -95,7 +96,11 @@ func genNamedPkgLookup(ctx *Context, w *writer.GoWriter) {
 	w.FuncParams("name string")
 	w.FuncResults(pkgJoin("Color"), ", bool")
 	w.FuncBody()
-	w.LineWriteln("c, ok := lookup[strings.ToLower(name)]")
+	w.LineWriteln("var buf [", data.MaxNamedColorLength+1, "]byte")
+	w.LineWriteln("n := copy(buf[:], name)")
+	w.LineWriteln("ascii.ToLowerBytes(buf[:n])")
+	w.Separate()
+	w.LineWriteln("c, ok := lookup[string(buf[:n])]")
 	w.Return("c, ok")
 	w.End()
 

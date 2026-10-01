@@ -3,16 +3,19 @@
 package named
 
 import (
-	"strings"
-
 	"github.com/thmalt/colors"
+	"github.com/thmalt/colors/internal/ascii"
 )
 
 // Lookup returns the named color with the given name.
 //
 // The name is case-insensitive.
 func Lookup(name string) (colors.Color, bool) {
-	c, ok := lookup[strings.ToLower(name)]
+	var buf [21]byte
+	n := copy(buf[:], name)
+	ascii.ToLowerBytes(buf[:n])
+
+	c, ok := lookup[string(buf[:n])]
 	return c, ok
 }
 
