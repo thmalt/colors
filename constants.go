@@ -8,4 +8,6 @@ const (
 	invMaxUint16 = 1.0 / maxUint16
 
 	scale8To16 = 1<<8 + 1
+
+	inv255 = 1.0 / 255
 )

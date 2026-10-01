@@ -230,7 +230,12 @@ func (p *parser) parseRgb(originColor Color) (Color, error) {
 		return Color{}, errParserMissingCloseParenthesis
 	}
 
-	return Rgba(red.value, green.value, blue.value, alpha.value), nil
+	return SrgbAlpha(
+		red.value*inv255,
+		green.value*inv255,
+		blue.value*inv255,
+		clamp01(alpha.value),
+	), nil
 }
 
 // legacy ( <hue>, <percentage>, <percentage>, <alpha-value>? )
@@ -303,7 +308,13 @@ func (p *parser) parseHxxLike(originColor Color, sp space.Space, chIdFlags space
 	}
 
 	const inv = 1 / 100.0
-	return new3(sp, hue.value, c2.value*inv, c3.value*inv, alpha.value), nil
+	return new3(
+		sp,
+		wrap360(hue.value),
+		c2.value*inv,
+		c3.value*inv,
+		clamp01(alpha.value),
+	), nil
 }
 
 /*
@@ -353,7 +364,13 @@ func (p *parser) parseLabLike(originColor Color, sp space.Space, lightnessRange,
 		return Color{}, errParserMissingCloseParenthesis
 	}
 
-	return Color{space: sp, c1: lightness.value, c2: a.value, c3: b.value, alpha: alpha.value}, nil
+	return new3(
+		sp,
+		lightness.value,
+		a.value,
+		b.value,
+		clamp01(alpha.value),
+	), nil
 }
 
 /*
@@ -403,7 +420,13 @@ func (p *parser) parseLchLike(originColor Color, sp space.Space, lightnessRange,
 		return Color{}, errParserMissingCloseParenthesis
 	}
 
-	return Color{space: sp, c1: lightness.value, c2: chroma.value, c3: hue.value, alpha: alpha.value}, nil
+	return new3(
+		sp,
+		lightness.value,
+		chroma.value,
+		wrap360(hue.value),
+		clamp01(alpha.value),
+	), nil
 }
 
 // alpha([from <color>] [ / [<alpha-value> | none] ]? )
@@ -433,7 +456,7 @@ func (p *parser) parseRelativeAlpha(originColor Color) (Color, error) {
 		return Color{}, errParserMissingCloseParenthesis
 	}
 
-	originColor.alpha = alpha.value
+	originColor.alpha = clamp01(alpha.value)
 	return originColor, nil
 }
 
@@ -480,7 +503,13 @@ func (p *parser) parseColorSpace01(originColor Color, sp space.Space, chIdFlags 
 		return Color{}, errParserMissingCloseParenthesis
 	}
 
-	return new3(sp, c1.value, c2.value, c3.value, alpha.value), nil
+	return new3(
+		sp,
+		c1.value,
+		c2.value,
+		c3.value,
+		clamp01(alpha.value),
+	), nil
 }
 
 // TODO: Implement Math functions.
