@@ -565,6 +565,9 @@ var (
 		implementedFunc("XyzAbsD65", "XyzD65"),
 		implementedFunc("XyzD65", "XyzAbsD65"),
 
+		implementedFunc("XyY", "Xyz"),
+		implementedFunc("Xyz", "XyY"),
+
 		// Generate with Call Ops
 		convertFunc("XyYD50", "XyzD50", opCall("XyY", "Xyz")),
 		convertFunc("XyzD50", "XyYD50", opCall("Xyz", "XyY")),

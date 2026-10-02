@@ -155,19 +155,7 @@ func (ctx *Context) Build() error {
 	for i := range ctx.Funcs {
 		fn := &ctx.Funcs[i]
 		if fn.Implemented {
-			from, to := ctx.ResolveSpacePair(fn.Pair)
-			if from == nil || to == nil {
-				if from == nil {
-					log.Printf("space of %s not found\n", fn.Pair.From)
-				}
-
-				if to == nil {
-					log.Printf("space of %s not found\n", fn.Pair.To)
-				}
-
-				continue
-			}
-			ctx.impls[Pair{from.Name, to.Name}] = struct{}{}
+			ctx.impls[fn.Pair] = struct{}{}
 		}
 	}
 
